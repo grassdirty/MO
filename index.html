@@ -62,6 +62,11 @@
         }
         .stat b { display: block; font-size: 1.6rem; color: #ffd166; }
         .stat small { font-size: 0.82rem; color: #dfe7ff; }
+        .last-visit {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: #c3cff0;
+        }
 
         /* ===== Toolbar ===== */
         .toolbar {
@@ -190,7 +195,10 @@
         <div class="stats">
             <div class="stat"><b id="countAll">29</b><small>Chuyên đề</small></div>
             <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
+            <div class="stat"><b id="countVisits">0</b><small>Lượt truy cập</small></div>
+            <div class="stat"><b id="countToday">0</b><small>Hôm nay</small></div>
         </div>
+        <div class="last-visit" id="lastVisit"></div>
     </header>
 
     <div class="toolbar">
@@ -211,6 +219,9 @@
 
     <footer>
         Blog tổng hợp các chuyên đề Toán học Olympic • Các bài viết thuộc thư mục OLYMPIC
+        <div style="margin-top:6px; font-size:0.8rem; opacity:0.75;">
+            Bộ đếm lượt truy cập lưu trên trình duyệt (localStorage) — mỗi lần mở trang tính 1 lượt.
+        </div>
     </footer>
 
     <script>
@@ -321,6 +332,42 @@
 
         render();
         document.getElementById('countAll').textContent = POSTS.length;
+
+        // ===== Bộ đếm lượt truy cập =====
+        (function () {
+            const KEY = 'olympic_blog_visits';
+            const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+
+            let data = { total: 0, day: today, todayCount: 0, lastVisit: '' };
+            try {
+                const saved = JSON.parse(localStorage.getItem(KEY));
+                if (saved && typeof saved === 'object') data = Object.assign(data, saved);
+            } catch (e) { /* localStorage không khả dụng */ }
+
+            // Tăng tổng lượt truy cập
+            data.total = (data.total || 0) + 1;
+
+            // Đếm theo ngày (reset khi sang ngày mới)
+            if (data.day !== today) {
+                data.day = today;
+                data.todayCount = 1;
+            } else {
+                data.todayCount = (data.todayCount || 0) + 1;
+            }
+
+            data.lastVisit = new Date().toLocaleString('vi-VN');
+
+            try {
+                localStorage.setItem(KEY, JSON.stringify(data));
+            } catch (e) { /* bỏ qua nếu không lưu được */ }
+
+            const elTotal = document.getElementById('countVisits');
+            const elToday = document.getElementById('countToday');
+            const elLast  = document.getElementById('lastVisit');
+            if (elTotal) elTotal.textContent = data.total.toLocaleString('vi-VN');
+            if (elToday) elToday.textContent = data.todayCount.toLocaleString('vi-VN');
+            if (elLast)  elLast.textContent = 'Lần truy cập gần nhất: ' + data.lastVisit;
+        })();
     </script>
 </body>
 </html>

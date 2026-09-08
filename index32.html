@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Hàm sinh và Kỹ thuật nghiệm đơn vị</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> HÀM SINH VÀ KỸ THUẬT NGHIỆM ĐƠN VỊ (ROOTS OF UNITY FILTER)</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đại số Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các bài toán đếm tổ hợp với điều kiện ràng buộc chia hết (modulo $k$) thường đòi hỏi thiết lập các hệ thức truy hồi tuyến tính phức tạp. Chuyên đề này hình thức hóa kỹ thuật "Roots of Unity Filter" (Rút trích bằng nghiệm đơn vị) thông qua đa thức sinh. Bằng cách chuyển đổi các cấu hình đếm rời rạc sang không gian giải tích trên trường số phức, kỹ thuật này cung cấp các dạng biểu diễn đóng (closed-form), thay thế cho việc giải các phương trình sai phân.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Kỹ thuật Roots of Unity Filter là một công cụ mạnh mẽ thuộc chương trình Đại học, đòi hỏi sự kết hợp giữa Đại số tổ hợp và Giải tích phức. Để học sinh THPT có thể nắm bắt và hiểu được các chứng minh bên dưới, ta cần ôn lại và mở rộng hai khái niệm sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Công thức Euler và Dạng lượng giác của số phức)</div>
+        Với mọi số thực $x$, công thức Euler biểu diễn mối liên hệ giữa hàm mũ phức và các hàm lượng giác:
+        $$ e^{ix} = \cos x + i \sin x $$
+        Từ đó, mọi số phức $z$ có module $r$ và argument (góc) $\theta$ có thể được viết gọn dưới dạng $z = r e^{i\theta}$. <br>
+        Việc nhân các số phức dạng mũ rất thuận tiện: $e^{ia} \cdot e^{ib} = e^{i(a+b)}$, tương ứng với phép cộng góc trên mặt phẳng tọa độ.
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.2 (Đa thức sinh - Generating Polynomial)</div>
+        Trong tổ hợp, ta thường gán mỗi lựa chọn cấu hình một đơn thức $x^k$, trong đó $k$ là "giá trị" hoặc "trọng số" của lựa chọn đó.<br>
+        Khi thực hiện $N$ lựa chọn độc lập, ta nhân $N$ đa thức tương ứng lại với nhau. Hệ số của $x^m$ trong đa thức kết quả chính là <strong>số lượng cách</strong> để thực hiện $N$ lựa chọn sao cho tổng các giá trị thu được bằng đúng $m$. Kỹ thuật này chuyển việc đếm trực tiếp sang việc khai triển đa thức.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Nghiệm thứ $k$ của đơn vị)</div>
+        Cho số nguyên dương $k \ge 1$. Một số phức $z$ được gọi là nghiệm thứ $k$ của đơn vị nếu $z^k = 1$.<br>
+        Tập hợp tất cả các nghiệm thứ $k$ của đơn vị gồm $k$ phần tử, được biểu diễn dưới dạng lượng giác:
+        $$ z_j = e^{\frac{2\pi i j}{k}} = \cos\left(\frac{2\pi j}{k}\right) + i \sin\left(\frac{2\pi j}{k}\right) \quad \text{với } j = 0, 1, \dots, k-1 $$
+        Ký hiệu $\omega = e^{\frac{2\pi i}{k}}$. Khi đó, tập các nghiệm là $\{1, \omega, \omega^2, \dots, \omega^{k-1}\}$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Tổng các nghiệm đơn vị)</div>
+        Cho $\omega = e^{\frac{2\pi i}{k}}$ là một căn nguyên thủy bậc $k$ của đơn vị và $m$ là một số nguyên bất kỳ. Khi đó, tổng các lũy thừa bậc $m$ của tất cả các nghiệm bậc $k$ của đơn vị được tính bởi:
+        $$ \sum_{j=0}^{k-1} (\omega^j)^m = \sum_{j=0}^{k-1} \omega^{jm} = 
+        \begin{cases} 
+        k & \text{nếu } m \equiv 0 \pmod k \\
+        0 & \text{nếu } m \not\equiv 0 \pmod k 
+        \end{cases}
+        $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>Trường hợp 1:</strong> $m \equiv 0 \pmod k$. <br>
+        Tồn tại số nguyên $q$ sao cho $m = qk$.<br>
+        Với mọi $j \in \{0, 1, \dots, k-1\}$, ta có $\omega^{jm} = \omega^{jqk} = (\omega^k)^{jq}$.<br>
+        Theo định nghĩa, $\omega^k = 1$, do đó $\omega^{jm} = 1^{jq} = 1$.<br>
+        Tổng của $k$ số hạng đều bằng $1$ là:</p>
+        $$ \sum_{j=0}^{k-1} \omega^{jm} = \underbrace{1 + 1 + \dots + 1}_{k \text{ lần}} = k $$
+
+        <p><strong>Trường hợp 2:</strong> $m \not\equiv 0 \pmod k$.<br>
+        Khi đó $k$ không chia hết $m$, kéo theo $\omega^m \neq 1$.<br>
+        Biểu thức cần tính là tổng của một cấp số nhân hữu hạn với công bội $q = \omega^m \neq 1$, số hạng đầu là $1$ (ứng với $j=0$), và có $k$ số hạng:</p>
+        $$ S = 1 + \omega^m + (\omega^m)^2 + \dots + (\omega^m)^{k-1} $$
+        <p>Áp dụng công thức tính tổng cấp số nhân:</p>
+        $$ S = \frac{1 - (\omega^m)^k}{1 - \omega^m} = \frac{1 - \omega^{mk}}{1 - \omega^m} = \frac{1 - (\omega^k)^m}{1 - \omega^m} $$
+        <p>Vì $\omega^k = 1$, ta có tử số là $1 - 1^m = 0$.<br>
+        Mẫu số $1 - \omega^m \neq 0$. Do đó, $S = \frac{0}{1 - \omega^m} = 0$.</p>
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tiêu chuẩn Rút trích hệ số - Roots of Unity Filter)</div>
+        Cho đa thức hoặc chuỗi lũy thừa hình thức $P(x) = \sum_{n=0}^\infty c_n x^n$.<br>
+        Để tính tổng các hệ số $c_n$ mà chỉ số $n$ chia cho $k$ dư $r$ ($n \equiv r \pmod k$), ta sử dụng công thức:
+        $$ \sum_{n \equiv r \pmod k} c_n = \frac{1}{k} \sum_{j=0}^{k-1} \omega^{-jr} P(\omega^j) $$
+        trong đó $\omega = e^{\frac{2\pi i}{k}}$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Khởi đầu từ vế phải của công thức cần chứng minh, ta thay $P(\omega^j)$ bằng chuỗi khai triển của nó:</p>
+        $$ \frac{1}{k} \sum_{j=0}^{k-1} \omega^{-jr} P(\omega^j) = \frac{1}{k} \sum_{j=0}^{k-1} \omega^{-jr} \left( \sum_{n=0}^\infty c_n (\omega^j)^n \right) $$
+        <p>Tính chất phân phối và giao hoán của phép cộng hữu hạn (đối với chuỗi vô hạn hội tụ hoặc chuỗi hình thức, việc đổi thứ tự lấy tổng được bảo toàn) cho phép ta hoán vị hai dấu tổng:</p>
+        $$ = \frac{1}{k} \sum_{n=0}^\infty c_n \left( \sum_{j=0}^{k-1} \omega^{jn - jr} \right) = \sum_{n=0}^\infty c_n \left[ \frac{1}{k} \sum_{j=0}^{k-1} \omega^{j(n-r)} \right] $$
+        <p>Xét biểu thức trong ngoặc vuông: $I_n = \frac{1}{k} \sum_{j=0}^{k-1} \omega^{j(n-r)}$.<br>
+        Áp dụng Bổ đề Tổng các nghiệm đơn vị (Định lý 1.1) với số mũ $m = n - r$:</p>
+        <ul>
+            <li>Nếu $n - r \equiv 0 \pmod k \iff n \equiv r \pmod k$, thì $\sum_{j=0}^{k-1} \omega^{j(n-r)} = k$. Khi đó $I_n = \frac{k}{k} = 1$.</li>
+            <li>Nếu $n - r \not\equiv 0 \pmod k \iff n \not\equiv r \pmod k$, thì $\sum_{j=0}^{k-1} \omega^{j(n-r)} = 0$. Khi đó $I_n = \frac{0}{k} = 0$.</li>
+        </ul>
+        <p>Thay giá trị của $I_n$ trở lại chuỗi tổng ban đầu:</p>
+        $$ \sum_{n=0}^\infty c_n I_n = \sum_{n \equiv r \pmod k} c_n \cdot 1 + \sum_{n \not\equiv r \pmod k} c_n \cdot 0 = \sum_{n \equiv r \pmod k} c_n $$
+        <p>Công thức được chứng minh. Phương pháp này biến việc lấy tổng một tập con các hệ số thành việc lấy trung bình cộng các giá trị của hàm sinh trên đường tròn đơn vị.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Crux Mathematicorum - Đánh giá tổng tổ hợp chu kỳ 3)</div>
+        Tính tổng các hệ số nhị thức sau theo $n$:
+        $$ S = \binom{n}{0} + \binom{n}{3} + \binom{n}{6} + \dots = \sum_{m=0}^{\lfloor n/3 \rfloor} \binom{n}{3m} $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức hàm sinh $P(x) = (1+x)^n = \sum_{m=0}^n \binom{n}{m} x^m$.<br>
+        Bài toán yêu cầu tính tổng các hệ số $c_m = \binom{n}{m}$ với chỉ số $m \equiv 0 \pmod 3$.<br>
+        Áp dụng Tiêu chuẩn Rút trích hệ số (Định lý 1.2) với $k = 3$ và $r = 0$.<br>
+        Gọi $\omega = e^{\frac{2\pi i}{3}} = -\frac{1}{2} + i\frac{\sqrt{3}}{2}$.<br>
+        Các nghiệm bậc 3 của đơn vị là $1, \omega, \omega^2$. Ta có tính chất $1 + \omega + \omega^2 = 0$.<br>
+        Theo Định lý 1.2:</p>
+        $$ S = \frac{1}{3} \left[ \omega^{-0 \cdot 0} P(1) + \omega^{-0 \cdot 1} P(\omega) + \omega^{-0 \cdot 2} P(\omega^2) \right] = \frac{1}{3} \left[ P(1) + P(\omega) + P(\omega^2) \right] $$
+        <p>Tính các giá trị của $P(x)$:</p>
+        <ol>
+            <li> $P(1) = (1+1)^n = 2^n$.</li>
+            <li> $P(\omega) = (1+\omega)^n$. Vì $1 + \omega + \omega^2 = 0$, ta có $1+\omega = -\omega^2$. <br>
+            Sử dụng dạng cực lượng giác: $-\omega^2 = - (\cos\frac{4\pi}{3} + i\sin\frac{4\pi}{3}) = -(-\frac{1}{2} - i\frac{\sqrt{3}}{2}) = \frac{1}{2} + i\frac{\sqrt{3}}{2} = \cos\frac{\pi}{3} + i\sin\frac{\pi}{3} = e^{i\pi/3}$.<br>
+            Do đó, $P(\omega) = (e^{i\pi/3})^n = e^{in\pi/3} = \cos\frac{n\pi}{3} + i\sin\frac{n\pi}{3}$.</li>
+            <li> $P(\omega^2) = (1+\omega^2)^n$. Tương tự, $1+\omega^2 = -\omega = e^{-i\pi/3}$.<br>
+            Do đó, $P(\omega^2) = (e^{-i\pi/3})^n = e^{-in\pi/3} = \cos\frac{n\pi}{3} - i\sin\frac{n\pi}{3}$.</li>
+        </ol>
+        <p>Thay các giá trị này vào công thức của $S$:</p>
+        $$ S = \frac{1}{3} \left[ 2^n + \left(\cos\frac{n\pi}{3} + i\sin\frac{n\pi}{3}\right) + \left(\cos\frac{n\pi}{3} - i\sin\frac{n\pi}{3}\right) \right] $$
+        <p>Phần ảo triệt tiêu lẫn nhau, ta thu được:</p>
+        $$ S = \frac{1}{3} \left[ 2^n + 2 \cos\frac{n\pi}{3} \right] $$
+        <p>Kết quả này là một số nguyên dương, mặc dù có sự xuất hiện của các số phức trong quá trình tính toán trung gian.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Bài toán đếm cấu hình với ràng buộc đồng dư)</div>
+        Cho hai số nguyên dương $N$ và $k$. Có bao nhiêu chuỗi độ dài $N$ được tạo thành từ các chữ số thuộc tập hợp $\{1, 2, 3\}$ sao cho tổng các chữ số trong chuỗi đó là một bội số của $k$?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Phương pháp thiết lập hệ thức truy hồi để đếm số lượng cấu hình theo từng số dư modulo $k$ sẽ dẫn đến hệ phương trình sai phân gồm $k$ biến. Ta sử dụng lý thuyết hàm sinh để thiết lập biểu diễn đại số.</p>
+
+        <p>Mỗi chữ số được chọn độc lập từ tập $\{1, 2, 3\}$. Đa thức sinh biểu diễn cho việc chọn một chữ số là:</p>
+        $$ g(x) = x^1 + x^2 + x^3 $$
+        <p>Đa thức sinh đại diện cho tổng của $N$ chữ số chính là lũy thừa bậc $N$ của đa thức sinh cơ sở:</p>
+        $$ P(x) = (g(x))^N = (x + x^2 + x^3)^N = \sum_{m=0}^{3N} c_m x^m $$
+        <p>Trong đó, hệ số $c_m$ chính là số lượng các chuỗi độ dài $N$ mà tổng các chữ số của nó bằng đúng $m$.<br>
+        Yêu cầu bài toán là tìm số lượng các chuỗi có tổng chia hết cho $k$, tức là tính tổng các hệ số có chỉ số là bội của $k$:</p>
+        $$ S = \sum_{m \equiv 0 \pmod k} c_m $$
+        <p>Theo Tiêu chuẩn Rút trích hệ số (Định lý 1.2) với $\omega = e^{2\pi i / k}$:</p>
+        $$ S = \frac{1}{k} \sum_{j=0}^{k-1} P(\omega^j) = \frac{1}{k} \sum_{j=0}^{k-1} (\omega^j + \omega^{2j} + \omega^{3j})^N $$
+        <p>Phương pháp Roots of Unity Filter thu gọn tổng ban đầu thành một biểu thức đóng chứa $k$ số hạng phức. Giá trị của $S$ được xác định mà không cần giải phương trình đặc trưng đa thức bậc cao. Vì $S$ đại diện cho số lượng tổ hợp, kết quả của biểu thức trên sẽ có phần ảo bị triệt tiêu và cho ra một số nguyên dương.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian Master of Mathematics - Phân hoạch tập hợp modulo p)</div>
+        Cho $p$ là một số nguyên tố lẻ. Đếm số lượng các tập hợp con của tập $S = \{1, 2, \dots, p\}$ sao cho tổng các phần tử của tập hợp con đó chia hết cho $p$. (Quy ước tập rỗng có tổng các phần tử bằng 0).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi phần tử $i \in S$ có hai trạng thái: hoặc không được chọn vào tập con, hoặc được chọn vào tập con.<br>
+        Đa thức sinh cho sự lựa chọn phần tử $i$ là $1 + x^i$.<br>
+        Đa thức sinh đại diện cho việc chọn các tập con bất kỳ từ $S$ là tích của các đa thức sinh độc lập:</p>
+        $$ P(x) = \prod_{i=1}^p (1 + x^i) = \sum_{m=0}^{p(p+1)/2} c_m x^m $$
+        <p>Hệ số $c_m$ là số lượng tập con có tổng các phần tử bằng $m$. Bài toán yêu cầu tính tổng $A = \sum_{m \equiv 0 \pmod p} c_m$.<br>
+        Áp dụng Định lý 1.2 với căn nguyên thủy bậc $p$ của đơn vị $\omega = e^{2\pi i / p}$:</p>
+        $$ A = \frac{1}{p} \sum_{j=0}^{p-1} P(\omega^j) $$
+        <p>Ta tính giá trị $P(\omega^j)$ cho các trường hợp của $j$:</p>
+
+        <p><strong>Trường hợp 1:</strong> $j = 0$. Khi đó $\omega^0 = 1$.</p>
+        $$ P(1) = \prod_{i=1}^p (1 + 1^i) = 2^p $$
+
+        <p><strong>Trường hợp 2:</strong> $1 \le j \le p-1$.<br>
+        Vì $p$ là số nguyên tố và $1 \le j \le p-1$, tập hợp các số mũ $\{1j, 2j, \dots, pj\}$ khi lấy modulo $p$ chính là một hoán vị của hệ thặng dư thu gọn $\{1, 2, \dots, p\}$.<br>
+        Do đó, khi nhân các nhân tử $(1 + \omega^{ij})$, ta có thể sắp xếp lại thứ tự lấy tích:</p>
+        $$ P(\omega^j) = \prod_{i=1}^p (1 + \omega^{ij}) = \prod_{m=1}^p (1 + \omega^m) $$
+        <p>Biểu thức này không còn phụ thuộc vào $j$ nữa. Ta cần tính tích $K = \prod_{m=1}^p (1 + \omega^m)$.<br>
+        Nhận xét rằng $\omega^p = 1$, do đó nhân tử cuối cùng ứng với $m=p$ là $(1 + \omega^p) = (1+1) = 2$.<br>
+        Xét đa thức $x^p - 1$. Các nghiệm của đa thức này là $1, \omega, \dots, \omega^{p-1}$, ta có phân tích:</p>
+        $$ x^p - 1 = (x-1)(x^{p-1} + x^{p-2} + \dots + x + 1) = (x-1) \prod_{m=1}^{p-1} (x - \omega^m) $$
+        <p>Rút gọn $x-1$, ta có đồng nhất thức:</p>
+        $$ \prod_{m=1}^{p-1} (x - \omega^m) = x^{p-1} + x^{p-2} + \dots + x + 1 $$
+        <p>Thay $x = -1$ vào đồng nhất thức này:</p>
+        $$ \prod_{m=1}^{p-1} (-1 - \omega^m) = (-1)^{p-1} + (-1)^{p-2} + \dots + (-1) + 1 $$
+        <p>Vì $p$ là số nguyên tố lẻ, $p-1$ là số chẵn. Chuỗi vế phải có $p$ số hạng, đan dấu từ $+1$ đến $-1$ rồi kết thúc bằng $+1$. Tổng này bằng $1$.<br>
+        Rút dấu âm khỏi các nhân tử ở vế trái:</p>
+        $$ (-1)^{p-1} \prod_{m=1}^{p-1} (1 + \omega^m) = 1 $$
+        <p>Vì $p-1$ chẵn, $(-1)^{p-1} = 1$. Vậy $\prod_{m=1}^{p-1} (1 + \omega^m) = 1$.<br>
+        Do đó, $K = \prod_{m=1}^p (1 + \omega^m) = 2 \cdot 1 = 2$.<br>
+        Từ đó, $P(\omega^j) = 2$ với mọi $1 \le j \le p-1$.</p>
+
+        <p>Tổng hợp lại vào công thức PIE trên trường phức:</p>
+        $$ A = \frac{1}{p} \left[ P(1) + \sum_{j=1}^{p-1} P(\omega^j) \right] = \frac{1}{p} \left[ 2^p + (p-1) \cdot 2 \right] = \frac{2^p + 2p - 2}{p} $$
+        <p>Số lượng tập con thỏa mãn điều kiện bài toán được biểu diễn thông qua đa thức. Kết quả này đồng thời cung cấp một cách chứng minh cho định lý Fermat nhỏ: do $A$ là một số nguyên, ta suy ra $2^p - 2 \equiv 0 \pmod p$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

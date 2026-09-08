@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học bậc cao - Hàm Möbius và Kỹ thuật nghịch đảo đại số</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC BẬC CAO <br> HÀM MÖBIUS VÀ KỸ THUẬT NGHỊCH ĐẢO ĐẠI SỐ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: Phân tích Số học Hiện đại</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các biểu thức tính tổng chứa phép toán Ước chung lớn nhất ($\gcd$) thường gặp khó khăn nếu tính toán trực tiếp qua định nghĩa. Chuyên đề này giới thiệu Hàm Möbius và Công thức nghịch đảo tương ứng. Đây là một công cụ biến đổi đại số cho phép giao hoán thứ tự lấy tổng để thu gọn các biểu thức nhiều lớp về dạng cấu trúc nhân tính. Các bài toán tập trung vào việc biến đổi các hệ thức đếm thành những biểu thức tổ hợp thu gọn.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Công thức nghịch đảo Möbius là một công cụ của Số học giải tích bậc Đại học. Để học sinh THPT có thể nắm bắt và hiểu được chứng minh của nó, ta cần làm rõ thao tác đổi thứ tự trong các tổng kép (Double Summation) trên tập các ước số.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Ký hiệu tổng trên các ước)</div>
+        Ký hiệu $\sum_{d \mid n} f(d)$ mang ý nghĩa là tính tổng các giá trị $f(d)$ với $d$ chạy qua tất cả các ước số dương của $n$. <br>
+        Ví dụ: Với $n=6$, các ước dương là $1, 2, 3, 6$. Khi đó $\sum_{d \mid 6} f(d) = f(1) + f(2) + f(3) + f(6)$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Giao hoán thứ tự lấy tổng trên tập các ước)</div>
+        Với hai hàm số học $f, g$ và số nguyên dương $n$, ta luôn có đẳng thức:
+        $$ \sum_{d \mid n} \sum_{c \mid \frac{n}{d}} f(c) g(d) = \sum_{c \mid n} \sum_{d \mid \frac{n}{c}} f(c) g(d) $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét vế trái, chỉ số $d$ quét qua các ước của $n$, và với mỗi $d$ cố định, chỉ số $c$ quét qua các ước của $\frac{n}{d}$. Điều kiện $d \mid n$ và $c \mid \frac{n}{d}$ tương đương với việc tồn tại một số nguyên $k$ sao cho $n = d \cdot \left(c \cdot k\right)$, hay $n = c \cdot d \cdot k$.</p>
+        <p>Điều này có nghĩa là tập hợp các cặp $(c, d)$ trong tổng kép chính là tập hợp tất cả các cặp số nguyên dương sao cho tích $cd$ là một ước của $n$ ($cd \mid n$).</p>
+        <p>Do tính đối xứng của điều kiện $cd \mid n$, ta hoàn toàn có thể chọn $c$ trước: $c$ là một ước bất kỳ của $n$ ($c \mid n$), sau đó chọn $d$ sao cho $d$ là một ước của $\frac{n}{c}$ ($d \mid \frac{n}{c}$).</p>
+        <p>Thứ tự đếm này chính là vế phải của đẳng thức. Bổ đề được chứng minh. Kỹ thuật này sẽ được áp dụng trực tiếp trong Định lý 1.2.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hàm số học và Hàm Möbius)</div>
+        Một hàm số $f: \mathbb{Z}^+ \to \mathbb{C}$ được gọi là một hàm số học. Hàm số học $f$ (khác hàm không) được gọi là hàm nhân tính (multiplicative function) nếu $f(ab) = f(a)f(b)$ với mọi $a, b$ nguyên tố cùng nhau.
+        <br><br>
+        Hàm Möbius, ký hiệu là $\mu(n)$, là một hàm nhân tính được định nghĩa như sau:
+        $$ 
+        \mu(n) = 
+        \begin{cases} 
+        1 & \text{nếu } n = 1 \\
+        (-1)^k & \text{nếu } n = p_1 p_2 \dots p_k \text{ (tích của } k \text{ số nguyên tố phân biệt)} \\
+        0 & \text{nếu } n \text{ chia hết cho bình phương của một số nguyên tố}
+        \end{cases}
+        $$
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Tính chất tổng trên các ước của Hàm Möbius)</div>
+        Với mọi số nguyên dương $n \ge 1$, tổng các giá trị của hàm $\mu(d)$ khi $d$ quét qua tất cả các ước số dương của $n$ thỏa mãn hệ thức:
+        $$ \sum_{d \mid n} \mu(d) = 
+        \begin{cases} 
+        1 & \text{nếu } n = 1 \\
+        0 & \text{nếu } n > 1 
+        \end{cases}
+        $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Trường hợp $n = 1$, tập các ước số của $1$ chỉ có chính nó, nên $\sum_{d \mid 1} \mu(d) = \mu(1) = 1$.</p>
+        
+        <p>Trường hợp $n > 1$, theo Định lý cơ bản của Số học, $n$ có phân tích tiêu chuẩn: $n = p_1^{\alpha_1} p_2^{\alpha_2} \dots p_k^{\alpha_k}$ với $k \ge 1$.<br>
+        Một ước số $d$ của $n$ sẽ làm cho $\mu(d) \neq 0$ khi và chỉ khi $d$ không chia hết cho bất kỳ bình phương của một số nguyên tố nào (tức là $d$ là số không chứa ước chính phương - square-free).<br>
+        Do đó, các ước $d$ cho giá trị $\mu(d) \neq 0$ phải có dạng $d = p_{i_1} p_{i_2} \dots p_{i_r}$, trong đó các số nguyên tố được chọn từ tập $\{p_1, p_2, \dots, p_k\}$ và mỗi số nguyên tố xuất hiện với số mũ tối đa là 1.<br>
+        Số lượng các ước $d$ như vậy được tạo thành từ tích của chính xác $r$ số nguyên tố phân biệt là $\binom{k}{r}$.<br>
+        Với mỗi ước $d$ như vậy, theo định nghĩa, $\mu(d) = (-1)^r$.<br>
+        Lấy tổng tất cả các trường hợp có thể của $r$ từ $0$ (khi $d=1$) cho đến $k$:</p>
+        $$ \sum_{d \mid n} \mu(d) = \sum_{r=0}^k \binom{k}{r} (-1)^r $$
+        <p>Sử dụng công thức khai triển Nhị thức Newton cho biểu thức $(1 - 1)^k$:</p>
+        $$ 0 = (1 - 1)^k = \sum_{r=0}^k \binom{k}{r} 1^{k-r} (-1)^r = \sum_{r=0}^k \binom{k}{r} (-1)^r $$
+        <p>Từ đó suy ra $\sum_{d \mid n} \mu(d) = 0$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Công thức nghịch đảo Möbius - Möbius Inversion Formula)</div>
+        Cho $f$ và $g$ là hai hàm số học. Khi đó, hai đẳng thức sau là tương đương:
+        $$ g(n) = \sum_{d \mid n} f(d) \quad \text{với mọi } n \ge 1 $$
+        $$ f(n) = \sum_{d \mid n} \mu(d) g\left(\frac{n}{d}\right) \quad \text{với mọi } n \ge 1 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh chiều thuận ($\Rightarrow$). Giả sử $g(n) = \sum_{d \mid n} f(d)$.<br>
+        Ta thay định nghĩa của $g$ vào vế phải của phương trình thứ hai:</p>
+        $$ \sum_{d \mid n} \mu(d) g\left(\frac{n}{d}\right) = \sum_{d \mid n} \mu(d) \left( \sum_{c \mid \frac{n}{d}} f(c) \right) $$
+        <p>Áp dụng Định lý 0.1 về việc giao hoán hai dấu tổng trên tập các ước (điều kiện $d \mid n$ và $c \mid \frac{n}{d}$ tương đương với $cd \mid n$):</p>
+        $$ \sum_{c \mid n} \sum_{d \mid \frac{n}{c}} \mu(d) f(c) = \sum_{c \mid n} f(c) \left( \sum_{d \mid \frac{n}{c}} \mu(d) \right) $$
+        <p>Bây giờ, ta xét đại lượng nằm trong ngoặc đơn: $S(c) = \sum_{d \mid \frac{n}{c}} \mu(d)$.<br>
+        Theo Định lý 1.1, tổng $S(c) = 1$ khi và chỉ khi $\frac{n}{c} = 1$, tức là khi $c = n$.<br>
+        Với mọi $c \neq n$ (nghĩa là $\frac{n}{c} > 1$), tổng $S(c) = 0$.<br>
+        Do đó, trong toàn bộ tổng chạy theo $c$, chỉ có duy nhất một số hạng khác $0$ xuất hiện tại vị trí $c = n$.</p>
+        $$ \sum_{c \mid n} f(c) \cdot S(c) = f(n) \cdot 1 + 0 + 0 + \dots = f(n) $$
+        <p>Từ đó, ta có $f(n) = \sum_{d \mid n} \mu(d) g\left(\frac{n}{d}\right)$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Rút gọn tổng GCD đa biến)</div>
+        Cho số nguyên dương $n$. Rút gọn biểu thức tổng sau về dạng một tổng đơn chứa hàm Phi Euler ($\phi$):
+        $$ S(n) = \sum_{i=1}^n \sum_{j=1}^n \gcd(i, j) $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc tính toán biểu thức này thông qua định nghĩa sẽ yêu cầu xét toàn bộ các cặp $(i, j)$, điều này gặp khó khăn khi $n$ lớn. Ta sẽ dùng nghịch đảo Möbius để phân tích cấu trúc GCD.</p>
+        <p>Một hệ thức liên kết cơ bản là $m = \sum_{d \mid m} \phi(d)$.<br>
+        Áp dụng hệ thức này cho $m = \gcd(i, j)$:</p>
+        $$ \gcd(i, j) = \sum_{d \mid \gcd(i, j)} \phi(d) $$
+        <p>Điều kiện $d \mid \gcd(i, j)$ tương đương với việc $d$ phải đồng thời là ước của $i$ và là ước của $j$ ($d \mid i$ và $d \mid j$).<br>
+        Thay vào biểu thức tổng ban đầu $S(n)$:</p>
+        $$ S(n) = \sum_{i=1}^n \sum_{j=1}^n \sum_{\substack{d \mid i \\ d \mid j}} \phi(d) $$
+        <p>Ta tiến hành giao hoán thứ tự lấy tổng. Thay vì lặp theo $i$ và $j$ trước, ta đưa $d$ ra ngoài cùng.<br>
+        Biến $d$ có thể nhận bất kỳ giá trị nguyên dương nào từ $1$ đến $n$. Cố định một giá trị $d$, ta đếm xem $\phi(d)$ được cộng vào tổng bao nhiêu lần.<br>
+        Số lần $\phi(d)$ xuất hiện chính là số lượng cặp $(i, j)$ trong giới hạn $1 \le i \le n$ và $1 \le j \le n$ sao cho $d \mid i$ và $d \mid j$.<br>
+        Vì hai điều kiện $d \mid i$ và $d \mid j$ độc lập với nhau, số lượng cặp $(i, j)$ là tích của số lượng các số $i$ là bội của $d$ nhân với số lượng các số $j$ là bội của $d$.</p>
+        <p>Số lượng bội số của $d$ trong đoạn từ $1$ đến $n$ là $\left\lfloor \frac{n}{d} \right\rfloor$.<br>
+        Do đó, với mỗi $d$, $\phi(d)$ sẽ được nhân với $\left\lfloor \frac{n}{d} \right\rfloor \times \left\lfloor \frac{n}{d} \right\rfloor = \left\lfloor \frac{n}{d} \right\rfloor^2$.<br>
+        Biểu thức đóng của tổng được rút gọn thành:</p>
+        $$ S(n) = \sum_{d=1}^n \phi(d) \left\lfloor \frac{n}{d} \right\rfloor^2 $$
+        <p>Cấu trúc này cho phép giảm thiểu số lượng phép cộng từ bậc hai ($n^2$) xuống bậc nhất ($n$).</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Mở rộng khái niệm - Đếm cấu hình nguyên tố cùng nhau)</div>
+        Cho hai số nguyên dương $n$ và $k$. Tính số lượng các chuỗi số nguyên $(x_1, x_2, \dots, x_k)$ sao cho $1 \le x_i \le n$ với mọi $i = 1, \dots, k$, và $\gcd(x_1, x_2, \dots, x_k) = 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $f(d)$ là số lượng các chuỗi có độ dài $k$ thỏa mãn $\gcd(x_1, x_2, \dots, x_k) = d$. <br>
+        Bài toán yêu cầu chúng ta tìm giá trị của $f(1)$.<br>
+        Gọi $g(d)$ là số lượng các chuỗi có độ dài $k$ thỏa mãn $\gcd(x_1, x_2, \dots, x_k)$ là một bội số của $d$.<br>
+        Điều kiện $\gcd$ là bội của $d$ đồng nghĩa với việc mọi phần tử $x_i$ trong chuỗi đều phải là bội của $d$.<br>
+        Số lượng các bội của $d$ trong đoạn $[1, n]$ là $\left\lfloor \frac{n}{d} \right\rfloor$. <br>
+        Vì mỗi vị trí $x_i$ có thể được chọn độc lập, số lượng chuỗi như vậy là:</p>
+        $$ g(d) = \left\lfloor \frac{n}{d} \right\rfloor^k $$
+        <p>Mặt khác, xét theo định nghĩa, nếu $\gcd$ của chuỗi là một bội số của $d$, thì giá trị thực sự của $\gcd$ phải là $md$ với một số nguyên $m \ge 1$ nào đó.<br>
+        Do đó, $g(d)$ chính là tổng của tất cả các $f(md)$:</p>
+        $$ g(d) = \sum_{m=1}^{\left\lfloor \frac{n}{d} \right\rfloor} f(md) $$
+        <p>Đẳng thức này là một dạng mở rộng của Công thức nghịch đảo Möbius (thay vì tổng trên các ước, đây là tổng trên các bội số). <br>
+        Dạng nghịch đảo đối ngẫu của nó khẳng định rằng:</p>
+        $$ f(d) = \sum_{m=1}^{\left\lfloor \frac{n}{d} \right\rfloor} \mu(m) g(md) $$
+        <p>Thay $d = 1$ để tìm số lượng chuỗi nguyên tố cùng nhau toàn cục:</p>
+        $$ f(1) = \sum_{m=1}^n \mu(m) g(m) = \sum_{m=1}^n \mu(m) \left\lfloor \frac{n}{m} \right\rfloor^k $$
+        <p>Công thức trên tính số lượng cấu hình cần tìm. Việc đảo ngược quá trình đếm thông qua hàm $\mu$ giúp gỡ bỏ các ràng buộc chia hết.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian Master of Mathematics (RMM) - Đánh giá Tích Möbius)</div>
+        Rút gọn biểu thức tích sau đối với một số nguyên dương $n \ge 1$:
+        $$ P(n) = \prod_{d \mid n} d^{\mu(n/d)} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Để xử lý một biểu thức dạng tích, ta sử dụng hàm Logarit tự nhiên để chuyển đổi cấu trúc nhân tính thành cấu trúc cộng tính.<br>
+        Lấy $\ln$ hai vế của biểu thức:</p>
+        $$ \ln P(n) = \sum_{d \mid n} \mu\left(\frac{n}{d}\right) \ln d $$
+        <p>Để ý rằng tập hợp các ước $\{d : d \mid n\}$ hoàn toàn trùng khớp với tập hợp các ước $\left\{ \frac{n}{d} : d \mid n \right\}$.<br>
+        Sử dụng tính chất đối xứng này, ta đổi biến $c = \frac{n}{d} \implies d = \frac{n}{c}$. Khi $d$ chạy qua các ước của $n$, thì $c$ cũng quét qua toàn bộ các ước của $n$.</p>
+        $$ \ln P(n) = \sum_{c \mid n} \mu(c) \ln\left(\frac{n}{c}\right) = \sum_{c \mid n} \mu(c) (\ln n - \ln c) $$
+        <p>Tách tổng thành hai thành phần:</p>
+        $$ \ln P(n) = \ln n \left( \sum_{c \mid n} \mu(c) \right) - \sum_{c \mid n} \mu(c) \ln c $$
+        <p>Theo Định lý 1.1, tổng $\sum_{c \mid n} \mu(c)$ bằng $1$ nếu $n=1$ và bằng $0$ nếu $n > 1$.</p>
+
+        <p>Ta xét hai trường hợp của $n$:</p>
+        <p><strong>Trường hợp 1:</strong> $n = 1$.<br>
+        Thế trực tiếp vào định nghĩa: $P(1) = 1^{\mu(1)} = 1$.</p>
+
+        <p><strong>Trường hợp 2:</strong> $n > 1$.<br>
+        Lúc này, số hạng thứ nhất triệt tiêu, ta chỉ còn lại:</p>
+        $$ \ln P(n) = - \sum_{c \mid n} \mu(c) \ln c $$
+        <p>Biểu thức $\sum_{c \mid n} \mu(c) \ln c$ có liên hệ với Hàm von Mangoldt $\Lambda(n)$.<br>
+        Ta chứng minh giá trị của tổng này bằng cách khảo sát phân tích tiêu chuẩn của $n$.<br>
+        Giả sử $n = p_1^{\alpha_1} p_2^{\alpha_2} \dots p_k^{\alpha_k}$.</p>
+        
+        <ul>
+            <li> <em>Nếu $n$ có nhiều hơn một ước nguyên tố (tức là $k \ge 2$):</em><br>
+            Trong biểu thức $\sum_{c \mid n} \mu(c) \ln c$, các số hạng khác không chỉ xuất hiện khi $c$ là số không chứa ước chính phương.<br>
+            $c = p_{i_1} p_{i_2} \dots p_{i_r}$, với $\mu(c) = (-1)^r$.<br>
+            Khi đó $\ln c = \ln p_{i_1} + \dots + \ln p_{i_r}$.<br>
+            Với mỗi số nguyên tố $p_i$ cố định, ta đếm xem $\ln p_i$ xuất hiện bao nhiêu lần trong tổng với dấu tương ứng. $\ln p_i$ xuất hiện trong các số hạng $\mu(c)$ mà $c$ chứa thừa số $p_i$. Đặt $c = p_i \cdot c'$. Biến $c'$ chạy qua các ước không chứa ước chính phương của $\frac{n}{p_i}$.<br>
+            Số lượng cách chọn $c'$ có độ dài $s$ là $\binom{k-1}{s}$. Dấu của $\mu(c)$ sẽ là $(-1)^{s+1}$.<br>
+            Tổng các hệ số đi kèm với $\ln p_i$ là:
+            $$ \sum_{s=0}^{k-1} \binom{k-1}{s} (-1)^{s+1} = - (1 - 1)^{k-1} $$
+            Vì $k \ge 2$, số mũ $k-1 \ge 1$, nên biểu thức $(1 - 1)^{k-1} = 0$.<br>
+            Suy ra, hệ số của mọi $\ln p_i$ đều bằng 0, dẫn đến $\ln P(n) = 0 \implies P(n) = 1$.</li>
+            
+            <li> <em>Nếu $n$ chỉ có duy nhất một ước nguyên tố (tức là $n = p^\alpha$ với $\alpha \ge 1$):</em><br>
+            Các ước $c$ để $\mu(c) \neq 0$ chỉ là $c=1$ và $c=p$.<br>
+            Khi đó:
+            $$ - \sum_{c \mid p^\alpha} \mu(c) \ln c = - ( \mu(1)\ln 1 + \mu(p)\ln p ) = - ( 1 \cdot 0 + (-1) \cdot \ln p ) = \ln p $$
+            Từ $\ln P(n) = \ln p$, ta suy ra $P(n) = p$.</li>
+        </ul>
+
+        <p>Kết luận:</p>
+        $$ 
+        P(n) = 
+        \begin{cases} 
+        p & \text{nếu } n = p^\alpha \text{ với } \alpha \ge 1 \text{ (lũy thừa của một số nguyên tố)} \\
+        1 & \text{trong các trường hợp còn lại}
+        \end{cases}
+        $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

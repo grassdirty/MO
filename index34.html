@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Rời rạc - Lý thuyết trò chơi, trò chơi Nim và Định lý Sprague-Grundy</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> LÝ THUYẾT TRÒ CHƠI, TRÒ CHƠI NIM VÀ ĐỊNH LÝ SPRAGUE-GRUNDY</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp Rời rạc</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát trạng thái thắng thua của các trò chơi đối kháng rời rạc là một chủ đề quan trọng trong Tổ hợp. Chuyên đề này hình thức hóa lớp các "trò chơi công bằng" (Impartial Games). Bằng việc định nghĩa phép cộng Nim trên hệ cơ số 2 và hàm thiết khuyết tối thiểu (MEX), chúng ta thiết lập và chứng minh Định lý Bouton và Định lý Sprague-Grundy. Đây là nền tảng đại số giúp quy đổi cấu trúc trò chơi về một hệ thống thặng dư duy nhất.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết trò chơi đối kháng (Game Theory) và phép toán nhị phân là những kiến thức thường được giảng dạy ở cấp Đại học hoặc trong các chuyên đề Tin học. Để các bạn học sinh THPT có thể nắm bắt và hiểu rõ các chứng minh bên dưới, chúng ta cần làm quen với hai khái niệm nền tảng sau: Phép XOR (Cộng Nim) và Định lý Zermelo.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Phép cộng Nim / Phép XOR nhị phân)</div>
+        Phép cộng Nim, ký hiệu là $\oplus$ (trong Tin học gọi là phép XOR - Exclusive OR), là một phép toán thao tác trên các bit (0 và 1) của biểu diễn nhị phân của hai số nguyên.<br>
+        Quy tắc trên từng bit: $0 \oplus 0 = 0$, $0 \oplus 1 = 1$, $1 \oplus 0 = 1$, $1 \oplus 1 = 0$.<br>
+        <strong>Tính chất:</strong>
+        <ul>
+            <li> Tính giao hoán: $a \oplus b = b \oplus a$</li>
+            <li> Tính kết hợp: $(a \oplus b) \oplus c = a \oplus (b \oplus c)$</li>
+            <li> Phần tử trung hòa: $a \oplus 0 = a$</li>
+            <li> Tính triệt tiêu (Tự nghịch đảo): $a \oplus a = 0$ với mọi số nguyên $a$. Tính chất này rất quan trọng, nó có nghĩa là nếu ta lấy $a \oplus b \oplus a$, kết quả sẽ trả về đúng $b$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Định lý Zermelo cho trò chơi hữu hạn)</div>
+        Trong một trò chơi hữu hạn, đối kháng 2 người, thông tin hoàn hảo (cả hai người đều biết toàn bộ trạng thái của trò chơi) và không có yếu tố ngẫu nhiên hay kết quả hòa, luôn tồn tại một chiến thuật tất thắng cho một trong hai người chơi.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta có thể chứng minh định lý này bằng phương pháp quy nạp ngược (Backward Induction) trên cây trò chơi.<br>
+        Vì trò chơi là hữu hạn, cây trạng thái biểu diễn tất cả các diễn biến có thể xảy ra của trò chơi là một đồ thị có hướng không có chu trình (DAG) và có độ sâu hữu hạn. Các đỉnh không có cạnh đi ra (đỉnh lá) tương ứng với trạng thái kết thúc trò chơi.</p>
+        <p>Theo quy tắc, tại mỗi đỉnh lá, trạng thái đó được gán nhãn là "Thắng" hoặc "Thua" cho người vừa thực hiện nước đi để đến đỉnh đó.<br>
+        Xét các đỉnh cách đỉnh lá 1 bước. Một người chơi ở đỉnh này có thể chọn nước đi. Nếu tồn tại ít nhất một cạnh nối từ đỉnh hiện tại đến một đỉnh lá có nhãn "Thua" (nghĩa là đối thủ sẽ thua), người chơi sẽ chọn cạnh đó, và đỉnh hiện tại được gán nhãn "Thắng". Nếu mọi cạnh đều dẫn đến đỉnh lá "Thắng" (đối thủ sẽ thắng), đỉnh hiện tại bị gán nhãn "Thua".</p>
+        <p>Áp dụng quy trình lùi dần từ các đỉnh lá lên tới đỉnh gốc (trạng thái bắt đầu của trò chơi), mọi đỉnh đều sẽ được phân loại thành "Thắng" hoặc "Thua" một cách xác định. <br>
+        Tại đỉnh gốc, nếu nó mang nhãn "Thắng", người đi trước có chiến thuật tất thắng. Nếu nó mang nhãn "Thua", người đi sau có chiến thuật tất thắng. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Trò chơi công bằng và Tổng Nim)</div>
+        <ul>
+            <li> <strong>Trò chơi công bằng (Impartial Game):</strong> Là trò chơi thỏa mãn: (1) Hai người chơi luân phiên thực hiện nước đi; (2) Tập hợp các nước đi hợp lệ từ một trạng thái bất kỳ là như nhau đối với cả hai người chơi; (3) Trò chơi chắc chắn kết thúc sau một số hữu hạn bước; (4) Người không thể thực hiện nước đi hợp lệ tiếp theo là người thua cuộc (Normal Play Convention).</li>
+            <li> <strong>Tổng Nim (Nim-sum):</strong> Cho các số nguyên không âm $x_1, x_2, \dots, x_n$. Tổng Nim của chúng, ký hiệu là $x_1 \oplus x_2 \oplus \dots \oplus x_n$, được thực hiện bằng phép cộng modulo 2 trên từng hàng bit.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Bouton - Giải quyết Trò chơi Nim cơ bản)</div>
+        Trò chơi Nim cơ bản gồm $n$ đống sỏi có kích thước $x_1, x_2, \dots, x_n$. Mỗi bước, một người chơi được phép chọn đúng một đống sỏi và lấy ra từ đó một số lượng sỏi bất kỳ (ít nhất 1 viên). <br>
+        Trạng thái $(x_1, x_2, \dots, x_n)$ là một <strong>trạng thái thua</strong> (người đến lượt đi sẽ thua nếu đối thủ chơi tối ưu) khi và chỉ khi tổng Nim của tất cả các đống sỏi bằng 0:
+        $$ S = x_1 \oplus x_2 \oplus \dots \oplus x_n = 0 $$
+        Nếu $S \neq 0$, đó là một <strong>trạng thái thắng</strong> (tồn tại ít nhất một nước đi dẫn đến trạng thái thua cho đối thủ).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Để chứng minh điều kiện cần và đủ cho trạng thái thắng/thua, ta cần chứng minh hai mệnh đề:<br>
+        1) Từ một trạng thái có $S = 0$, mọi nước đi hợp lệ đều dẫn đến một trạng thái có $S \neq 0$.<br>
+        2) Từ một trạng thái có $S \neq 0$, luôn tồn tại ít nhất một nước đi hợp lệ dẫn đến một trạng thái có $S = 0$.</p>
+
+        <p><strong>Chứng minh mệnh đề 1:</strong> Giả sử ta đang ở trạng thái có $x_1 \oplus \dots \oplus x_n = 0$. Một nước đi hợp lệ bao gồm việc chọn một đống $x_i$ và biến nó thành $x_i'$ với $0 \le x_i' \lt x_i$. <br>
+        Tổng Nim mới của trò chơi sẽ là:</p>
+        $$ S' = x_1 \oplus \dots \oplus x_i' \oplus \dots \oplus x_n $$
+        <p>Sử dụng tính chất $x_i \oplus x_i = 0$, ta viết lại $S'$ dưới dạng:</p>
+        $$ S' = (x_1 \oplus \dots \oplus x_i \oplus \dots \oplus x_n) \oplus x_i \oplus x_i' = S \oplus x_i \oplus x_i' = 0 \oplus x_i \oplus x_i' = x_i \oplus x_i' $$
+        <p>Vì $x_i' \lt x_i$, hai số này khác nhau ($x_i \neq x_i'$). Do đó tổng Nim của chúng không thể bằng 0. Vậy $S' = x_i \oplus x_i' \neq 0$. Mệnh đề 1 đúng.</p>
+
+        <p><strong>Chứng minh mệnh đề 2:</strong> Giả sử ta đang ở trạng thái có $S = x_1 \oplus \dots \oplus x_n \neq 0$. <br>
+        Xét biểu diễn cơ số 2 của $S$. Gọi $2^k$ là lũy thừa lớn nhất của 2 có hệ số bằng 1 trong biểu diễn của $S$ (bit cao nhất của $S$ bằng 1 nằm ở vị trí $k$).<br>
+        Bởi vì $S$ là tổng Nim của các $x_j$, phải có ít nhất một đống sỏi $x_i$ mà biểu diễn cơ số 2 của nó cũng có hệ số 1 ở vị trí $k$ (nếu tất cả đều là 0, tổng Nim tại vị trí đó không thể là 1).<br>
+        Xét đại lượng $x_i' = x_i \oplus S$. <br>
+        Vì cả $x_i$ và $S$ đều có hệ số 1 ở vị trí $2^k$, khi thực hiện phép cộng modulo 2, hệ số tại vị trí $2^k$ của $x_i'$ sẽ bằng 0. Các vị trí lớn hơn $2^k$ của $S$ đều bằng 0, nên chúng giữ nguyên trong $x_i$. Từ đó, đại lượng $x_i'$ nhỏ hơn $x_i$.<br>
+        Do $x_i' \lt x_i$, việc lấy sỏi từ đống $x_i$ để chỉ còn lại $x_i'$ viên là một nước đi hợp lệ (số sỏi cần lấy ra là $x_i - x_i' \gt 0$).<br>
+        Sau khi thực hiện nước đi này, tổng Nim mới của trò chơi sẽ là:</p>
+        $$ S' = S \oplus x_i \oplus x_i' = S \oplus x_i \oplus (x_i \oplus S) = (S \oplus S) \oplus (x_i \oplus x_i) = 0 \oplus 0 = 0 $$
+        <p>Vậy ta luôn có thể chủ động tạo ra trạng thái có tổng Nim bằng 0 cho đối thủ. Mệnh đề 2 đúng.<br>
+        Kết hợp lại, định lý Bouton được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.2 (Hàm MEX - Minimum Excluded)</div>
+        Cho một tập hợp $A$ gồm các số nguyên không âm. Hàm $\text{mex}(A)$ trả về số nguyên không âm <strong>nhỏ nhất</strong> không thuộc tập hợp $A$. <br>
+        Ví dụ: $\text{mex}(\{0, 1, 3\}) = 2$, $\text{mex}(\emptyset) = 0$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Sprague-Grundy)</div>
+        Mọi trạng thái $x$ của một trò chơi công bằng hữu hạn đều tương đương với một đống Nim duy nhất có kích thước $G(x)$, được gọi là giá trị Grundy của trạng thái đó. Hàm Grundy được định nghĩa đệ quy như sau:
+        $$ G(x) = \text{mex}(\{ G(y) \mid y \text{ là một trạng thái có thể đến được từ } x \text{ qua } 1 \text{ bước hợp lệ} \}) $$
+        Hệ quả: Nếu một trò chơi là sự kết hợp của $k$ trò chơi độc lập với các trạng thái lần lượt là $x_1, x_2, \dots, x_k$, thì giá trị Grundy của toàn bộ hệ thống là:
+        $$ G(x_{\text{hệ thống}}) = G(x_1) \oplus G(x_2) \oplus \dots \oplus G(x_k) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Trọng tâm của chứng minh nằm ở hệ quả: Giá trị của trò chơi kết hợp bằng tổng Nim của các giá trị thành phần. Ta chứng minh cho trường hợp kết hợp 2 trò chơi $X$ và $Y$ (kết quả mở rộng cho $k$ trò chơi bằng quy nạp).<br>
+        Cho trạng thái $x$ thuộc trò chơi $X$ và $y$ thuộc trò chơi $Y$. Ta cần chứng minh:</p>
+        $$ G(x, y) = G(x) \oplus G(y) $$
+        <p>Theo định nghĩa của hàm MEX, để chứng minh giá trị của trạng thái $(x, y)$ là $S = G(x) \oplus G(y)$, ta phải chứng minh hai điều:</p>
+        <ol>
+            <li>Từ $(x, y)$, ta <strong>không thể</strong> thực hiện một nước đi để đến một trạng thái có giá trị Grundy bằng $S$.</li>
+            <li>Với mọi số nguyên $k$ sao cho $0 \le k \lt S$, từ $(x, y)$, ta <strong>luôn có thể</strong> thực hiện một nước đi hợp lệ để đến một trạng thái có giá trị Grundy bằng $k$.</li>
+        </ol>
+
+        <p><strong>Chứng minh điều 1:</strong> Giả sử ta có thể đi từ $(x, y)$ đến một trạng thái $(x', y)$ (người chơi chọn đi trong trò chơi $X$) sao cho $G(x') \oplus G(y) = S$.<br>
+        Tuy nhiên, $S = G(x) \oplus G(y)$. Do đó:</p>
+        $$ G(x') \oplus G(y) = G(x) \oplus G(y) \implies G(x') = G(x) $$
+        <p>Nhưng theo định nghĩa $G(x) = \text{mex}(\dots)$, mọi trạng thái $x'$ có thể đến trực tiếp từ $x$ đều phải có giá trị Grundy <strong>khác</strong> $G(x)$. Mâu thuẫn. Lập luận tương tự nếu người chơi đi trong trò chơi $Y$.</p>
+
+        <p><strong>Chứng minh điều 2:</strong> Xét một số nguyên $k \lt S = G(x) \oplus G(y)$. Đặt $d = S \oplus k$. Vì $k \lt S$, tồn tại lũy thừa cao nhất $2^m$ trong biểu diễn của $d$ sao cho $S$ cũng có hệ số 1 ở vị trí $2^m$.<br>
+        Vì $S = G(x) \oplus G(y)$, một trong hai số $G(x)$ hoặc $G(y)$ phải có hệ số 1 ở vị trí $2^m$. Giả sử đó là $G(x)$.<br>
+        Khi đó, giá trị $G(x) \oplus d \lt G(x)$.<br>
+        Mặt khác, $G(x) \oplus d = G(x) \oplus S \oplus k = G(x) \oplus G(x) \oplus G(y) \oplus k = G(y) \oplus k$.<br>
+        Vì $G(x) \oplus d \lt G(x)$, theo định nghĩa của hàm $\text{mex}$ tại đỉnh $x$, phải tồn tại một nước đi hợp lệ từ $x$ đến một trạng thái $x'$ sao cho $G(x') = G(x) \oplus d$.<br>
+        Trạng thái mới của trò chơi hệ thống sẽ là $(x', y)$. Giá trị Grundy của trạng thái này (giả định theo quy nạp) là:</p>
+        $$ G(x', y) = G(x') \oplus G(y) = (G(x) \oplus d) \oplus G(y) = (G(y) \oplus k) \oplus G(y) = k $$
+        <p>Như vậy, ta luôn có thể đến được mọi giá trị $k \lt S$.<br>
+        Từ điều 1 và điều 2, ta kết luận $\text{mex}$ của tất cả các trạng thái liền kề chính là $S$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Nim Bậc thang - Staircase Nim)</div>
+        Có $n$ bậc thang được đánh số từ $1$ đến $n$. Trên bậc thứ $i$ có $a_i$ đồng xu. Hai người chơi luân phiên thực hiện nước đi. Mỗi bước, một người chọn một bậc thang $i$ ($1 \le i \le n$) chứa ít nhất 1 đồng xu, và di chuyển một số lượng đồng xu (tùy ý, ít nhất 1) từ bậc $i$ xuống bậc $i-1$. Các đồng xu được di chuyển xuống bậc 0 coi như bị loại khỏi trò chơi. Người không thể thực hiện nước đi là người thua. Chứng minh rằng trạng thái của trò chơi chỉ phụ thuộc vào các bậc thang mang <strong>chỉ số lẻ</strong>.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta định nghĩa một hàm đánh giá cho trò chơi dựa trên phép cộng Nim của các bậc thang lẻ:</p>
+        $$ S = a_1 \oplus a_3 \oplus a_5 \oplus \dots $$
+        <p>Ta sẽ chứng minh rằng trò chơi này tương đương với một trò chơi Nim cơ bản, trong đó các đống sỏi chính là các bậc thang có chỉ số lẻ.</p>
+
+        <p>Xét một người chơi đối mặt với trạng thái $S \neq 0$. Theo Định lý Bouton (Định lý 1.1), người chơi này luôn có thể khôi phục trạng thái về $S = 0$ bằng cách thực hiện một nước đi trên các "đống sỏi" lẻ.<br>
+        Nước đi này tương ứng với việc chọn một bậc thang lẻ $2k+1$, và di chuyển một số lượng đồng xu thích hợp xuống bậc chẵn kề dưới là $2k$. Việc này làm giảm số lượng đồng xu ở bậc lẻ $2k+1$, đưa tổng $S$ về đúng bằng 0. (Đồng xu chuyển sang bậc chẵn không ảnh hưởng đến tổng $S$).</p>
+
+        <p>Bây giờ xét người chơi đối mặt với trạng thái $S = 0$. Bất kỳ nước đi nào của họ cũng đều chia thành 2 loại:</p>
+        <ul>
+            <li><strong>Loại 1:</strong> Di chuyển từ một bậc lẻ $2k+1$ xuống bậc chẵn $2k$. Điều này trực tiếp làm thay đổi số lượng đồng xu ở bậc lẻ, khiến tổng Nim mới $S'$ khác 0 (do $S=0$).</li>
+            <li><strong>Loại 2:</strong> Di chuyển $c$ đồng xu từ một bậc chẵn $2k$ xuống bậc lẻ $2k-1$. Mặc dù nước đi này làm thay đổi số đồng xu ở bậc lẻ $2k-1$ (từ đó phá vỡ $S=0$), nhưng đối thủ ngay lập tức có thể sử dụng một "chiến thuật sao chép" (strategy stealing/mirroring): Đối thủ chỉ cần đẩy chính xác $c$ đồng xu đó từ bậc $2k-1$ xuống bậc $2k-2$. Kết quả là số lượng đồng xu ở bậc lẻ $2k-1$ được khôi phục về trạng thái như cũ, và tổng $S$ lại trở về $0$.</li>
+        </ul>
+
+        <p>Bằng lập luận này, các bậc thang chẵn chỉ đóng vai trò là những "trạm trung chuyển". Bất kỳ tác động nào lên bậc chẵn (đẩy xuống bậc lẻ) đều có thể bị vô hiệu hóa ngay lập tức bởi đối thủ (đẩy tiếp số đồng xu đó xuống bậc chẵn tiếp theo). <br>
+        Do đó, kết quả trò chơi được quyết định bởi giá trị Nim của các bậc lẻ:</p>
+        $$ S = a_1 \oplus a_3 \oplus a_5 \oplus \dots $$
+        <p>Trạng thái là thua khi $S = 0$ và thắng khi $S \neq 0$. Kết quả này cho thấy việc nhận diện cấu trúc bất biến giúp đơn giản hóa các phần tử của trò chơi.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Trò chơi phân tách - Phép toán cấu trúc tập hợp)</div>
+        Cho $N$ đống sỏi. Mỗi bước, một người chơi được phép chọn một đống sỏi có kích thước lớn hơn 1, loại bỏ đống sỏi đó, và chia một đống sỏi khác bất kỳ (có kích thước $\gt 0$) thành hai đống sỏi nhỏ hơn khác rỗng. Người không thể thực hiện nước đi sẽ thua. Đánh giá tính chất thắng thua của trạng thái $(x_1, x_2, \dots, x_N)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Thay vì cố gắng gán giá trị Grundy cho từng đống sỏi, ta quan sát sự thay đổi của toàn bộ tập hợp qua mỗi nước đi.<br>
+        Gọi trạng thái của trò chơi là tập hợp các kích thước đống sỏi $X = \{x_1, x_2, \dots, x_N\}$.<br>
+        Một nước đi hợp lệ gồm 2 thao tác:</p>
+        <ol>
+            <li>Xóa một đống sỏi $a \in X$ ($a \ge 2$).</li>
+            <li>Chọn một đống sỏi $b \in X$ ($b \neq a$) và tách $b$ thành $b_1, b_2$ sao cho $b_1 + b_2 = b$ và $b_1, b_2 \ge 1$.</li>
+        </ol>
+        <p>Số lượng đống sỏi trong trò chơi sau một nước đi là: $N_{\text{mới}} = N - 1 (\text{xóa } a) - 1 (\text{xóa } b) + 2 (\text{tạo } b_1, b_2) = N$.<br>
+        Vậy tổng số lượng đống sỏi luôn là một hằng số không đổi $N$.</p>
+
+        <p>Bây giờ, ta xét tổng kích thước của tất cả các đống sỏi. Gọi $M = \sum x_i$.<br>
+        Sau một nước đi, đống $a$ bị mất đi, đống $b$ được tách thành $b_1, b_2$ (tổng $b_1+b_2$ vẫn bằng $b$). <br>
+        Tổng kích thước mới là: $M_{\text{mới}} = M - a$.<br>
+        Vì điều kiện của trò chơi là $a \ge 2$, nên qua mỗi bước, tổng số lượng sỏi của toàn hệ thống sẽ giảm đi một lượng ít nhất là 2.</p>
+        <p>Trò chơi chỉ kết thúc khi không thể chọn được đống sỏi $a \ge 2$, tức là khi tất cả $N$ đống sỏi đều có kích thước là 1.<br>
+        Lúc này, tổng kích thước của $N$ đống sỏi ở trạng thái kết thúc là đúng bằng $N$.</p>
+        <p>Thực chất, thao tác chia đống $b$ thành $b_1, b_2$ không làm thay đổi tổng số sỏi, nó chỉ nhằm tạo ra thêm các đống sỏi mới để duy trì số lượng đống là $N$. Tổng sỏi bị loại bỏ chính là $a$.<br>
+        Trò chơi tương đương với việc: ở mỗi bước, giảm tổng số sỏi đi một lượng $a \ge 2$ với điều kiện tổng số sỏi không được nhỏ hơn $N$.</p>
+        <p>Sự phân tích này chứng tỏ tính độc lập của các thao tác. Từ đây, bài toán có thể được đánh giá dựa trên khoảng cách (chênh lệch) từ trạng thái hiện tại $\sum x_i$ đến trạng thái kết thúc $N$ bằng phân tích chẵn lẻ hoặc các mô hình đơn giản hơn.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Chiến thuật đánh cắp (Strategy Stealing) - Đếm không kiến thiết)</div>
+        Cho một bảng chữ nhật có kích thước $m \times n$. Ở góc dưới cùng bên phải có một ô bị đánh dấu là "độc". Hai người chơi luân phiên chọn một ô chưa bị ăn, và phải ăn toàn bộ các ô nằm ở phía trên và bên trái của ô được chọn (bao gồm cả ô đó). Người nào phải ăn ô "độc" sẽ thua cuộc. Chứng minh rằng người đi trước luôn có chiến thuật để giành chiến thắng (với $m, n \gt 1$).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trò chơi này (thường gọi là Chomp) là một trò chơi hữu hạn, thông tin hoàn hảo và không có kết quả hòa. Theo định lý Zermelo (Định lý 0.1), một trong hai người chơi phải có chiến thuật tất thắng. <br>
+        Ta sẽ chứng minh người đi trước có chiến thuật thắng bằng phương pháp phản chứng.</p>
+
+        <p>Giả sử người đi sau mới là người có chiến thuật tất thắng.<br>
+        Ở nước đi đầu tiên, người đi trước chọn ô ở góc trên cùng bên trái (ô $(1,1)$). Nước đi này chỉ loại bỏ đúng một ô duy nhất là ô $(1,1)$.<br>
+        Sau nước đi này, bảng còn lại một hình dạng bị khuyết 1 ô. Gọi trạng thái này là $T$.<br>
+        Theo giả thiết phản chứng, từ trạng thái $T$, người đi sau có thể tìm ra một nước đi (chọn một ô $(r, c)$ nào đó) đưa bảng về trạng thái $T'$, và từ $T'$ người đi sau chắc chắn thắng.</p>
+
+        <p>Tuy nhiên, xét lại quyền quyết định của người đi trước. <br>
+        Thay vì ăn ô $(1,1)$ ở nước đi đầu tiên, người đi trước hoàn toàn có thể trực tiếp chọn ăn ô $(r, c)$. <br>
+        Khi chọn ăn ô $(r, c)$, toàn bộ các ô phía trên và bên trái nó sẽ bị ăn, <strong>bao gồm cả ô $(1,1)$</strong>. <br>
+        Nước đi này sẽ trực tiếp tạo ra trạng thái $T'$ ngay sau lượt đầu tiên của người đi trước.<br>
+        Lúc này, người đi sau phải đối mặt với trạng thái $T'$, vốn là một trạng thái dẫn đến cái thua.<br>
+        Điều này mâu thuẫn với giả thiết người đi sau có chiến thuật tất thắng từ đầu.</p>
+        <p>Sự mâu thuẫn này chứng minh rằng giả thiết phản chứng là sai. Vậy người đi sau không thể có chiến thuật tất thắng. <br>
+        Vì trò chơi không có kết quả hòa, người đi trước bắt buộc phải là người có chiến thuật tất thắng.</p>
+        <p>Đây là một chứng minh không kiến thiết về sự tồn tại của chiến thuật dựa trên cấu trúc bao hàm của tập hợp các nước đi.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

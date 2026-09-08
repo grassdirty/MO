@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Rời rạc - Phương pháp Bất biến, Đơn biến và Hệ thống trạng thái</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> PHƯƠNG PHÁP BẤT BIẾN, ĐƠN BIẾN VÀ HỆ THỐNG TRẠNG THÁI</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các quá trình biến đổi lặp đi lặp lại trong một hệ thống rời rạc là cơ sở của nhiều bài toán tối ưu và mô phỏng. Chuyên đề này trình bày phương pháp Bất biến (Invariant) và Đơn biến (Monovariant / Hàm thế năng). Bằng cách trừu tượng hóa các quá trình thành các hệ động lực học rời rạc, ta thiết lập các định lý về sự hội tụ, tính bảo toàn cấu trúc sai phân và các dạng toàn phương bất biến. Các bài toán ứng dụng kết hợp tư duy phân tích trạng thái (State-space) với các chuẩn mực chứng minh toán học.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Các khái niệm về "Đa tập hợp" và "Hệ động lực học rời rạc" thường được giảng dạy ở bậc Đại học. Để học sinh THPT có thể nắm bắt dễ dàng, dưới đây là định nghĩa và diễn giải trực quan cho các công cụ này:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Đa tập hợp - Multiset)</div>
+        Trong Toán học cơ bản, "Tập hợp" (Set) không chứa các phần tử lặp lại (ví dụ $\{1, 2, 2\}$ được coi là $\{1, 2\}$). Ngược lại, <strong>Đa tập hợp</strong> (Multiset) là một cấu trúc cho phép các phần tử lặp lại, và số lần lặp lại được tính vào cấu trúc của nó. <br>
+        Ví dụ: Đa tập hợp $A = \{1, 1, 2\}$ khác với đa tập hợp $B = \{1, 2, 2\}$. Thứ tự các phần tử trong đa tập hợp không quan trọng (nghĩa là $\{1, 1, 2\} = \{1, 2, 1\}$). Khái niệm này được dùng để đánh giá tính bất biến của cấu trúc sai phân (Định lý 1.2).
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Nguyên lý Dirichlet trên tập hữu hạn)</div>
+        Nếu một quá trình tạo ra một <strong>dãy vô hạn</strong> các trạng thái (số bước biến đổi kéo dài mãi mãi), nhưng tập hợp chứa tất cả các trạng thái có thể xảy ra lại là <strong>hữu hạn</strong>, thì chắc chắn phải có ít nhất một trạng thái bị lặp lại vô hạn lần trong dãy đó. Định lý này là nền tảng để chứng minh tính hội tụ (Định lý 1.1).
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Trạng thái, Bất biến và Đơn biến)</div>
+        <ul>
+            <li> <strong>Hệ thống trạng thái:</strong> Một tập hợp $S$ các trạng thái có thể có của một hệ thống, cùng với một quy tắc biến đổi $T: S \to S$. Quá trình biến đổi tạo ra một dãy trạng thái $s_0, s_1, s_2, \dots$ sao cho $s_{k+1} = T(s_k)$.</li>
+            <li> <strong>Đại lượng Bất biến (Invariant):</strong> Một hàm số $I: S \to \mathbb{R}$ được gọi là bất biến nếu giá trị của nó không thay đổi qua bất kỳ phép biến đổi nào. Tức là $I(s_{k+1}) = I(s_k)$ với mọi $k$. Nếu $I(s_{\text{ban đầu}}) \neq I(s_{\text{đích}})$, ta kết luận không thể biến đổi trạng thái ban đầu thành trạng thái đích.</li>
+            <li> <strong>Đại lượng Đơn biến (Monovariant / Potential Function):</strong> Một hàm số $M: S \to \mathbb{R}$ được gọi là đơn biến nếu nó tăng ngặt (hoặc giảm ngặt) qua mỗi phép biến đổi. Tức là $M(s_{k+1}) \gt M(s_k)$ (hoặc $\lt M(s_k)$) với mọi $k$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Hội tụ hữu hạn - Termination Theorem)</div>
+        Cho một hệ thống trạng thái $S$ hữu hạn. Nếu tồn tại một đại lượng đơn biến $M$ trên $S$, thì quá trình biến đổi trạng thái phải kết thúc (đạt đến một trạng thái không thể biến đổi tiếp) sau một số hữu hạn bước.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử phản chứng rằng quá trình biến đổi không bao giờ kết thúc. <br>
+        Khi đó, hệ thống sẽ sinh ra một dãy trạng thái vô hạn: $s_0, s_1, s_2, \dots$<br>
+        Vì tập hợp tất cả các trạng thái $S$ là hữu hạn, theo Nguyên lý Dirichlet (Định lý 0.1), trong một dãy vô hạn, phải tồn tại ít nhất một trạng thái lặp lại.<br>
+        Giả sử trạng thái lặp lại đó xuất hiện tại bước $i$ và bước $j$ (với $i \lt j$). Tức là $s_i = s_j$.</p>
+        <p>Mặt khác, theo giả thiết có tồn tại một đại lượng đơn biến $M$ (giả sử là giảm ngặt). Do tính chất giảm ngặt qua mỗi bước, ta có chuỗi bất đẳng thức:</p>
+        $$ M(s_i) \gt M(s_{i+1}) \gt M(s_{i+2}) \gt \dots \gt M(s_j) $$
+        <p>Từ đó suy ra $M(s_i) \gt M(s_j)$.<br>
+        Tuy nhiên, vì $s_i = s_j$, giá trị của hàm số $M$ tại hai trạng thái này phải bằng nhau, tức là $M(s_i) = M(s_j)$.</p>
+        <p>Sự mâu thuẫn ($M(s_i) \gt M(s_i)$) chứng tỏ giả thiết phản chứng sai. Quá trình biến đổi không thể kéo dài vô hạn và phải kết thúc.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tính Bất biến của Cấu trúc Sai phân)</div>
+        Xét một dãy số $A = (a_1, a_2, \dots, a_n)$. Ta định nghĩa dãy sai phân kề là đa tập hợp $\Delta = \{\Delta_1, \Delta_2, \dots, \Delta_{n-1}\}$ với $\Delta_k = a_{k+1} - a_k$.<br>
+        Nếu áp dụng phép biến đổi $a_i \mapsto a_{i-1} + a_{i+1} - a_i$ (đối với một chỉ số $1 \lt i \lt n$), thì đa tập hợp $\Delta$ là một đại lượng bất biến. Cụ thể, phép biến đổi này chỉ hoán vị hai phần tử $\Delta_{i-1}$ và $\Delta_i$ trong đa tập.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét trạng thái trước phép biến đổi tại chỉ số $i$. Hai sai phân liên quan đến $a_i$ là:</p>
+        $$ \Delta_{i-1} = a_i - a_{i-1} $$
+        $$ \Delta_i = a_{i+1} - a_i $$
+        <p>Thực hiện phép biến đổi, giá trị mới của $a_i$ là $a_i' = a_{i-1} + a_{i+1} - a_i$. Các giá trị khác của dãy $A$ giữ nguyên.<br>
+        Ta tính lại hai sai phân mới $\Delta_{i-1}'$ và $\Delta_i'$ do sự thay đổi của $a_i'$:</p>
+        $$ \Delta_{i-1}' = a_i' - a_{i-1} = (a_{i-1} + a_{i+1} - a_i) - a_{i-1} = a_{i+1} - a_i = \Delta_i $$
+        $$ \Delta_i' = a_{i+1} - a_i' = a_{i+1} - (a_{i-1} + a_{i+1} - a_i) = a_i - a_{i-1} = \Delta_{i-1} $$
+        <p>Các sai phân khác $\Delta_k$ với $k \notin \{i-1, i\}$ không bị ảnh hưởng vì $a_k$ và $a_{k+1}$ đều không thay đổi.</p>
+        <p>Như vậy, đa tập hợp các sai phân mới $\Delta'$ chính là đa tập $\Delta$ ban đầu, nhưng có hai phần tử kề nhau bị tráo đổi vị trí. <br>
+        Bởi vì thứ tự không quan trọng trong đa tập hợp, $\Delta' = \Delta$. Định lý được chứng minh. (Tính chất này cho phép phân tích sự sắp xếp mảng thông qua các sai phân).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Biến đổi mảng tuyến tính)</div>
+        Cho hai dãy số nguyên dương độ dài $n$ là $A = (a_1, a_2, \dots, a_n)$ và $B = (b_1, b_2, \dots, b_n)$.<br>
+        Tại mỗi bước, bạn được phép chọn một chỉ số $i$ ($1 \lt i \lt n$) và thay đổi giá trị của $a_i$ thành $a_{i-1} + a_{i+1} - a_i$. <br>
+        Hỏi có thể thực hiện một chuỗi các phép biến đổi để biến đổi dãy $A$ thành dãy $B$ được hay không? Nếu có, hãy nêu điều kiện cần và đủ.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo Định lý 1.2, phép biến đổi $a_i \mapsto a_{i-1} + a_{i+1} - a_i$ tương đương với việc tráo đổi vị trí hai sai phân liên tiếp $\Delta_{i-1}$ và $\Delta_i$ trong dãy các sai phân của $A$.</p>
+        <p>Gọi $\Delta^A = (\Delta_1^A, \dots, \Delta_{n-1}^A)$ là dãy các sai phân của $A$. Việc chọn chỉ số $i$ và thực hiện phép biến đổi tương đương với việc thực hiện một phép hoán vị kề trên dãy $\Delta^A$.<br>
+        Từ lý thuyết về hoán vị, ta biết rằng mọi hoán vị của một dãy đều có thể đạt được thông qua một chuỗi các phép tráo đổi kề.<br>
+        Do đó, dãy các sai phân $\Delta^A$ có thể được biến đổi thành bất kỳ hoán vị nào của chính nó.</p>
+        <p>Để dãy $A$ có thể biến đổi thành dãy $B$, hai điều kiện sau phải được thỏa mãn đồng thời:</p>
+        <ol>
+            <li>Đa tập các sai phân của $A$ và $B$ phải giống nhau. Tức là, tập hợp $\{a_2 - a_1, a_3 - a_2, \dots, a_n - a_{n-1}\}$ phải bằng tập hợp $\{b_2 - b_1, b_3 - b_2, \dots, b_n - b_{n-1}\}$ (tính cả số lần lặp).</li>
+            <li>Phép biến đổi không bao giờ tác động đến $a_1$ và $a_n$. Tuy nhiên, phần tử $a_1$ đóng vai trò là "điểm neo". Nếu hai dãy có cùng tập sai phân và $a_1 = b_1$, thì dãy $A$ có thể biến thành $B$. (Điều kiện $a_n = b_n$ sẽ tự động được thỏa mãn nếu $a_1 = b_1$ và tổng các sai phân bằng nhau).</li>
+        </ol>
+
+        <p><strong>Điều kiện cần và đủ:</strong><br>
+        Dãy $A$ có thể biến đổi thành dãy $B$ khi và chỉ khi:</p>
+        <ol>
+            <li>$a_1 = b_1$ và $a_n = b_n$.</li>
+            <li>Đa tập hợp sai phân của $A$ và $B$ là giống hệt nhau.</li>
+        </ol>
+        <p>Bằng cách phân tích bài toán thông qua một đại lượng bất biến (đa tập sai phân), câu hỏi về khả năng biến đổi đã được chuyển thành một bài toán kiểm tra đẳng cấu cơ bản.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Hàm Bất biến Toàn phương - Trò chơi phân tách)</div>
+        Trên bàn có một đống sỏi gồm $N$ viên. Tại mỗi bước, bạn được phép chọn một đống sỏi có số lượng viên lớn hơn 1, chia đống sỏi đó thành hai đống sỏi nhỏ hơn (khác rỗng). Nếu bạn chia một đống sỏi $x$ viên thành hai đống có kích thước $a$ và $b$ (với $a+b = x$), bạn sẽ nhận được $a \times b$ điểm.<br>
+        Bạn lặp lại quá trình này cho đến khi tất cả các đống sỏi trên bàn đều chỉ có 1 viên. Chứng minh rằng, bất kể bạn chia các đống sỏi theo trình tự nào, tổng số điểm cuối cùng mà bạn nhận được luôn luôn là một hằng số, và hãy tìm hằng số đó theo $N$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Quá trình chia sỏi là một hệ thống trạng thái. Mỗi trạng thái được biểu diễn bởi một đa tập hợp $S = \{x_1, x_2, \dots, x_k\}$ chứa kích thước của các đống sỏi hiện tại.<br>
+        Tổng số sỏi luôn được bảo toàn: $\sum_{i=1}^k x_i = N$.</p>
+        <p>Ta cần tìm một đại lượng bất biến liên kết giữa điểm số thu được và trạng thái của các đống sỏi.<br>
+        Từ nhận xét đại số: $(a+b)^2 = a^2 + b^2 + 2ab \implies ab = \frac{1}{2} \left( (a+b)^2 - (a^2 + b^2) \right)$.<br>
+        Điều này gợi ý ta thiết lập một hàm trạng thái dạng toàn phương.<br>
+        Gọi $P$ là tổng số điểm tích lũy được từ đầu trò chơi đến trạng thái hiện tại $S$.<br>
+        Ta định nghĩa hàm $I(S, P)$:</p>
+        $$ I(S, P) = P + \frac{1}{2} \sum_{i=1}^k x_i^2 $$
+        <p>Ta sẽ chứng minh $I(S, P)$ là một đại lượng bất biến qua mỗi phép phân tách.<br>
+        Giả sử ta chọn đống sỏi có kích thước $x_1$ và chia nó thành hai đống $a$ và $b$ (với $a+b = x_1$). <br>
+        Trạng thái mới là $S' = \{a, b, x_2, \dots, x_k\}$. Điểm số mới là $P' = P + ab$.<br>
+        Tính giá trị của hàm $I$ tại trạng thái mới:</p>
+        $$ I(S', P') = P' + \frac{1}{2} \left( a^2 + b^2 + \sum_{i=2}^k x_i^2 \right) $$
+        $$ = (P + ab) + \frac{1}{2} a^2 + \frac{1}{2} b^2 + \frac{1}{2} \sum_{i=2}^k x_i^2 $$
+        $$ = P + \frac{1}{2} (a^2 + 2ab + b^2) + \frac{1}{2} \sum_{i=2}^k x_i^2 = P + \frac{1}{2} (a+b)^2 + \frac{1}{2} \sum_{i=2}^k x_i^2 $$
+        <p>Thay $(a+b)^2 = x_1^2$:</p>
+        $$ I(S', P') = P + \frac{1}{2} x_1^2 + \frac{1}{2} \sum_{i=2}^k x_i^2 = P + \frac{1}{2} \sum_{i=1}^k x_i^2 = I(S, P) $$
+        <p>Vậy $I$ là một đại lượng bất biến.</p>
+        <p>Tại trạng thái ban đầu, ta có 1 đống $N$ viên và $P_{\text{ban đầu}} = 0$.</p>
+        $$ I_{\text{ban đầu}} = 0 + \frac{1}{2} N^2 = \frac{N^2}{2} $$
+        <p>Tại trạng thái kết thúc, tất cả các đống sỏi đều có 1 viên. Vì tổng số sỏi là $N$, ta có $N$ đống 1 viên.<br>
+        Giả sử tổng điểm đạt được là $P_{\text{cuối}}$.</p>
+        $$ I_{\text{cuối}} = P_{\text{cuối}} + \frac{1}{2} \underbrace{(1^2 + 1^2 + \dots + 1^2)}_{N \text{ lần}} = P_{\text{cuối}} + \frac{N}{2} $$
+        <p>Bởi vì $I$ là bất biến, $I_{\text{ban đầu}} = I_{\text{cuối}}$:</p>
+        $$ \frac{N^2}{2} = P_{\text{cuối}} + \frac{N}{2} \implies P_{\text{cuối}} = \frac{N^2 - N}{2} = \frac{N(N-1)}{2} = \binom{N}{2} $$
+        <p>Tổng số điểm luôn không đổi và bằng $\binom{N}{2}$. Đại lượng bất biến toàn phương cho thấy kết quả không phụ thuộc vào thứ tự thực hiện các bước.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Crux Mathematicorum - Bất biến nhân tính)</div>
+        Trên một tấm bảng, người ta viết $n$ số nguyên dương $1, 2, 3, \dots, n$. Tại mỗi bước, một người được phép chọn hai số bất kỳ trên bảng (gọi là $a$ và $b$), xóa chúng đi, và viết lên bảng một số duy nhất có giá trị là $a + b + a \times b$.<br>
+        Quá trình này lặp lại liên tục. Vì mỗi bước làm giảm số lượng số trên bảng đi 1, nên sau $n-1$ bước, trên bảng sẽ chỉ còn lại đúng một số. Chứng minh rằng giá trị của số cuối cùng này không phụ thuộc vào thứ tự chọn các số trong từng bước, và hãy xác định giá trị đó.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi phép biến đổi nhận đầu vào là $a$ và $b$, trả về giá trị $a+b+ab$.<br>
+        Nhận xét cấu trúc đại số của biểu thức này: </p>
+        $$ a + b + ab = (a+1)(b+1) - 1 $$
+        <p>Sự xuất hiện của phép nhân được cộng thêm 1 gợi ý cho ta định nghĩa một đại lượng bất biến dựa trên tích của các số đã được cộng thêm 1.<br>
+        Gọi tập hợp các số đang có trên bảng ở một trạng thái là $S = \{x_1, x_2, \dots, x_k\}$.<br>
+        Ta định nghĩa hàm đánh giá nhân tính:</p>
+        $$ I(S) = \prod_{i=1}^k (x_i + 1) $$
+        <p>Kiểm tra tính bất biến của $I(S)$ qua một phép biến đổi:<br>
+        Giả sử người chơi chọn xóa hai số $x_1$ và $x_2$. Số mới được viết lên bảng là $y = x_1 + x_2 + x_1 x_2$.<br>
+        Tập hợp trạng thái mới là $S' = \{y, x_3, \dots, x_k\}$.<br>
+        Giá trị của hàm đánh giá tại trạng thái mới:</p>
+        $$ I(S') = (y + 1) \prod_{i=3}^k (x_i + 1) $$
+        <p>Thay $y = (x_1+1)(x_2+1) - 1$ vào phương trình:</p>
+        $$ I(S') = \left( [ (x_1+1)(x_2+1) - 1 ] + 1 \right) \prod_{i=3}^k (x_i + 1) = (x_1+1)(x_2+1) \prod_{i=3}^k (x_i + 1) = \prod_{i=1}^k (x_i + 1) $$
+        <p>Suy ra $I(S') = I(S)$. Vậy $I(S)$ là một đại lượng bất biến.</p>
+        <p>Quay lại trạng thái ban đầu, tập hợp $S_{\text{ban đầu}} = \{1, 2, 3, \dots, n\}$.</p>
+        $$ I_{\text{ban đầu}} = (1+1)(2+1)(3+1) \dots (n+1) = 2 \cdot 3 \cdot 4 \dots (n+1) = (n+1)! $$
+        <p>Ở trạng thái kết thúc, trên bảng chỉ còn lại một số $X$. Tập hợp $S_{\text{cuối}} = \{X\}$.</p>
+        $$ I_{\text{cuối}} = X + 1 $$
+        <p>Theo tính chất bất biến, $I_{\text{ban đầu}} = I_{\text{cuối}}$:</p>
+        $$ (n+1)! = X + 1 \implies X = (n+1)! - 1 $$
+        <p>Giá trị cuối cùng cố định và bằng $(n+1)! - 1$, bất kể chiến thuật chọn số ở mỗi bước.<br>
+        Việc khai thác các hằng đẳng thức để tạo ra hàm tích lũy là một phương pháp để giải quyết các hệ thức biến đổi rời rạc.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

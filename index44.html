@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Phân hoạch số nguyên và Định lý Ngũ giác Euler</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> PHÂN HOẠCH SỐ NGUYÊN VÀ ĐỊNH LÝ NGŨ GIÁC EULER</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đại số Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát số lượng cách phân tích một số nguyên dương thành tổng của các số nguyên dương nhỏ hơn là một nội dung của Tổ hợp đếm. Chuyên đề này hình thức hóa cấu trúc phân hoạch thông qua Biểu đồ Ferrers và Chuỗi lũy thừa hình thức. Bằng việc xây dựng Song ánh Franklin, Định lý Ngũ giác Euler được chứng minh, cung cấp công cụ đại số để giải quyết các hệ thức đếm, giảm sự phụ thuộc vào các phương pháp đệ quy đa biến.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong chương trình THPT, học sinh thường xét tính hội tụ khi tính tổng một cấp số nhân vô hạn (yêu cầu $|x| < 1$). Tuy nhiên, trong Toán rời rạc và Đại số Tổ hợp, ta sử dụng "Chuỗi lũy thừa hình thức" (Formal Power Series), một khái niệm của bậc Đại học, cho phép thực hiện các phép toán đại số mà không cần bận tâm đến giới hạn hay miền hội tụ.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Chuỗi lũy thừa hình thức và Nghịch đảo đại số)</div>
+        Một chuỗi lũy thừa hình thức là một biểu thức có dạng $A(x) = a_0 + a_1 x + a_2 x^2 + \dots$ <br>
+        Ở đây, $x$ chỉ là một <strong>biến giả</strong> dùng để "mang" các hệ số $a_i$. Khi nhân hai chuỗi, ta áp dụng quy tắc nhân phân phối đa thức thông thường:<br>
+        $A(x)B(x) = (a_0 + a_1 x + a_2 x^2 + \dots)(b_0 + b_1 x + b_2 x^2 + \dots) = c_0 + c_1 x + c_2 x^2 + \dots$ <br>
+        với $c_n = \sum_{k=0}^n a_k b_{n-k}$.<br>
+        Hai chuỗi $A(x)$ và $B(x)$ được gọi là nghịch đảo của nhau nếu $A(x)B(x) = 1$.<br>
+        Từ hằng đẳng thức $(1-x)(1 + x + x^2 + x^3 + \dots) = 1$, ta có thể viết nghịch đảo hình thức:
+        $$ \frac{1}{1-x} = 1 + x + x^2 + x^3 + \dots $$
+        Công thức này đúng về mặt đại số hình thức mà không yêu cầu $|x| < 1$. Nó là công cụ cơ bản để xây dựng Hàm sinh (Generating Functions).
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Phân hoạch và Biểu đồ Ferrers)</div>
+        <ul>
+            <li> <strong>Phân hoạch (Partition):</strong> Một phân hoạch của số nguyên dương $n$ là một cách viết $n$ dưới dạng tổng của các số nguyên dương, không phân biệt thứ tự. Ký hiệu số lượng phân hoạch của $n$ là $p(n)$. Ví dụ: $p(4) = 5$ vì $4 = 3+1 = 2+2 = 2+1+1 = 1+1+1+1$.</li>
+            <li> <strong>Biểu đồ Ferrers:</strong> Một cách biểu diễn trực quan của phân hoạch. Nếu phân hoạch là $n = \lambda_1 + \lambda_2 + \dots + \lambda_m$ (với $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_m$), biểu đồ Ferrers gồm $m$ hàng, hàng thứ $i$ có $\lambda_i$ ô vuông được căn lề trái.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Hàm sinh của số phân hoạch)</div>
+        Hàm sinh (chuỗi lũy thừa hình thức) sinh ra dãy số $p(n)$ được biểu diễn dưới dạng tích vô hạn:
+        $$ \sum_{n=0}^\infty p(n) x^n = \prod_{k=1}^\infty \frac{1}{1 - x^k} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét khai triển chuỗi của từng nhân tử trong tích vô hạn (sử dụng công thức cấp số nhân hình thức):</p>
+        $$ \frac{1}{1 - x^k} = 1 + x^k + x^{2k} + x^{3k} + \dots = \sum_{m=0}^\infty x^{m \cdot k} $$
+        <p>Thay biểu diễn này vào tích vô hạn ban đầu:</p>
+        $$ \prod_{k=1}^\infty \frac{1}{1 - x^k} = \left( \sum_{m_1=0}^\infty x^{1 \cdot m_1} \right) \left( \sum_{m_2=0}^\infty x^{2 \cdot m_2} \right) \left( \sum_{m_3=0}^\infty x^{3 \cdot m_3} \right) \dots $$
+        <p>Khi thực hiện phép nhân phân phối, một số hạng cấu thành nên $x^n$ sẽ được tạo ra bằng cách chọn một đơn thức $x^{k \cdot m_k}$ từ mỗi ngoặc thứ $k$, sao cho tổng các số mũ bằng $n$:</p>
+        $$ 1 \cdot m_1 + 2 \cdot m_2 + 3 \cdot m_3 + \dots = n $$
+        <p>Mỗi bộ nghiệm $(m_1, m_2, m_3, \dots)$ của phương trình trên (với các $m_k \ge 0$) tương ứng duy nhất với một cách phân hoạch số $n$, trong đó số nguyên $k$ xuất hiện chính xác $m_k$ lần trong tổng.<br>
+        Vì mỗi phân hoạch hợp lệ đóng góp đúng $1$ đơn vị vào hệ số của $x^n$, hệ số tổng cộng của $x^n$ chính là số lượng các phân hoạch $p(n)$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Ngũ giác Euler - Euler's Pentagonal Number Theorem)</div>
+        Khai triển của đa thức nghịch đảo hàm sinh phân hoạch là một chuỗi thưa, chỉ chứa các số hạng có số mũ là các "Số ngũ giác":
+        $$ \prod_{k=1}^\infty (1 - x^k) = 1 + \sum_{m=1}^\infty (-1)^m \left( x^{\frac{m(3m-1)}{2}} + x^{\frac{m(3m+1)}{2}} \right) $$
+        Chuỗi này có các số hạng đầu tiên là: $1 - x - x^2 + x^5 + x^7 - x^{12} - x^{15} + \dots$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng <strong>Song ánh Franklin (Franklin's Involution)</strong>.<br>
+        Khi khai triển $\prod (1 - x^k)$, hệ số của $x^n$ chính là $\sum (-1)^{k}$, trong đó tổng lấy trên tất cả các cách phân hoạch số $n$ thành $k$ phần tử <strong>đôi một phân biệt</strong>. Gọi số lượng các phân hoạch của $n$ thành phần tử phân biệt có số lượng chẵn là $E(n)$ và số lượng lẻ là $O(n)$. Hệ số của $x^n$ là $E(n) - O(n)$.<br>
+        Ta sẽ thiết lập một song ánh bắt cặp các phân hoạch chẵn với phân hoạch lẻ, từ đó triệt tiêu chúng.</p>
+
+        <p>Xét một phân hoạch của $n$ thành các phần tử phân biệt: $\lambda_1 \gt \lambda_2 \gt \dots \gt \lambda_m \gt 0$. Ta xác định hai tham số trên biểu đồ Ferrers của nó:</p>
+        <ol>
+            <li><strong>Đáy (Base) $b$:</strong> Số lượng ô ở hàng cuối cùng, $b = \lambda_m$.</li>
+            <li><strong>Đường dốc (Slope) $s$:</strong> Số lượng các ô nằm trên "đường chéo" tận cùng bên phải, tính từ trên xuống. $s$ là số nguyên lớn nhất sao cho $\lambda_i = \lambda_1 - i + 1$ với mọi $1 \le i \le s$.</li>
+        </ol>
+
+        <p>Ta thiết lập quy tắc hoán đổi như sau:<br>
+        <strong>Thao tác A:</strong> Nếu $b \le s$. Ta lấy toàn bộ $b$ ô ở hàng cuối cùng, đặt mỗi ô vào bên phải của $b$ hàng đầu tiên. Phân hoạch mới nhận được có số phần tử giảm đi 1 (từ $m$ xuống $m-1$), tính chẵn lẻ thay đổi. (Điều kiện hợp lệ: $b$ hàng đầu tiên nhận ô phải không phá vỡ tính giảm ngặt).<br>
+        <strong>Thao tác B:</strong> Nếu $b \gt s$. Ta lấy $s$ ô ở cuối đường dốc, tạo thành một hàng mới có kích thước $s$ đặt ở dưới cùng biểu đồ. Phân hoạch mới có số phần tử tăng thêm 1, tính chẵn lẻ thay đổi.</p>
+
+        <p>Vì Thao tác A và B là nghịch đảo của nhau, mọi phân hoạch bị tác động sẽ đổi tính chẵn lẻ, do đó chúng bắt cặp và tự triệt tiêu trong hiệu $E(n) - O(n)$. <br>
+        Quy tắc này không thể thực hiện ở đúng 2 trường hợp ngoại lệ:</p>
+        <ol>
+            <li> $b = s$ và hàng đáy chính là một phần của đường dốc (giao nhau). Lúc này $m = s$. <br>
+            Số lượng ô (tức là $n$) của toàn biểu đồ là: $n = m + (m+1) + \dots + (2m-1) = \frac{m(3m-1)}{2}$. Song ánh thất bại. Biểu đồ còn sót lại có $m$ hàng, đóng góp $(-1)^m$ vào hệ số.</li>
+            <li> $b = s + 1$ và hàng đáy giao với đường dốc. Lúc này $m = s$. <br>
+            Số lượng ô của toàn biểu đồ là: $n = (m+1) + (m+2) + \dots + 2m = \frac{m(3m+1)}{2}$. Tương tự, song ánh thất bại. Biểu đồ còn sót lại có $m$ hàng, đóng góp $(-1)^m$.</li>
+        </ol>
+
+        <p>Tóm lại, toàn bộ các phân hoạch khác đều tự triệt tiêu (hệ số bằng 0). Hệ số chỉ khác 0 (và bằng $(-1)^m$) tại các giá trị $n = \frac{m(3m \mp 1)}{2}$. Đây chính là công thức vế phải. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Hệ thức truy hồi của Phân hoạch)</div>
+        Sử dụng Định lý Ngũ giác Euler, hãy thiết lập một công thức truy hồi để tính $p(n)$ (số lượng cách phân hoạch một số nguyên $n$).
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo Định lý 1.1 và Định lý 1.2, ta có mối liên hệ giữa hai chuỗi lũy thừa hình thức:</p>
+        $$ \left( \sum_{n=0}^\infty p(n) x^n \right) \times \left( \prod_{k=1}^\infty (1 - x^k) \right) = 1 $$
+        <p>Thay khai triển của Định lý Ngũ giác Euler vào:</p>
+        $$ \left( p(0) + p(1)x + p(2)x^2 + \dots \right) \times \left( 1 - x - x^2 + x^5 + x^7 - x^{12} - x^{15} + \dots \right) = 1 $$
+        <p>Ta thực hiện nhân phân phối hai đa thức vô hạn này và xét hệ số của $x^n$ (với $n \ge 1$).<br>
+        Vì vế phải là hằng số $1$, nên đối với mọi $n \ge 1$, hệ số của $x^n$ ở vế trái phải bằng $0$.<br>
+        Nhóm các số hạng tạo ra $x^n$ ở vế trái, ta thu được:</p>
+        $$ p(n) \cdot 1 + p(n-1) \cdot (-1) + p(n-2) \cdot (-1) + p(n-5) \cdot 1 + p(n-7) \cdot 1 + \dots = 0 $$
+        <p>Chuyển các số hạng bị trừ sang vế phải, ta nhận được hệ thức truy hồi:</p>
+        $$ p(n) = p(n-1) + p(n-2) - p(n-5) - p(n-7) + p(n-12) + p(n-15) - \dots $$
+        $$ p(n) = \sum_{m=1}^\infty (-1)^{m-1} \left[ p\left(n - \frac{m(3m-1)}{2}\right) + p\left(n - \frac{m(3m+1)}{2}\right) \right] $$
+        <p>(Quy ước $p(k) = 0$ nếu $k \lt 0$ và $p(0) = 1$).<br>
+        Công thức này tính $p(n)$ dựa vào một dãy thưa các phần tử trước đó. Nhờ cấu trúc của số ngũ giác, số lượng phép tính để đạt được $p(n)$ giảm xuống ngưỡng căn bậc hai ($\approx \sqrt{n}$), làm cơ sở cho các thuật toán đếm.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Phân hoạch với ràng buộc tần suất - Định lý Glaisher)</div>
+        Cho số nguyên dương $k \ge 2$. Chứng minh rằng: Số lượng các cách phân hoạch số nguyên dương $n$ sao cho không có phần tử nào xuất hiện lớn hơn hoặc bằng $k$ lần, bằng số lượng các cách phân hoạch $n$ thành các phần tử mà không có phần tử nào chia hết cho $k$.<br>
+        (Lưu ý: Khi $k=2$, định lý này trở thành Định lý Euler: Số cách phân hoạch thành các phần tử phân biệt bằng số cách phân hoạch thành các phần tử lẻ).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán được giải quyết dễ dàng hơn nhờ tính chất đại số của hàm sinh.</p>
+
+        <p><strong>Bước 1: Thiết lập hàm sinh cho ràng buộc thứ nhất.</strong><br>
+        Xét cách phân hoạch mà không có phần tử nào xuất hiện $\ge k$ lần (tức là mỗi số nguyên $i$ chỉ được phép xuất hiện $0, 1, 2, \dots, k-1$ lần).<br>
+        Hàm sinh cho sự lựa chọn của phần tử $i$ là một đa thức hữu hạn:</p>
+        $$ 1 + x^i + x^{2i} + x^{3i} + \dots + x^{(k-1)i} $$
+        <p>Theo công thức tổng cấp số nhân, đa thức này có thể được viết dưới dạng phân thức:</p>
+        $$ \frac{1 - (x^i)^k}{1 - x^i} = \frac{1 - x^{ki}}{1 - x^i} $$
+        <p>Hàm sinh tổng quát cho toàn bộ quá trình phân hoạch là tích của các hàm sinh độc lập đối với mọi số nguyên $i \ge 1$:</p>
+        $$ F_1(x) = \prod_{i=1}^\infty \frac{1 - x^{ki}}{1 - x^i} $$
+
+        <p><strong>Bước 2: Thiết lập hàm sinh cho ràng buộc thứ hai.</strong><br>
+        Xét cách phân hoạch mà không có phần tử nào chia hết cho $k$ (nghĩa là các số $i$ nếu thỏa mãn $i \equiv 0 \pmod k$ sẽ không được phép sử dụng). Với các số không chia hết cho $k$, chúng được phép xuất hiện số lần tùy ý.<br>
+        Tập hợp các số được phép sử dụng là $\{i \ge 1 \mid k \nmid i\}$.<br>
+        Hàm sinh cho quá trình này là tích của chuỗi cấp số nhân vô hạn tại các giá trị được phép:</p>
+        $$ F_2(x) = \prod_{\substack{i=1 \\ k \nmid i}}^\infty \frac{1}{1 - x^i} $$
+
+        <p><strong>Bước 3: Chứng minh sự tương đương đại số.</strong><br>
+        Ta xét lại hàm sinh $F_1(x)$. Biểu thức này là một phân số mà tử số và mẫu số đều chứa các chuỗi tích vô hạn:</p>
+        $$ F_1(x) = \frac{\prod_{i=1}^\infty (1 - x^{ki})}{\prod_{j=1}^\infty (1 - x^j)} $$
+        <p>Quan sát tử số: Biến $i$ chạy qua tất cả các số nguyên dương $1, 2, 3, \dots$. Do đó, số mũ $k \cdot i$ sẽ chạy qua tất cả các số nguyên dương <strong>là bội số của $k$</strong> (tức là $k, 2k, 3k, \dots$).<br>
+        Ở mẫu số, biến $j$ chạy qua toàn bộ các số nguyên dương $1, 2, 3, \dots$.<br>
+        Toàn bộ các nhân tử $(1 - x^{ki})$ ở tử số sẽ triệt tiêu những nhân tử ở mẫu số mà $j$ là bội của $k$.<br>
+        Sau khi triệt tiêu các vị trí chia hết cho $k$ ở mẫu, những nhân tử còn sót lại dưới mẫu số chính là các phần tử $1 - x^j$ với điều kiện $j$ không chia hết cho $k$ ($k \nmid j$).<br>
+        Do đó:</p>
+        $$ F_1(x) = \frac{1}{\prod_{\substack{j=1 \\ k \nmid j}}^\infty (1 - x^j)} = \prod_{\substack{j=1 \\ k \nmid j}}^\infty \frac{1}{1 - x^j} = F_2(x) $$
+        <p>Vì hai hàm sinh bằng nhau dưới dạng chuỗi lũy thừa hình thức, hệ số của $x^n$ trong cả hai chuỗi phải bằng nhau. Điều này kết luận rằng số lượng cấu hình cho cả hai cách phân hoạch luôn bằng nhau đối với mọi giá trị $n$.<br>
+        Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Cấu trúc Đối xứng - Phân hoạch tự liên hợp)</div>
+        Một phân hoạch được gọi là "Tự liên hợp" (Self-conjugate partition) nếu biểu đồ Ferrers của nó đối xứng qua đường chéo chính (tức là hàng thứ $i$ có độ dài bằng cột thứ $i$).<br>
+        Chứng minh rằng: Số lượng các cách phân hoạch $n$ thành các phần tử <strong>lẻ, đôi một phân biệt</strong> bằng với số lượng các phân hoạch tự liên hợp của $n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trong bài toán này, ta sẽ tận dụng cấu trúc hình học của biểu đồ Ferrers để thiết lập một song ánh.</p>
+
+        <p><strong>Quy trình xây dựng song ánh:</strong><br>
+        Cho một phân hoạch tự liên hợp bất kỳ của $n$. Do tính chất đối xứng, biểu đồ Ferrers có thể được phân rã thành một chuỗi các "móc vuông" (hooks) đồng tâm được đặt dọc theo đường chéo chính.</p>
+        <ul>
+            <li>Móc vuông thứ $1$ bao gồm toàn bộ hàng 1 và cột 1. Vì biểu đồ đối xứng, hàng 1 và cột 1 có cùng số ô (gọi là $\lambda_1$). Ô ở góc $(1,1)$ là ô chung. Vậy tổng số ô của móc vuông thứ nhất là: $\lambda_1 + \lambda_1 - 1 = 2\lambda_1 - 1$. Đây là một số <strong>lẻ</strong>.</li>
+            <li>Bỏ đi móc vuông thứ nhất, phần còn lại của biểu đồ vẫn là một phân hoạch tự liên hợp.</li>
+            <li>Ta tiếp tục trích xuất móc vuông thứ 2 (gồm hàng 2 và cột 2 của phần còn lại). Tương tự, nếu nó có độ dài $\lambda_2$, số ô của móc vuông thứ 2 là $2\lambda_2 - 1$ (cũng là số lẻ).</li>
+            <li>Tiếp tục quá trình này cho đến khi toàn bộ các ô của biểu đồ bị bóc tách hết thành các móc vuông.</li>
+        </ul>
+        <p>Giả sử ta phân tách được $m$ móc vuông. Gọi số lượng ô của chúng lần lượt là $h_1, h_2, \dots, h_m$.<br>
+        Vì mỗi móc vuông nằm trọn bên trong móc vuông trước đó, có sự thu nhỏ ngặt về kích thước:</p>
+        $$ h_1 > h_2 > h_3 > \dots > h_m > 0 $$
+        <p>Như đã chứng minh, tất cả các $h_i$ đều là các số lẻ. Tổng số ô của tất cả các móc vuông chính là tổng số ô của biểu đồ, bằng $n$.<br>
+        Dãy $(h_1, h_2, \dots, h_m)$ chính là một cách phân hoạch số $n$ thành các phần tử <strong>lẻ, đôi một phân biệt</strong>.</p>
+
+        <p><strong>Quá trình nghịch đảo:</strong><br>
+        Từ một phân hoạch bất kỳ của $n$ gồm các số lẻ, đôi một phân biệt: $h_1 > h_2 > \dots > h_m > 0$.<br>
+        Với mỗi phần tử lẻ $h_i$, ta "gấp" nó lại thành một móc vuông đối xứng có độ dài các nhánh bằng $\frac{h_i+1}{2}$.<br>
+        Ta xếp lồng các móc vuông này vào nhau, móc lớn ở ngoài, móc nhỏ ở trong. Nhờ tính giảm ngặt ($h_i > h_{i+1}$), các móc vuông sẽ khớp vào nhau tạo thành một biểu đồ Ferrers hợp lệ. Cấu trúc lồng nhau của các móc vuông đối xứng tạo ra một biểu đồ đối xứng qua đường chéo chính. Do đó, ta thu lại được một phân hoạch tự liên hợp.</p>
+        <p>Vì mọi quá trình "bóc tách" và "gấp lồng" đều xác định và là nghịch đảo duy nhất của nhau, đây là một song ánh. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Đếm - Mã Prüfer và Định lý Cayley</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> MÃ PRÜFER VÀ ĐỊNH LÝ CAYLEY</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đếm số lượng cấu trúc cây trên một tập hợp các đỉnh phân biệt là một bài toán nền tảng của lý thuyết đồ thị. Chuyên đề này hình thức hóa khái niệm Mã Prüfer (Prüfer Sequence) nhằm thiết lập một song ánh giữa tập hợp các cây và không gian các dãy số. Nhờ cấu trúc ánh xạ này, Định lý Cayley được chứng minh bằng phương pháp tổ hợp giải tích. Các bài toán áp dụng mở rộng tư duy đếm sang việc kiểm soát bậc của đỉnh và đánh giá các hệ số đa thức đồng nhất.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Chuyên đề này sử dụng công cụ "Song ánh" (Bijection) và "Hoán vị lặp" (Multiset Permutation) vốn thuộc chương trình Đại số Tổ hợp chuyên sâu. Dưới đây là các định nghĩa và chứng minh nền tảng để học sinh THPT có thể nắm bắt phương pháp giải quyết các bài toán bên dưới:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Song ánh - Bijection)</div>
+        Trong Toán học tổ hợp, hai tập hợp $A$ và $B$ có cùng số lượng phần tử (tức là $|A| = |B|$) nếu và chỉ nếu tồn tại một <strong>song ánh</strong> giữa $A$ và $B$. Song ánh là một quy tắc ghép cặp sao cho mỗi phần tử của $A$ tương ứng với đúng một phần tử của $B$, và ngược lại không có phần tử nào của $B$ bị bỏ sót.<br>
+        Việc chứng minh Định lý Cayley thực chất là xây dựng một song ánh giữa "Tập hợp các cây" và "Tập hợp các dãy số", từ đó chuyển bài toán đếm cây (khó) thành bài toán đếm dãy số (dễ).
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Hoán vị lặp - Multinomial Coefficient)</div>
+        Số lượng các cách sắp xếp một dãy gồm $N$ phần tử, trong đó có $m$ loại phần tử phân biệt. Loại 1 xuất hiện $k_1$ lần, loại 2 xuất hiện $k_2$ lần, ..., loại $m$ xuất hiện $k_m$ lần (với $k_1 + k_2 + \dots + k_m = N$) được tính bằng công thức:
+        $$ \frac{N!}{k_1! \cdot k_2! \dots k_m!} $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Đầu tiên, ta giả sử tất cả $N$ phần tử này đều phân biệt với nhau. Khi đó, số cách hoán vị (sắp xếp) chúng thành một hàng ngang là $N!$.</p>
+        <p>Tuy nhiên, trên thực tế, các phần tử cùng loại là giống hệt nhau. Với loại thứ $i$, nó có $k_i$ phần tử giống hệt nhau. Mọi sự hoán đổi vị trí nội bộ giữa $k_i$ phần tử này không tạo ra một dãy mới. Số cách hoán đổi nội bộ của loại thứ $i$ là $k_i!$.</p>
+        <p>Vì sự hoán đổi nội bộ của các loại phần tử là độc lập với nhau, mỗi cấu hình thực tế đã bị đếm lặp đúng $k_1! \cdot k_2! \dots k_m!$ lần trong tổng số $N!$ cách xếp ban đầu.</p>
+        <p>Do đó, để tìm số lượng các cấu hình thực sự phân biệt, ta lấy $N!$ chia cho số lần lặp này. Công thức được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Cây, Lá và Cây khung)</div>
+        <ul>
+            <li> <strong>Cây (Tree):</strong> Là một đồ thị vô hướng, liên thông và không chứa bất kỳ chu trình nào. Một tính chất cơ bản là mọi cây có $n$ đỉnh đều có đúng $n-1$ cạnh.</li>
+            <li> <strong>Lá (Leaf):</strong> Là đỉnh của cây có bậc (degree) đúng bằng $1$.</li>
+            <li> <strong>Cây khung (Spanning Tree):</strong> Cho một đồ thị $G$, một cây khung của $G$ là một đồ thị con chứa tất cả các đỉnh của $G$ và là một cây.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Sự tồn tại của Lá trong Cây)</div>
+        Mọi cây $T$ có số lượng đỉnh $n \ge 2$ đều có ít nhất $2$ đỉnh là lá.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng <strong>Nguyên lý Cực hạn (Extremal Principle)</strong>.</p>
+        <p>Bởi vì số lượng đỉnh của cây $T$ là hữu hạn ($n \ge 2$) và cây là liên thông, ta có thể xét tất cả các đường đi đơn (đường đi không lặp lại đỉnh) trên cây. Số lượng các đường đi này là hữu hạn.<br>
+        Chọn một đường đi đơn có độ dài lớn nhất (nhiều đỉnh nhất) trong cây, giả sử đó là đường đi:</p>
+        $$ P = v_1 - v_2 - \dots - v_k $$
+        <p>Ta sẽ chứng minh hai đỉnh ở hai đầu mút của đường đi này, tức là $v_1$ và $v_k$, phải là các lá.</p>
+        <p>Xét đỉnh $v_1$. Giả sử phản chứng rằng $v_1$ không phải là lá. Tức là bậc của $v_1$ lớn hơn hoặc bằng $2$.<br>
+        Khi đó, $v_1$ phải kề với ít nhất một đỉnh $u$ khác với $v_2$.</p>
+        <ul>
+            <li><strong>Trường hợp 1:</strong> Nếu $u$ thuộc đường đi $P$ (nghĩa là $u = v_i$ với $3 \le i \le k$). Lúc này, việc nối $v_1$ với $v_i$ tạo thành một chu trình $v_1 - v_2 - \dots - v_i - v_1$. Điều này mâu thuẫn với giả thiết $T$ là một cây (không chứa chu trình).</li>
+            <li><strong>Trường hợp 2:</strong> Nếu $u$ không thuộc đường đi $P$. Ta có thể thêm đỉnh $u$ vào đường đi để tạo thành một đường đi mới: $u - v_1 - v_2 - \dots - v_k$. Đường đi mới này có độ dài lớn hơn đường đi $P$, mâu thuẫn với cách chọn $P$ là đường đi đơn dài nhất.</li>
+        </ul>
+        <p>Sự mâu thuẫn trong cả hai trường hợp chứng tỏ giả thiết phản chứng sai. Đỉnh $v_1$ bắt buộc phải là một lá.<br>
+        Lập luận tương tự cho đỉnh mút $v_k$, ta suy ra $v_k$ cũng là một lá.<br>
+        Vậy cây $T$ có ít nhất hai lá là $v_1$ và $v_k$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Cayley - Số lượng cây nhãn)</div>
+        Cho $n$ đỉnh được đánh nhãn phân biệt từ $1$ đến $n$ ($n \ge 2$). Số lượng các cây khác nhau có thể tạo ra trên $n$ đỉnh này (hay số lượng cây khung của đồ thị đầy đủ $K_n$) là:
+        $$ n^{n-2} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng cách xây dựng <strong>Mã Prüfer (Prüfer Sequence)</strong>. Mục tiêu là thiết lập một <strong>song ánh</strong> giữa tập hợp tất cả các cây trên $n$ đỉnh, ký hiệu là $\mathcal{T}_n$, và tập hợp tất cả các dãy số có độ dài $n-2$ được tạo từ tập $\{1, 2, \dots, n\}$, ký hiệu là $S_n$. Do $|S_n| = n^{n-2}$, nếu song ánh tồn tại, $|\mathcal{T}_n| = n^{n-2}$.</p>
+
+        <p><strong>Phần 1: Xây dựng ánh xạ $\phi: \mathcal{T}_n \to S_n$ (Từ Cây sang Mã)</strong><br>
+        Cho một cây $T \in \mathcal{T}_n$. Ta lặp lại quá trình sau đúng $n-2$ lần:</p>
+        <ol>
+            <li>Tìm tất cả các lá của cây hiện tại. (Theo Định lý 1.1, luôn có ít nhất 2 lá).</li>
+            <li>Chọn lá có <strong>nhãn nhỏ nhất</strong>, gọi là $v$.</li>
+            <li>Gọi $u$ là đỉnh duy nhất kề với $v$. Ghi nhận nhãn của $u$ vào dãy mã.</li>
+            <li>Xóa lá $v$ và cạnh nối $v-u$ khỏi cây.</li>
+        </ol>
+        <p>Sau $n-2$ bước, cây chỉ còn lại đúng 2 đỉnh và 1 cạnh. Dãy thu được có độ dài $n-2$, gồm các số thuộc $\{1, \dots, n\}$. Đây chính là mã Prüfer của cây $T$. Do quy trình này hoàn toàn tất định, mỗi cây sinh ra duy nhất một mã.</p>
+
+        <p><strong>Bổ đề cấu trúc quan trọng:</strong> Đỉnh $k$ xuất hiện trong mã Prüfer với số lần đúng bằng $\deg(k) - 1$ trong cây ban đầu. (Lý do: mỗi lần đỉnh $k$ được ghi vào mã, tức là một nhánh của nó bị cắt đi. Lần cuối cùng nhánh cuối của $k$ bị cắt hoặc nó là 1 trong 2 đỉnh cuối cùng, nó không được ghi. Do đó nó được ghi $\deg(k)-1$ lần). Hệ quả: Các đỉnh KHÔNG xuất hiện trong mã Prüfer chính là các LÁ ban đầu của cây.</p>
+
+        <p><strong>Phần 2: Xây dựng ánh xạ ngược $\psi: S_n \to \mathcal{T}_n$ (Từ Mã về Cây)</strong><br>
+        Cho một dãy $P = (p_1, p_2, \dots, p_{n-2})$ bất kỳ thuộc $S_n$.<br>
+        Ta chuẩn bị một danh sách các nhãn khả dụng $L = \{1, 2, \dots, n\}$.<br>
+        Ta lặp lại quy trình sau $n-2$ bước, với $i$ chạy từ $1$ đến $n-2$:</p>
+        <ol>
+            <li>Xét tập hợp các đỉnh hiện có trong $L$ nhưng <strong>không xuất hiện</strong> trong phần còn lại của dãy $P$ (từ $p_i$ đến $p_{n-2}$).</li>
+            <li>Tìm đỉnh có <strong>nhãn nhỏ nhất</strong> trong tập này, gọi là $v$. Đỉnh $v$ này chính xác là lá đã bị cắt ở bước tương ứng khi tạo mã.</li>
+            <li>Nối một cạnh giữa $v$ và $p_i$.</li>
+            <li>Loại bỏ $v$ khỏi danh sách $L$.</li>
+        </ol>
+        <p>Sau $n-2$ bước, dãy $P$ được xử lý hết, danh sách $L$ còn lại đúng 2 đỉnh. Ta nối một cạnh giữa 2 đỉnh cuối cùng này.<br>
+        Quy trình này luôn xây dựng được chính xác $n-1$ cạnh. Đồ thị tạo ra liên thông và có $n-1$ cạnh trên $n$ đỉnh nên bắt buộc là một cây.<br>
+        Bởi vì quy trình mã hóa và giải mã là hai quá trình xác định và là nghịch đảo của nhau (do tính duy nhất của việc chọn phần tử nhỏ nhất không thuộc mã), ánh xạ là một song ánh. Định lý Cayley được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Kiểm soát Bậc của Đỉnh)</div>
+        Cho $n$ đỉnh phân biệt. Tìm số lượng cây có thể tạo ra sao cho đỉnh mang nhãn $1$ có bậc đúng bằng $k$ (với $1 \le k \le n-1$).
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trực tiếp đếm số cấu trúc đồ thị thỏa mãn ràng buộc về bậc là một khó khăn nếu dùng quy nạp. Ta sẽ sử dụng Bổ đề cấu trúc của Mã Prüfer đã chứng minh ở Định lý 1.2.</p>
+        <p>Theo Bổ đề, một đỉnh $v$ có bậc $d_v$ trong cây khi và chỉ khi nhãn của $v$ xuất hiện chính xác $d_v - 1$ lần trong mã Prüfer tương ứng.<br>
+        Yêu cầu của bài toán là đỉnh mang nhãn $1$ có bậc $\deg(1) = k$.<br>
+        Điều này tương đương với việc: Trong mã Prüfer của cây (có độ dài $n-2$), số $1$ xuất hiện đúng $k-1$ lần.<br>
+        Bài toán trở thành bài toán đếm số lượng mã Prüfer thỏa mãn điều kiện này.<br>
+        Mã Prüfer là một dãy gồm $n-2$ vị trí.</p>
+        <ul>
+            <li> <strong>Bước 1:</strong> Chọn $k-1$ vị trí trong tổng số $n-2$ vị trí để đặt số $1$.<br>
+            Số cách chọn là: $\binom{n-2}{k-1}$.</li>
+            <li> <strong>Bước 2:</strong> Điền các giá trị vào $(n-2) - (k-1) = n - k - 1$ vị trí còn lại trong mã.<br>
+            Vì tại các vị trí này không được phép điền số $1$, ta chỉ có thể chọn từ $n-1$ giá trị còn lại (từ $2$ đến $n$).<br>
+            Các vị trí độc lập với nhau, nên số cách điền là: $(n-1)^{n-k-1}$.</li>
+        </ul>
+
+        <p>Do cấu trúc song ánh của mã Prüfer, mỗi dãy tạo ra tương ứng với duy nhất một cây thỏa mãn yêu cầu. Số lượng cây thỏa mãn là tích của các bước:</p>
+        $$ S = \binom{n-2}{k-1} (n-1)^{n-k-1} $$
+        <p>Việc trừu tượng hóa một cấu trúc hình học phức tạp thành một dãy số tuyến tính đã cho phép chúng ta giải quyết bài toán đếm bằng quy tắc nhân cơ bản. </p>
+        <p><em>(Nếu tính tổng biểu thức này cho mọi $k$ từ $1$ đến $n-1$, theo Nhị thức Newton, ta sẽ thu được $\sum_{k=1}^{n-1} \binom{n-2}{k-1} 1^{k-1} (n-1)^{n-2-(k-1)} = (1 + (n-1))^{n-2} = n^{n-2}$, đúng bằng Định lý Cayley).</em></p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Bài toán Đếm cấu hình tổng quát - Multinomial Trees)</div>
+        Cho dãy $n$ số nguyên dương $d_1, d_2, \dots, d_n$ thỏa mãn $\sum_{i=1}^n d_i = 2n-2$. Chứng minh rằng số lượng các cây tạo từ $n$ đỉnh phân biệt $\{1, 2, \dots, n\}$ sao cho đỉnh $i$ có bậc chính xác bằng $d_i$ là:
+        $$ \frac{(n-2)!}{(d_1-1)!(d_2-1)!\dots(d_n-1)!} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo Bổ đề cấu trúc của Mã Prüfer, đỉnh $i$ có bậc $\deg(i) = d_i$ trong cây nếu và chỉ nếu số $i$ xuất hiện đúng $d_i - 1$ lần trong mã Prüfer của cây đó.<br>
+        Tổng số lần xuất hiện của tất cả các đỉnh trong mã Prüfer là:</p>
+        $$ \sum_{i=1}^n (d_i - 1) = \sum_{i=1}^n d_i - n = (2n - 2) - n = n - 2 $$
+        <p>Điều này khớp với độ dài thực tế của một mã Prüfer bất kỳ.</p>
+        <p>Bài toán quy về việc tìm số lượng các cách sắp xếp một dãy độ dài $n-2$, trong đó phần tử $1$ xuất hiện $(d_1-1)$ lần, phần tử $2$ xuất hiện $(d_2-1)$ lần, ..., phần tử $n$ xuất hiện $(d_n-1)$ lần.<br>
+        Đây là bài toán về hoán vị lặp (hoặc hệ số đa thức - multinomial coefficient) như đã chứng minh ở Định lý 0.1. Số lượng các hoán vị phân biệt là giao của tập hợp giai thừa chia cho các giai thừa thành phần:</p>
+        $$ S = \frac{(n-2)!}{(d_1-1)! (d_2-1)! \dots (d_n-1)!} $$
+        <p>Vì mã Prüfer thiết lập một song ánh, số lượng cách xếp dãy này cũng chính bằng số lượng cây thỏa mãn cấu trúc bậc mong muốn. Sự kết nối giữa hoán vị lặp và bậc của cây có liên hệ chặt chẽ với các cấu trúc cây đệ quy.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (IMO Shortlist / Đồng nhất thức sinh cho Cây)</div>
+        Sử dụng cấu trúc của Mã Prüfer, hãy chứng minh đồng nhất thức đại số sau trên đa thức $n$ biến $x_1, x_2, \dots, x_n$:
+        $$ \sum_{T \in \mathcal{T}_n} \left( \prod_{i=1}^n x_i^{\deg_T(i) - 1} \right) = (x_1 + x_2 + \dots + x_n)^{n-2} $$
+        Trong đó, $\mathcal{T}_n$ là tập hợp tất cả $n^{n-2}$ cây khung trên $n$ đỉnh, và $\deg_T(i)$ là bậc của đỉnh $i$ trong cây $T$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sẽ chứng minh đồng nhất thức này bằng cách diễn giải hai vế theo góc độ của tổ hợp đếm.</p>
+
+        <p><strong>Xét vế phải (Vế đa thức):</strong><br>
+        Biểu thức $(x_1 + x_2 + \dots + x_n)^{n-2}$ có thể được hiểu là việc khai triển một tích gồm $n-2$ nhân tử, mỗi nhân tử là tổng $(x_1 + \dots + x_n)$.<br>
+        Khi nhân phân phối biểu thức này, mỗi số hạng trong khai triển tương ứng với việc chọn một biến $x_{p_j}$ từ nhân tử thứ $j$ (với $j$ từ $1$ đến $n-2$).<br>
+        Do đó, mỗi chuỗi lựa chọn $(p_1, p_2, \dots, p_{n-2})$ sinh ra một đơn thức dạng:</p>
+        $$ x_{p_1} \cdot x_{p_2} \dots x_{p_{n-2}} $$
+        <p>Tổng của tất cả các chuỗi lựa chọn này tạo thành vế phải. Lưu ý rằng một chuỗi lựa chọn $(p_1, p_2, \dots, p_{n-2})$ chính là một dãy số bất kỳ có độ dài $n-2$ được tạo từ tập $\{1, 2, \dots, n\}$.<br>
+        Như vậy, vế phải chính là tổng của tất cả các đơn thức tương ứng với mọi Mã Prüfer có thể có.</p>
+
+        <p><strong>Xét vế trái (Vế tổ hợp cây):</strong><br>
+        Thay vì duyệt qua mọi Mã Prüfer, ta duyệt qua tập hợp tất cả các cây $T \in \mathcal{T}_n$.<br>
+        Theo định lý Cayley và song ánh Prüfer, mỗi cây $T$ tương ứng với duy nhất một Mã Prüfer $P(T) = (p_1, p_2, \dots, p_{n-2})$.<br>
+        Theo Bổ đề cấu trúc, trong mã $P(T)$, số lần xuất hiện của đỉnh $i$ chính là $\deg_T(i) - 1$.<br>
+        Do đó, khi ta tạo đơn thức từ dãy mã $P(T)$ bằng cách nhân tất cả các phần tử lại với nhau:</p>
+        $$ \prod_{j=1}^{n-2} x_{p_j} = \prod_{i=1}^n x_i^{\text{số lần xuất hiện của } i} = \prod_{i=1}^n x_i^{\deg_T(i) - 1} $$
+        <p>Như vậy, tổng $\sum_{T \in \mathcal{T}_n} \left( \prod_{i=1}^n x_i^{\deg_T(i) - 1} \right)$ chính xác là quá trình cộng tất cả các đơn thức sinh ra từ mọi Mã Prüfer hợp lệ, nhưng được nhóm lại theo cấu trúc đồ thị cây.</p>
+
+        <p>Vì ánh xạ giữa Mã Prüfer và Cây là một song ánh, tổng của các đơn thức khi duyệt qua mọi Mã Prüfer (vế phải) bắt buộc phải bằng tổng của các đơn thức khi duyệt qua mọi Cây (vế trái).<br>
+        Đồng nhất thức được chứng minh. Đẳng thức này là một dạng mở rộng của Định lý Cayley, từ đó ta có thể dễ dàng suy ra số lượng cây bằng cách thay $x_1 = x_2 = \dots = x_n = 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

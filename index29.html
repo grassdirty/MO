@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp và Lý thuyết Đồ thị - Đồ thị phẳng và Định lý Mantel</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP VÀ LÝ THUYẾT ĐỒ THỊ <br> ĐỒ THỊ PHẲNG VÀ ĐỊNH LÝ MANTEL</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Mô hình hóa các mối quan hệ rời rạc bằng đồ thị là một kỹ thuật đếm và lập luận quan trọng trong Tổ hợp. Chuyên đề này hình thức hóa các khái niệm đồ thị cơ bản, thiết lập Bổ đề Bắt tay và Công thức Euler cho đồ thị phẳng. Đồng thời, Định lý Mantel được trình bày nhằm giải quyết các bài toán tối ưu về số lượng cạnh trong cấu trúc không chứa tam giác. Các định lý được chứng minh chi tiết bằng các kỹ thuật đại số và quy nạp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Đồ thị là một nhánh của Toán rời rạc thường được giảng dạy ở bậc Đại học hoặc đội tuyển chuyên Toán. Dưới đây là các cơ sở trực quan giúp học sinh cấp 3 dễ tiếp cận chuyên đề này:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Cách tiếp cận trực quan về Đồ thị)</div>
+        Một <strong>đồ thị</strong> có thể được hình dung như một bản đồ, trong đó tập hợp các điểm (như các thành phố) được gọi là <strong>đỉnh</strong>, và các đường nối giữa hai điểm (như đường giao thông) được gọi là <strong>cạnh</strong>.<br>
+        Hai đỉnh được gọi là <strong>kề nhau</strong> nếu có một cạnh nối trực tiếp giữa chúng.
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Phương pháp 0.1 (Đếm bằng hai cách - Double Counting)</div>
+        Đếm bằng hai cách là phương pháp tính số lượng của một đại lượng tổ hợp (ví dụ: các cặp phần tử có quan hệ với nhau) theo hai góc nhìn khác nhau. Kết quả của hai cách đếm luôn bằng nhau, từ đó thiết lập được các phương trình hoặc đẳng thức Toán học. Kỹ thuật này được áp dụng trực tiếp để chứng minh Bổ đề Bắt tay dưới đây.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đồ thị, Bậc của đỉnh và Đồ thị phẳng)</div>
+        <ul>
+            <li> <strong>Đồ thị (Graph):</strong> Một đồ thị $G = (V, E)$ bao gồm một tập hợp các đỉnh $V$ và một tập hợp các cạnh $E$, trong đó mỗi cạnh nối một cặp đỉnh.</li>
+            <li> <strong>Bậc của đỉnh (Degree):</strong> Bậc của đỉnh $v$, ký hiệu là $\deg(v)$, là số lượng các cạnh liên kết trực tiếp với đỉnh $v$.</li>
+            <li> <strong>Đồ thị phẳng (Planar Graph):</strong> Là đồ thị có thể được vẽ trên một mặt phẳng sao cho không có hai cạnh nào cắt nhau (ngoại trừ tại các đỉnh chung). Bản vẽ như vậy chia mặt phẳng thành các vùng gọi là các <strong>miền</strong> (faces), bao gồm cả một miền vô hạn bao quanh bên ngoài.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Bắt tay - Handshaking Lemma)</div>
+        Đối với một đồ thị vô hướng bất kỳ $G = (V, E)$, tổng bậc của tất cả các đỉnh luôn bằng 2 lần số lượng cạnh của đồ thị.
+        $$ \sum_{v \in V} \deg(v) = 2|E| $$
+        Hệ quả: Trong mọi đồ thị, số lượng các đỉnh có bậc lẻ luôn là một số chẵn.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp đếm bằng hai cách (đếm số "đầu mút" của các cạnh).</p>
+        <p>Một cạnh $e \in E$ nối hai đỉnh $u$ và $v$, do đó mỗi cạnh có đúng 2 đầu mút. <br>
+        Tổng số đầu mút của toàn bộ các cạnh trong đồ thị là $2|E|$.</p>
+        <p>Mặt khác, bậc của một đỉnh $v$ (tức là $\deg(v)$) chính là số lượng các đầu mút hội tụ tại đỉnh $v$ đó. <br>
+        Nếu ta tính tổng số đầu mút bằng cách lấy tổng bậc của tất cả các đỉnh trong tập hợp $V$, ta sẽ đếm được số lượng đầu mút trong đồ thị.<br>
+        Do đó, $\sum_{v \in V} \deg(v) = 2|E|$.</p>
+        <p>Vì $2|E|$ luôn là một số chẵn, nên tổng các bậc chẵn và các bậc lẻ phải là một số chẵn. Các bậc chẵn cộng lại sinh ra số chẵn, nên tổng của các bậc lẻ cũng phải là một số chẵn, suy ra số lượng đỉnh bậc lẻ phải là số chẵn.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Công thức Euler cho Đồ thị Phẳng)</div>
+        Đối với mọi đồ thị phẳng, liên thông có $V$ đỉnh, $E$ cạnh và chia mặt phẳng thành $F$ miền, ta luôn có hệ thức:
+        $$ V - E + F = 2 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp toán học theo số lượng cạnh $E$.</p>
+        <p><strong>Bước cơ sở:</strong> Giả sử $E = V - 1$. Vì đồ thị liên thông và số cạnh bằng số đỉnh trừ 1, đồ thị này phải là một cây (không chứa bất kỳ chu trình nào).<br>
+        Một đồ thị không có chu trình không thể khoanh vùng bất kỳ khu vực nào trên mặt phẳng, do đó nó chỉ có đúng 1 miền duy nhất (là miền vô hạn bên ngoài). Vậy $F = 1$.<br>
+        Thay vào công thức: $V - (V-1) + 1 = V - V + 1 + 1 = 2$. Công thức đúng cho mọi cây.</p>
+
+        <p><strong>Bước quy nạp:</strong> Giả sử công thức đúng cho mọi đồ thị phẳng liên thông có $E = k$ cạnh ($k \ge V-1$).<br>
+        Ta xét một đồ thị phẳng liên thông có $k+1$ cạnh. Vì số cạnh lớn hơn $V-1$, đồ thị này chứa ít nhất một chu trình.<br>
+        Chọn một cạnh $e$ bất kỳ nằm trên một chu trình của đồ thị và xóa cạnh $e$ này đi.<br>
+        Gọi đồ thị mới là $G'$. Vì cạnh $e$ nằm trên một chu trình, việc xóa $e$ không làm mất tính liên thông của đồ thị.<br>
+        Đồ thị $G'$ có số đỉnh $V' = V$, số cạnh $E' = (k+1) - 1 = k$.</p>
+        <p>Cạnh $e$ đóng vai trò ranh giới phân tách hai miền phân biệt của đồ thị ban đầu. Khi xóa cạnh $e$, ranh giới này biến mất, hai miền đó hợp nhất thành một miền. Do đó, số miền của đồ thị mới giảm đi 1, tức là $F' = F - 1$.</p>
+        <p>Theo giả thiết quy nạp, công thức Euler đúng với đồ thị $G'$ (vì nó có $k$ cạnh):</p>
+        $$ V' - E' + F' = 2 $$
+        <p>Thay $V' = V$, $E' = E - 1$ và $F' = F - 1$ vào phương trình:</p>
+        $$ V - (E - 1) + (F - 1) = 2 \implies V - E + 1 + F - 1 = 2 \implies V - E + F = 2 $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Định lý Mantel)</div>
+        Ký hiệu $V$ là số lượng đỉnh và $E$ là số lượng cạnh. Số cạnh tối đa của một đồ thị không chứa tam giác (tức là không chứa chu trình độ dài 3) được giới hạn bởi:
+        $$ E \le \left\lfloor \frac{V^2}{4} \right\rfloor $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bất đẳng thức này bằng công cụ đại số (Bất đẳng thức Cauchy-Schwarz).<br>
+        Xét một cạnh tùy ý nối hai đỉnh $u$ và $v$ của đồ thị. <br>
+        Vì đồ thị không chứa tam giác, đỉnh $u$ và đỉnh $v$ không thể có chung bất kỳ đỉnh kề nào. <br>
+        Nói cách khác, tập hợp các đỉnh kề với $u$ và tập hợp các đỉnh kề với $v$ là hai tập hợp rời nhau.<br>
+        Tổng số lượng đỉnh trong hai tập hợp này không vượt quá tổng số đỉnh của đồ thị. Do đó:</p>
+        $$ \deg(u) + \deg(v) \le V \quad \text{với mọi cạnh } uv \in E $$
+        <p>Lấy tổng bất đẳng thức này trên tất cả $|E|$ cạnh của đồ thị:</p>
+        $$ \sum_{uv \in E} (\deg(u) + \deg(v)) \le E \cdot V \quad (1) $$
+        <p>Mặt khác, trong tổng $\sum_{uv \in E} (\deg(u) + \deg(v))$, bậc của mỗi đỉnh $x$ được cộng đúng $\deg(x)$ lần (bởi vì đỉnh $x$ tham gia vào đúng $\deg(x)$ cạnh). <br>
+        Do đó, tổng trên bằng tổng bình phương các bậc:</p>
+        $$ \sum_{uv \in E} (\deg(u) + \deg(v)) = \sum_{x \in V} \deg(x)^2 $$
+        <p>Áp dụng Bất đẳng thức Cauchy-Schwarz cho $V$ phần tử $\deg(x)$:</p>
+        $$ \sum_{x \in V} \deg(x)^2 \ge \frac{1}{V} \left( \sum_{x \in V} \deg(x) \right)^2 $$
+        <p>Theo Bổ đề Bắt tay (Định lý 1.1), $\sum_{x \in V} \deg(x) = 2E$. Thay vào:</p>
+        $$ \sum_{x \in V} \deg(x)^2 \ge \frac{(2E)^2}{V} = \frac{4E^2}{V} $$
+        <p>Kết hợp kết quả này với bất đẳng thức $(1)$:</p>
+        $$ \frac{4E^2}{V} \le E \cdot V \implies 4E \le V^2 \implies E \le \frac{V^2}{4} $$
+        <p>Vì số lượng cạnh $E$ là một số nguyên, ta có $E \le \lfloor V^2 / 4 \rfloor$. Định lý được chứng minh. (Dấu bằng xảy ra khi đồ thị là một đồ thị hai phía hoàn chỉnh $K_{\lfloor V/2 \rfloor, \lceil V/2 \rceil}$).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Hệ quả hình học của Công thức Euler)</div>
+        Chứng minh rằng đối với một đồ thị phẳng liên thông, đơn (không có cạnh kép và khuyên), có số đỉnh $V \ge 3$, số lượng cạnh $E$ luôn thỏa mãn:
+        $$ E \le 3V - 6 $$
+        Hệ quả: Mọi đồ thị phẳng luôn chứa ít nhất một đỉnh có bậc nhỏ hơn hoặc bằng 5.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p><strong>1. Chứng minh bất đẳng thức cạnh:</strong></p>
+        <p>Xét một đồ thị phẳng đơn, liên thông với $V \ge 3$. <br>
+        Mỗi miền $f$ của đồ thị được bao quanh bởi một chu trình các cạnh. Vì đồ thị không có cạnh kép và khuyên, chu trình ngắn nhất có thể tồn tại là một tam giác. <br>
+        Do đó, mỗi miền được bao quanh bởi ít nhất 3 cạnh.</p>
+        <p>Nếu ta lấy tổng số lượng cạnh bao quanh tất cả các miền trong đồ thị, giá trị này sẽ lớn hơn hoặc bằng $3F$:</p>
+        $$ \text{Tổng số cạnh bao} \ge 3F $$
+        <p>Mặt khác, trong bản vẽ phẳng, mỗi cạnh chia tách tối đa 2 miền (nó là biên chung của nhiều nhất 2 miền).<br>
+        Do đó, khi đếm tổng số cạnh theo từng miền, mỗi cạnh trong đồ thị được đếm tối đa 2 lần.<br>
+        Suy ra:</p>
+        $$ \text{Tổng số cạnh bao} \le 2E $$
+        <p>Kết hợp hai đánh giá này lại, ta có:</p>
+        $$ 3F \le 2E \implies F \le \frac{2E}{3} $$
+        <p>Theo Công thức Euler (Định lý 1.2), $V - E + F = 2$. Do đó $F = E - V + 2$.<br>
+        Thay biểu thức của $F$ vào bất đẳng thức trên:</p>
+        $$ E - V + 2 \le \frac{2E}{3} $$
+        <p>Nhân cả hai vế với 3:</p>
+        $$ 3E - 3V + 6 \le 2E \implies E \le 3V - 6 $$
+
+        <p><strong>2. Chứng minh hệ quả:</strong></p>
+        <p>Giả sử phản chứng rằng không tồn tại đỉnh nào có bậc $\le 5$. Tức là mọi đỉnh trong đồ thị phẳng đều có bậc lớn hơn hoặc bằng 6 ($\deg(v) \ge 6, \forall v \in V$).<br>
+        Khi đó, tổng bậc của tất cả các đỉnh thỏa mãn:</p>
+        $$ \sum_{v \in V} \deg(v) \ge 6V $$
+        <p>Theo Bổ đề Bắt tay (Định lý 1.1), tổng bậc bằng $2E$. Suy ra:</p>
+        $$ 2E \ge 6V \implies E \ge 3V $$
+        <p>Tuy nhiên, điều này mâu thuẫn với bất đẳng thức ta vừa chứng minh: $E \le 3V - 6$.<br>
+        Sự mâu thuẫn chứng tỏ giả thiết phản chứng sai. Phải tồn tại ít nhất một đỉnh có bậc $\le 5$. Đây là một tính chất quan trọng hỗ trợ chứng minh Định lý 4 màu trên mặt phẳng.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (USA TST - Đồ thị phẳng không chứa tam giác)</div>
+        Cho một đồ thị có $V$ đỉnh ($V \ge 3$). Biết rằng đồ thị là phẳng và không chứa tam giác (không có chu trình độ dài 3). Chứng minh rằng số lượng cạnh $E$ của đồ thị thỏa mãn:
+        $$ E \le 2V - 4 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sử dụng phương pháp đếm tương tự như Bài toán 2.1, nhưng tinh chỉnh lại độ dài biên của các miền.<br>
+        Vì đồ thị phẳng được giả thiết là không chứa tam giác, chu trình ngắn nhất có thể tạo ra một miền phải có độ dài ít nhất là 4 (chẳng hạn như một tứ giác).<br>
+        Do đó, mỗi miền $F$ của đồ thị được bao quanh bởi ít nhất 4 cạnh.<br>
+        Tính tổng số cạnh bao quanh tất cả các miền, ta thu được:</p>
+        $$ \text{Tổng số cạnh bao} \ge 4F $$
+        <p>Tương tự như trước, mỗi cạnh có thể làm ranh giới cho tối đa 2 miền, do đó khi đếm theo miền, một cạnh bị đếm không quá 2 lần:</p>
+        $$ \text{Tổng số cạnh bao} \le 2E $$
+        <p>Từ hai đánh giá trên, ta có bất đẳng thức:</p>
+        $$ 4F \le 2E \implies 2F \le E \implies F \le \frac{E}{2} $$
+        <p>Sử dụng Công thức Euler cho đồ thị phẳng ($V - E + F = 2$):</p>
+        $$ F = E - V + 2 $$
+        <p>Thay vào bất đẳng thức vừa thiết lập:</p>
+        $$ E - V + 2 \le \frac{E}{2} $$
+        <p>Chuyển các thành phần chứa $E$ sang một vế:</p>
+        $$ E - \frac{E}{2} \le V - 2 \implies \frac{E}{2} \le V - 2 $$
+        <p>Nhân cả hai vế với 2:</p>
+        $$ E \le 2V - 4 $$
+        <p>Bất đẳng thức được chứng minh. Hệ quả trực tiếp của bài toán này là mọi đồ thị phẳng không chứa tam giác luôn có một đỉnh có bậc nhỏ hơn hoặc bằng 3.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian National Olympiad - Cấu trúc Bậc của Cây)</div>
+        Cho một đồ thị dạng cây (liên thông, không chứa chu trình) có $V \ge 2$ đỉnh. Gọi $n_i$ là số lượng các đỉnh có bậc $i$ trong cây. Gọi $k$ là bậc lớn nhất của một đỉnh trong cây. Chứng minh hệ thức:
+        $$ n_1 = 2 + n_3 + 2n_4 + 3n_5 + \dots + (k-2)n_k $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì đồ thị được cho là một cây có $V$ đỉnh, theo tính chất cơ bản của cây, số lượng cạnh của nó luôn là $E = V - 1$.<br>
+        Tổng số đỉnh của đồ thị là tổng của số lượng các đỉnh theo từng bậc:</p>
+        $$ V = n_1 + n_2 + n_3 + \dots + n_k = \sum_{i=1}^k n_i $$
+        <p>Do đó, số lượng cạnh của cây là:</p>
+        $$ E = \sum_{i=1}^k n_i - 1 $$
+        <p>Theo Bổ đề Bắt tay (Định lý 1.1), tổng bậc của tất cả các đỉnh bằng $2E$.<br>
+        Mặt khác, tổng bậc có thể được tính bằng cách lấy bậc $i$ nhân với số lượng đỉnh có bậc $i$ ($n_i$):</p>
+        $$ \sum_{i=1}^k i \cdot n_i = 2E $$
+        <p>Thay biểu thức của $E$ vào:</p>
+        $$ \sum_{i=1}^k i \cdot n_i = 2 \left( \sum_{i=1}^k n_i - 1 \right) = 2 \sum_{i=1}^k n_i - 2 $$
+        <p>Khai triển hai vế của phương trình:</p>
+        $$ n_1 + 2n_2 + 3n_3 + 4n_4 + \dots + k n_k = 2n_1 + 2n_2 + 2n_3 + 2n_4 + \dots + 2n_k - 2 $$
+        <p>Tiến hành rút gọn hai vế:</p>
+        <ul>
+            <li>Số hạng $2n_2$ xuất hiện ở cả hai vế nên bị triệt tiêu.</li>
+            <li>Chuyển $n_1$ từ vế trái sang vế phải: $2n_1 - n_1 = n_1$.</li>
+            <li>Chuyển số hạng $-2$ từ vế phải sang vế trái thành $2$.</li>
+            <li>Chuyển tất cả các số hạng từ bậc 3 trở lên sang vế phải:</li>
+        </ul>
+        $$ 2 = n_1 + (2n_3 - 3n_3) + (2n_4 - 4n_4) + \dots + (2n_k - k n_k) $$
+        $$ 2 = n_1 - n_3 - 2n_4 - \dots - (k-2)n_k $$
+        <p>Chuyển tất cả các số hạng mang dấu âm trở lại vế trái:</p>
+        $$ n_1 = 2 + n_3 + 2n_4 + 3n_5 + \dots + (k-2)n_k $$
+        <p>Đẳng thức được chứng minh. Đẳng thức này cũng cho thấy rằng bất kỳ cây nào có ít nhất 2 đỉnh đều có ít nhất 2 đỉnh treo (đỉnh bậc 1, hay còn gọi là lá), vì $n_1 \ge 2$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

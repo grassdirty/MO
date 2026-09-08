@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đa thức Chebyshev và tính chất cực trị</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐA THỨC <br> ĐA THỨC CHEBYSHEV VÀ TÍNH CHẤT CỰC TRỊ MINIMAX</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đa thức</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các đa thức có độ lệch tối thiểu so với trục hoành là một bài toán tối ưu trong đại số xấp xỉ. Chuyên đề này hình thức hóa Đa thức Chebyshev loại một thông qua phép lượng giác hóa trên đoạn $[-1, 1]$. Định lý Minimax (cực đại cực tiểu) được thiết lập và chứng minh chi tiết dựa trên số lượng nghiệm của phương trình đan dấu. Các bài toán áp dụng khai thác tính bị chặn của hệ số và khả năng bảo toàn nghiệm trên các khoảng biến thiên.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Việc chứng minh các tính chất của đa thức Chebyshev đòi hỏi nền tảng vững chắc về Giải tích và Đại số. Dưới đây là hai định lý quan trọng được bổ sung để hỗ trợ quá trình chứng minh các định lý chính:</i></p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Định lý đồng nhất đa thức)</div>
+        Nếu hai đa thức $P(x)$ và $Q(x)$ có bậc không vượt quá $n$ và nhận cùng giá trị tại $n+1$ điểm phân biệt, thì chúng đồng nhất với nhau, tức là $P(x) = Q(x)$ với mọi $x \in \mathbb{R}$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét đa thức hiệu $H(x) = P(x) - Q(x)$. Do $\deg P \le n$ và $\deg Q \le n$, ta có $\deg H \le n$.</p>
+        <p>Giả sử $P(x)$ và $Q(x)$ bằng nhau tại $n+1$ điểm phân biệt $x_1, x_2, \dots, x_{n+1}$. Khi đó $H(x_i) = 0$ với mọi $i = 1, 2, \dots, n+1$.</p>
+        <p>Theo Định lý Bézout, một đa thức bậc $n$ chỉ có tối đa $n$ nghiệm phân biệt trừ khi nó là đa thức không. Vì $H(x)$ có $n+1$ nghiệm phân biệt, $H(x)$ phải là đa thức không, tức là $H(x) \equiv 0$. Suy ra $P(x) \equiv Q(x)$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.2 (Định lý Bolzano / Định lý giá trị trung gian)</div>
+        Nếu hàm số $f(x)$ liên tục trên một đoạn đóng $[a, b]$ và thỏa mãn $f(a) \cdot f(b) < 0$ (tức là $f(x)$ đổi dấu ở hai đầu mút), thì phương trình $f(x) = 0$ có ít nhất một nghiệm nằm trong khoảng $(a, b)$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử $f(a) < 0$ và $f(b) > 0$. Gọi $S = \{x \in [a, b] \mid f(x) < 0\}$. Tập $S$ khác rỗng (vì $a \in S$) và bị chặn trên (bởi $b$).</p>
+        <p>Theo tính chất đầy đủ của số thực, tập $S$ có một supremum (cận trên đúng), gọi là $c = \sup S$. Ta chứng minh $f(c) = 0$.</p>
+        <p>Nếu $f(c) < 0$, do tính liên tục, tồn tại một lân cận của $c$ mà các giá trị của $f(x)$ vẫn âm. Khi đó sẽ có điểm lớn hơn $c$ thuộc $S$, mâu thuẫn với $c = \sup S$.</p>
+        <p>Nếu $f(c) > 0$, cũng do tính liên tục, tồn tại một lân cận của $c$ mà các giá trị của $f(x)$ vẫn dương. Khi đó $c$ không thể là cận trên nhỏ nhất của các điểm làm cho $f$ âm, cũng dẫn đến mâu thuẫn.</p>
+        <p>Vậy bắt buộc $f(c) = 0$, nghĩa là $c$ là một nghiệm của phương trình trên khoảng $(a, b)$. Mọi đa thức đều là hàm liên tục, nên định lý này áp dụng được cho mọi hàm đa thức.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đa thức Chebyshev loại 1)</div>
+        Đa thức Chebyshev loại một bậc $n$ (với $n \ge 0$), ký hiệu là $T_n(x)$, được định nghĩa một cách duy nhất thỏa mãn hệ thức lượng giác:
+        $$ T_n(\cos \theta) = \cos(n\theta) \quad \text{với mọi } \theta \in \mathbb{R} $$
+        Bằng cách đặt $x = \cos \theta$, trên đoạn $[-1, 1]$, đa thức có dạng $T_n(x) = \cos(n \arccos x)$. Sự mở rộng của $T_n(x)$ trên toàn trục thực $\mathbb{R}$ được bảo đảm bởi tính liên tục và sự đồng nhất của đa thức.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Hệ thức truy hồi và Hệ số cao nhất)</div>
+        Dãy đa thức Chebyshev thỏa mãn điều kiện ban đầu $T_0(x) = 1$, $T_1(x) = x$ và hệ thức truy hồi tuyến tính:
+        $$ T_{n+1}(x) = 2x T_n(x) - T_{n-1}(x) \quad \text{với mọi } n \ge 1 $$
+        Hệ quả: Với $n \ge 1$, $T_n(x)$ là một đa thức bậc $n$ có hệ số cao nhất là $2^{n-1}$.
+    </div>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét khai triển lượng giác cho tổng hai góc:</p>
+        $$ \cos((n+1)\theta) + \cos((n-1)\theta) = 2 \cos\theta \cos(n\theta) $$
+        <p>Sử dụng định nghĩa $T_k(\cos\theta) = \cos(k\theta)$ và đặt $x = \cos\theta \in [-1, 1]$, ta thay vào hằng đẳng thức trên:</p>
+        $$ T_{n+1}(x) + T_{n-1}(x) = 2x T_n(x) \implies T_{n+1}(x) = 2x T_n(x) - T_{n-1}(x) $$
+        <p>Hệ thức này đúng với mọi $x \in [-1, 1]$. Vì hai đa thức $T_{n+1}(x)$ và $2xT_n(x) - T_{n-1}(x)$ nhận cùng giá trị tại vô số điểm trên đoạn $[-1, 1]$, theo Định lý đồng nhất đa thức (Định lý 0.1), chúng đồng nhất trên toàn bộ tập số thực $\mathbb{R}$.</p>
+        
+        <p>Chứng minh hệ quả bằng quy nạp: <br>
+        Với $n=1$, $T_1(x) = x$ có hệ số cao nhất là $1 = 2^0$.<br>
+        Với $n=2$, $T_2(x) = 2x(x) - 1 = 2x^2 - 1$, có hệ số cao nhất là $2 = 2^1$.<br>
+        Giả sử $T_n(x)$ có hệ số cao nhất là $2^{n-1}$ và $T_{n-1}(x)$ có bậc $n-1$.<br>
+        Theo hệ thức truy hồi, hệ số cao nhất của $T_{n+1}(x)$ được quyết định bởi hạng tử $2x \cdot T_n(x)$.<br>
+        Hệ số cao nhất của $T_{n+1}(x)$ là $2 \cdot 2^{n-1} = 2^n$. Bậc của $T_{n+1}(x)$ là $n+1$.<br>
+        Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Cấu trúc nghiệm và Điểm cực trị)</div>
+        Trên đoạn $[-1, 1]$, đa thức $T_n(x)$ ($n \ge 1$) có chính xác:
+        <ol>
+            <li> $n$ nghiệm phân biệt $x_k = \cos\left(\frac{(2k-1)\pi}{2n}\right)$ với $k = 1, 2, \dots, n$.</li>
+            <li> $n+1$ điểm cực trị cục bộ $x'_k = \cos\left(\frac{k\pi}{n}\right)$ với $k = 0, 1, \dots, n$. Tại các điểm này, $T_n(x'_k) = (-1)^k$.</li>
+        </ol>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>1. Tìm nghiệm:</strong> Xét phương trình $T_n(x) = 0$ trên đoạn $[-1, 1]$.<br>
+        Đặt $x = \cos\theta$ với $\theta \in [0, \pi]$.</p>
+        $$ \cos(n\theta) = 0 \iff n\theta = \frac{\pi}{2} + m\pi \iff \theta_k = \frac{(2k-1)\pi}{2n} $$
+        <p>Để $\theta_k \in [0, \pi]$, ta cho $k$ nhận các giá trị từ $1$ đến $n$. <br>
+        Các giá trị $\theta_k$ này sinh ra $n$ nghiệm phân biệt $x_k = \cos\left(\frac{(2k-1)\pi}{2n}\right)$. <br>
+        Vì đa thức bậc $n$ chỉ có tối đa $n$ nghiệm, đây là toàn bộ nghiệm của $T_n(x)$ trên $\mathbb{R}$.</p>
+
+        <p><strong>2. Tìm cực trị:</strong> Giá trị lớn nhất và nhỏ nhất của đa thức $\cos(n\theta)$ trên $\mathbb{R}$ là $1$ và $-1$.<br>
+        Phương trình $T_n(x) = \pm 1 \iff \cos(n\theta) = \pm 1 \iff n\theta = k\pi \iff \theta_k = \frac{k\pi}{n}$.<br>
+        Để $\theta_k \in [0, \pi]$, $k$ nhận các giá trị $0, 1, 2, \dots, n$.<br>
+        Tại các điểm $x'_k = \cos\left(\frac{k\pi}{n}\right)$, giá trị của đa thức là $T_n(x'_k) = \cos(k\pi) = (-1)^k$.<br>
+        Các giá trị đan dấu liên tiếp từ $1$ đến $-1$ tại $n+1$ điểm phân biệt trên đoạn $[-1, 1]$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Định lý Minimax - Tính chất cực đại - cực tiểu)</div>
+        Trong tất cả các đa thức <strong>đơn khởi</strong> (monic polynomial - hệ số cao nhất bằng 1) bậc $n \ge 1$ có hệ số thực, đa thức $\tilde{T}_n(x) = \frac{1}{2^{n-1}} T_n(x)$ là đa thức có giá trị tuyệt đối lớn nhất trên đoạn $[-1, 1]$ nhỏ nhất.<br>
+        Cụ thể, nếu $P(x)$ là đa thức đơn khởi bậc $n$, thì:
+        $$ \max_{x \in [-1, 1]} |P(x)| \ge \frac{1}{2^{n-1}} $$
+        Dấu đẳng thức xảy ra khi và chỉ khi $P(x) \equiv \tilde{T}_n(x)$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Theo Định lý 1.1, $T_n(x)$ có hệ số cao nhất là $2^{n-1}$. Do đó, $\tilde{T}_n(x) = \frac{1}{2^{n-1}} T_n(x)$ là một đa thức đơn khởi bậc $n$.<br>
+        Giá trị tuyệt đối lớn nhất của $\tilde{T}_n(x)$ trên $[-1, 1]$ đạt được tại $n+1$ điểm cực trị $x'_k = \cos\left(\frac{k\pi}{n}\right)$ và bằng:</p>
+        $$ |\tilde{T}_n(x'_k)| = \frac{1}{2^{n-1}} |(-1)^k| = \frac{1}{2^{n-1}} $$
+        <p>Vậy $\max_{[-1, 1]} |\tilde{T}_n(x)| = \frac{1}{2^{n-1}}$.</p>
+
+        <p>Ta chứng minh bằng phản chứng cho bất đẳng thức.<br>
+        Giả sử tồn tại một đa thức đơn khởi $P(x)$ bậc $n$ sao cho:</p>
+        $$ \max_{x \in [-1, 1]} |P(x)| < \frac{1}{2^{n-1}} $$
+        <p>Xét đa thức hiệu: $H(x) = \tilde{T}_n(x) - P(x)$.<br>
+        Vì cả $\tilde{T}_n(x)$ và $P(x)$ đều là đa thức đơn khởi bậc $n$ (hệ số của $x^n$ đều bằng 1), hệ số bậc cao nhất bị triệt tiêu khi trừ cho nhau.<br>
+        Do đó, đa thức $H(x)$ có bậc không vượt quá $n - 1$.<br>
+        Ta đánh giá giá trị của $H(x)$ tại $n+1$ điểm cực trị $x'_k$ của $T_n(x)$:</p>
+        $$ H(x'_k) = \tilde{T}_n(x'_k) - P(x'_k) = \frac{(-1)^k}{2^{n-1}} - P(x'_k) $$
+        <p>Theo giả thiết phản chứng, $|P(x'_k)| \le \max_{[-1, 1]} |P(x)| < \frac{1}{2^{n-1}}$.<br>
+        Nghĩa là $-\frac{1}{2^{n-1}} < P(x'_k) < \frac{1}{2^{n-1}}$.</p>
+        <ul>
+            <li>Nếu $k$ chẵn, $(-1)^k = 1$, ta có $\tilde{T}_n(x'_k) = \frac{1}{2^{n-1}}$. Suy ra $H(x'_k) = \frac{1}{2^{n-1}} - P(x'_k) > 0$.</li>
+            <li>Nếu $k$ lẻ, $(-1)^k = -1$, ta có $\tilde{T}_n(x'_k) = -\frac{1}{2^{n-1}}$. Suy ra $H(x'_k) = -\frac{1}{2^{n-1}} - P(x'_k) < 0$.</li>
+        </ul>
+        <p>Dãy giá trị $H(x'_0), H(x'_1), \dots, H(x'_n)$ đan dấu liên tục $n+1$ lần.<br>
+        Theo Định lý giá trị trung gian (Định lý 0.2), giữa hai điểm có giá trị trái dấu luôn tồn tại ít nhất một nghiệm.<br>
+        Vì có $n+1$ điểm đan dấu tạo thành $n$ khoảng, đa thức $H(x)$ phải có ít nhất $n$ nghiệm thực phân biệt trên đoạn $[-1, 1]$.</p>
+        
+        <p>Tuy nhiên, ta đã chứng minh $\deg H(x) \le n - 1$.<br>
+        Một đa thức có bậc không vượt quá $n-1$ nhưng lại có $n$ nghiệm phân biệt thì đa thức đó phải là đa thức không, tức là $H(x) \equiv 0$.<br>
+        Nếu $H(x) \equiv 0$, thì $P(x) \equiv \tilde{T}_n(x)$.<br>
+        Khi đó $\max_{[-1, 1]} |P(x)| = \frac{1}{2^{n-1}}$, điều này mâu thuẫn với giả thiết phản chứng $\max_{[-1, 1]} |P(x)| < \frac{1}{2^{n-1}}$.</p>
+        <p>Giả thiết phản chứng sai. <br>
+        Vậy $\max_{[-1, 1]} |P(x)| \ge \frac{1}{2^{n-1}}$, và dấu bằng chỉ xảy ra khi $P(x) \equiv \tilde{T}_n(x)$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Romanian TST - Chuyển đổi tịnh tiến và đánh giá đa thức)</div>
+        Cho $n$ là một số nguyên dương. Chứng minh rằng đối với mọi đa thức $P(x) = x^n + a_{n-1}x^{n-1} + \dots + a_1 x + a_0$ có hệ số thực, luôn tồn tại một số thực $x_0 \in [-2, 2]$ sao cho $|P(x_0)| \ge 2$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đa thức $P(x)$ là một đa thức đơn khởi bậc $n$, và khoảng cần đánh giá là $[-2, 2]$. <br>
+        Để áp dụng Định lý Minimax (Định lý 1.3) của đa thức Chebyshev vốn được định nghĩa trên đoạn $[-1, 1]$, ta cần thực hiện một phép đổi biến affine để ánh xạ đoạn $[-1, 1]$ lên đoạn $[-2, 2]$.<br>
+        Đặt $x = 2y$. Khi $y \in [-1, 1]$, ta có $x \in [-2, 2]$.<br>
+        Thay $x = 2y$ vào đa thức $P(x)$:</p>
+        $$ P(2y) = (2y)^n + a_{n-1}(2y)^{n-1} + \dots + a_1(2y) + a_0 $$
+        $$ P(2y) = 2^n y^n + a_{n-1}2^{n-1}y^{n-1} + \dots + 2a_1 y + a_0 $$
+        <p>Ta rút nhân tử $2^n$ ra ngoài để tạo ra một đa thức đơn khởi theo biến $y$:</p>
+        $$ P(2y) = 2^n \left( y^n + \frac{a_{n-1}}{2} y^{n-1} + \dots + \frac{a_0}{2^n} \right) $$
+        <p>Gọi đa thức trong ngoặc là $Q(y)$. Ta thấy $Q(y)$ là một đa thức đơn khởi bậc $n$ theo biến $y$.<br>
+        Áp dụng Định lý Minimax (Định lý 1.3) cho đa thức $Q(y)$ trên đoạn $[-1, 1]$:</p>
+        $$ \max_{y \in [-1, 1]} |Q(y)| \ge \frac{1}{2^{n-1}} $$
+        <p>Nghĩa là tồn tại một điểm $y_0 \in [-1, 1]$ sao cho $|Q(y_0)| \ge \frac{1}{2^{n-1}}$.<br>
+        Từ mối liên hệ giữa $P$ và $Q$, ta tính giá trị của $P(x)$ tại điểm $x_0 = 2y_0$:</p>
+        $$ |P(x_0)| = |P(2y_0)| = 2^n |Q(y_0)| $$
+        <p>Thay bất đẳng thức của $Q(y_0)$ vào:</p>
+        $$ |P(x_0)| \ge 2^n \cdot \frac{1}{2^{n-1}} = \frac{2^n}{2^{n-1}} = 2 $$
+        <p>Vì $y_0 \in [-1, 1]$, kéo theo $x_0 = 2y_0 \in [-2, 2]$.<br>
+        Bài toán được chứng minh. Phép đổi biến này cho phép áp dụng tính chất của đa thức Chebyshev trên các đoạn $[a, b]$ bất kỳ.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Vietnam TST - Giới hạn hệ số cao nhất)</div>
+        Cho $P(x) = a_n x^n + a_{n-1}x^{n-1} + \dots + a_1 x + a_0$ là một đa thức bậc $n$ với hệ số thực. Giả sử rằng $|P(x)| \le 1$ với mọi $x \in [-1, 1]$. Chứng minh rằng trị tuyệt đối của hệ số cao nhất không vượt quá $2^{n-1}$, tức là $|a_n| \le 2^{n-1}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nếu $a_n = 0$, bất đẳng thức $|0| \le 2^{n-1}$ đúng. Giả sử $a_n \neq 0$.<br>
+        Xét đa thức:</p>
+        $$ Q(x) = \frac{P(x)}{a_n} $$
+        <p>Bởi vì $P(x)$ có hệ số cao nhất là $a_n$, sau khi chia cho $a_n$, đa thức $Q(x)$ trở thành một đa thức đơn khởi bậc $n$:</p>
+        $$ Q(x) = x^n + \frac{a_{n-1}}{a_n}x^{n-1} + \dots + \frac{a_0}{a_n} $$
+        <p>Theo Định lý Minimax (Định lý 1.3) áp dụng cho đa thức đơn khởi $Q(x)$ trên đoạn $[-1, 1]$:</p>
+        $$ \max_{x \in [-1, 1]} |Q(x)| \ge \frac{1}{2^{n-1}} $$
+        <p>Tuy nhiên, từ định nghĩa của $Q(x)$ và giả thiết của bài toán, ta có $|P(x)| \le 1$ trên đoạn $[-1, 1]$. Suy ra:</p>
+        $$ \max_{x \in [-1, 1]} |Q(x)| = \max_{x \in [-1, 1]} \frac{|P(x)|}{|a_n|} \le \frac{1}{|a_n|} $$
+        <p>Kết hợp cả hai bất đẳng thức trên:</p>
+        $$ \frac{1}{|a_n|} \ge \frac{1}{2^{n-1}} $$
+        <p>Vì cả hai mẫu số đều là các số thực dương, lấy nghịch đảo hai vế sẽ làm đảo chiều bất đẳng thức:</p>
+        $$ |a_n| \le 2^{n-1} $$
+        <p>Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Phương trình vi phân Chebyshev)</div>
+        Chứng minh rằng đa thức Chebyshev loại một $T_n(x)$ thỏa mãn phương trình vi phân sau với mọi số thực $x \in (-1, 1)$:
+        $$ (1-x^2) T_n''(x) - x T_n'(x) + n^2 T_n(x) = 0 $$
+        <i>Lưu ý: Ký hiệu $T_n'(x)$ và $T_n''(x)$ lần lượt là đạo hàm bậc nhất và bậc hai của đa thức $T_n(x)$ theo biến $x$.</i>
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Với mọi $x \in (-1, 1)$, tồn tại duy nhất một góc $\theta \in (0, \pi)$ sao cho $x = \cos \theta$.<br>
+        Theo Định nghĩa 1.1, ta có:</p>
+        $$ T_n(\cos\theta) = \cos(n\theta) $$
+        <p>Thực hiện phép đạo hàm hai vế của phương trình này theo biến $\theta$. <br>
+        Sử dụng quy tắc đạo hàm hàm hợp (Chain Rule) cho vế trái:</p>
+        $$ \frac{d}{d\theta} [T_n(\cos\theta)] = T_n'(\cos\theta) \cdot (-\sin\theta) = - \sin\theta \cdot T_n'(x) $$
+        <p>Đạo hàm vế phải:</p>
+        $$ \frac{d}{d\theta} [\cos(n\theta)] = -n \sin(n\theta) $$
+        <p>Đồng nhất hai vế, ta thu được đạo hàm bậc nhất của đa thức Chebyshev:</p>
+        $$ - \sin\theta \cdot T_n'(x) = -n \sin(n\theta) \implies \sin\theta \cdot T_n'(x) = n \sin(n\theta) \quad (1) $$
+        <p>Tiếp tục lấy đạo hàm hai vế của phương trình $(1)$ theo biến $\theta$ một lần nữa.<br>
+        Áp dụng quy tắc đạo hàm của tích cho vế trái:</p>
+        $$ \frac{d}{d\theta} [\sin\theta \cdot T_n'(x)] = \cos\theta \cdot T_n'(x) + \sin\theta \cdot \left[ T_n''(\cos\theta) \cdot (-\sin\theta) \right] $$
+        $$ = \cos\theta \cdot T_n'(x) - \sin^2\theta \cdot T_n''(x) $$
+        <p>Đạo hàm vế phải của phương trình $(1)$:</p>
+        $$ \frac{d}{d\theta} [n \sin(n\theta)] = n^2 \cos(n\theta) $$
+        <p>Cân bằng hai vế sau khi lấy đạo hàm cấp hai:</p>
+        $$ \cos\theta \cdot T_n'(x) - \sin^2\theta \cdot T_n''(x) = n^2 \cos(n\theta) $$
+        <p>Bây giờ, ta chuyển lại toàn bộ các biểu thức lượng giác về đại số qua biến $x$:</p>
+        <ul>
+            <li> $\cos\theta = x$.</li>
+            <li> $\sin^2\theta = 1 - \cos^2\theta = 1 - x^2$.</li>
+            <li> $\cos(n\theta) = T_n(x)$ (theo định nghĩa).</li>
+        </ul>
+        <p>Thay các biểu thức này vào:</p>
+        $$ x T_n'(x) - (1-x^2) T_n''(x) = n^2 T_n(x) $$
+        <p>Chuyển tất cả các số hạng về một vế, ta thu được:</p>
+        $$ (1-x^2) T_n''(x) - x T_n'(x) + n^2 T_n(x) = 0 $$
+        <p>Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

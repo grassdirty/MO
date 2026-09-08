@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Đếm và Lý thuyết Đồ thị - Định lý Ramsey và Bài toán Tô màu</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP ĐẾM VÀ LÝ THUYẾT ĐỒ THỊ <br> ĐỊNH LÝ RAMSEY VÀ BÀI TOÁN TÔ MÀU</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Lý thuyết Ramsey nghiên cứu sự xuất hiện tất yếu của các cấu trúc có trật tự bên trong một hệ thống hỗn loạn đủ lớn. Chuyên đề này hình thức hóa Định lý Ramsey cho đồ thị đầy đủ $K_n$, thiết lập bất đẳng thức đệ quy xác định Số Ramsey $R(s,t)$. Thông qua các phương pháp tô màu cạnh và Nguyên lý Dirichlet, các bài toán ứng dụng giải quyết sự tồn tại của đồ thị con đồng màu và mở rộng sang lý thuyết số học với Định lý Schur.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Ramsey sử dụng các khái niệm cơ bản của Lý thuyết Đồ thị và Nguyên lý Dirichlet mở rộng. Dưới đây là các định nghĩa và định lý nền tảng giúp học sinh THPT dễ dàng tiếp cận chuyên đề này.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Đồ thị đầy đủ $K_n$)</div>
+        Đồ thị đầy đủ $n$ đỉnh, ký hiệu là $K_n$, là một đồ thị vô hướng mà cứ hai đỉnh phân biệt bất kỳ đều được nối với nhau bởi đúng một cạnh. Tổng số cạnh của đồ thị $K_n$ là $\binom{n}{2} = \frac{n(n-1)}{2}$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Nguyên lý Dirichlet mở rộng)</div>
+        Nếu đem chia $X + Y - 1$ đồ vật vào hai hộp, thì hộp thứ nhất chứa ít nhất $X$ đồ vật hoặc hộp thứ hai chứa ít nhất $Y$ đồ vật.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng phương pháp phản chứng. Giả sử hộp thứ nhất chứa ít hơn $X$ đồ vật (tối đa $X-1$ đồ vật) và hộp thứ hai chứa ít hơn $Y$ đồ vật (tối đa $Y-1$ đồ vật).</p>
+        <p>Khi đó, tổng số đồ vật trong cả hai hộp lớn nhất là $(X-1) + (Y-1) = X + Y - 2$.</p>
+        <p>Điều này mâu thuẫn với giả thiết ban đầu là có tổng cộng $X + Y - 1$ đồ vật được chia vào hai hộp. Do đó, giả thiết phản chứng sai. Phải có ít nhất một trong hai hộp chứa đủ số lượng đồ vật tương ứng ($X$ cho hộp một hoặc $Y$ cho hộp hai).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Số Ramsey $R(s,t)$)</div>
+        Cho $s, t \ge 2$ là các số nguyên. Số Ramsey $R(s,t)$ là số nguyên dương $n$ nhỏ nhất sao cho: Mọi cách tô màu các cạnh của đồ thị đầy đủ $K_n$ bằng hai màu Đỏ và Xanh đều luôn tồn tại ít nhất một đồ thị con $K_s$ (gồm $s$ đỉnh) hoàn toàn màu Đỏ, hoặc một đồ thị con $K_t$ (gồm $t$ đỉnh) hoàn toàn màu Xanh.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Sự tồn tại và Bất đẳng thức Ramsey)</div>
+        Với mọi số nguyên $s, t \ge 2$, số Ramsey $R(s,t)$ luôn tồn tại và thỏa mãn bất đẳng thức đệ quy:
+        $$ R(s, t) \le R(s-1, t) + R(s, t-1) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh định lý bằng Nguyên lý Dirichlet mở rộng (Định lý 0.1).</p>
+        <p>Đặt $n = R(s-1, t) + R(s, t-1)$. Ta xét một đồ thị đầy đủ $K_n$ mà mỗi cạnh được tô bởi màu Đỏ hoặc Xanh. Ta cần chứng minh luôn tồn tại một $K_s$ Đỏ hoặc $K_t$ Xanh.<br>
+        Chọn một đỉnh $v$ bất kỳ trong đồ thị $K_n$. Đỉnh $v$ này nối với $n-1$ đỉnh còn lại.<br>
+        Chia $n-1$ đỉnh này thành hai tập hợp:</p>
+        <ul>
+            <li> $A$: Tập các đỉnh nối với $v$ bằng cạnh màu Đỏ.</li>
+            <li> $B$: Tập các đỉnh nối với $v$ bằng cạnh màu Xanh.</li>
+        </ul>
+        <p>Tổng số phần tử của hai tập hợp là:</p>
+        $$ |A| + |B| = n - 1 = R(s-1, t) + R(s, t-1) - 1 $$
+        <p>Theo Nguyên lý Dirichlet mở rộng, ta phải có $|A| \ge R(s-1, t)$ hoặc $|B| \ge R(s, t-1)$.</p>
+
+        <p><strong>Trường hợp 1:</strong> $|A| \ge R(s-1, t)$.<br>
+        Xét đồ thị con được tạo bởi tập các đỉnh $A$. Vì số đỉnh của $A$ lớn hơn hoặc bằng $R(s-1, t)$, theo định nghĩa của số Ramsey, bên trong $A$ sẽ chứa một đồ thị $K_t$ Xanh hoặc một đồ thị $K_{s-1}$ Đỏ.<br>
+        Nếu $A$ chứa $K_t$ Xanh, ta có ngay điều phải chứng minh.<br>
+        Nếu $A$ chứa $K_{s-1}$ Đỏ, vì tất cả các đỉnh trong $A$ đều nối với $v$ bằng cạnh Đỏ, ta kết hợp $K_{s-1}$ này với đỉnh $v$ để tạo thành một $K_s$ hoàn toàn màu Đỏ. Mệnh đề được thỏa mãn.</p>
+
+        <p><strong>Trường hợp 2:</strong> $|B| \ge R(s, t-1)$.<br>
+        Tương tự, đồ thị con sinh bởi $B$ sẽ chứa $K_s$ Đỏ (thỏa mãn) hoặc chứa $K_{t-1}$ Xanh. Nếu chứa $K_{t-1}$ Xanh, kết hợp với đỉnh $v$ (do $v$ nối với $B$ toàn bằng cạnh Xanh), ta thu được một $K_t$ màu Xanh.</p>
+
+        <p>Trong mọi trường hợp, $K_n$ luôn chứa $K_s$ Đỏ hoặc $K_t$ Xanh. Do đó, số đỉnh nhỏ nhất cần thiết $R(s,t)$ không vượt quá $n$. Bất đẳng thức được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tính chẵn lẻ của Bất đẳng thức Ramsey)</div>
+        Nếu $R(s-1, t)$ và $R(s, t-1)$ đều là các số chẵn, thì bất đẳng thức Ramsey trở thành ngặt:
+        $$ R(s, t) < R(s-1, t) + R(s, t-1) $$
+        Hay nói cách khác, $R(s,t) \le R(s-1, t) + R(s, t-1) - 1$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Đặt $n = R(s-1, t) + R(s, t-1)$. Giả sử phản chứng rằng $R(s,t) = n$.<br>
+        Khi đó, tồn tại một cách tô màu cho đồ thị $K_{n-1}$ sao cho không có $K_s$ Đỏ và cũng không có $K_t$ Xanh.</p>
+        <p>Xét đồ thị $K_{n-1}$ với cách tô màu giả định này. Với mỗi đỉnh $v$, gọi $A_v$ là tập các đỉnh kề với $v$ bằng cạnh Đỏ, và $B_v$ là tập kề bằng cạnh Xanh.<br>
+        Ta có $|A_v| + |B_v| = n - 2 = R(s-1, t) + R(s, t-1) - 2$.</p>
+        <p>Nếu $|A_v| \ge R(s-1, t)$, thì tương tự như chứng minh Định lý 1.1, ta sẽ tạo ra $K_s$ Đỏ hoặc $K_t$ Xanh, mâu thuẫn với giả thiết.<br>
+        Do đó $|A_v| \le R(s-1, t) - 1$. Tương tự, $|B_v| \le R(s, t-1) - 1$.</p>
+        <p>Vì tổng $|A_v| + |B_v|$ bằng đúng tổng các chặn trên này, ta suy ra các đẳng thức:</p>
+        $$ |A_v| = R(s-1, t) - 1 \quad \text{và} \quad |B_v| = R(s, t-1) - 1 $$
+        <p>Điều này phải đúng với mọi đỉnh $v$ trong đồ thị.</p>
+        <p>Bây giờ, xét đồ thị con $G_{\text{red}}$ chỉ bao gồm các cạnh màu Đỏ. Trong đồ thị này, bậc của mỗi đỉnh $v$ chính là $|A_v|$.<br>
+        Vì $R(s-1, t)$ là một số chẵn, $|A_v| = R(s-1, t) - 1$ là một số <strong>lẻ</strong>.<br>
+        Vậy đồ thị $G_{\text{red}}$ có $n-1$ đỉnh, và bậc của mọi đỉnh đều là số lẻ.<br>
+        Tuy nhiên, $n = \text{chẵn} + \text{chẵn} = \text{chẵn}$, nên $n-1$ là một số <strong>lẻ</strong>.</p>
+        <p>Theo Bổ đề Bắt tay của Lý thuyết Đồ thị, tổng bậc của tất cả các đỉnh luôn là một số chẵn. Nhưng ở đây, tổng bậc là tổng của một số lẻ $(n-1)$ các số lẻ $(|A_v|)$, kết quả phải là một số lẻ (lẻ $\times$ lẻ = lẻ).</p>
+        <p>Điều này dẫn đến mâu thuẫn (số chẵn bằng số lẻ), cho thấy cách tô màu giả định không thể tồn tại.<br>
+        Do đó, đồ thị $K_{n-1}$ luôn chứa $K_s$ Đỏ hoặc $K_t$ Xanh. Vậy $R(s,t) \le n-1$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Giá trị của Số Ramsey R(3,4))</div>
+        Chứng minh rằng $R(3,4) = 9$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p><strong>Bước 1: Chứng minh giới hạn trên $R(3,4) \le 9$.</strong><br>
+        Ta xét các giá trị cơ sở: $R(2, 4) = 4$ và $R(3, 3) = 6$ (Có thể chứng minh nhanh $R(3,3)=6$ bằng Định lý 1.1 cho $R(3,3) \le R(2,3)+R(3,2) = 3+3=6$ và xây dựng đồ thị ngũ giác $C_5$ cho giới hạn dưới).<br>
+        Nhận thấy $R(2, 4) = 4$ là số chẵn và $R(3, 3) = 6$ cũng là số chẵn.<br>
+        Theo Định lý 1.2 (Tính chẵn lẻ), bất đẳng thức Ramsey trở thành ngặt:</p>
+        $$ R(3, 4) \le R(2, 4) + R(3, 3) - 1 = 4 + 6 - 1 = 9 $$
+
+        <p><strong>Bước 2: Chứng minh giới hạn dưới $R(3,4) > 8$.</strong><br>
+        Ta cần xây dựng một cách tô màu cho đồ thị $K_8$ sao cho không tồn tại tam giác Đỏ ($K_3$) và tứ diện Xanh ($K_4$).<br>
+        Đánh số 8 đỉnh của đồ thị là $0, 1, 2, \dots, 7$.<br>
+        Hai đỉnh $u$ và $v$ được nối bằng cạnh màu Đỏ nếu khoảng cách của chúng theo modulo 8 là $\pm 1$ hoặc $\pm 4$. Cụ thể, $|u - v| \pmod 8 \in \{1, 4, 7\}$.<br>
+        Các cạnh còn lại (có hiệu là $\pm 2, \pm 3$) được tô màu Xanh.</p>
+
+        <ul>
+            <li><strong>Kiểm tra $K_3$ Đỏ:</strong> Nếu có tam giác Đỏ gồm 3 đỉnh, thì ba cạnh của nó phải tạo thành một chu trình tổng bằng 0 modulo 8. Tức là $a + b + c \equiv 0 \pmod 8$ với $a, b, c \in \{\pm 1, 4\}$. Vì 4 là số chẵn và $\pm 1$ là số lẻ, để tổng 3 số là chẵn (bằng 0), chúng phải cùng chẵn hoặc có 1 số chẵn và 2 số lẻ.<br>
+            Trường hợp 3 số chẵn: $4 + 4 + 4 = 12 \equiv 4 \not\equiv 0 \pmod 8$.<br>
+            Trường hợp 1 chẵn, 2 lẻ: Cố định 4. Các cặp số lẻ là $(1, 1), (1, -1), (-1, -1)$. Tổng của 3 số tương ứng là $6, 4, 2$. Không có trường hợp nào chia hết cho 8. Vậy không có tam giác Đỏ.</li>
+            
+            <li><strong>Kiểm tra $K_4$ Xanh:</strong> Nếu có $K_4$ Xanh, 4 đỉnh của nó không được có bất kỳ hai đỉnh nào chênh lệch $\pm 1$ hoặc $\pm 4$.<br>
+            Do không thể chênh lệch 4, trong 4 cặp đỉnh đối xứng $\{0,4\}, \{1,5\}, \{2,6\}, \{3,7\}$, ta chỉ được phép chọn tối đa 1 đỉnh từ mỗi cặp. Để chọn đủ 4 đỉnh, ta phải chọn đúng 1 đỉnh từ mỗi cặp.<br>
+            Giả sử ta chọn đỉnh $0$ từ cặp thứ nhất.<br>
+            Đỉnh được chọn từ cặp $\{1, 5\}$ không được chênh lệch $\pm 1$ so với $0$. Vậy không thể chọn 1, phải chọn 5.<br>
+            Đỉnh được chọn từ cặp $\{3, 7\}$ không được chênh lệch $\pm 1$ so với $0$. Không thể chọn 7 (vì $0-7 \equiv 1 \pmod 8$), phải chọn 3.<br>
+            Lúc này, ta đã chọn các đỉnh là $0, 5, 3$.<br>
+            Xét đỉnh từ cặp cuối cùng $\{2, 6\}$. Đỉnh này không được chênh lệch $\pm 1$ với cả 5 và 3.<br>
+            Nhưng $2$ chênh lệch $\pm 1$ với $3$, nên không thể chọn 2. Phải chọn $6$.<br>
+            Tuy nhiên, $6$ lại chênh lệch $\pm 1$ với $5$, nên cũng không thể chọn 6.<br>
+            Ta không thể chọn được đỉnh thứ tư thỏa mãn. Do đó không tồn tại $K_4$ Xanh.</li>
+        </ul>
+        <p>Đồ thị $K_8$ này là minh chứng cho thấy $R(3,4) > 8$.</p>
+        <p>Kết hợp hai bước, ta khẳng định $R(3,4) = 9$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (IMO 1964, Bài 4 - Định lý Ramsey 3 màu)</div>
+        Mười bảy người liên lạc với nhau bằng thư từ. Mỗi người viết thư cho tất cả những người khác. Họ chỉ thảo luận về một trong ba chủ đề khác nhau. Mỗi cặp chỉ thảo luận đúng một chủ đề. Chứng minh rằng có ít nhất ba người thảo luận cùng một chủ đề với nhau.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán có thể được phát biểu lại bằng ngôn ngữ đồ thị: Cho đồ thị đầy đủ $K_{17}$. Các cạnh của đồ thị được tô bằng 3 màu (Đỏ, Xanh, Vàng). Chứng minh rằng luôn tồn tại một tam giác đơn sắc ($K_3$). Đây là việc chứng minh số Ramsey đa màu $R(3,3,3) \le 17$.</p>
+
+        <p>Lấy một đỉnh $v$ bất kỳ của $K_{17}$. Đỉnh $v$ này được nối với 16 đỉnh còn lại bằng 16 cạnh.<br>
+        Mỗi cạnh được tô bởi 1 trong 3 màu. Theo Nguyên lý Dirichlet mở rộng, do $16 = 5 \times 3 + 1$, phải có ít nhất 6 cạnh xuất phát từ $v$ có cùng một màu. Giả sử màu đó là màu Đỏ.</p>
+        <p>Gọi $A$ là tập hợp gồm 6 đỉnh được nối với $v$ bằng cạnh Đỏ. Ta có $|A| = 6$.<br>
+        Bây giờ, ta xét đồ thị con sinh bởi 6 đỉnh trong tập $A$.</p>
+        <ul>
+            <li>Nếu tồn tại bất kỳ một cạnh nào bên trong $A$ có màu Đỏ (giả sử là cạnh nối $x$ và $y$), thì tam giác tạo bởi $v, x, y$ sẽ là một tam giác hoàn toàn màu Đỏ (vì $vx$ và $vy$ đều màu Đỏ theo định nghĩa của $A$).</li>
+            <li>Nếu không có bất kỳ cạnh nào bên trong $A$ có màu Đỏ, thì toàn bộ các cạnh của $A$ (vốn là một đồ thị $K_6$) chỉ được tô bằng 2 màu còn lại là Xanh và Vàng.<br>
+            Theo giá trị cơ sở của số Ramsey, ta đã biết $R(3,3) = 6$.<br>
+            Điều này có nghĩa là mọi cách tô 2 màu cho đồ thị $K_6$ đều sinh ra ít nhất một tam giác đơn sắc. Do đó, bên trong $A$ sẽ chứa một tam giác Xanh hoặc một tam giác Vàng.</li>
+        </ul>
+        <p>Tóm lại, trong mọi trường hợp, đồ thị $K_{17}$ đều chứa một tam giác đơn sắc. Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Định lý Schur - Ứng dụng Lý thuyết đồ thị vào Số học)</div>
+        Cho $k \ge 1$ là một số nguyên. Chứng minh rằng tồn tại một số nguyên $n$ đủ lớn sao cho: Nếu tập hợp các số nguyên $S = \{1, 2, \dots, n\}$ được chia thành $k$ tập hợp con rời nhau, thì luôn tồn tại ba số nguyên $x, y, z$ (không nhất thiết phân biệt) cùng thuộc một tập hợp con sao cho $x + y = z$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $n$ là số Ramsey đa màu $R_k(3) = R(\underbrace{3, 3, \dots, 3}_{k \text{ lần}})$. Định lý Ramsey mở rộng khẳng định rằng số này luôn tồn tại và hữu hạn đối với mọi $k$.<br>
+        Xét một phân hoạch của tập $S = \{1, 2, \dots, n\}$ thành $k$ tập con $C_1, C_2, \dots, C_k$.<br>
+        Mỗi tập con $C_c$ tương ứng với một "màu" thứ $c$.</p>
+        
+        <p>Ta xây dựng một đồ thị đầy đủ $K_n$ với $n$ đỉnh được đánh số từ $1$ đến $n$.<br>
+        Tô màu các cạnh của $K_n$ theo quy tắc sau: Cạnh nối hai đỉnh $i$ và $j$ (giả sử $i > j$) sẽ được tô màu $c$ nếu hiệu số $(i - j)$ thuộc tập hợp $C_c$.<br>
+        Vì $1 \le j < i \le n$, hiệu $i - j$ là một số nguyên dương nằm trong tập $S = \{1, \dots, n\}$. Mà $S$ được phân hoạch thành các tập $C_c$, nên mỗi cạnh luôn nhận được đúng 1 màu duy nhất.</p>
+
+        <p>Theo định nghĩa của số Ramsey $n = R_k(3)$, với cách tô $k$ màu cho đồ thị $K_n$, tồn tại một tam giác đơn sắc.<br>
+        Gọi ba đỉnh của tam giác đơn sắc này là $i, j, l$ với giả thiết $i > j > l$.<br>
+        Ba cạnh của tam giác này là các hiệu số:</p>
+        $$ x = i - j $$
+        $$ y = j - l $$
+        $$ z = i - l $$
+        <p>Vì tam giác này là đơn sắc (giả sử màu $c$), cả ba cạnh $x, y, z$ đều phải thuộc cùng một tập hợp $C_c$.<br>
+        Mặt khác, xét mối liên hệ đại số giữa ba hiệu số này:</p>
+        $$ x + y = (i - j) + (j - l) = i - l = z $$
+        <p>Vậy ta đã tìm được ba số $x, y, z$ cùng thuộc một tập hợp $C_c$ và thỏa mãn phương trình $x + y = z$. Định lý Schur được chứng minh, cho thấy ứng dụng của Lý thuyết Đồ thị vào các bài toán số học.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

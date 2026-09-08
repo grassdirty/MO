@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Đếm - Nguyên lý Phản xạ và Cấu trúc số Catalan</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP ĐẾM <br> NGUYÊN LÝ PHẢN XẠ VÀ CẤU TRÚC SỐ CATALAN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát số lượng đường đi trên lưới tọa độ với các rào cản là một lớp bài toán cơ bản trong tổ hợp rời rạc. Chuyên đề này hình thức hóa cấu trúc đường đi, thiết lập Nguyên lý Phản xạ (Reflection Principle) thông qua phương pháp thiết lập song ánh hình học. Từ đó, công thức tổng quát của Số Catalan được chứng minh chi tiết. Các bài toán áp dụng khai thác kỹ thuật hoán vị phần đuôi để xử lý các hệ đường đi không giao nhau, cung cấp phương pháp giải quyết cho các bài toán đếm cấu trúc.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Để tiếp cận Nguyên lý Phản xạ và Bổ đề LGV một cách dễ hiểu, học sinh cần làm quen với các khái niệm đại số và tổ hợp cơ sở sau đây:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Song ánh - Bijection)</div>
+        Trong Toán học tổ hợp, hai tập hợp $A$ và $B$ có cùng số lượng phần tử (tức là $|A| = |B|$) nếu và chỉ nếu tồn tại một <strong>song ánh</strong> (ánh xạ một-một và phủ kín) giữa $A$ và $B$. <br>
+        Để đếm số phần tử của một tập hợp phức tạp $A$, ta thường thiết lập một quy tắc (song ánh) để biến mỗi phần tử của $A$ thành đúng một phần tử của tập hợp $B$ (tập hợp dễ đếm hơn), và ngược lại. Khi đó, việc đếm $A$ được chuyển thành việc đếm $B$.
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.2 (Định thức cấp 2)</div>
+        Định thức (Determinant) của một ma trận vuông cấp 2 (có kích thước $2 \times 2$) chứa các giá trị $a, b, c, d$ được định nghĩa bằng công thức:
+        $$ \det \begin{pmatrix} a & b \\ c & d \end{pmatrix} = a \cdot d - b \cdot c $$
+        Đại lượng này xuất hiện trong cấu trúc đếm các hệ đường đi không giao nhau (Bài toán 3.2).
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đường đi trên lưới tọa độ nguyên)</div>
+        Xét mặt phẳng tọa độ $Oxy$. Một bước đi hợp lệ là một phép tịnh tiến từ điểm $(x, y)$ đến điểm $(x+1, y)$ (bước đi sang phải, ký hiệu là $R$) hoặc đến điểm $(x, y+1)$ (bước đi lên trên, ký hiệu là $U$).<br>
+        Một đường đi trên lưới từ điểm $A(x_A, y_A)$ đến điểm $B(x_B, y_B)$ là một dãy hữu hạn các bước đi hợp lệ liên tiếp.<br>
+        Rõ ràng, đường đi này chỉ tồn tại nếu $x_B \ge x_A$ và $y_B \ge y_A$. Độ dài của đường đi (tổng số bước) luôn bằng $(x_B - x_A) + (y_B - y_A)$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Số lượng đường đi tự do)</div>
+        Số lượng các đường đi hợp lệ từ điểm $A(x_A, y_A)$ đến điểm $B(x_B, y_B)$ trên lưới tọa độ nguyên được tính bởi công thức:
+        $$ \binom{(x_B - x_A) + (y_B - y_A)}{x_B - x_A} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Đặt $m = x_B - x_A$ và $n = y_B - y_A$. Để đi từ $A$ đến $B$, đường đi phải chứa đúng $m$ bước đi sang phải ($R$) và $n$ bước đi lên trên ($U$).<br>
+        Tổng số bước đi là $m+n$.<br>
+        Một đường đi được xác định bởi việc chọn ra $m$ vị trí trong tổng số $m+n$ vị trí để đặt các bước đi sang phải ($R$). Các vị trí còn lại tự động là các bước đi lên trên ($U$).<br>
+        Số cách chọn $m$ vị trí từ $m+n$ vị trí là tổ hợp chập $m$ của $m+n$, tức là $\binom{m+n}{m}$.<br>
+        (Đồng thời, do tính chất đối xứng của hệ số nhị thức, giá trị này cũng bằng $\binom{m+n}{n}$). Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Nguyên lý Phản xạ - Reflection Principle)</div>
+        Cho đường thẳng $d$ có phương trình $y = x + k$ (với $k$ là số nguyên). Xét hai điểm $A(x_A, y_A)$ và $B(x_B, y_B)$ nằm <strong>cùng một phía</strong> đối với đường thẳng $d$ (giả sử nằm phía dưới, tức là $y_A \lt x_A + k$ và $y_B \lt x_B + k$).<br>
+        Gọi $A'$ là điểm đối xứng của $A$ qua đường thẳng $d$. Khi đó, số lượng đường đi từ $A$ đến $B$ <strong>có chạm hoặc cắt</strong> đường thẳng $d$ bằng số lượng tất cả các đường đi tự do từ $A'$ đến $B$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh định lý bằng cách thiết lập một song ánh giữa tập hợp các đường đi từ $A$ đến $B$ chạm $d$ và tập hợp các đường đi tự do từ $A'$ đến $B$.</p>
+
+        <p>Tọa độ của điểm $A'$ đối xứng với $A(x_A, y_A)$ qua đường thẳng $y = x + k$ là $A'(y_A - k, x_A + k)$.<br>
+        Xét một đường đi $P$ bất kỳ từ $A$ đến $B$ có chạm đường thẳng $d$. Điểm chạm đầu tiên (theo thứ tự di chuyển từ $A$) gọi là điểm $M(x_M, y_M)$. Điểm $M$ này nằm trên $d$, nên $y_M = x_M + k$.<br>
+        Đường đi $P$ được chia thành hai phần: phần $P_1$ đi từ $A$ đến $M$, và phần $P_2$ đi từ $M$ đến $B$.<br>
+        Bây giờ, ta lấy đối xứng phần đường đi $P_1$ qua đường thẳng $d$. Vì $A$ đối xứng với $A'$ và $M$ nằm trên trục đối xứng, phần đường đi $P_1$ sẽ biến thành một đường đi $P_1'$ nối từ $A'$ đến $M$. Một bước đi sang phải ($R$) của $P_1$ khi đối xứng qua $y=x+k$ sẽ biến thành một bước đi lên trên ($U$) của $P_1'$, và ngược lại. Do đó, $P_1'$ vẫn là một đường đi hợp lệ trên lưới tọa độ.<br>
+        Kết nối $P_1'$ và $P_2$, ta thu được một đường đi mới $P'$ đi từ $A'$ đến $B$. Đường đi $P'$ này đi qua điểm $M$.</p>
+
+        <p>Ngược lại, xét một đường đi tự do bất kỳ $P'$ từ $A'$ đến $B$. Vì $A'$ nằm phía trên đường thẳng $d$ (do $A$ nằm phía dưới) và $B$ nằm phía dưới $d$, đường đi $P'$ phải cắt qua đường thẳng $d$ tại ít nhất một điểm. Gọi $M$ là giao điểm đầu tiên của $P'$ và $d$.<br>
+        Nếu ta lấy đối xứng đoạn đường đi từ $A'$ đến $M$ qua $d$, ta sẽ khôi phục lại đoạn đường đi $P_1$ từ $A$ đến $M$.<br>
+        Mối quan hệ ánh xạ này là một - một (song ánh). Do đó, số lượng các đường đi từ $A$ đến $B$ chạm $d$ bằng số lượng đường đi từ $A'$ đến $B$.</p>
+        
+        <p>Theo Định lý 1.1, số lượng đường đi này được tính bằng:</p>
+        $$ \binom{(x_B - x_{A'}) + (y_B - y_{A'})}{x_B - x_{A'}} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Công thức Số Catalan)</div>
+        Số lượng các đường đi từ gốc tọa độ $O(0,0)$ đến điểm $B(n, n)$ mà không bao giờ vượt qua đường chéo chính $y = x$ (tức là luôn duy trì $x \ge y$) được gọi là số Catalan thứ $n$, ký hiệu là $C_n$. Công thức của $C_n$ là:
+        $$ C_n = \frac{1}{n+1} \binom{2n}{n} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Tổng số đường đi tự do từ $(0,0)$ đến $(n,n)$ là $\binom{n+n}{n} = \binom{2n}{n}$.<br>
+        Một đường đi từ $(0,0)$ đến $(n,n)$ bị coi là vi phạm điều kiện (vượt qua đường chéo $y=x$) khi và chỉ khi nó có ít nhất một điểm chạm vào đường thẳng $y = x + 1$.</p>
+
+        <p>Ta áp dụng Nguyên lý Phản xạ (Định lý 1.2) với rào cản là đường thẳng $d: y = x + 1$.<br>
+        Điểm $A(0,0)$ và $B(n,n)$ đều nằm dưới đường thẳng $d$.<br>
+        Tọa độ điểm $A'$ đối xứng với $A(0,0)$ qua $y = x + 1$ là $A'(-1, 1)$.<br>
+        Theo Nguyên lý Phản xạ, số lượng các đường đi vi phạm bằng số lượng đường đi tự do từ $A'(-1, 1)$ đến $B(n, n)$.</p>
+
+        <p>Áp dụng công thức đếm đường đi tự do:<br>
+        Khoảng cách theo trục $x$: $n - (-1) = n + 1$.<br>
+        Khoảng cách theo trục $y$: $n - 1$.<br>
+        Tổng số bước đi: $(n+1) + (n-1) = 2n$.<br>
+        Số lượng đường đi vi phạm là $\binom{2n}{n+1}$.</p>
+
+        <p>Số lượng đường đi hợp lệ $C_n$ bằng tổng số đường đi trừ đi số đường đi vi phạm:</p>
+        $$ C_n = \binom{2n}{n} - \binom{2n}{n+1} $$
+        <p>Biến đổi đại số để thu gọn biểu thức:</p>
+        $$ C_n = \frac{(2n)!}{n! n!} - \frac{(2n)!}{(n+1)! (n-1)!} = \frac{(2n)!}{n! n!} \left( 1 - \frac{n}{n+1} \right) = \frac{(2n)!}{n! n!} \cdot \frac{1}{n+1} = \frac{1}{n+1} \binom{2n}{n} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Bài toán Chuỗi ngoặc hợp lệ - Balanced Parentheses)</div>
+        Chứng minh rằng số lượng các chuỗi gồm $n$ dấu ngoặc mở "(" và $n$ dấu ngoặc đóng ")" được sắp xếp sao cho tại bất kỳ vị trí cắt ngang nào, số lượng dấu ngoặc mở luôn lớn hơn hoặc bằng số lượng dấu ngoặc đóng, là số Catalan $C_n$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta thiết lập một song ánh giữa tập hợp các chuỗi ngoặc hợp lệ và tập hợp các đường đi trên lưới tọa độ không vượt qua đường chéo $y=x$.</p>
+        <p>Xét một chuỗi ngoặc có độ dài $2n$. Ta đọc chuỗi từ trái sang phải và vẽ một đường đi xuất phát từ gốc tọa độ $(0,0)$. Quy tắc ánh xạ như sau:</p>
+        <ul>
+            <li>Khi gặp một dấu ngoặc mở "(", ta thực hiện một bước đi sang phải ($R$). Tọa độ $x$ tăng $1$.</li>
+            <li>Khi gặp một dấu ngoặc đóng ")", ta thực hiện một bước đi lên trên ($U$). Tọa độ $y$ tăng $1$.</li>
+        </ul>
+        <p>Sau khi đọc hết toàn bộ chuỗi gồm $n$ dấu "(" và $n$ dấu ")", đường đi sẽ dừng lại tại điểm $B(n, n)$ vì tổng số bước di chuyển theo mỗi phương đều là $n$.</p>
+
+        <p>Điều kiện "tại bất kỳ vị trí cắt ngang nào, số lượng dấu ngoặc mở luôn lớn hơn hoặc bằng số lượng dấu ngoặc đóng" tương đương với việc: ở mọi thời điểm trong quá trình di chuyển, tổng số bước đi sang phải (tọa độ $x$) luôn lớn hơn hoặc bằng tổng số bước đi lên trên (tọa độ $y$).<br>
+        Viết dưới dạng đại số, điều này có nghĩa là $x \ge y$ tại mọi điểm trên đường đi.<br>
+        Về mặt hình học, điều này tương đương với việc đường đi không bao giờ cắt lên phía trên đường chéo chính $y = x$.</p>
+
+        <p>Sự tương đương này là một song ánh. Mỗi chuỗi ngoặc hợp lệ tạo ra một đường đi thỏa mãn, và mỗi đường đi thỏa mãn có thể giải mã ngược lại thành một chuỗi ngoặc duy nhất.<br>
+        Theo Định lý 1.3, số lượng các đường đi như vậy là số Catalan $C_n = \frac{1}{n+1} \binom{2n}{n}$.<br>
+        Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Biến thể rào cản tịnh tiến)</div>
+        Tìm số lượng các đường đi trên lưới từ điểm $(0, 0)$ đến điểm $(m, n)$ (với $m \gt n$) sao cho đường đi này không bao giờ cắt qua đường thẳng $y = x$. (Nghĩa là đường đi luôn tuân thủ điều kiện $x \gt y$ ngoại trừ tại điểm xuất phát).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Để đường đi thỏa mãn $x \gt y$ tại mọi điểm sau điểm xuất phát $(0,0)$, bước đi đầu tiên phải là một bước sang phải ($R$) đến điểm $(1, 0)$. Nếu bước đầu tiên đi lên trên đến $(0,1)$, ta sẽ vi phạm ngay vì $0 \lt 1$.</p>
+        <p>Do đó, bài toán tương đương với việc đếm số lượng các đường đi từ điểm $A(1, 0)$ đến điểm $B(m, n)$ sao cho trên toàn bộ đường đi, điều kiện $x \ge y$ luôn được thỏa mãn (không chạm vào đường thẳng $y = x$).<br>
+        Rào cản cấm kỵ ở đây là đường thẳng $d: y = x$.<br>
+        Ta áp dụng Nguyên lý Phản xạ (Định lý 1.2) đối với đường thẳng $d: y = x$.</p>
+        
+        <p>Tổng số đường đi tự do từ $A(1, 0)$ đến $B(m, n)$ là:</p>
+        $$ \binom{(m-1) + n}{m-1} = \binom{m+n-1}{m-1} $$
+        <p>Lấy đối xứng điểm $A(1, 0)$ qua đường thẳng $y = x$, ta được điểm $A'(0, 1)$.<br>
+        Số lượng các đường đi từ $A$ đến $B$ bị vi phạm (chạm vào đường thẳng $y=x$) bằng số lượng các đường đi tự do từ $A'(0, 1)$ đến $B(m, n)$.<br>
+        Số lượng đường đi vi phạm này là:</p>
+        $$ \binom{(m-0) + (n-1)}{m} = \binom{m+n-1}{m} $$
+        
+        <p>Số lượng đường đi hợp lệ là hiệu của hai giá trị này:</p>
+        $$ S = \binom{m+n-1}{m-1} - \binom{m+n-1}{m} $$
+        <p>Biến đổi đại số để thu gọn:</p>
+        $$ S = \frac{(m+n-1)!}{(m-1)! n!} - \frac{(m+n-1)!}{m! (n-1)!} = \frac{(m+n-1)!}{(m-1)!(n-1)!} \left( \frac{1}{n} - \frac{1}{m} \right) = \frac{(m+n-1)!}{(m-1)!(n-1)!} \frac{m-n}{mn} $$
+        <p>Nhân tử và mẫu cho $m$ và $n$:</p>
+        $$ S = \frac{(m+n-1)!}{m! n!} (m-n) = \frac{m-n}{m+n} \frac{(m+n)!}{m!n!} = \frac{m-n}{m+n} \binom{m+n}{m} $$
+        <p>Đẳng thức trên được biết đến với tên gọi Định lý Rút thăm của Bertrand (Bertrand's Ballot Theorem). Bằng tư duy hình học và phép đối xứng, ta có thể tính toán mà không cần dùng đến các hệ thức đệ quy.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Hệ đường đi không giao nhau - Dẫn nhập Bổ đề LGV)</div>
+        Trên lưới tọa độ, có hai điểm xuất phát là $A_1(0, 1)$ và $A_2(1, 0)$. Có hai điểm đích là $B_1(m, n+1)$ và $B_2(m+1, n)$ (với $m, n \ge 1$). Một người muốn đi từ $A_1$ đến $B_1$ và một người khác muốn đi từ $A_2$ đến $B_2$. Cả hai người chỉ được phép thực hiện các bước đi hợp lệ. Đếm số lượng các cặp đường đi $(P_1, P_2)$ sao cho hai đường đi này không cắt nhau tại bất kỳ điểm nào trên mặt phẳng.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $U$ là tập hợp tất cả các cặp đường đi tự do $(P_1, P_2)$ mà $P_1$ đi từ $A_1 \to B_1$ và $P_2$ đi từ $A_2 \to B_2$.</p>
+        <ul>
+            <li>Số lượng đường đi tự do $P_1$: Khoảng cách $x$ là $m-0=m$, khoảng cách $y$ là $(n+1)-1=n$. Số cách là $\binom{m+n}{m}$.</li>
+            <li>Số lượng đường đi tự do $P_2$: Khoảng cách $x$ là $(m+1)-1=m$, khoảng cách $y$ là $n-0=n$. Số cách là $\binom{m+n}{m}$.</li>
+        </ul>
+        <p>Vì hai đường đi độc lập, tổng số cấu hình cặp đường đi là:</p>
+        $$ |U| = \binom{m+n}{m} \times \binom{m+n}{m} $$
+        <p>Gọi $X$ là tập hợp các cặp đường đi $(P_1, P_2) \in U$ có cắt nhau tại ít nhất một điểm. Ta cần tìm số lượng các cấu hình hợp lệ $S = |U| - |X|$.<br>
+        Để đếm $|X|$, ta sử dụng một kỹ thuật phát triển từ Nguyên lý Phản xạ: Kỹ thuật hoán đổi phần đuôi (Tail Swapping).</p>
+
+        <p>Xét một cặp đường đi cắt nhau. Gọi $M(x_M, y_M)$ là giao điểm <strong>đầu tiên</strong> của hai đường đi $P_1$ và $P_2$.<br>
+        Đường đi $P_1$ được chia thành: $A_1 \to M$ và $M \to B_1$.<br>
+        Đường đi $P_2$ được chia thành: $A_2 \to M$ và $M \to B_2$.</p>
+        <p>Tại điểm giao $M$, ta tiến hành "cắt" và "nối chéo" phần đuôi của hai đường đi:</p>
+        <ul>
+            <li>Ta lấy đoạn đầu của $P_1$ ($A_1 \to M$) ghép với đoạn đuôi của $P_2$ ($M \to B_2$). Tạo ra một đường đi mới $P_1'$ nối từ $A_1$ đến $B_2$.</li>
+            <li>Ta lấy đoạn đầu của $P_2$ ($A_2 \to M$) ghép với đoạn đuôi của $P_1$ ($M \to B_1$). Tạo ra một đường đi mới $P_2'$ nối từ $A_2$ đến $B_1$.</li>
+        </ul>
+        <p>Sự hoán đổi này tạo ra một cặp đường đi mới $(P_1', P_2')$. <br>
+        Hơn thế nữa, <strong>mọi</strong> cặp đường đi nào nối từ $A_1 \to B_2$ và từ $A_2 \to B_1$ đều phải cắt nhau, do vị trí hình học của chúng ($A_1$ nằm phía trên bên trái của $A_2$, trong khi $B_2$ lại nằm phía dưới bên phải so với $B_1$). Các quỹ đạo này đan chéo nhau.<br>
+        Do đó, mối quan hệ nối chéo này là một song ánh giữa:</p>
+        <ul>
+            <li>Tập hợp $X$ (các cặp $A_1 \to B_1, A_2 \to B_2$ có cắt nhau).</li>
+            <li>Tập hợp $Y$ (tất cả các cặp đường đi $A_1 \to B_2$ và $A_2 \to B_1$).</li>
+        </ul>
+
+        <p>Số lượng cấu hình của tập $Y$ có thể tính bằng tích của số lượng các đường đi tự do:</p>
+        <ul>
+            <li>Số đường đi từ $A_1(0,1) \to B_2(m+1,n)$: Khoảng cách $x$ là $m+1$, khoảng cách $y$ là $n-1$. Số cách: $\binom{m+n}{m+1}$.</li>
+            <li>Số đường đi từ $A_2(1,0) \to B_1(m,n+1)$: Khoảng cách $x$ là $m-1$, khoảng cách $y$ là $n+1$. Số cách: $\binom{m+n}{m-1}$.</li>
+        </ul>
+        <p>Do đó, số lượng các cặp đường đi cắt nhau là $|X| = \binom{m+n}{m+1} \times \binom{m+n}{m-1}$.<br>
+        Số lượng cặp đường đi không cắt nhau là:</p>
+        $$ S = \binom{m+n}{m}^2 - \binom{m+n}{m+1} \binom{m+n}{m-1} $$
+        <p>Kết quả này có thể được trình bày dưới dạng định thức của một ma trận cấp 2:</p>
+        $$ S = \det \begin{pmatrix} \binom{m+n}{m} & \binom{m+n}{m+1} \\ \binom{m+n}{m-1} & \binom{m+n}{m} \end{pmatrix} $$
+        <p>Đây là nền tảng của Bổ đề Lindström–Gessel–Viennot (LGV), một định lý tổ hợp dùng để đếm các hệ đường đi không giao nhau, cho thấy tư duy hình học có thể quy giản các bài toán đếm thành cấu trúc đại số.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

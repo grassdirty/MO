@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Rời rạc - Hệ đại diện phân biệt và Định lý Hall</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> HỆ ĐẠI DIỆN PHÂN BIỆT VÀ ĐỊNH LÝ HALL</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát khả năng trích xuất các phần tử đại diện cho một họ tập hợp là bài toán cơ sở trong lý thuyết ghép cặp. Chuyên đề này hình thức hóa khái niệm Hệ đại diện phân biệt (SDR) và thiết lập Định lý Hall cùng Định lý König. Mọi định lý đều được cung cấp chứng minh chi tiết bằng quy nạp mạnh và đánh giá phần tử. Các bài toán ứng dụng kết hợp giữa phân tích ma trận, phân hoạch tập hợp và mô hình hóa cấu trúc rời rạc.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Định lý Hall (Định lý Hôn nhân Hall) và Hệ đại diện phân biệt là những kiến thức chuyên sâu của Toán rời rạc ở bậc Đại học. Để dễ dàng tiếp cận các chứng minh trong chuyên đề (đặc biệt là kỹ thuật thu hẹp tập hợp), học sinh THPT cần nắm vững hai công cụ nền tảng sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Phân hoạch tập hợp - Set Partition)</div>
+        Một phân hoạch của tập hợp $X$ là một họ các tập con khác rỗng của $X$ sao cho:
+        <ul>
+            <li>Các tập con này rời nhau đôi một (giao của hai tập con bất kỳ bằng rỗng).</li>
+            <li>Hợp của tất cả các tập con đó đúng bằng tập $X$.</li>
+        </ul>
+        Trong tổ hợp, phân hoạch giúp chia một bài toán lớn thành các phần rời rạc độc lập để xử lý.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Nguyên lý Quy nạp mạnh - Strong Induction)</div>
+        Để chứng minh một mệnh đề $P(n)$ đúng với mọi số nguyên $n \ge 1$, ta thực hiện hai bước:
+        <ol>
+            <li><strong>Bước cơ sở:</strong> Chứng minh $P(1)$ đúng.</li>
+            <li><strong>Bước quy nạp:</strong> Giả sử mệnh đề đúng với <strong>mọi số</strong> $k \lt n$ (tức là $P(1), P(2), \dots, P(n-1)$ đều đúng). Từ đó chứng minh $P(n)$ cũng đúng.</li>
+        </ol>
+        <i>Nhận xét:</i> Khác với quy nạp thông thường chỉ dùng $P(n-1)$ để suy ra $P(n)$, quy nạp mạnh cho phép ta sử dụng giả thiết ở một bước bất kỳ nhỏ hơn $n$. Điều này rất quan trọng trong chứng minh Định lý Hall, khi ta cắt họ tập hợp thành các phần có kích thước nhỏ hơn $n-1$.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hệ đại diện phân biệt - System of Distinct Representatives - SDR)</div>
+        Cho một họ gồm $n$ tập hợp (không nhất thiết phân biệt) $\mathcal{F} = \{A_1, A_2, \dots, A_n\}$. Một tập hợp có thứ tự gồm $n$ phần tử $(x_1, x_2, \dots, x_n)$ được gọi là một <strong>Hệ đại diện phân biệt</strong> (SDR) của họ $\mathcal{F}$ nếu thỏa mãn đồng thời hai điều kiện:
+        <ol>
+            <li> $x_i \in A_i$ với mọi $i = 1, 2, \dots, n$.</li>
+            <li> Các phần tử $x_1, x_2, \dots, x_n$ đôi một phân biệt.</li>
+        </ol>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Hall - Hall's Marriage Theorem)</div>
+        Họ các tập hợp hữu hạn $\mathcal{F} = \{A_1, A_2, \dots, A_n\}$ tồn tại một Hệ đại diện phân biệt (SDR) khi và chỉ khi <strong>Điều kiện Hall</strong> được thỏa mãn:<br>
+        Với mọi tập con chỉ số $I \subset \{1, 2, \dots, n\}$, lực lượng của hợp các tập hợp luôn lớn hơn hoặc bằng lực lượng của tập chỉ số. Tức là:
+        $$ \left| \bigcup_{i \in I} A_i \right| \ge |I| \quad \text{với mọi } I \subset \{1, 2, \dots, n\} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>Chiều thuận ($\Rightarrow$):</strong> Giả sử họ $\mathcal{F}$ có một SDR là $(x_1, x_2, \dots, x_n)$. Xét một tập con chỉ số $I$ bất kỳ có $k$ phần tử. Tập hợp $\bigcup_{i \in I} A_i$ chứa tất cả các phần tử đại diện $x_i$ với $i \in I$. Vì các $x_i$ này đôi một phân biệt và có đúng $k$ phần tử, hợp của các tập hợp phải có chứa ít nhất $k$ phần tử. Do đó $\left| \bigcup_{i \in I} A_i \right| \ge |I|$.</p>
+
+        <p><strong>Chiều đảo ($\Leftarrow$):</strong> Ta chứng minh bằng phương pháp quy nạp mạnh theo $n$ (số lượng tập hợp).</p>
+        <p><em>Bước cơ sở:</em> Với $n=1$, điều kiện Hall trở thành $|A_1| \ge 1$. Tập $A_1$ không rỗng, ta có thể chọn một phần tử $x_1 \in A_1$ làm đại diện.</p>
+        <p><em>Bước quy nạp:</em> Giả sử định lý đúng cho mọi họ có số lượng tập hợp nhỏ hơn $n$. Xét họ $\mathcal{F}$ gồm $n$ tập hợp thỏa mãn điều kiện Hall. Ta chia thành hai trường hợp:</p>
+
+        <p><strong>Trường hợp 1:</strong> Với mọi tập con chỉ số $I$ thực sự khác rỗng ($0 \lt |I| \lt n$), bất đẳng thức Hall là ngặt: $\left| \bigcup_{i \in I} A_i \right| \ge |I| + 1$.<br>
+        Ta chọn một phần tử bất kỳ $x \in A_n$ làm đại diện cho $A_n$. Cần tìm SDR cho $n-1$ tập hợp còn lại $A_1, \dots, A_{n-1}$. Gọi $A_i' = A_i \setminus \{x\}$. Xét một tập chỉ số $J \subset \{1, \dots, n-1\}$. Theo giả thiết trường hợp 1, $\left| \bigcup_{i \in J} A_i \right| \ge |J| + 1$. Sau khi loại bỏ phần tử $x$, số lượng phần tử trong hợp giảm tối đa là 1. Do đó:</p>
+        $$ \left| \bigcup_{i \in J} A_i' \right| \ge \left| \bigcup_{i \in J} A_i \right| - 1 \ge (|J| + 1) - 1 = |J| $$
+        <p>Họ $n-1$ tập hợp mới $\{A_1', \dots, A_{n-1}'\}$ thỏa mãn điều kiện Hall. Theo giả thiết quy nạp mạnh, chúng có một SDR không chứa $x$. Kết hợp với $x$ đại diện cho $A_n$, ta có SDR cho toàn bộ họ $\mathcal{F}$.</p>
+
+        <p><strong>Trường hợp 2:</strong> Tồn tại một tập con chỉ số $I$ thực sự ($0 \lt |I| = k \lt n$) sao cho $\left| \bigcup_{i \in I} A_i \right| = k$.<br>
+        Gọi $C = \bigcup_{i \in I} A_i$. Họ gồm $k$ tập hợp $\{A_i \mid i \in I\}$ thỏa mãn điều kiện Hall, nên theo giả thiết quy nạp, chúng có một SDR dùng hết chính xác $k$ phần tử của $C$.<br>
+        Ta xét $n-k$ tập hợp còn lại trong $\mathcal{F}$. Định nghĩa $A_j' = A_j \setminus C$ với $j \notin I$. Ta cần chứng minh họ $n-k$ tập này thỏa mãn điều kiện Hall. Xét một tập con chỉ số $J \subset \{1, \dots, n\} \setminus I$. <br>
+        Theo điều kiện Hall ban đầu cho tập chỉ số $I \cup J$:</p>
+        $$ \left| \bigcup_{m \in I \cup J} A_m \right| \ge |I \cup J| = |I| + |J| = k + |J| $$
+        <p>Mặt khác, $\bigcup_{m \in I \cup J} A_m = C \cup \left( \bigcup_{j \in J} A_j' \right)$. Do hai tập này rời nhau, lực lượng của chúng là $|C| + \left| \bigcup_{j \in J} A_j' \right|$.</p>
+        <p>Suy ra $k + \left| \bigcup_{j \in J} A_j' \right| \ge k + |J| \implies \left| \bigcup_{j \in J} A_j' \right| \ge |J|$.</p>
+        <p>Điều kiện Hall được thỏa mãn. Theo giả thiết quy nạp, $n-k$ tập hợp này có một SDR. Kết hợp hai hệ đại diện lại (do chúng lấy từ hai tập phần tử rời nhau), ta được SDR cho toàn bộ $n$ tập hợp. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý König - Tính ghép cặp của cấu trúc đều)</div>
+        Cho một họ gồm $n$ tập hợp, mỗi tập chứa đúng $d$ phần tử ($d \ge 1$). Nếu mỗi phần tử xuất hiện trong đúng $d$ tập hợp khác nhau của họ này, thì họ tập hợp đó tồn tại một Hệ đại diện phân biệt (SDR).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sẽ chứng minh họ tập hợp này thỏa mãn Điều kiện Hall.<br>
+        Xét một tập hợp chỉ số $I \subset \{1, 2, \dots, n\}$ với $|I| = k$. Gọi $U = \bigcup_{i \in I} A_i$ là hợp của $k$ tập hợp này. Ta cần chứng minh $|U| \ge k$.</p>
+        <p>Tính tổng số lượng phần tử (có tính lặp) trong $k$ tập hợp này. Vì mỗi tập hợp có chứa đúng $d$ phần tử, tổng số phần tử (có đếm lặp) là $k \cdot d$.</p>
+        <p>Mặt khác, mọi phần tử nằm trong hợp $U$ đều có tần suất xuất hiện tối đa là $d$ lần trong toàn bộ $n$ tập hợp ban đầu, do đó nó cũng xuất hiện tối đa $d$ lần trong $k$ tập hợp được xét.<br>
+        Nếu ta lấy mỗi phần tử trong $U$ nhân với số lần xuất hiện thực tế của nó trong $k$ tập hợp, ta sẽ thu được tổng $k \cdot d$. Do số lần xuất hiện tối đa là $d$, ta có:</p>
+        $$ |U| \cdot d \ge \sum_{x \in U} (\text{số lần xuất hiện của } x) = k \cdot d $$
+        <p>Vì $d \ge 1$, chia cả hai vế cho $d$, ta thu được $|U| \ge k$.<br>
+        Điều kiện Hall được thỏa mãn với mọi $I$. Do đó, theo Định lý Hall (Định lý 1.1), họ tập hợp này tồn tại một Hệ đại diện phân biệt.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Crux Mathematicorum - Hệ đại diện giao thoa)</div>
+        Cho tập hợp hữu hạn $X$ có $N$ phần tử. Giả sử $\mathcal{A} = \{A_1, A_2, \dots, A_m\}$ và $\mathcal{B} = \{B_1, B_2, \dots, B_m\}$ là hai phân hoạch của tập $X$ thành $m$ tập con, sao cho tất cả các tập con $A_i$ và $B_j$ đều có cùng kích thước. Chứng minh rằng tồn tại một tập hợp $Y \subset X$ có $m$ phần tử, sao cho $Y$ chứa chính xác một phần tử từ mỗi tập $A_i$ và chính xác một phần tử từ mỗi tập $B_j$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì $\mathcal{A}$ và $\mathcal{B}$ là hai phân hoạch của $X$ thành $m$ tập con có cùng kích thước, kích thước của mỗi tập con $A_i$ và $B_j$ đều là $d = \frac{N}{m}$ (với $d$ là một số nguyên dương).</p>
+        <p>Ta xây dựng một họ gồm $m$ tập hợp mới $\mathcal{F} = \{S_1, S_2, \dots, S_m\}$ dựa trên sự tương tác giữa hai phân hoạch này.<br>
+        Định nghĩa tập hợp $S_i$ là tập các chỉ số $j$ sao cho $A_i \cap B_j \neq \emptyset$.</p>
+        $$ S_i = \{ j \in \{1, 2, \dots, m\} \mid A_i \cap B_j \neq \emptyset \} $$
+        <p>Mục tiêu của chúng ta là tìm một Hệ đại diện phân biệt (SDR) cho họ $\mathcal{F}$. Một SDR sẽ là một dãy $(j_1, j_2, \dots, j_m)$ sao cho $j_i \in S_i$ và các $j_i$ đôi một phân biệt. <br>
+        Điều này tương đương với việc ghép cặp mỗi tập $A_i$ với một tập $B_{j_i}$ duy nhất sao cho $A_i \cap B_{j_i} \neq \emptyset$. Nếu ghép cặp thành công, ta chỉ việc chọn một phần tử $y_i \in A_i \cap B_{j_i}$ bất kỳ để đưa vào tập $Y$. Vì các $A_i$ phân hoạch $X$ và các $B_{j_i}$ cũng phân hoạch $X$, tập $Y$ tạo ra sẽ chứa đúng một phần tử từ mỗi $A_i$ và một từ mỗi $B_j$.</p>
+
+        <p>Để chứng minh $\mathcal{F}$ có SDR, ta kiểm tra điều kiện Hall cho họ $\mathcal{F}$.<br>
+        Xét một tập con chỉ số $I \subset \{1, \dots, m\}$ với $|I| = k$.<br>
+        Các tập hợp $A_i$ với $i \in I$ chứa tổng cộng $k \cdot d$ phần tử.<br>
+        Tất cả $k \cdot d$ phần tử này phải nằm trong một số tập hợp $B_j$. Tập các chỉ số $j$ của các tập $B_j$ có chứa ít nhất một phần tử từ $\bigcup_{i \in I} A_i$ chính là tập hợp hợp $\bigcup_{i \in I} S_i$.</p>
+        <p>Gọi $C = \bigcup_{i \in I} S_i$ và $c = |C|$.<br>
+        Tổng số phần tử của $c$ tập hợp $B_j$ này là $c \cdot d$.<br>
+        Vì các tập $B_j$ này bao hàm toàn bộ $k \cdot d$ phần tử của các tập $A_i$ ban đầu, tổng dung lượng của chúng không thể nhỏ hơn số phần tử chúng chứa đựng. Do đó:</p>
+        $$ c \cdot d \ge k \cdot d \implies c \ge k \implies \left| \bigcup_{i \in I} S_i \right| \ge |I| $$
+        <p>Điều kiện Hall được thỏa mãn. Theo Định lý 1.1, họ $\mathcal{F}$ có một SDR. <br>
+        Tương ứng, ta có thể thiết lập tập hợp $Y$ thỏa mãn điều kiện bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Folklore Olympiad - Bài toán Rút bài)</div>
+        Một bộ bài tiêu chuẩn gồm 52 lá được chia ngẫu nhiên thành 13 cọc, mỗi cọc chứa đúng 4 lá bài. Chứng minh rằng ta luôn có thể rút từ mỗi cọc đúng 1 lá bài sao cho 13 lá bài được rút ra có chứa đầy đủ 13 giá trị phân biệt từ Át (A) đến K.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta mô hình hóa bài toán bằng cấu trúc tập hợp. Tập hợp cơ sở là 13 giá trị của lá bài: $V = \{A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K\}$.<br>
+        Mỗi cọc bài $i$ ($1 \le i \le 13$) được biểu diễn bằng một tập hợp $S_i$, chứa các giá trị của 4 lá bài trong cọc đó. (Lưu ý $S_i$ có thể là một đa tập nếu một cọc có nhiều lá cùng giá trị, tuy nhiên ta có thể thiết lập hệ đại diện chỉ cần dựa trên các giá trị riêng biệt xuất hiện trong cọc).<br>
+        Cụ thể hơn, ta coi $S_i$ là tập các giá trị xuất hiện trong cọc $i$.<br>
+        Việc rút từ mỗi cọc 1 lá bài sao cho 13 lá bài rút ra có 13 giá trị phân biệt tương đương với việc tìm một Hệ đại diện phân biệt (SDR) cho họ 13 tập hợp $\mathcal{S} = \{S_1, S_2, \dots, S_{13}\}$.</p>
+
+        <p>Ta sẽ chứng minh họ $\mathcal{S}$ thỏa mãn điều kiện Hall.<br>
+        Xét một tập chỉ số $I \subset \{1, 2, \dots, 13\}$ với $|I| = k$. Ta cần chứng minh $\left| \bigcup_{i \in I} S_i \right| \ge k$.<br>
+        Hợp của $k$ tập hợp này đại diện cho tập hợp tất cả các giá trị bài xuất hiện trong $k$ cọc đó.<br>
+        Giả sử có $m$ giá trị phân biệt xuất hiện trong $k$ cọc này. Tức là $\left| \bigcup_{i \in I} S_i \right| = m$.<br>
+        Mỗi cọc chứa 4 lá bài, do đó $k$ cọc chứa tổng cộng $4k$ lá bài.<br>
+        Mỗi giá trị bài trong một bộ bài tiêu chuẩn chỉ có đúng 4 lá (4 chất: cơ, rô, bích, nhép). <br>
+        Vì thế, $m$ giá trị phân biệt có thể cung cấp tối đa $4m$ lá bài cho $k$ cọc này.</p>
+        <p>Do số lá bài thực tế trong $k$ cọc là $4k$, tổng số cung cấp tối đa không thể nhỏ hơn số lá thực tế.</p>
+        $$ 4m \ge 4k \implies m \ge k \implies \left| \bigcup_{i \in I} S_i \right| \ge |I| $$
+        <p>Điều kiện Hall được thỏa mãn với mọi $I$. Theo Định lý Hall, luôn tồn tại một SDR cho họ các cọc bài. <br>
+        Vậy ta có thể rút ra 13 lá bài có 13 giá trị phân biệt.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Ma trận cân bằng)</div>
+        Cho một ma trận vuông $n \times n$ chứa các số nguyên không âm. Biết rằng tổng các số trên mỗi hàng và tổng các số trên mỗi cột đều bằng một số nguyên dương $S$. Chứng minh rằng tồn tại $n$ ô trên bảng, sao cho không có hai ô nào nằm cùng hàng hoặc cùng cột, và tất cả $n$ ô này đều chứa các số nguyên dương.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Cấu trúc tổng hàng và tổng cột không đổi là một trạng thái cân bằng đặc trưng. Ta chuyển đổi điều kiện này về bài toán SDR của họ tập hợp.<br>
+        Gọi tập các hàng của ma trận là $X = \{r_1, r_2, \dots, r_n\}$ và tập các cột là $Y = \{c_1, c_2, \dots, c_n\}$.<br>
+        Với mỗi hàng $i$ ($1 \le i \le n$), ta định nghĩa tập hợp $A_i$ bao gồm các chỉ số của những cột $j$ mà giá trị tại ô $(i, j)$ là một số nguyên dương:</p>
+        $$ A_i = \{ j \in \{1, \dots, n\} \mid M_{i,j} \gt 0 \} $$
+        <p>Bài toán yêu cầu tìm $n$ ô thỏa mãn chứa số dương và không chung hàng cột. Điều này tương đương với việc chọn một phần tử từ mỗi $A_i$ sao cho các phần tử được chọn là đôi một phân biệt. Đây là việc tìm một Hệ đại diện phân biệt (SDR) cho họ tập hợp $\mathcal{A} = \{A_1, A_2, \dots, A_n\}$.</p>
+
+        <p>Ta kiểm tra điều kiện Hall cho họ $\mathcal{A}$.<br>
+        Xét một tập hợp chỉ số các hàng $I \subset \{1, 2, \dots, n\}$ với $|I| = k$.<br>
+        Tính tổng các giá trị trong ma trận nằm trên $k$ hàng này. Vì mỗi hàng có tổng bằng $S$, tổng của $k$ hàng là $k \cdot S$.<br>
+        Theo định nghĩa, tất cả các phần tử dương của $k$ hàng này đều nằm trong các cột thuộc tập hợp hợp $C = \bigcup_{i \in I} A_i$.<br>
+        Gọi $m = |C|$ là số lượng cột trong tập $C$.<br>
+        Tổng các giá trị nằm trong $m$ cột này là $m \cdot S$ (vì mỗi cột có tổng bằng $S$).</p>
+        <p>Vì tất cả các phần tử trong ma trận đều là số không âm, tổng các phần tử dương của $k$ hàng không thể vượt quá tổng của toàn bộ $m$ cột đó.<br>
+        Sự bao hàm về tọa độ kéo theo sự bao hàm về tổng đại số:</p>
+        $$ k \cdot S \le m \cdot S $$
+        <p>Vì $S \gt 0$, chia hai vế cho $S$ ta thu được $k \le m$. Tức là:</p>
+        $$ |I| \le \left| \bigcup_{i \in I} A_i \right| $$
+        <p>Điều kiện Hall được thỏa mãn. Theo Định lý 1.1, họ $\mathcal{A}$ có một SDR. Do đó, tồn tại một bộ $n$ ô thỏa mãn yêu cầu của bài toán.<br>
+        Phương pháp chuyển đổi từ ma trận sang tập hợp chỉ số giúp đưa việc tìm kiếm trong không gian số học về một chứng minh tồn tại dựa trên quan hệ tương đương.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số và Đa thức - Đa thức bất khả quy và Tiêu chuẩn Eisenstein</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ VÀ ĐA THỨC <br> ĐA THỨC BẤT KHẢ QUY VÀ TIÊU CHUẨN EISENSTEIN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đánh giá khả năng phân tích thành nhân tử của một đa thức trên trường số hữu tỉ là một nội dung quan trọng của Đại số. Chuyên đề này trình bày khái niệm đa thức nguyên bản, Bổ đề Gauss và thiết lập Tiêu chuẩn Eisenstein. Các định lý được chứng minh chi tiết thông qua tính chất chia hết và đồng dư. Các bài toán áp dụng minh họa phương pháp đổi biến tịnh tiến, xét cực trị nghiệm phức và kỹ thuật gán giá trị nguyên.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong việc khảo sát nghiệm của đa thức, việc mở rộng tập số thực $\mathbb{R}$ sang tập số phức $\mathbb{C}$ giúp ta nhìn nhận cấu trúc nghiệm một cách toàn diện. Các học sinh THPT cần nắm vững các tính chất sau để áp dụng vào kỹ thuật đánh giá module nghiệm trong các bài toán đa thức bậc cao:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Tập số phức và Module)</div>
+        Mỗi số phức $z \in \mathbb{C}$ có dạng $z = a + bi$ với $a, b \in \mathbb{R}$ và $i^2 = -1$. Đại lượng $a$ là phần thực, $b$ là phần ảo. <br>
+        Module của số phức $z$, ký hiệu là $|z|$, được định nghĩa là khoảng cách từ điểm biểu diễn $z$ đến gốc tọa độ trên mặt phẳng phức:
+        $$ |z| = \sqrt{a^2 + b^2} $$
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Bất đẳng thức tam giác cho số phức)</div>
+        Với mọi số phức $z_1, z_2 \in \mathbb{C}$, ta luôn có:
+        $$ |z_1 + z_2| \le |z_1| + |z_2| $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng tính chất bình phương của module: $|z|^2 = z \cdot \overline{z}$, trong đó $\overline{z}$ là số phức liên hợp của $z$. Ta có:</p>
+        $$ \begin{aligned}
+        |z_1 + z_2|^2 &= (z_1 + z_2)(\overline{z_1} + \overline{z_2}) \\
+        &= z_1\overline{z_1} + z_2\overline{z_2} + z_1\overline{z_2} + \overline{z_1}z_2 \\
+        &= |z_1|^2 + |z_2|^2 + 2\text{Re}(z_1\overline{z_2})
+        \end{aligned} $$
+        <p>Vì phần thực của một số phức luôn nhỏ hơn hoặc bằng module của nó, tức là $\text{Re}(z_1\overline{z_2}) \le |z_1\overline{z_2}| = |z_1||\overline{z_2}| = |z_1||z_2|$, ta thu được:</p>
+        $$ |z_1 + z_2|^2 \le |z_1|^2 + |z_2|^2 + 2|z_1||z_2| = (|z_1| + |z_2|)^2 $$
+        <p>Lấy căn bậc hai hai vế, ta thu được bất đẳng thức cần chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.2 (Định lý cơ bản của Đại số)</div>
+        Mọi đa thức bậc $n \ge 1$ với hệ số thực (hoặc phức) đều có đúng $n$ nghiệm trên tập số phức $\mathbb{C}$ (tính cả nghiệm bội). <br>
+        <i>Ghi chú: Định lý này đòi hỏi công cụ của Giải tích phức để chứng minh, nên ta công nhận và sử dụng nó như một tiên đề trong các bài toán đại số tổ hợp.</i>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đa thức bất khả quy và Đa thức nguyên bản)</div>
+        <ul>
+            <li> <strong>Đa thức nguyên bản (Primitive Polynomial):</strong> Một đa thức $P(x) \in \mathbb{Z}[x]$ được gọi là nguyên bản nếu ước chung lớn nhất của tất cả các hệ số của nó bằng 1.</li>
+            <li> <strong>Đa thức bất khả quy (Irreducible Polynomial):</strong> Một đa thức $P(x) \in \mathbb{Z}[x]$ (hoặc $\mathbb{Q}[x]$) có bậc $n \ge 1$ được gọi là bất khả quy trên $\mathbb{Z}[x]$ (hoặc $\mathbb{Q}[x]$) nếu nó không thể biểu diễn được dưới dạng tích của hai đa thức thuộc $\mathbb{Z}[x]$ (hoặc $\mathbb{Q}[x]$) có bậc lớn hơn hoặc bằng 1.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Gauss - Gauss's Lemma)</div>
+        <strong>Phát biểu 1:</strong> Tích của hai đa thức nguyên bản trên $\mathbb{Z}[x]$ là một đa thức nguyên bản.<br>
+        <strong>Phát biểu 2:</strong> Nếu một đa thức với hệ số nguyên $P(x)$ bất khả quy trên vành $\mathbb{Z}[x]$, thì nó cũng bất khả quy trên trường $\mathbb{Q}[x]$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh <strong>Phát biểu 1</strong> bằng phương pháp phản chứng. <br>
+        Cho $f(x) = \sum_{i=0}^n a_i x^i$ và $g(x) = \sum_{j=0}^m b_j x^j$ là hai đa thức nguyên bản. Xét đa thức tích $h(x) = f(x)g(x) = \sum_{k=0}^{m+n} c_k x^k$.<br>
+        Giả sử $h(x)$ không phải là đa thức nguyên bản. Khi đó, tồn tại một số nguyên tố $p$ chia hết tất cả các hệ số $c_k$ của $h(x)$.</p>
+        <p>Vì $f(x)$ là đa thức nguyên bản, $p$ không thể chia hết tất cả các hệ số của $f(x)$. Gọi $i$ là chỉ số <strong>nhỏ nhất</strong> sao cho $p \nmid a_i$.<br>
+        Tương tự, vì $g(x)$ nguyên bản, gọi $j$ là chỉ số <strong>nhỏ nhất</strong> sao cho $p \nmid b_j$.<br>
+        Xét hệ số $c_{i+j}$ của đa thức tích $h(x)$:</p>
+        $$ c_{i+j} = a_i b_j + \sum_{k \lt i} a_k b_{i+j-k} + \sum_{l \lt j} a_{i+j-l} b_l $$
+        <p>Theo giả thiết phản chứng, $p \mid c_{i+j}$. <br>
+        Do cách chọn chỉ số $i$ và $j$, với mọi $k \lt i$, ta có $p \mid a_k$; và với mọi $l \lt j$, ta có $p \mid b_l$.<br>
+        Từ đó, $p$ chia hết tất cả các số hạng trong hai tổng $\sum_{k \lt i}$ và $\sum_{l \lt j}$.<br>
+        Bởi vì $p \mid c_{i+j}$ và $p$ chia hết các tổng trên, ta có:</p>
+        $$ p \mid a_i b_j $$
+        <p>Vì $p$ là số nguyên tố, điều này dẫn đến $p \mid a_i$ hoặc $p \mid b_j$. Sự phân tích này tạo ra mâu thuẫn với giả thiết $p \nmid a_i$ và $p \nmid b_j$.<br>
+        Vậy giả thiết phản chứng sai. Tích của hai đa thức nguyên bản phải là đa thức nguyên bản.<br>
+        <em>(Từ Phát biểu 1, Phát biểu 2 được suy ra bằng cách quy đồng mẫu số các đa thức trên $\mathbb{Q}[x]$).</em></p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tiêu chuẩn Eisenstein - Eisenstein's Criterion)</div>
+        Cho đa thức $P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0$ với các hệ số nguyên. Nếu tồn tại một số nguyên tố $p$ thỏa mãn đồng thời 3 điều kiện sau:
+        <ol>
+            <li> $p \nmid a_n$ (Không chia hết hệ số cao nhất).</li>
+            <li> $p \mid a_i$ với mọi $i = 0, 1, \dots, n-1$ (Chia hết mọi hệ số còn lại).</li>
+            <li> $p^2 \nmid a_0$ (Bình phương của $p$ không chia hết hệ số tự do).</li>
+        </ol>
+        Khi đó, $P(x)$ bất khả quy trên $\mathbb{Q}[x]$ (và trên $\mathbb{Z}[x]$ nếu $P(x)$ nguyên bản).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp phản chứng. <br>
+        Giả sử $P(x)$ có thể phân tích thành tích của hai đa thức bậc nhỏ hơn trên $\mathbb{Z}[x]$ (theo Bổ đề Gauss, phân tích trên $\mathbb{Q}[x]$ tương đương với phân tích trên $\mathbb{Z}[x]$):</p>
+        $$ P(x) = A(x) B(x) $$
+        <p>với $A(x) = \sum_{i=0}^k c_i x^i$, $B(x) = \sum_{j=0}^m d_j x^j$, trong đó $k, m \ge 1$ và $k+m=n$.</p>
+        <p>Xét hệ số tự do: $a_0 = c_0 d_0$.<br>
+        Theo điều kiện (2), $p \mid a_0$. Theo điều kiện (3), $p^2 \nmid a_0$.<br>
+        Từ đây, $p$ phải chia hết <strong>đúng một</strong> trong hai hệ số $c_0$ hoặc $d_0$. Không mất tính tổng quát, giả sử $p \mid c_0$ và $p \nmid d_0$.</p>
+        <p>Mặt khác, hệ số cao nhất $a_n = c_k d_m$. Theo điều kiện (1), $p \nmid a_n$, suy ra $p \nmid c_k$ và $p \nmid d_m$.<br>
+        Vì $p \mid c_0$ và $p \nmid c_k$, tồn tại một chỉ số nhỏ nhất $r$ ($0 \lt r \le k$) sao cho $p \nmid c_r$.<br>
+        Đặc biệt, do $k \lt n$ (vì $A(x), B(x)$ có bậc $\ge 1$), ta có $r \lt n$.</p>
+        <p>Xét hệ số $a_r$ của đa thức $P(x)$:</p>
+        $$ a_r = c_r d_0 + c_{r-1} d_1 + c_{r-2} d_2 + \dots + c_0 d_r $$
+        <p>(Quy ước $d_i = 0$ nếu $i \gt m$).<br>
+        Do $r \lt n$, theo điều kiện (2) của Tiêu chuẩn Eisenstein, ta có $p \mid a_r$.<br>
+        Do cách chọn $r$ là chỉ số nhỏ nhất sao cho $p \nmid c_r$, ta có $p$ chia hết tất cả các hệ số $c_{r-1}, c_{r-2}, \dots, c_0$.<br>
+        Do đó, $p$ chia hết tổng $\sum_{i=0}^{r-1} c_i d_{r-i}$.</p>
+        <p>Từ phương trình của $a_r$, ta suy ra:</p>
+        $$ p \mid c_r d_0 $$
+        <p>Tuy nhiên, $p \nmid c_r$ (theo cách chọn $r$) và $p \nmid d_0$ (theo giả thiết đầu tiên). Tích của hai số không chia hết cho số nguyên tố $p$ không thể chia hết cho $p$.<br>
+        Điều này tạo ra một mâu thuẫn. Giả thiết phản chứng sai.<br>
+        Vậy đa thức $P(x)$ không thể phân tích được, tức là nó bất khả quy.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Đa thức chia đường tròn - Cyclotomic Polynomial)</div>
+        Cho $p$ là một số nguyên tố. Khảo sát tính bất khả quy của đa thức chia đường tròn sau trên $\mathbb{Q}[x]$:
+        $$ \Phi_p(x) = x^{p-1} + x^{p-2} + \dots + x + 1 $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đa thức $\Phi_p(x)$ có tất cả các hệ số bằng 1, do đó không thể áp dụng trực tiếp Tiêu chuẩn Eisenstein với bất kỳ số nguyên tố nào. <br>
+        Tuy nhiên, tính bất khả quy của một đa thức không thay đổi dưới phép biến đổi tịnh tiến biến số $x \mapsto x+c$.<br>
+        Ta thực hiện phép đổi biến $x = y + 1$.<br>
+        Nhận xét rằng $\Phi_p(x) = \frac{x^p - 1}{x - 1}$. Do đó:</p>
+        $$ \Phi_p(y+1) = \frac{(y+1)^p - 1}{(y+1) - 1} = \frac{(y+1)^p - 1}{y} $$
+        <p>Khai triển nhị thức Newton cho tử số:</p>
+        $$ (y+1)^p - 1 = \left( y^p + \binom{p}{1}y^{p-1} + \binom{p}{2}y^{p-2} + \dots + \binom{p}{p-1}y + 1 \right) - 1 $$
+        <p>Rút gọn $1$ và chia cho $y$:</p>
+        $$ \Phi_p(y+1) = y^{p-1} + \binom{p}{1}y^{p-2} + \binom{p}{2}y^{p-3} + \dots + \binom{p}{p-1} $$
+        <p>Xét đa thức $Q(y) = \Phi_p(y+1)$. Ta kiểm tra các điều kiện của Tiêu chuẩn Eisenstein cho số nguyên tố $p$:</p>
+        <ol>
+            <li> Hệ số cao nhất của $Q(y)$ là $1$. Ta có $p \nmid 1$.</li>
+            <li> Với mọi $1 \le k \le p-1$, hệ số $\binom{p}{k} = \frac{p!}{k!(p-k)!}$. Vì $p$ là số nguyên tố và $1 \le k \le p-1$, tử số chứa nhân tử $p$ trong khi mẫu số không chứa bất kỳ nhân tử nào là bội của $p$. Do đó $p \mid \binom{p}{k}$. Điều kiện chia hết mọi hệ số trung gian được thỏa mãn.</li>
+            <li> Hệ số tự do của $Q(y)$ là $\binom{p}{p-1} = p$. Ta có $p \mid p$ nhưng $p^2 \nmid p$.</li>
+        </ol>
+        <p>Cả 3 điều kiện của Định lý 1.2 đều được thỏa mãn. Vậy đa thức $Q(y)$ bất khả quy trên $\mathbb{Q}[y]$.<br>
+        Kéo theo, đa thức ban đầu $\Phi_p(x)$ cũng bất khả quy trên $\mathbb{Q}[x]$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad / Schur's Polynomial - Kỹ thuật gán giá trị)</div>
+        Cho $a_1, a_2, \dots, a_n$ là $n$ số nguyên phân biệt ($n \ge 1$). Chứng minh rằng đa thức sau là bất khả quy trên $\mathbb{Z}[x]$:
+        $$ P(x) = (x - a_1)(x - a_2)\dots(x - a_n) - 1 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử phản chứng rằng $P(x)$ có thể phân tích thành tích của hai đa thức hệ số nguyên có bậc $\ge 1$:</p>
+        $$ P(x) = A(x) B(x) $$
+        <p>với $A(x), B(x) \in \mathbb{Z}[x]$.<br>
+        Thay $x = a_i$ (với $i = 1, 2, \dots, n$) vào đa thức $P(x)$:</p>
+        $$ P(a_i) = A(a_i) B(a_i) $$
+        <p>Mặt khác, theo định nghĩa của $P(x)$, ta có $P(a_i) = 0 - 1 = -1$.<br>
+        Do đó:</p>
+        $$ A(a_i) B(a_i) = -1 \quad \text{với mọi } i = 1, 2, \dots, n $$
+        <p>Vì $a_i$ là các số nguyên và $A(x), B(x)$ có hệ số nguyên, $A(a_i)$ và $B(a_i)$ phải là các số nguyên.<br>
+        Hai số nguyên nhân với nhau bằng $-1$ chỉ có thể là $(1, -1)$ hoặc $(-1, 1)$.<br>
+        Trong cả hai trường hợp, tổng của chúng luôn bằng $0$:</p>
+        $$ A(a_i) + B(a_i) = 0 \quad \text{với mọi } i = 1, 2, \dots, n $$
+        <p>Xét đa thức $H(x) = A(x) + B(x)$. <br>
+        Đa thức $H(x)$ có ít nhất $n$ nghiệm phân biệt là $a_1, a_2, \dots, a_n$.<br>
+        Tuy nhiên, ta xét bậc của $H(x)$. <br>
+        Do $P(x) = A(x) B(x)$ và $\deg P = n$, tổng bậc của $A(x)$ và $B(x)$ là $n$. <br>
+        Vì cả hai đa thức đều có bậc $\ge 1$, bậc của $A(x)$ và $B(x)$ đều thực sự nhỏ hơn $n$.<br>
+        Kéo theo, $\deg H = \deg (A+B) \lt n$.<br>
+        Một đa thức có bậc nhỏ hơn $n$ nhưng lại có $n$ nghiệm phân biệt thì đa thức đó phải là đa thức không.<br>
+        Tức là $H(x) \equiv 0 \implies A(x) = -B(x)$.</p>
+        <p>Thay ngược lại vào phân tích ban đầu:</p>
+        $$ P(x) = - (A(x))^2 $$
+        <p>Nhìn vào hệ số cao nhất: Hệ số cao nhất của $P(x)$ là $1$ (do khai triển từ $(x-a_1)\dots(x-a_n)$).<br>
+        Hệ số cao nhất của $- (A(x))^2$ là một số âm (vì bình phương của hệ số cao nhất của $A(x)$ là một số dương, nhân thêm dấu âm).<br>
+        $1$ không thể bằng một số âm. Đây là một mâu thuẫn.<br>
+        Giả thiết phản chứng sai. Đa thức $P(x)$ là bất khả quy.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Balkan Mathematical Olympiad - Đánh giá modun nghiệm phức)</div>
+        Cho số nguyên tố $p$ và số nguyên $a$ thỏa mãn $|a| \lt p-1$. Chứng minh rằng đa thức sau bất khả quy trên $\mathbb{Z}[x]$:
+        $$ P(x) = x^n + a x^{n-1} + p \quad (n \ge 2) $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $P(x) = A(x) B(x)$ với $A(x), B(x)$ là các đa thức hệ số nguyên có bậc $\ge 1$ và đơn khởi (vì hệ số của $x^n$ là 1).<br>
+        Xét hệ số tự do: $P(0) = A(0) B(0) = p$.<br>
+        Vì $p$ là số nguyên tố và $A(0), B(0) \in \mathbb{Z}$, một trong hai giá trị này phải có trị tuyệt đối bằng $1$, và giá trị kia bằng $\pm p$.<br>
+        Không mất tính tổng quát, giả sử $|A(0)| = 1$.</p>
+        <p>Gọi $\alpha_1, \alpha_2, \dots, \alpha_k$ là các nghiệm phức của đa thức $A(x)$ (với $k = \deg A \ge 1$).<br>
+        Theo định lý Vieta cho đa thức đơn khởi $A(x)$, trị tuyệt đối của hệ số tự do là tích các modun của nghiệm:</p>
+        $$ |A(0)| = \prod_{i=1}^k |\alpha_i| = 1 $$
+        <p>Vì tích các modun bằng 1, tồn tại ít nhất một nghiệm $\alpha$ của $A(x)$ sao cho $|\alpha| \le 1$.<br>
+        Mọi nghiệm của $A(x)$ cũng là nghiệm của $P(x)$. Do đó $P(\alpha) = 0$.<br>
+        Ta có:</p>
+        $$ \alpha^n + a \alpha^{n-1} + p = 0 \implies p = |-\alpha^n - a \alpha^{n-1}| $$
+        <p>Áp dụng bất đẳng thức tam giác cho modun số phức (Định lý 0.1):</p>
+        $$ p = |-\alpha^n - a \alpha^{n-1}| \le |\alpha|^n + |a| \cdot |\alpha|^{n-1} $$
+        <p>Do $|\alpha| \le 1$, ta có $|\alpha|^n \le 1$ và $|\alpha|^{n-1} \le 1$. Thay vào bất đẳng thức:</p>
+        $$ p \le 1 + |a| \cdot 1 = 1 + |a| \implies |a| \ge p - 1 $$
+        <p>Kết quả này mâu thuẫn với giả thiết của bài toán là $|a| \lt p-1$.<br>
+        Sự mâu thuẫn chứng minh rằng giả thiết phân tích thành nhân tử là sai. Vậy $P(x)$ bất khả quy. (Đánh giá nghiệm phức là tiêu chuẩn Perron mở rộng).</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Romanian National Olympiad - Cấu hình bình phương)</div>
+        Cho $a_1, a_2, \dots, a_n$ là $n$ số nguyên phân biệt ($n \ge 1$). Chứng minh đa thức sau bất khả quy trên $\mathbb{Z}[x]$:
+        $$ Q(x) = (x - a_1)^2 (x - a_2)^2 \dots (x - a_n)^2 + 1 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $Q(x) = A(x) B(x)$ với $A(x), B(x) \in \mathbb{Z}[x]$ và $\deg A, \deg B \ge 1$.<br>
+        Vì $Q(x) \gt 0$ với mọi số thực $x$, cả hai đa thức $A(x)$ và $B(x)$ không thể đổi dấu trên $\mathbb{R}$. Do chúng là đa thức hệ số nguyên, ta có thể giả sử $A(x) \gt 0$ và $B(x) \gt 0$ với mọi $x \in \mathbb{R}$ (nhân cả hai với $-1$ nếu cần).<br>
+        Thay $x = a_i$ vào $Q(x)$:</p>
+        $$ Q(a_i) = 0 + 1 = 1 $$
+        <p>Suy ra $A(a_i) B(a_i) = 1$. Vì $A, B$ nhận giá trị nguyên dương, ta có:</p>
+        $$ A(a_i) = 1 \quad \text{và} \quad B(a_i) = 1 \quad \text{với mọi } i = 1, \dots, n $$
+        <p>Xét đa thức $A(x) - 1$. Đa thức này có $n$ nghiệm phân biệt $a_1, \dots, a_n$.<br>
+        Do đó, $A(x) - 1$ chia hết cho đa thức $V(x) = (x-a_1)\dots(x-a_n)$.<br>
+        Ta viết $A(x) = V(x) P_1(x) + 1$ và tương tự $B(x) = V(x) P_2(x) + 1$.</p>
+        <p>Vì $\deg Q = 2n$, ta có $\deg A + \deg B = 2n$.<br>
+        Do $\deg A \ge n$ (vì $A(x)-1$ chia hết cho $V(x)$ bậc $n$) và $\deg B \ge n$, bắt buộc $\deg A = \deg B = n$.<br>
+        Điều này kéo theo $P_1(x)$ và $P_2(x)$ phải là các hằng số. Đặt $P_1(x) = c_1$ và $P_2(x) = c_2$.<br>
+        Vì hệ số cao nhất của $Q(x)$ là $1$, $c_1 c_2 = 1 \implies c_1 = c_2 = 1$ (do $A, B \gt 0$).<br>
+        Vậy $A(x) = V(x) + 1$ và $B(x) = V(x) + 1$.</p>
+        <p>Nhân lại:</p>
+        $$ Q(x) = A(x)B(x) = (V(x) + 1)^2 = V(x)^2 + 2V(x) + 1 $$
+        <p>So sánh với định nghĩa $Q(x) = V(x)^2 + 1$:</p>
+        $$ V(x)^2 + 2V(x) + 1 = V(x)^2 + 1 \implies 2V(x) = 0 $$
+        <p>Điều này mâu thuẫn vì $V(x) = (x-a_1)\dots(x-a_n)$ không phải là đa thức không.<br>
+        Vậy $Q(x)$ không thể phân tích, tức là bất khả quy trên $\mathbb{Z}[x]$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

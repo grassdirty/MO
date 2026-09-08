@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Định lý Điểm không Tổ hợp (Combinatorial Nullstellensatz)</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> ĐỊNH LÝ ĐIỂM KHÔNG TỔ HỢP (COMBINATORIAL NULLSTELLENSATZ)</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát sự tồn tại của một cấu trúc rời rạc (tập con, đồ thị con) thỏa mãn các điều kiện đồng dư thường gặp khó khăn nếu chỉ sử dụng nguyên lý Dirichlet hoặc đếm bằng hai cách. Chuyên đề này giới thiệu Định lý Điểm không Tổ hợp (Combinatorial Nullstellensatz) của Noga Alon - một công cụ liên kết giữa Đại số và Tổ hợp. Bằng cách mã hóa các điều kiện cấm thành nghiệm của một đa thức nhiều biến, ta có thể khẳng định sự tồn tại của cấu hình mong muốn thông qua việc kiểm tra một hệ số khác không.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Định lý Điểm không Tổ hợp sử dụng khái niệm "Trường" (Field) từ Đại số trừu tượng. Để học sinh THPT có thể áp dụng định lý này vào các bài toán số học và tổ hợp, chúng ta cần làm quen với các khái niệm cơ sở sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Trường $\mathbb{F}$ và Trường hữu hạn $\mathbb{Z}_p$)</div>
+        <ul>
+            <li><strong>Trường (Field) $\mathbb{F}$:</strong> Là một tập hợp được trang bị hai phép toán cộng ($+$) và nhân ($\times$) thỏa mãn các tính chất tương tự như trên tập số thực $\mathbb{R}$ hoặc số hữu tỉ $\mathbb{Q}$ (có tính giao hoán, kết hợp, phân phối, có phần tử không $0$, phần tử đơn vị $1$, và mọi phần tử khác không đều có nghịch đảo đối với phép nhân).</li>
+            <li><strong>Trường hữu hạn $\mathbb{Z}_p$:</strong> Cho $p$ là một số nguyên tố. Tập hợp $\mathbb{Z}_p = \{0, 1, 2, \dots, p-1\}$ cùng với phép cộng và phép nhân lấy modulo $p$ tạo thành một trường. Lý do là vì $p$ là số nguyên tố nên mọi phần tử $a \in \mathbb{Z}_p$ (với $a \neq 0$) đều nguyên tố cùng nhau với $p$, do đó luôn tồn tại phần tử nghịch đảo modulo $p$ (theo định lý Bézout). Nhờ đó, ta có thể thực hiện phép "chia" trên $\mathbb{Z}_p$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Nghiệm của đa thức trên một Trường)</div>
+        Một đa thức một biến $P(x)$ khác đa thức không, có bậc $d \ge 0$ với các hệ số thuộc trường $\mathbb{F}$ (bao gồm cả trường $\mathbb{Z}_p$), có tối đa $d$ nghiệm phân biệt thuộc $\mathbb{F}$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng quy nạp theo bậc $d$. Với $d=0$, đa thức là một hằng số $c \neq 0$, không có nghiệm nào (số nghiệm $\le 0$).<br>
+        Giả sử định lý đúng với đa thức bậc $d-1$. Xét đa thức $P(x)$ bậc $d$. Nếu $P(x)$ không có nghiệm nào trong $\mathbb{F}$, thì số nghiệm là $0 \le d$.<br>
+        Nếu $P(x)$ có ít nhất một nghiệm $a \in \mathbb{F}$, theo định lý Bézout cho đa thức, ta có thể phân tích $P(x) = (x-a)Q(x)$, trong đó $Q(x)$ là đa thức bậc $d-1$ trên $\mathbb{F}$.<br>
+        Vì $\mathbb{F}$ là một trường (không có ước của không), $P(x) = 0$ khi và chỉ khi $x = a$ hoặc $Q(x) = 0$.<br>
+        Theo giả thiết quy nạp, $Q(x)$ có tối đa $d-1$ nghiệm. Do đó $P(x)$ có tối đa $1 + (d-1) = d$ nghiệm phân biệt. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đa thức nhiều biến và Bậc tổng)</div>
+        Cho trường $\mathbb{F}$. Một đa thức $n$ biến $P(x_1, \dots, x_n)$ trên $\mathbb{F}$ là tổng của các đơn thức có dạng $c \cdot x_1^{t_1} x_2^{t_2} \dots x_n^{t_n}$.<br>
+        <strong>Bậc tổng (Total Degree)</strong> của đơn thức này là $t_1 + t_2 + \dots + t_n$. <br>
+        Bậc của đa thức $P$, ký hiệu $\deg(P)$, là bậc tổng lớn nhất trong tất cả các đơn thức có hệ số $c \neq 0$ của $P$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Đa thức Triệt tiêu)</div>
+        Cho đa thức $n$ biến $P(x_1, \dots, x_n)$ trên trường $\mathbb{F}$. Giả sử có các tập con $S_1, S_2, \dots, S_n \subset \mathbb{F}$ sao cho bậc của biến $x_i$ trong mọi đơn thức của $P$ đều nhỏ hơn $|S_i|$ (với mọi $i=1, \dots, n$). <br>
+        Nếu $P(s_1, \dots, s_n) = 0$ với mọi bộ $(s_1, \dots, s_n) \in S_1 \times S_2 \times \dots \times S_n$, thì $P$ phải là đa thức đồng nhất $0$ (tức là mọi hệ số của $P$ đều bằng $0$).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp theo số biến $n$.<br>
+        <em>Bước cơ sở ($n=1$):</em> Đa thức $P(x_1)$ có bậc nhỏ hơn $|S_1|$. Theo Định lý 0.1, một đa thức một biến bậc $d$ không thể có nhiều hơn $d$ nghiệm trừ khi nó là đa thức đồng nhất 0. Vì $P(x_1) = 0$ tại $|S_1|$ điểm phân biệt và $\deg(P) \lt |S_1|$, $P(x_1)$ phải là đa thức đồng nhất 0.<br>
+        <em>Bước quy nạp:</em> Giả sử bổ đề đúng cho $n-1$ biến. Xét đa thức $n$ biến $P(x_1, \dots, x_n)$. Ta có thể viết $P$ dưới dạng một đa thức theo biến $x_n$ với các hệ số là các đa thức theo $n-1$ biến còn lại:</p>
+        $$ P(x_1, \dots, x_n) = \sum_{j=0}^{|S_n|-1} P_j(x_1, \dots, x_{n-1}) x_n^j $$
+        <p>Cố định một bộ $(s_1, \dots, s_{n-1}) \in S_1 \times \dots \times S_{n-1}$. Thay vào $P$, ta được một đa thức một biến theo $x_n$:</p>
+        $$ Q(x_n) = \sum_{j=0}^{|S_n|-1} P_j(s_1, \dots, s_{n-1}) x_n^j $$
+        <p>Theo giả thiết, $Q(s_n) = 0$ với mọi $s_n \in S_n$. Đa thức $Q(x_n)$ có bậc nhỏ hơn $|S_n|$ nhưng lại có $|S_n|$ nghiệm, do đó $Q(x_n)$ phải là đa thức đồng nhất 0.<br>
+        Điều này có nghĩa là mọi hệ số của $Q$ đều bằng 0, tức là $P_j(s_1, \dots, s_{n-1}) = 0$ với mọi $j$.<br>
+        Vì sự triệt tiêu này đúng với mọi bộ $(s_1, \dots, s_{n-1})$, theo giả thiết quy nạp, mỗi đa thức hệ số $P_j(x_1, \dots, x_{n-1})$ phải là đa thức đồng nhất 0.<br>
+        Kéo theo, $P(x_1, \dots, x_n)$ là đa thức đồng nhất 0. Bổ đề được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Điểm không Tổ hợp - Combinatorial Nullstellensatz)</div>
+        Cho đa thức $P(x_1, \dots, x_n)$ trên trường $\mathbb{F}$. Giả sử bậc của $P$ là $d = \sum_{i=1}^n t_i$.<br>
+        Nếu hệ số của đơn thức $x_1^{t_1} x_2^{t_2} \dots x_n^{t_n}$ trong $P$ là khác $0$, và có các tập con $S_1, \dots, S_n \subset \mathbb{F}$ thỏa mãn $|S_i| \gt t_i$ với mọi $i$, thì tồn tại một bộ $(s_1, \dots, s_n) \in S_1 \times \dots \times S_n$ sao cho:
+        $$ P(s_1, \dots, s_n) \neq 0 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử phản chứng rằng $P(s_1, \dots, s_n) = 0$ với mọi bộ thuộc $S_1 \times \dots \times S_n$.<br>
+        Với mỗi $i = 1, \dots, n$, xét đa thức đặc trưng của tập $S_i$:</p>
+        $$ g_i(x_i) = \prod_{s \in S_i} (x_i - s) = x_i^{|S_i|} - \dots $$
+        <p>Ta có $g_i(s_i) = 0$ với mọi $s_i \in S_i$. Từ phương trình $g_i(x_i) = 0$, ta có thể biểu diễn lũy thừa $x_i^{|S_i|}$ thành một tổ hợp tuyến tính của các lũy thừa bậc thấp hơn của $x_i$.<br>
+        Bằng cách lặp đi lặp lại việc thay thế này vào đa thức $P$ (phép chia đa thức lấy phần dư), ta sẽ thu gọn $P$ thành một đa thức $\bar{P}$ sao cho bậc của biến $x_i$ trong mọi đơn thức của $\bar{P}$ đều <strong>nhỏ hơn</strong> $|S_i|$.<br>
+        Do việc thay thế này chỉ dựa trên hệ thức $g_i(s_i) = 0$, giá trị của đa thức không thay đổi trên lưới $S_1 \times \dots \times S_n$.<br>
+        Nghĩa là $\bar{P}(s_1, \dots, s_n) = P(s_1, \dots, s_n) = 0$ trên toàn không gian thử.<br>
+        Theo Bổ đề 1.1, $\bar{P}$ phải là đa thức đồng nhất 0.</p>
+
+        <p>Tuy nhiên, phân tích quá trình giảm bậc: Ta chỉ thay thế một đơn thức khi bậc của $x_i$ trong nó $\ge |S_i|$. Do $|S_i| \gt t_i$, đơn thức $x_1^{t_1} \dots x_n^{t_n}$ có các số mũ nhỏ hơn $|S_i|$, nên nó <strong>chưa từng bị thay thế</strong>.<br>
+        Đồng thời, khi giảm bậc các đơn thức khác (có bậc tổng $\le d = \sum t_i$), các đơn thức sinh ra sẽ có bậc tổng <strong>nhỏ hơn ngặt</strong> so với đơn thức gốc. Do đó, chúng không thể sinh ra các thành phần để triệt tiêu đơn thức $x_1^{t_1} \dots x_n^{t_n}$ (vì đơn thức này có bậc tổng là $d$, là bậc cực đại).<br>
+        Vậy hệ số của $x_1^{t_1} \dots x_n^{t_n}$ trong $\bar{P}$ vẫn giống như trong $P$, tức là khác 0.<br>
+        Điều này mâu thuẫn với kết luận $\bar{P}$ là đa thức đồng nhất 0.<br>
+        Sự mâu thuẫn chứng minh rằng giả thiết phản chứng sai. Phải tồn tại một điểm mà tại đó đa thức không bị triệt tiêu.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Cauchy-Davenport - Tổ hợp cộng tính)</div>
+        Cho $p$ là một số nguyên tố. $A$ và $B$ là hai tập con không rỗng bất kỳ của trường $\mathbb{Z}_p$. <br>
+        Ký hiệu tập tổng $A + B = \{a + b \pmod p \mid a \in A, b \in B\}$.<br>
+        Chứng minh rằng: $|A + B| \ge \min(p, |A| + |B| - 1)$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trường hợp $|A| + |B| - 1 \ge p$: Nếu $|A + B| \lt p$, ta có thể lấy các tập con $A' \subset A$ và $B' \subset B$ sao cho $|A'| + |B'| - 1 = p$. Nếu ta chứng minh được định lý cho trường hợp tổng bằng $p$, ta sẽ có $|A+B| \ge |A'+B'| \ge p$, bài toán được giải quyết. Do đó, ta chỉ cần xét trường hợp $|A| + |B| - 1 \le p$.</p>
+
+        <p>Giả sử phản chứng rằng $|A + B| \le |A| + |B| - 2$.<br>
+        Khi đó, tồn tại một tập hợp $C \subset \mathbb{Z}_p$ chứa tập $A+B$ sao cho kích thước của $C$ là đúng bằng $|A| + |B| - 2$.<br>
+        Ta thiết lập một đa thức hai biến đại diện cho quan hệ cấm này:</p>
+        $$ P(x, y) = \prod_{c \in C} (x + y - c) $$
+        <p>Với mọi $a \in A$ và $b \in B$, vì $a+b \in A+B \subseteq C$, nên tổng $a+b$ bằng một phần tử $c$ nào đó trong $C$. <br>
+        Kéo theo $P(a, b) = 0$ với mọi $(a, b) \in A \times B$.</p>
+
+        <p>Ta sẽ sử dụng Định lý Điểm không Tổ hợp (Định lý 1.2).<br>
+        Bậc của đa thức $P(x,y)$ bằng đúng số lượng nhân tử, tức là $\deg(P) = |C| = |A| + |B| - 2$.<br>
+        Ta tìm hệ số của đơn thức $x^{|A|-1} y^{|B|-1}$ trong khai triển của $P(x,y)$.<br>
+        Bậc tổng của đơn thức này là $(|A|-1) + (|B|-1) = |A| + |B| - 2$, đúng bằng bậc cực đại của đa thức.<br>
+        Do đó, hệ số này chỉ phụ thuộc vào việc khai triển thành phần $(x+y)^{|C|}$ của đa thức.<br>
+        Theo nhị thức Newton, hệ số của $x^{|A|-1} y^{|B|-1}$ trong $(x+y)^{|A|+|B|-2}$ là:</p>
+        $$ \binom{|A|+|B|-2}{|A|-1} $$
+        <p>Vì $|A| + |B| - 2 \lt p$, cả tử số và mẫu số của hệ số nhị thức này trong công thức tính giai thừa đều nhỏ hơn $p$. Do đó, hệ số này không chứa nhân tử $p$, tức là nó <strong>không đồng dư với $0$ modulo $p$</strong>.<br>
+        Vậy hệ số của $x^{t_1} y^{t_2}$ (với $t_1 = |A|-1, t_2 = |B|-1$) là khác $0$ trên trường $\mathbb{Z}_p$.<br>
+        Đồng thời, ta có $|A| \gt t_1$ và $|B| \gt t_2$.<br>
+        Áp dụng Định lý 1.2 (Combinatorial Nullstellensatz), tồn tại một điểm $(a, b) \in A \times B$ sao cho $P(a, b) \neq 0$.<br>
+        Nhưng ta đã phân tích ban đầu rằng $P(a, b) = 0$ trên toàn bộ $A \times B$.<br>
+        Mâu thuẫn này phá vỡ giả thiết phản chứng. Vậy $|A + B| \ge |A| + |B| - 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Bài toán Đồ thị chính quy cục bộ - Alon's Regular Subgraph)</div>
+        Cho $p$ là một số nguyên tố. Xét một đồ thị vô hướng $G = (V, E)$ sao cho bậc trung bình của đồ thị lớn hơn $2p - 2$.<br>
+        Chứng minh rằng đồ thị $G$ chứa một đồ thị con không rỗng $H$ (không nhất thiết cảm sinh), sao cho bậc của mọi đỉnh trong $H$ đều là một số chia hết cho $p$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi cạnh $e \in E$ có thể được chọn hoặc không chọn vào đồ thị con $H$. Ta gán cho mỗi cạnh một biến $x_e \in \{0, 1\}$.<br>
+        Bậc của một đỉnh $v$ trong đồ thị con $H$ sẽ là tổng của các biến $x_e$ ứng với các cạnh kề với $v$: $d_H(v) = \sum_{e \ni v} x_e$.<br>
+        Yêu cầu của bài toán là tìm một bộ $(x_e)_{e \in E} \in \{0, 1\}^{|E|}$ không đồng thời bằng 0, sao cho với mọi đỉnh $v \in V$, $d_H(v) \equiv 0 \pmod p$.<br>
+        Theo Định lý Fermat nhỏ, $d_H(v) \equiv 0 \pmod p \iff (d_H(v))^{p-1} \equiv 0 \pmod p$.<br>
+        Ta thiết lập đa thức trên trường $\mathbb{Z}_p$:</p>
+        $$ P(x) = \prod_{v \in V} \left( 1 - \left( \sum_{e \ni v} x_e \right)^{p-1} \right) - \prod_{e \in E} (1 - x_e) $$
+        <p>Xét tính chất của đa thức này trên không gian $\{0, 1\}^{|E|}$:</p>
+        <ul>
+            <li>Nếu ta không chọn cạnh nào ($x_e = 0, \forall e$): Đa thức bằng $\prod (1 - 0) - \prod (1 - 0) = 1 - 1 = 0$.</li>
+            <li>Nếu tồn tại một nghiệm $x \neq \mathbf{0}$ sao cho $P(x) \neq 0$: Do $x \neq \mathbf{0}$, tồn tại ít nhất một cạnh được chọn, nên $\prod (1 - x_e) = 0$. Kéo theo $\prod_{v \in V} \left( 1 - (d_H(v))^{p-1} \right) \neq 0$. Điều này chỉ xảy ra khi mọi nhân tử đều khác 0, tức là $1 - (d_H(v))^{p-1} \not\equiv 0 \pmod p \implies (d_H(v))^{p-1} \equiv 0 \pmod p \implies d_H(v) \equiv 0 \pmod p$ với mọi $v$. Đây là đồ thị con $H$ cần tìm.</li>
+        </ul>
+
+        <p>Để chứng minh tồn tại $x \neq \mathbf{0}$ làm $P(x) \neq 0$, ta sẽ dùng Nullstellensatz.<br>
+        Bậc của cụm thứ nhất trong $P(x)$ là $|V|(p-1)$.<br>
+        Bậc của cụm thứ hai trong $P(x)$ là $|E|$.<br>
+        Theo giả thiết, bậc trung bình của đồ thị $\gt 2p - 2$, tức là:</p>
+        $$ \frac{2|E|}{|V|} > 2p - 2 \implies |E| > |V|(p-1) $$
+        <p>Vậy bậc cực đại của toàn bộ đa thức $P(x)$ được quyết định bởi cụm thứ hai $\prod_{e \in E} (1 - x_e)$, và bằng đúng $|E|$.<br>
+        Hệ số của đơn thức bậc cực đại $\prod_{e \in E} x_e$ trong $P(x)$ là $-(-1)^{|E|} \neq 0$.<br>
+        Trong khi đó, không gian thử cho mỗi biến $x_e$ là tập $S_e = \{0, 1\}$, có $|S_e| = 2$.<br>
+        Bậc của $x_e$ trong đơn thức cực đại là $t_e = 1$. Rõ ràng $|S_e| \gt t_e$.<br>
+        Áp dụng Định lý 1.2, tồn tại một cấu hình $x \in \{0, 1\}^{|E|}$ sao cho $P(x) \neq 0$.<br>
+        Vì $P(\mathbf{0}) = 0$, cấu hình này phải là một đồ thị con không rỗng $H$ thỏa mãn yêu cầu chia hết cho $p$. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Định lý Erdős-Ginzburg-Ziv - Đếm và Chọn lọc số nguyên)</div>
+        Cho $p$ là một số nguyên tố. Cho trước một danh sách gồm $2p - 1$ số nguyên bất kỳ (có thể lặp lại). Chứng minh rằng luôn có thể chọn ra chính xác $p$ số từ danh sách này sao cho tổng của chúng chia hết cho $p$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta chứng minh định lý này bằng cách sử dụng Định lý Cauchy-Davenport (Bài toán 2.1).</p>
+
+        <p>Đầu tiên, ta sắp xếp $2p - 1$ số nguyên theo thứ tự tăng dần:</p>
+        $$ a_1 \le a_2 \le a_3 \le \dots \le a_{2p-1} $$
+        <p>Xét các cặp phần tử có khoảng cách chỉ số là $p-1$.<br>
+        <strong>Trường hợp 1:</strong> Tồn tại một chỉ số $i$ sao cho $a_i = a_{i+p-1}$.<br>
+        Vì dãy được sắp xếp tăng dần, điều này có nghĩa là $p$ phần tử từ $a_i$ đến $a_{i+p-1}$ đều bằng nhau. <br>
+        Khi đó, ta chọn đúng $p$ phần tử này. Tổng của chúng là $p \cdot a_i$, chia hết cho $p$. Bài toán được giải quyết.</p>
+
+        <p><strong>Trường hợp 2:</strong> Với mọi chỉ số $i$ từ $1$ đến $p-1$, ta đều có $a_i \lt a_{i+p-1}$.<br>
+        Ta phân nhóm $2p-2$ phần tử đầu thành $p-1$ tập hợp, mỗi tập chứa 2 phần tử phân biệt:</p>
+        $$ A_i = \{ a_i \pmod p, \quad a_{i+p-1} \pmod p \} \quad \text{với } i = 1, 2, \dots, p-1 $$
+        <p>Vì $a_i \neq a_{i+p-1}$, ta coi như mỗi tập $A_i$ cung cấp $2$ giá trị khác nhau (trong trường hợp xấu nhất, nếu chúng đồng dư modulo $p$, nguyên lý Dirichlet cho thấy ta đã quay lại Trường hợp 1).<br>
+        Còn lại đúng một phần tử chưa được nhóm là $a_{2p-1}$. Đặt $A_p = \{ a_{2p-1} \pmod p \}$.</p>
+
+        <p>Bây giờ ta áp dụng Định lý Cauchy-Davenport liên tiếp cho tổng của các tập hợp này trên $\mathbb{Z}_p$:</p>
+        <ul>
+            <li> $|A_1 + A_2| \ge \min(p, |A_1| + |A_2| - 1) = \min(p, 2 + 2 - 1) = 3$.</li>
+            <li> $|A_1 + A_2 + A_3| \ge \min(p, 3 + |A_3| - 1) = \min(p, 3 + 2 - 1) = 4$.</li>
+            <li> Lặp lại quá trình này cho đến tập $A_{p-1}$:
+            $$ |A_1 + A_2 + \dots + A_{p-1}| \ge \min(p, (p-1) + 2 - 1) = \min(p, p) = p $$</li>
+        </ul>
+        <p>Vì số lượng các lớp thặng dư có thể tạo ra từ tổng của 1 phần tử trong mỗi $A_i$ đạt đến mức tối đa là $p$, điều này có nghĩa là tập tổng này phủ kín toàn bộ trường $\mathbb{Z}_p$.<br>
+        Nói cách khác, $A_1 + A_2 + \dots + A_{p-1} = \mathbb{Z}_p$.</p>
+
+        <p>Do nó phủ kín $\mathbb{Z}_p$, nó phải chứa lớp thặng dư $-a_{2p-1} \pmod p$.<br>
+        Nghĩa là, ta luôn có thể chọn ra một phần tử $x_i \in A_i$ (đại diện cho một trong hai số $a_i$ hoặc $a_{i+p-1}$) sao cho:</p>
+        $$ x_1 + x_2 + \dots + x_{p-1} \equiv -a_{2p-1} \pmod p $$
+        <p>Cộng thêm $a_{2p-1}$ vào hai vế, ta có:</p>
+        $$ x_1 + x_2 + \dots + x_{p-1} + a_{2p-1} \equiv 0 \pmod p $$
+        <p>Bởi vì mỗi $x_i$ được chọn từ $A_i$, chúng là các phần tử phân biệt về mặt chỉ số trong dãy ban đầu. Tổng cộng ta đã chọn đúng $(p-1) + 1 = p$ số từ danh sách, và tổng của chúng chia hết cho $p$.<br>
+        Bài toán được giải quyết hoàn toàn.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

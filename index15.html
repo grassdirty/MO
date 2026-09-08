@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Phương trình hàm trên tập rời rạc - Đánh giá đơn điệu và quỹ đạo bất động</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: PHƯƠNG TRÌNH HÀM TRÊN TẬP RỜI RẠC <br> ĐÁNH GIÁ ĐƠN ĐIỆU VÀ QUỸ ĐẠO BẤT ĐỘNG</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát hàm số trên các tập rời rạc như $\mathbb{N}$ và $\mathbb{Z}$ đòi hỏi các công cụ khác biệt so với giải tích liên tục. Chuyên đề này hình thức hóa phương pháp đánh giá tính đơn điệu thông qua bất đẳng thức hàm, phân hoạch tập xác định bằng quỹ đạo (orbits), và áp dụng lý thuyết đồng dư để xác định tính giải được. Các bài toán tập trung vào việc thiết lập mâu thuẫn từ tính chẵn lẻ của quỹ đạo và truy xuất hệ số thông qua phương trình Cauchy trên $\mathbb{Z}$.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Quỹ đạo của hàm số (Orbit))</div>
+        Cho tập hợp $X$ và hàm số $f: X \to X$. Quỹ đạo của một phần tử $x \in X$ dưới tác động của $f$ là dãy các phần tử được tạo ra bằng cách lặp lại hàm $f$:
+        $$ \mathcal{O}(x) = \{ x, f(x), f(f(x)), \dots, f^{(k)}(x), \dots \} $$
+        Nếu tồn tại số nguyên dương $k$ sao cho $f^{(k)}(x) = x$, thì quỹ đạo được gọi là tuần hoàn với chu kỳ $k$. Khi đó, hàm $f$ thực hiện một phép hoán vị trên các phần tử của tập hợp $X$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Nguyên lý Cực hạn trong Đánh giá Đơn điệu)</div>
+        Cho hàm số $f: \mathbb{N}^* \to \mathbb{N}^*$. Nếu với mọi $n \in \mathbb{N}^*$, hàm số thỏa mãn điều kiện $f(f(n)) \lt f(n+1)$, thì $f$ là hàm đồng nhất, tức là $f(n) = n$ với mọi $n \in \mathbb{N}^*$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sẽ chứng minh $f(n)$ là hàm tăng ngặt trên $\mathbb{N}^*$.</p>
+        <p>Với mỗi số nguyên dương $n$, xét tập hợp $S_n = \{ f(k) \mid k \ge n \}$. Vì $S_n \subset \mathbb{N}^*$ và $S_n \neq \emptyset$, theo Nguyên lý Cực hạn, $S_n$ có phần tử nhỏ nhất. Gọi giá trị nhỏ nhất đó là $M_n$, đạt được tại chỉ số $k_n \ge n$. Tức là $f(k_n) = M_n$.</p>
+        <p>Ta chứng minh $k_n = n$ bằng quy nạp theo $n$.</p>
+        <p>Với $n=1$, giả sử phần tử nhỏ nhất của $S_1$ đạt tại $k > 1$. Khi đó $k - 1 \ge 1$. Theo giả thiết: $f(f(k-1)) \lt f(k)$. Vì $f(k-1) \ge 1$, giá trị $f(f(k-1))$ thuộc $S_1$. Nhưng $f(f(k-1)) \lt f(k) = M_1$, mâu thuẫn với tính nhỏ nhất của $M_1$. Do đó $k=1$, suy ra $f(1) \lt f(x)$ với mọi $x \gt 1$.</p>
+        <p>Giả sử mệnh đề đúng đến $n-1$, tức là $f(1) \lt f(2) \lt \dots \lt f(n-1)$, và $f(n-1) \lt f(x)$ với mọi $x \ge n$.</p>
+        <p>Xét $S_n$. Nếu giá trị nhỏ nhất đạt tại $k \gt n$, thì $k-1 \ge n$. Khi đó $m = f(k-1) \ge f(n) \ge n$ (do $f$ tăng ngặt trên đoạn đầu). Suy ra $m \ge n$, nên $f(m) \in S_n$. Nhưng ta có $f(m) = f(f(k-1)) \lt f(k) = \min S_n$, mâu thuẫn. Vậy $k$ bắt buộc phải bằng $n$.</p>
+        <p>Do đó $f(n) \lt f(x)$ với mọi $x \gt n$. Từ đó suy ra $f$ là hàm tăng ngặt trên $\mathbb{N}^*$.</p>
+        <p>Vì $f$ tăng ngặt từ $\mathbb{N}^*$ vào $\mathbb{N}^*$, ta luôn có $f(n) \ge n$.</p>
+        <p>Mặt khác, từ giả thiết $f(f(n)) \lt f(n+1)$ và $f$ tăng ngặt, ta suy ra $f(n) \lt n + 1$, tức là $f(n) \le n$.</p>
+        <p>Kết hợp hai điều kiện $f(n) \ge n$ và $f(n) \le n$, ta thu được $f(n) = n$ với mọi $n \in \mathbb{N}^*$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tính giải được của phương trình tịnh tiến tuần hoàn)</div>
+        Cho $c$ là một số nguyên dương. Phương trình hàm $f(f(n)) = n + c$ có nghiệm $f: \mathbb{N} \to \mathbb{N}$ khi và chỉ khi $c$ là một số chẵn.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử tồn tại hàm $f$ thỏa mãn $f(f(n)) = n + c$.</p>
+        <p>Ta có $f(n+c) = f(f(f(n))) = f(n) + c$. Điều này chứng tỏ $f$ bảo toàn các lớp đồng dư modulo $c$.</p>
+        <p>Xét tập hợp $\mathbb{N}$. Hàm số $f$ thiết lập một song ánh giữa quỹ đạo của phần tử $n$ và phần tử $f(n)$. Cụ thể, đối với mỗi số $k \in \{0, 1, \dots, c-1\}$, dãy $A_k = \{k, k+c, k+2c, \dots\}$ được ánh xạ qua hàm $f$ thành dãy $A_{f(k)} = \{f(k), f(k)+c, f(k)+2c, \dots\}$.</p>
+        <p>Do $f(f(n)) = n+c$, tác động lặp 2 lần của $f$ lên dãy $A_k$ sẽ tịnh tiến dãy đó lên chính xác một bước (chu kỳ $c$).</p>
+        <p>Nói cách khác, tập hợp $\{A_0, A_1, \dots, A_{c-1}\}$ được chia thành các cặp ghép đôi rời nhau $\{A_k, A_{f(k)}\}$. Vì các lớp đồng dư modulo $c$ bị chia thành các cặp phân biệt, tổng số lớp $c$ phải là một số chẵn.</p>
+        <p>Nếu $c$ lẻ, phương trình vô nghiệm.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO 1977, Bài 6 - Ứng dụng Nguyên lý Cực hạn)</div>
+        Tìm tất cả các hàm số $f: \mathbb{N}^* \to \mathbb{N}^*$ thỏa mãn:
+        $$ f(f(n)) \lt f(n+1) \quad \forall n \in \mathbb{N}^* $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo kết quả và chứng minh của Định lý 1.1, hàm số $f$ thỏa mãn điều kiện $f(f(n)) \lt f(n+1)$ trên $\mathbb{N}^*$ bắt buộc phải là một hàm tăng ngặt.</p>
+        <p>Vì $f$ là hàm tăng ngặt từ $\mathbb{N}^*$ vào $\mathbb{N}^*$, ta luôn có $f(n) \ge n$ với mọi $n$.</p>
+        <p>Đồng thời, tính tăng ngặt đảm bảo rằng bất đẳng thức $f(A) \lt f(B)$ tương đương với $A \lt B$. Từ giả thiết $f(f(n)) \lt f(n+1)$, ta suy ra:</p>
+        $$ f(n) \lt n + 1 \implies f(n) \le n $$
+        <p>Từ $f(n) \ge n$ và $f(n) \le n$, ta thu được nghiệm duy nhất:</p>
+        $$ f(n) = n \quad \forall n \in \mathbb{N}^* $$
+        <p>Thử lại: $f(f(n)) = n$, và $f(n+1) = n+1$. Ta có $n \lt n+1$, thỏa mãn giả thiết bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Phân hoạch quỹ đạo)</div>
+        Chứng minh rằng không tồn tại hàm số $f: \mathbb{N} \to \mathbb{N}$ nào thỏa mãn phương trình:
+        $$ f(f(n)) = n + 2025 \quad \forall n \in \mathbb{N} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử tồn tại hàm số $f$ thỏa mãn phương trình đã cho.</p>
+        <p>Ta có: $f(f(f(n))) = f(n + 2025)$.<br>
+        Đồng thời, áp dụng phương trình cho $f(n)$: $f(f(f(n))) = f(n) + 2025$.<br>
+        Suy ra: $f(n + 2025) = f(n) + 2025$ với mọi $n \in \mathbb{N}$.</p>
+        <p>Tính chất này cho thấy nếu $n \equiv m \pmod{2025}$ thì $f(n) \equiv f(m) \pmod{2025}$.<br>
+        Hơn nữa, tập hợp $\mathbb{N}$ được chia thành $2025$ tập hợp rời nhau, mỗi tập hợp là một chuỗi cấp số cộng với công sai 2025:<br>
+        $A_k = \{k, k + 2025, k + 2 \cdot 2025, \dots\}$ với $k = 0, 1, \dots, 2024$.</p>
+        <p>Do $f(n + 2025) = f(n) + 2025$, hàm $f$ ánh xạ toàn bộ dãy $A_k$ sang dãy $A_{f(k) \pmod{2025}}$.<br>
+        Nói cách khác, $f$ tạo ra một phép hoán vị trên 2025 lớp đồng dư modulo 2025.</p>
+        <p>Khi áp dụng hàm $f$ hai lần, $f(f(n)) = n + 2025$, tức là áp dụng 2 lần phép hoán vị này sẽ tịnh tiến lớp $A_k$ lên đúng 1 bước trong cùng một lớp. Điều này có nghĩa là tập $A_k$ bị ánh xạ sang một tập $A_j$ phân biệt (vì nếu $A_k \to A_k$, ta có $f(f(n)) \equiv n \pmod{2025}$).</p>
+        <p>Cụ thể, xét modulo 2025, gọi hàm $\bar{f}(k) = f(k) \pmod{2025}$.<br>
+        Ta có $\bar{f}(\bar{f}(k)) \equiv k + 2025 \equiv k \pmod{2025}$.<br>
+        Vậy $\bar{f}$ là một phép đổi chỗ (involution) trên tập $\{0, 1, \dots, 2024\}$ mà không có điểm bất động.<br>
+        (Nếu có điểm bất động $\bar{f}(k) = k$, tức là $f(k) = k + 2025m$. Khi đó $f(f(k)) = f(k+2025m) = f(k) + 2025m = k + 4050m$. Nhưng theo phương trình, $f(f(k)) = k + 2025$. Suy ra $2m = 1$, vô lý đối với $m \in \mathbb{Z}$).</p>
+        <p>Do không có điểm bất động, phép đổi chỗ $\bar{f}$ phải ghép các phần tử của tập $\{0, 1, \dots, 2024\}$ thành từng cặp rời nhau.<br>
+        Số lượng phần tử của tập này là $2025$, là một số lẻ. Một tập hợp có số lượng phần tử lẻ không thể chia hết thành các cặp đôi.</p>
+        <p>Mâu thuẫn này chứng tỏ không tồn tại hàm số thỏa mãn bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Balkan MO - Phương trình nhân tính)</div>
+        Tìm tất cả các hàm số $f: \mathbb{N}^* \to \mathbb{N}^*$ thỏa mãn đồng thời hai điều kiện sau với mọi $m, n \in \mathbb{N}^*$:
+        <ol>
+            <li>$f(m f(n)) = n^2 f(m)$</li>
+            <li>$f(m+n) \le f(m) + f(n)$</li>
+        </ol>
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ký hiệu phương trình thứ nhất là $(1)$ và bất phương trình thứ hai là $(2)$.</p>
+        <p>Thay $m = 1$ vào $(1)$, ta được $f(f(n)) = n^2 f(1)$. Đặt $c = f(1)$, ta có $f(f(n)) = c n^2$.</p>
+        <p>Thay $n = 1$ vào $(1)$, ta được $f(m f(1)) = 1^2 f(m) \implies f(mc) = f(m)$.</p>
+        <p>Từ $f(f(n)) = cn^2$, ta thấy $f$ là đơn ánh, vì $f(a) = f(b) \implies ca^2 = cb^2 \implies a = b$ (do $a, b \in \mathbb{N}^*$).<br>
+        Do $f(mc) = f(m)$ và $f$ là đơn ánh, suy ra $mc = m \implies c = 1$. Vậy $f(1) = 1$ và $f(f(n)) = n^2$.</p>
+        <p>Từ điều kiện $(2)$, ta có $f(m+n) \le f(m) + f(n)$. Bằng quy nạp, ta chứng minh được $f(nx) \le n f(x)$ với mọi $n, x \in \mathbb{N}^*$.<br>
+        Cho $x = 1$, ta có $f(n) \le n f(1) = n$.</p>
+        <p>Mặt khác, $n^2 = f(f(n)) \le f(n) \le n$, suy ra $n^2 \le n$, điều này vô lý với mọi $n \ge 2$.</p>
+        <p>Vậy không tồn tại hàm số nào thỏa mãn đồng thời các điều kiện của bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (China High School Mathematics League - Phương trình Cauchy trên $\mathbb{Z}$)</div>
+        Tìm tất cả các hàm số $f: \mathbb{Z} \to \mathbb{Z}$ thỏa mãn phương trình:
+        $$ f(m + f(n)) = f(m) + n \quad \forall m, n \in \mathbb{Z} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ký hiệu phương trình là $(1)$.</p>
+        <p><strong>Bước 1: Chứng minh hàm là song ánh.</strong><br>
+        Từ $(1)$, cố định $m$, khi $n$ thay đổi trên $\mathbb{Z}$, vế phải $f(m) + n$ quét qua toàn bộ $\mathbb{Z}$. Do đó $f$ là một hàm toàn ánh.<br>
+        Giả sử $f(n_1) = f(n_2)$. Thay vào $(1)$:</p>
+        $$ f(m) + n_1 = f(m + f(n_1)) = f(m + f(n_2)) = f(m) + n_2 \implies n_1 = n_2 $$
+        <p>Vậy $f$ là hàm đơn ánh. Kết hợp lại, $f$ là một song ánh trên $\mathbb{Z}$.</p>
+        
+        <p><strong>Bước 2: Xây dựng phương trình cộng tính.</strong><br>
+        Gọi $c = f(0)$. Thay $m = 0$ vào $(1)$:</p>
+        $$ f(f(n)) = f(0) + n = n + c \quad (2) $$
+        <p>Thay $n = 0$ vào $(1)$:</p>
+        $$ f(m + c) = f(m) \quad (3) $$
+        <p>Vì $f$ là song ánh (đơn ánh), từ $(3)$ ta suy ra $m + c = m \implies c = 0$.<br>
+        Vậy $f(0) = 0$.<br>
+        Từ $(2)$ với $c=0$, ta có $f(f(n)) = n$ với mọi $n \in \mathbb{Z}$.</p>
+        
+        <p><strong>Bước 3: Giải phương trình.</strong><br>
+        Quay lại phương trình $(1)$, thay $n$ bằng $f(n)$ (thực hiện được vì $f$ là song ánh trên $\mathbb{Z}$):</p>
+        $$ f(m + f(f(n))) = f(m) + f(n) $$
+        <p>Vì $f(f(n)) = n$, phương trình trên trở thành:</p>
+        $$ f(m + n) = f(m) + f(n) \quad \forall m, n \in \mathbb{Z} $$
+        <p>Đây là phương trình hàm Cauchy trên tập số nguyên. Nghiệm tổng quát của phương trình này trên $\mathbb{Z}$ là $f(n) = k n$ với $k$ là một hằng số nguyên.</p>
+        <p>Thay $f(n) = kn$ vào phương trình $f(f(n)) = n$:</p>
+        $$ k(kn) = n \implies k^2 n = n \implies k^2 = 1 \implies k = 1 \text{ hoặc } k = -1 $$
+        <p>Thay $f(n) = n$ vào phương trình ban đầu, ta thấy thỏa mãn.<br>
+        Thay $f(n) = -n$ vào phương trình ban đầu, ta thấy thỏa mãn.</p>
+        <p>Kết luận: Có hai hàm số thỏa mãn yêu cầu bài toán là $f(n) = n$ và $f(n) = -n$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

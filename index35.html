@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Tác động nhóm và Bổ đề Burnside</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> TÁC ĐỘNG NHÓM VÀ BỔ ĐỀ BURNSIDE</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, RMM, IMO - Nguồn: Tổng hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đếm số lượng cấu hình rời rạc đôi một không tương đương dưới tác động của các phép biến hình đối xứng là một lớp bài toán quan trọng. Chuyên đề này hình thức hóa khái niệm tác động nhóm (Group Action), thiết lập Định lý Quỹ đạo - Tập ổn định và Bổ đề Burnside. Các định lý được chứng minh bằng phương pháp đếm bằng hai cách. Các bài toán áp dụng giải quyết vấn đề đếm số lớp đẳng cấu đồ thị và tô màu đa giác, liên kết với các định lý số học.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ: Lý thuyết Nhóm cơ bản (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Nhóm là một chuyên ngành của Đại số trừu tượng (bậc Đại học). Để học sinh THPT có thể nắm bắt được Bổ đề Burnside, ta cần hiểu cấu trúc cơ bản của một "Nhóm" (Group).</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Nhóm - Group)</div>
+        Một tập hợp $G$ cùng với một phép toán hai ngôi (ký hiệu là $\cdot$) được gọi là một <strong>Nhóm</strong> nếu nó thỏa mãn 4 tiên đề sau:
+        <ol>
+            <li><strong>Tính đóng:</strong> Với mọi $a, b \in G$, thì $a \cdot b \in G$.</li>
+            <li><strong>Tính kết hợp:</strong> Với mọi $a, b, c \in G$, ta có $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.</li>
+            <li><strong>Phần tử đơn vị:</strong> Tồn tại phần tử $e \in G$ sao cho với mọi $a \in G$, $a \cdot e = e \cdot a = a$.</li>
+            <li><strong>Phần tử nghịch đảo:</strong> Với mỗi $a \in G$, tồn tại phần tử $a^{-1} \in G$ sao cho $a \cdot a^{-1} = a^{-1} \cdot a = e$.</li>
+        </ol>
+        <i>Các nhóm thường gặp trong tổ hợp:</i><br>
+        - <strong>Nhóm cyclic $C_n$:</strong> Nhóm các phép quay đa giác đều $n$ cạnh (gồm $n$ phần tử).<br>
+        - <strong>Nhóm nhị diện $D_n$:</strong> Nhóm các phép dời hình bảo toàn đa giác đều $n$ cạnh (gồm $n$ phép quay và $n$ phép đối xứng trục, tổng cộng $2n$ phần tử).<br>
+        - <strong>Nhóm đối xứng $S_n$:</strong> Nhóm tất cả các phép hoán vị của tập hợp $n$ phần tử (gồm $n!$ phần tử).
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.2 (Nhóm con và Lớp kề)</div>
+        - Tập con $H \subseteq G$ được gọi là <strong>nhóm con</strong> của $G$ nếu bản thân $H$ cũng là một nhóm dưới cùng phép toán của $G$.<br>
+        - Với mỗi $g \in G$, tập hợp $gH = \{g \cdot h \mid h \in H\}$ được gọi là một <strong>lớp kề trái</strong> (left coset) của $H$ trong $G$. Các lớp kề trái tạo thành một phân hoạch của $G$ (chúng rời nhau hoặc trùng nhau hoàn toàn). Số lượng các lớp kề phân biệt được ký hiệu là chỉ số $[G:H]$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Định lý Lagrange)</div>
+        Nếu $G$ là một nhóm hữu hạn và $H$ là một nhóm con của $G$, thì cấp (số phần tử) của $H$ là một ước số của cấp của $G$. Cụ thể:
+        $$ |G| = [G:H] \cdot |H| $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét một lớp kề trái tùy ý $gH$. Ta thiết lập ánh xạ $f: H \to gH$ định bởi $f(h) = gh$.</p>
+        <p>- Ánh xạ $f$ là toàn ánh vì mọi phần tử của $gH$ đều có dạng $gh$ với $h \in H$.<br>
+        - Ánh xạ $f$ là đơn ánh vì nếu $gh_1 = gh_2$, ta nhân $g^{-1}$ vào bên trái hai vế sẽ được $h_1 = h_2$.</p>
+        <p>Vì $f$ là một song ánh, số phần tử của mọi lớp kề trái đều bằng nhau và bằng $|H|$.<br>
+        Hơn nữa, các lớp kề trái tạo thành một phân hoạch của $G$ (chia $G$ thành các tập con rời nhau). Nếu có tổng cộng $[G:H]$ lớp kề trái, thì tổng số phần tử của $G$ phải là tổng số phần tử của các lớp kề này.<br>
+        Suy ra $|G| = [G:H] \cdot |H|$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Tác động nhóm, Quỹ đạo và Tập ổn định)</div>
+        Cho $G$ là một nhóm hữu hạn và $X$ là một tập hợp hữu hạn. Một <strong>tác động nhóm</strong> của $G$ lên $X$ là một ánh xạ $G \times X \to X$, ký hiệu là $(g, x) \mapsto g \cdot x$, thỏa mãn:
+        <ol>
+            <li> $e \cdot x = x$ với mọi $x \in X$ (trong đó $e$ là phần tử đơn vị của $G$).</li>
+            <li> $(g_1 g_2) \cdot x = g_1 \cdot (g_2 \cdot x)$ với mọi $g_1, g_2 \in G$ và $x \in X$.</li>
+        </ol>
+        Với mỗi $x \in X$, ta định nghĩa hai tập hợp:
+        <ul>
+            <li> <strong>Quỹ đạo (Orbit) của $x$:</strong> $O_x = \{g \cdot x \mid g \in G\}$. Đây là tập hợp tất cả các điểm mà $x$ có thể biến thành dưới tác động của $G$. Tập hợp các quỹ đạo tạo thành một phân hoạch của $X$. Số lượng quỹ đạo được ký hiệu là $|X/G|$.</li>
+            <li> <strong>Tập ổn định (Stabilizer) của $x$:</strong> $G_x = \{g \in G \mid g \cdot x = x\}$. Đây là tập hợp các phần tử của $G$ giữ nguyên $x$. ($G_x$ là một nhóm con của $G$).</li>
+        </ul>
+        Với mỗi $g \in G$, ta định nghĩa tập hợp các <strong>điểm bất động</strong>: $X^g = \{x \in X \mid g \cdot x = x\}$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Quỹ đạo - Tập ổn định / Orbit-Stabilizer Theorem)</div>
+        Cho nhóm hữu hạn $G$ tác động lên tập hữu hạn $X$. Với mọi phần tử $x \in X$, ta có đẳng thức:
+        $$ |G| = |O_x| \cdot |G_x| $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sẽ thiết lập một song ánh giữa quỹ đạo $O_x$ và tập hợp các lớp kề trái (left cosets) của nhóm con $G_x$ trong $G$.<br>
+        Gọi $G/G_x$ là tập hợp các lớp kề trái của $G_x$. Mỗi phần tử của $G/G_x$ có dạng $g G_x$ với $g \in G$.<br>
+        Định nghĩa ánh xạ $\phi: G/G_x \to O_x$ bởi $\phi(g G_x) = g \cdot x$.</p>
+
+        <p><strong>- Ánh xạ $\phi$ được xác định tốt (Well-defined) và là đơn ánh (Injective):</strong><br>
+        Với hai phần tử $g_1, g_2 \in G$, ta có $g_1 G_x = g_2 G_x$ khi và chỉ khi $g_2^{-1} g_1 \in G_x$.<br>
+        Theo định nghĩa của $G_x$, điều này tương đương với $(g_2^{-1} g_1) \cdot x = x$.<br>
+        Tác động $g_2$ lên cả hai vế: $g_2 \cdot ((g_2^{-1} g_1) \cdot x) = g_2 \cdot x \implies (g_2 g_2^{-1} g_1) \cdot x = g_2 \cdot x \implies g_1 \cdot x = g_2 \cdot x$.<br>
+        Sự tương đương này chứng tỏ rằng nếu hai lớp kề giống nhau thì hình ảnh của chúng qua $\phi$ giống nhau (well-defined), và ngược lại, nếu hình ảnh giống nhau thì hai lớp kề phải trùng nhau (đơn ánh).</p>
+
+        <p><strong>- Ánh xạ $\phi$ là toàn ánh (Surjective):</strong><br>
+        Với mọi phần tử $y \in O_x$, theo định nghĩa quỹ đạo, tồn tại $g \in G$ sao cho $y = g \cdot x$.<br>
+        Khi đó $\phi(g G_x) = g \cdot x = y$. Vậy $\phi$ là toàn ánh.</p>
+
+        <p>Vì $\phi$ là một song ánh, số lượng phần tử của $O_x$ bằng số lượng các lớp kề trái của $G_x$ trong $G$.<br>
+        Theo Định lý Lagrange cho nhóm hữu hạn (Định lý 0.1), số lượng các lớp kề trái (chỉ số của nhóm con) là $[G : G_x] = \frac{|G|}{|G_x|}$.<br>
+        Do đó, $|O_x| = \frac{|G|}{|G_x|} \implies |G| = |O_x| \cdot |G_x|$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bổ đề Burnside / Burnside's Lemma)</div>
+        Cho nhóm hữu hạn $G$ tác động lên tập hữu hạn $X$. Số lượng các quỹ đạo (lớp tương đương), ký hiệu là $|X/G|$, bằng trung bình cộng của số lượng điểm bất động dưới tác động của các phần tử trong $G$:
+        $$ |X/G| = \frac{1}{|G|} \sum_{g \in G} |X^g| $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét tập hợp các cặp ghép $S = \{(g, x) \in G \times X \mid g \cdot x = x\}$.<br>
+        Ta sẽ đếm số lượng phần tử của $S$ bằng hai cách khác nhau.</p>
+
+        <p><strong>Cách 1: Lấy tổng theo các phần tử $g \in G$.</strong><br>
+        Với mỗi $g \in G$ cố định, số lượng các phần tử $x \in X$ thỏa mãn $g \cdot x = x$ là kích thước của tập điểm bất động $X^g$.</p>
+        $$ |S| = \sum_{g \in G} |X^g| $$
+
+        <p><strong>Cách 2: Lấy tổng theo các phần tử $x \in X$.</strong><br>
+        Với mỗi $x \in X$ cố định, số lượng các phần tử $g \in G$ thỏa mãn $g \cdot x = x$ là kích thước của tập ổn định $G_x$.</p>
+        $$ |S| = \sum_{x \in X} |G_x| $$
+
+        <p>Cân bằng hai cách đếm, ta có:</p>
+        $$ \sum_{g \in G} |X^g| = \sum_{x \in X} |G_x| $$
+        <p>Theo Định lý Quỹ đạo - Tập ổn định (Định lý 1.1), ta có $|G_x| = \frac{|G|}{|O_x|}$. Thay vào vế phải:</p>
+        $$ \sum_{x \in X} |G_x| = \sum_{x \in X} \frac{|G|}{|O_x|} = |G| \sum_{x \in X} \frac{1}{|O_x|} $$
+        <p>Ta nhóm các phần tử $x \in X$ theo từng quỹ đạo. Tập hợp $X$ được phân hoạch thành các quỹ đạo rời nhau $O_1, O_2, \dots, O_k$ (với $k = |X/G|$ là số lượng quỹ đạo).</p>
+        $$ \sum_{x \in X} \frac{1}{|O_x|} = \sum_{i=1}^k \sum_{x \in O_i} \frac{1}{|O_i|} $$
+        <p>Trong mỗi quỹ đạo $O_i$, có đúng $|O_i|$ phần tử. Do đó, tổng bên trong đối với mỗi quỹ đạo sẽ là:</p>
+        $$ \sum_{x \in O_i} \frac{1}{|O_i|} = |O_i| \cdot \frac{1}{|O_i|} = 1 $$
+        <p>Từ đó:</p>
+        $$ \sum_{x \in X} \frac{1}{|O_x|} = \sum_{i=1}^k 1 = k = |X/G| $$
+        <p>Thay kết quả này vào phương trình cân bằng ban đầu:</p>
+        $$ \sum_{g \in G} |X^g| = |G| \cdot |X/G| $$
+        <p>Chia cả hai vế cho $|G|$, ta thu được đẳng thức của Bổ đề Burnside.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Ứng dụng Bổ đề Burnside trong chứng minh Định lý Fermat nhỏ)</div>
+        Sử dụng lý thuyết nhóm và Bổ đề Burnside, hãy đếm số lượng các đa giác đều $p$ cạnh (với $p$ là số nguyên tố) được tô bằng $k$ màu khác nhau (hai đa giác được coi là giống nhau nếu chúng có thể thu được từ nhau qua một phép quay). Từ đó, chứng minh Định lý Fermat nhỏ: $k^p \equiv k \pmod p$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét một đa giác đều $p$ cạnh. Gọi $X$ là tập hợp tất cả các cách tô màu $p$ đỉnh của đa giác bằng $k$ màu, khi các đỉnh được coi là cố định.<br>
+        Số lượng các cách tô màu như vậy là $|X| = k^p$.</p>
+
+        <p>Nhóm tác động lên $X$ là nhóm các phép quay của đa giác đều $p$ cạnh, ký hiệu là $G \cong C_p$. Nhóm này gồm $p$ phần tử: $G = \{R^0, R^1, R^2, \dots, R^{p-1}\}$, trong đó $R$ là phép quay tâm đa giác một góc $\frac{2\pi}{p}$.<br>
+        Ta cần đếm số lượng các cấu hình tô màu đôi một không tương đương dưới tác động của $G$, tức là số lượng quỹ đạo $|X/G|$.<br>
+        Áp dụng Bổ đề Burnside:</p>
+        $$ |X/G| = \frac{1}{|G|} \sum_{i=0}^{p-1} |X^{R^i}| $$
+        <p>Ta tính số lượng điểm bất động $|X^{R^i}|$ cho từng phép quay:</p>
+        <ol>
+            <li><strong>Đối với phần tử đơn vị $R^0$ (không quay):</strong><br>
+            Mọi cách tô màu đều bất động dưới phép quay góc $0$.<br>
+            Vậy $|X^{R^0}| = |X| = k^p$.</li>
+            <li><strong>Đối với các phép quay $R^i$ với $1 \le i \le p-1$:</strong><br>
+            Do $p$ là số nguyên tố, $\gcd(i, p) = 1$. Việc áp dụng liên tiếp phép quay $R^i$ sẽ quét qua toàn bộ $p$ đỉnh của đa giác thành một chu trình duy nhất.<br>
+            Để một cách tô màu là bất động dưới $R^i$, màu của đỉnh $v$ phải giống với màu của đỉnh $R^i(v)$. Từ đó, tất cả $p$ đỉnh trên đa giác phải được tô cùng một màu.<br>
+            Số lượng cách tô màu (đơn sắc) chính là số lượng màu: $k$.<br>
+            Vậy $|X^{R^i}| = k$ với mọi $1 \le i \le p-1$.</li>
+        </ol>
+
+        <p>Thay các kết quả vào Bổ đề Burnside:</p>
+        $$ |X/G| = \frac{1}{p} \left( k^p + \sum_{i=1}^{p-1} k \right) = \frac{1}{p} \left( k^p + (p-1)k \right) = \frac{k^p - k + pk}{p} = \frac{k^p - k}{p} + k $$
+        <p>Do $|X/G|$ là số lượng các cấu hình tương đương (quỹ đạo), nó phải là một số nguyên.<br>
+        Do đó, biểu thức $\frac{k^p - k}{p} + k$ là một số nguyên. Kéo theo $\frac{k^p - k}{p}$ phải là một số nguyên.<br>
+        Từ đó suy ra $p \mid k^p - k$, hay $k^p \equiv k \pmod p$.<br>
+        Định lý Fermat nhỏ được chứng minh từ góc nhìn của tổ hợp đại số.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Cấu hình đối xứng trên lưới vuông)</div>
+        Có bao nhiêu cách tô màu các ô của một lưới vuông kích thước $3 \times 3$ bằng 2 màu (Trắng và Đen) sao cho hai cách tô được coi là giống nhau nếu chúng có thể thu được từ nhau qua các phép quay $90^\circ, 180^\circ, 270^\circ$ hoặc các phép đối xứng trục?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $X$ là tập hợp tất cả các cách tô màu lưới $3 \times 3$ (khi cố định vị trí). Kích thước của lưới là 9 ô, nên $|X| = 2^9 = 512$.<br>
+        Nhóm tác động lên $X$ là nhóm nhị diện $D_4$ gồm 8 phần tử: phép đồng nhất, 3 phép quay, 2 phép đối xứng qua trục đi qua trung điểm cạnh, và 2 phép đối xứng qua đường chéo.<br>
+        Ta tính số điểm bất động cho từng phần tử $g \in D_4$:</p>
+
+        <ol>
+            <li><strong>Phép đồng nhất (Identity):</strong> Giữ nguyên mọi cấu hình. Số điểm bất động là $2^9 = 512$.</li>
+            <li><strong>Phép quay $90^\circ$ và $270^\circ$ (2 phần tử):</strong> Dưới phép quay $90^\circ$, các ô của lưới phân thành 3 chu trình: ô trung tâm (1 ô), 4 ô ở các góc (4 ô), và 4 ô ở giữa các cạnh (4 ô). Để cấu hình bất động, các ô trong cùng một chu trình phải có cùng màu. Vậy ta cần chọn màu cho 3 chu trình. Số cấu hình bất động cho mỗi phép quay này là $2^3 = 8$. (Tổng cộng cho 2 phép là $2 \times 8 = 16$).</li>
+            <li><strong>Phép quay $180^\circ$ (1 phần tử):</strong> Dưới phép quay $180^\circ$, các chu trình là: ô trung tâm (1 chu trình độ dài 1), 4 ô góc tạo thành 2 cặp đối xứng tâm (2 chu trình độ dài 2), 4 ô giữa cạnh tạo thành 2 cặp đối xứng tâm (2 chu trình độ dài 2). Tổng số chu trình là $1 + 2 + 2 = 5$. Số cấu hình bất động là $2^5 = 32$.</li>
+            <li><strong>Phép đối xứng qua trục dọc và trục ngang (2 phần tử):</strong> Đối xứng qua trục dọc giữ nguyên 3 ô trên trục dọc (3 chu trình độ dài 1). 6 ô còn lại tạo thành 3 cặp đối xứng qua trục (3 chu trình độ dài 2). Tổng số chu trình là $3 + 3 = 6$. Số cấu hình bất động cho mỗi phép là $2^6 = 64$. (Tổng cộng $2 \times 64 = 128$).</li>
+            <li><strong>Phép đối xứng qua hai đường chéo (2 phần tử):</strong> Tương tự, đối xứng qua đường chéo giữ nguyên 3 ô trên đường chéo (3 chu trình). 6 ô còn lại tạo thành 3 cặp (3 chu trình). Tổng số chu trình là 6. Số cấu hình bất động cho mỗi phép là $2^6 = 64$. (Tổng cộng $2 \times 64 = 128$).</li>
+        </ol>
+
+        <p>Áp dụng Bổ đề Burnside, số lượng các cách tô màu phân biệt là:</p>
+        $$ N = \frac{1}{8} \left( 512 + 16 + 32 + 128 + 128 \right) = \frac{816}{8} = 102 $$
+        <p>Có 102 cấu hình phân biệt.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian Master of Mathematics / IMO Shortlist - Lớp đẳng cấu Đồ thị)</div>
+        Tìm số lượng các đồ thị không đẳng cấu với nhau trên tập hợp $n = 4$ đỉnh.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Một đồ thị đơn vô hướng trên 4 đỉnh được xác định bởi tập hợp các cạnh của nó. Có tổng cộng $\binom{4}{2} = 6$ cạnh có thể có. Việc tạo ra một đồ thị tương đương với việc gán cho mỗi cạnh một trong 2 trạng thái (Tồn tại = 1, Không tồn tại = 0).<br>
+        Tập $X$ là tập các cách gán trạng thái cho 6 cạnh này. Do đó, $|X| = 2^6 = 64$.<br>
+        Hai đồ thị là đẳng cấu nếu chúng có thể thu được từ nhau bằng cách hoán vị các đỉnh.<br>
+        Nhóm tác động lên $X$ là nhóm đối xứng $S_4$ (nhóm tất cả các hoán vị của 4 đỉnh), có $|S_4| = 4! = 24$ phần tử.<br>
+        Ta phân loại 24 phần tử của $S_4$ theo cấu trúc chu trình của chúng và đếm số đồ thị bất biến dưới từng hoán vị. Khi một hoán vị tác động lên các đỉnh, nó sinh ra một hoán vị tương ứng trên 6 cạnh.</p>
+
+        <ol>
+            <li><strong>Hoán vị đồng nhất (Cấu trúc chu trình đỉnh $[1, 1, 1, 1]$ - 1 phần tử):</strong> Giữ nguyên tất cả 6 cạnh. Số đồ thị bất động là $2^6 = 64$.</li>
+            <li><strong>Hoán vị 2 đỉnh (Transpositions, cấu trúc $[2, 1, 1]$ - $\binom{4}{2} = 6$ phần tử):</strong> Ví dụ hoán vị $(12)$.
+            <ul>
+                <li> Cạnh $(12)$ được giữ nguyên (1 chu trình).</li>
+                <li> Cạnh $(34)$ được giữ nguyên (1 chu trình).</li>
+                <li> Cạnh $(13)$ và $(23)$ hoán vị cho nhau (1 chu trình độ dài 2).</li>
+                <li> Cạnh $(14)$ và $(24)$ hoán vị cho nhau (1 chu trình độ dài 2).</li>
+            </ul>
+            Tổng cộng có 4 chu trình cạnh. Số đồ thị bất động là $2^4 = 16$.
+            </li>
+            <li><strong>Hoán vị vòng quanh 3 đỉnh (3-cycles, cấu trúc $[3, 1]$ - $2\binom{4}{3} = 8$ phần tử):</strong> Ví dụ hoán vị $(123)$.
+            <ul>
+                <li> Các cạnh $(12), (23), (31)$ tạo thành 1 chu trình độ dài 3.</li>
+                <li> Các cạnh $(14), (24), (34)$ tạo thành 1 chu trình độ dài 3.</li>
+            </ul>
+            Tổng cộng có 2 chu trình cạnh. Số đồ thị bất động là $2^2 = 4$.
+            </li>
+            <li><strong>Hoán vị vòng quanh 4 đỉnh (4-cycles, cấu trúc $[4]$ - $3! = 6$ phần tử):</strong> Ví dụ $(1234)$.
+            <ul>
+                <li> Các cạnh $(12), (23), (34), (41)$ tạo thành 1 chu trình độ dài 4.</li>
+                <li> Hai đường chéo $(13)$ và $(24)$ hoán vị cho nhau (1 chu trình độ dài 2).</li>
+            </ul>
+            Tổng cộng có 2 chu trình cạnh. Số đồ thị bất động là $2^2 = 4$.
+            </li>
+            <li><strong>Tích của 2 hoán vị rời nhau (Double transpositions, cấu trúc $[2, 2]$ - $3$ phần tử):</strong> Ví dụ $(12)(34)$.
+            <ul>
+                <li> Cạnh $(12)$ và $(34)$ được giữ nguyên (2 chu trình độ dài 1).</li>
+                <li> Cạnh $(13)$ và $(24)$ hoán vị cho nhau (1 chu trình độ dài 2).</li>
+                <li> Cạnh $(14)$ và $(23)$ hoán vị cho nhau (1 chu trình độ dài 2).</li>
+            </ul>
+            Tổng cộng có 4 chu trình cạnh. Số đồ thị bất động là $2^4 = 16$.
+            </li>
+        </ol>
+
+        <p>Áp dụng Bổ đề Burnside, số lượng các đồ thị không đẳng cấu là:</p>
+        $$ N = \frac{1}{24} \left( 1 \cdot 64 + 6 \cdot 16 + 8 \cdot 4 + 6 \cdot 4 + 3 \cdot 16 \right) $$
+        $$ N = \frac{1}{24} \left( 64 + 96 + 32 + 24 + 48 \right) = \frac{264}{24} = 11 $$
+        <p>Có 11 đồ thị không đẳng cấu trên 4 đỉnh. Bài toán cho thấy ứng dụng của Lý thuyết nhóm trong việc giải quyết các bài toán đếm của Lý thuyết đồ thị.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

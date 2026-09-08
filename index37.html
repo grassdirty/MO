@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Không gian Vector trên trường hữu hạn và Định lý Oddtown</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> KHÔNG GIAN VECTOR TRÊN TRƯỜNG HỮU HẠN VÀ ĐỊNH LÝ ODDTOWN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: Phân tích Tổ hợp Hiện đại</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các bài toán tổ hợp liên quan đến tính chẵn lẻ của phần tử chung giữa các tập hợp thường gặp bế tắc nếu chỉ dùng Nguyên lý Bù trừ. Chuyên đề này giới thiệu một công cụ đại số: Không gian vector trên trường hữu hạn $\mathbb{F}_2$. Bằng cách đồng nhất mỗi tập hợp với một vector nhị phân, ta quy bài toán tổ hợp về việc khảo sát sự độc lập tuyến tính và hạng của ma trận. Các định lý nền tảng được định nghĩa và chứng minh chi tiết làm cơ sở để giải quyết Định lý Oddtown và hệ phương trình trạng thái.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh (Mở rộng từ Đại học)</h2>
+    <p>Để áp dụng đại số tuyến tính vào tổ hợp, ta cần thay thế tập số thực $\mathbb{R}$ quen thuộc bằng một cấu trúc số học rời rạc chỉ gồm hai phần tử. Các phép toán trên không gian này thực chất là việc theo dõi tính \textbf{chẵn/lẻ}.</p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Trường hữu hạn $\mathbb{F}_2$ và Không gian Vector $\mathbb{F}_2^n$)</div>
+        <ul>
+            <li> <strong>Trường $\mathbb{F}_2$:</strong> Là tập hợp chỉ gồm hai phần tử $\{0, 1\}$. Các phép toán cộng và nhân được thực hiện theo modulo 2 (số chẵn tương ứng với 0, số lẻ tương ứng với 1):
+            $$ 0+0=0, \quad 0+1=1+0=1, \quad 1+1=0 $$
+            $$ 0 \cdot 0 = 0 \cdot 1 = 1 \cdot 0 = 0, \quad 1 \cdot 1 = 1 $$</li>
+            <li> <strong>Vector đặc trưng (Incidence Vector):</strong> Cho một tập hợp nền $X = \{1, 2, \dots, n\}$. Mọi tập con $A \subseteq X$ đều có thể được biểu diễn duy nhất bởi một vector $v_A = (a_1, a_2, \dots, a_n) \in \mathbb{F}_2^n$, trong đó $a_i = 1$ nếu $i \in A$, và $a_i = 0$ nếu $i \notin A$.</li>
+            <li> <strong>Phép toán trên tập hợp:</strong> Nếu $v_A$ và $v_B$ là vector đặc trưng của tập $A$ và $B$, thì phép cộng vector $v_A + v_B \pmod 2$ chính là vector đặc trưng của tập hợp <strong>hiệu đối xứng</strong> $A \Delta B$ (các phần tử thuộc $A$ hoặc $B$ nhưng không thuộc cả hai).</li>
+            <li> <strong>Tích vô hướng (Dot Product):</strong> Tích vô hướng của hai vector $u, v \in \mathbb{F}_2^n$ được định nghĩa là $u \cdot v = \sum_{i=1}^n u_i v_i \pmod 2$. Tích vô hướng này bằng $1$ nếu số lượng phần tử chung của hai tập hợp là số lẻ, và bằng $0$ nếu số lượng phần tử chung là số chẵn. Đặc biệt, $v_A \cdot v_A = |A| \pmod 2$.</li>
+        </ul>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.2 (Độc lập tuyến tính)</div>
+        Một tập hợp các vector $\{v_1, v_2, \dots, v_m\}$ trong $\mathbb{F}_2^n$ được gọi là <strong>độc lập tuyến tính</strong> nếu phương trình:
+        $$ c_1 v_1 + c_2 v_2 + \dots + c_m v_m = \mathbf{0} \quad (\text{với } c_i \in \{0, 1\}) $$
+        chỉ có một nghiệm duy nhất là $c_1 = c_2 = \dots = c_m = 0$. (Nếu tồn tại các hệ số $c_i$ không đồng thời bằng 0 thỏa mãn, chúng được gọi là <strong>phụ thuộc tuyến tính</strong>).
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Số lượng tối đa các vector độc lập tuyến tính)</div>
+        Trong không gian $n$ chiều $\mathbb{F}_2^n$, mọi tập hợp gồm $m$ vector với $m \gt n$ đều là hệ phụ thuộc tuyến tính. Hay nói cách khác, số lượng vector tối đa trong một hệ độc lập tuyến tính không vượt quá $n$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử ta có $m$ vector $v_1, v_2, \dots, v_m \in \mathbb{F}_2^n$ với $m \gt n$. Ta cần tìm các hệ số $c_1, c_2, \dots, c_m \in \{0, 1\}$ không đồng thời bằng 0 sao cho $c_1 v_1 + c_2 v_2 + \dots + c_m v_m = \mathbf{0}$.</p>
+        <p>Mỗi vector $v_j$ có $n$ thành phần. Phân tích phương trình vector trên thành từng thành phần (tọa độ), ta thu được một hệ gồm $n$ phương trình bậc nhất, với $m$ ẩn số là $c_1, c_2, \dots, c_m$.</p>
+        <p>Hệ phương trình này là hệ phương trình tuyến tính thuần nhất (vế phải toàn số 0). Trong Đại số, một hệ phương trình tuyến tính thuần nhất mà có <strong>số lượng ẩn số nhiều hơn số lượng phương trình</strong> ($m \gt n$) thì luôn luôn có vô số nghiệm, tức là chắc chắn tồn tại nghiệm không tầm thường (nghiệm mà các ẩn không đồng thời bằng 0).</p>
+        <p>Do đó, tồn tại bộ hệ số $c_1, c_2, \dots, c_m$ không đồng thời bằng 0 thỏa mãn phương trình. Tập hợp các vector này là phụ thuộc tuyến tính.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý về Hạng của Ma trận - Rank Inequality)</div>
+        Cho $M$ là một ma trận kích thước $m \times n$ với các phần tử thuộc $\mathbb{F}_2$. Gọi $M^T$ là ma trận chuyển vị của $M$ (kích thước $n \times m$). <br>
+        Hạng của ma trận $M$, ký hiệu là $\text{rank}(M)$, là số lượng tối đa các hàng (hoặc các cột) độc lập tuyến tính của $M$. Ta luôn có:
+        $$ \text{rank}(M \cdot M^T) \le \text{rank}(M) \le n $$
+        Hệ quả: Nếu $M \cdot M^T = I_m$ (với $I_m$ là ma trận đơn vị cấp $m$), thì $m \le n$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ma trận $M \cdot M^T$ có kích thước $m \times m$. <br>
+        Mỗi cột của ma trận tích $M \cdot M^T$ thực chất là một tổ hợp tuyến tính của các cột của ma trận $M$. Do đó, mọi cột của $M \cdot M^T$ đều nằm trong không gian sinh bởi các cột của $M$.</p>
+        <p>Một không gian con không thể có số chiều (số lượng tối đa các vector độc lập tuyến tính) lớn hơn không gian chứa nó. Suy ra, số lượng tối đa các cột độc lập tuyến tính của $M \cdot M^T$ không thể vượt quá số lượng tối đa các cột độc lập tuyến tính của $M$.<br>
+        Vậy $\text{rank}(M \cdot M^T) \le \text{rank}(M)$.</p>
+        <p>Mặt khác, ma trận $M$ chỉ có $n$ cột, nên số cột độc lập tuyến tính tối đa của nó không thể vượt quá tổng số cột, do đó $\text{rank}(M) \le n$.</p>
+        <p><strong>Chứng minh Hệ quả:</strong> Nếu $M \cdot M^T = I_m$. Ma trận đơn vị $I_m$ có các cột là các vector cơ sở chuẩn $(1, 0, \dots, 0)^T, \dots, (0, \dots, 0, 1)^T$. Dễ thấy tập hợp $m$ cột này là độc lập tuyến tính. <br>
+        Do đó $\text{rank}(I_m) = m$. <br>
+        Thay vào bất đẳng thức trên: $m = \text{rank}(I_m) = \text{rank}(M \cdot M^T) \le n \implies m \le n$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Thị trấn Lẻ - Oddtown Theorem)</div>
+        Một thị trấn có $n$ người dân. Những người dân này thành lập $m$ câu lạc bộ, thỏa mãn đồng thời hai điều kiện sau:
+        <ol>
+            <li>Số lượng thành viên của mỗi câu lạc bộ luôn là một số lẻ.</li>
+            <li>Số lượng thành viên chung của bất kỳ hai câu lạc bộ phân biệt nào cũng luôn là một số chẵn.</li>
+        </ol>
+        Chứng minh rằng số lượng câu lạc bộ không thể vượt quá số lượng người dân, tức là $m \le n$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc tiếp cận bài toán này bằng Nguyên lý Bao hàm - Loại trừ hoặc suy luận tập hợp thuần túy sẽ gặp khó khăn. Ta có thể giải quyết bài toán này bằng đại số tuyến tính.</p>
+
+        <p>Đánh số những người dân từ $1$ đến $n$. <br>
+        Với mỗi câu lạc bộ thứ $i$ ($1 \le i \le m$), ta gọi $C_i$ là tập hợp những người dân thuộc câu lạc bộ đó.<br>
+        Xây dựng vector đặc trưng $v_i \in \mathbb{F}_2^n$ cho câu lạc bộ $C_i$: Thành phần thứ $j$ của $v_i$ bằng 1 nếu người $j \in C_i$, và bằng 0 nếu người $j \notin C_i$.</p>
+
+        <p>Xét tích vô hướng của hai vector trên trường $\mathbb{F}_2$:</p>
+        <ul>
+            <li>Khi $i = j$: Tích vô hướng $v_i \cdot v_i = \sum_{k=1}^n v_{i,k}^2 = \sum_{k=1}^n v_{i,k} = |C_i| \pmod 2$. Vì số thành viên của mỗi câu lạc bộ là lẻ, ta có $v_i \cdot v_i \equiv 1 \pmod 2$.</li>
+            <li>Khi $i \neq j$: Tích vô hướng $v_i \cdot v_j$ chính là đếm số vị trí mà cả hai vector cùng có giá trị 1. Đây là số lượng phần tử của tập giao $|C_i \cap C_j| \pmod 2$. Vì hai câu lạc bộ bất kỳ có số lượng thành viên chung là chẵn, ta có $v_i \cdot v_j \equiv 0 \pmod 2$.</li>
+        </ul>
+
+        <p>Ta thiết lập ma trận $M$ kích thước $m \times n$, mà mỗi hàng của $M$ là một vector $v_i$.<br>
+        Xét ma trận tích $P = M \cdot M^T$. Kích thước của $P$ là $m \times m$.<br>
+        Phần tử ở hàng $i$, cột $j$ của ma trận $P$ bằng tích vô hướng của hàng thứ $i$ của $M$ với cột thứ $j$ của $M^T$. <br>
+        Mặt khác, cột thứ $j$ của $M^T$ chính là hàng thứ $j$ của $M$ (tức là $v_j$). <br>
+        Vậy phần tử $P_{i,j} = v_i \cdot v_j$.<br>
+        Theo các đánh giá ở trên:</p>
+        <ul>
+            <li>Trên đường chéo chính ($i=j$): $P_{i,i} = 1$.</li>
+            <li>Ngoài đường chéo chính ($i \neq j$): $P_{i,j} = 0$.</li>
+        </ul>
+        <p>Điều này có nghĩa là $P$ chính là ma trận đơn vị cấp $m$ trên trường $\mathbb{F}_2$. Tức là $M \cdot M^T = I_m$.<br>
+        Áp dụng Hệ quả của Định lý 1.2, ta suy ra:
+        $$ m \le n $$
+        Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Bài toán Hệ độc lập tuyến tính)</div>
+        Cho $m$ tập hợp con $A_1, A_2, \dots, A_m$ của một tập hợp nền $X = \{1, 2, \dots, n\}$. Giả sử rằng $m \gt n$. Chứng minh rằng tồn tại một họ các tập con <strong>khác rỗng</strong> được chọn từ $m$ tập này sao cho: Mọi phần tử của tập hợp nền $X$ đều xuất hiện trong một số <strong>chẵn</strong> các tập hợp được chọn.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Yêu cầu "xuất hiện trong một số chẵn các tập con được chọn" thực chất là phép toán "Hiệu đối xứng" (Symmetric Difference) hoặc phép cộng không nhớ trong cơ số 2.<br>
+        Ta biểu diễn mỗi tập hợp con $A_i$ bởi một vector đặc trưng $v_i \in \mathbb{F}_2^n$.<br>
+        Họ gồm $m$ tập con tương ứng với một hệ gồm $m$ vector $\{v_1, v_2, \dots, v_m\}$ trong không gian vector $n$ chiều $\mathbb{F}_2^n$.</p>
+
+        <p>Theo Định lý 1.1, số lượng tối đa các vector độc lập tuyến tính trong không gian $\mathbb{F}_2^n$ là chiều của không gian, tức là $n$.<br>
+        Giả thiết bài toán cho biết ta có $m$ vector và $m \gt n$.<br>
+        Bất kỳ hệ nào chứa nhiều hơn $n$ vector trong không gian $n$ chiều đều bắt buộc phải là một hệ <strong>phụ thuộc tuyến tính</strong>.<br>
+        Nghĩa là, tồn tại các hệ số $c_1, c_2, \dots, c_m \in \{0, 1\}$, không đồng thời bằng 0, sao cho phương trình sau được thỏa mãn trên $\mathbb{F}_2$:</p>
+        $$ c_1 v_1 + c_2 v_2 + \dots + c_m v_m = \mathbf{0} $$
+        
+        <p>Ta chọn ra các tập hợp $A_i$ tương ứng với các hệ số $c_i = 1$. Vì các hệ số không đồng thời bằng 0, họ tập hợp được chọn này là khác rỗng.<br>
+        Xét một phần tử bất kỳ $x_k \in X$. Tổng số lần $x_k$ xuất hiện trong các tập hợp được chọn chính là giá trị tại thành phần thứ $k$ của tổng các vector trên tập số thực $\mathbb{R}$. <br>
+        Vì tổng các vector trên $\mathbb{F}_2$ bằng vector $\mathbf{0}$, điều này có nghĩa là khi thực hiện phép cộng trên $\mathbb{R}$, tổng tại vị trí thứ $k$ phải là một số chia hết cho 2 (để modulo 2 bằng 0).<br>
+        Vậy mọi phần tử $x_k$ đều xuất hiện một số chẵn lần. Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Bài toán Công tắc và Bóng đèn)</div>
+        Trong một căn phòng có $n$ bóng đèn và $n$ công tắc, ban đầu một số bóng đèn đang sáng và số còn lại đang tắt. Mỗi công tắc được kết nối với một tập hợp các bóng đèn nhất định (có thể 1 hoặc nhiều đèn, và một đèn có thể nối với nhiều công tắc). Việc nhấn một công tắc sẽ làm đảo ngược trạng thái (sáng thành tắt, tắt thành sáng) của tất cả các bóng đèn được kết nối với nó.<br>
+        Biết rằng hệ thống có tính chất sau: Nếu ta chọn nhấn một nhóm các công tắc bất kỳ (ít nhất 1 công tắc), luôn có ít nhất một bóng đèn bị thay đổi trạng thái (do nhóm công tắc này tác động một số lẻ lần).<br>
+        Chứng minh rằng, với mọi trạng thái ban đầu bất kỳ của $n$ bóng đèn, ta luôn có thể tìm được cách nhấn các công tắc để tắt hoàn toàn tất cả các bóng đèn.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta mô hình hóa bài toán này bằng ngôn ngữ đại số tuyến tính trên trường $\mathbb{F}_2$.<br>
+        Trạng thái của $n$ bóng đèn được biểu diễn bởi một vector cột $b \in \mathbb{F}_2^n$. Nếu bóng đèn $i$ sáng, phần tử thứ $i$ bằng 1; nếu tắt, bằng 0.<br>
+        Trạng thái TẮT toàn bộ tương ứng với vector không $\mathbf{0}$.<br>
+        Mỗi công tắc $j$ ($1 \le j \le n$) tác động lên một tập bóng đèn, được biểu diễn bởi vector cột $v_j \in \mathbb{F}_2^n$. (Thành phần $i$ của $v_j$ bằng 1 nếu công tắc $j$ kết nối với đèn $i$).<br>
+        Việc chọn nhấn công tắc $j$ hay không được đại diện bởi biến $x_j \in \{0, 1\}$. <br>
+        Tác động tổng hợp của việc nhấn các công tắc lên hệ thống là tổ hợp tuyến tính:</p>
+        $$ x_1 v_1 + x_2 v_2 + \dots + x_n v_n $$
+        <p>Nếu trạng thái ban đầu của hệ thống là $b$, sau khi nhấn các công tắc, trạng thái mới sẽ là:</p>
+        $$ b + x_1 v_1 + x_2 v_2 + \dots + x_n v_n \pmod 2 $$
+        <p>Mục tiêu là tìm các biến $x_j$ sao cho trạng thái mới bằng $\mathbf{0}$. Nghĩa là:</p>
+        $$ x_1 v_1 + x_2 v_2 + \dots + x_n v_n = b \pmod 2 $$
+        <p>Hay viết dưới dạng ma trận: $A x = b$, trong đó $A$ là ma trận kích thước $n \times n$ có các cột là các vector $v_j$.</p>
+
+        <p>Bây giờ, ta khai thác giả thiết của bài toán: "Nếu chọn nhấn một nhóm công tắc bất kỳ (khác rỗng), luôn có ít nhất một bóng đèn bị thay đổi trạng thái".<br>
+        Theo ngôn ngữ đại số, nếu ta chọn một hệ số $x = (x_1, \dots, x_n) \neq \mathbf{0}$, thì tổ hợp tuyến tính $A x$ sẽ không thể bằng vector $\mathbf{0}$ (vì ít nhất một phần tử của $Ax$ phải bằng 1, tương ứng với đèn bị đổi trạng thái).<br>
+        Nói cách khác, phương trình $A x = \mathbf{0}$ có nghiệm duy nhất là $x = \mathbf{0}$.<br>
+        Theo Định nghĩa 1.2, điều này chứng tỏ rằng $n$ vector cột $\{v_1, v_2, \dots, v_n\}$ là <strong>độc lập tuyến tính</strong>.</p>
+
+        <p>Trong một không gian vector $n$ chiều, một tập hợp gồm chính xác $n$ vector độc lập tuyến tính sẽ tạo thành một <strong>cơ sở (basis)</strong> của không gian đó.<br>
+        Tính chất của cơ sở là mọi vector trong không gian đều có thể được biểu diễn dưới dạng tổ hợp tuyến tính của các vector cơ sở.<br>
+        Nghĩa là, với mọi vector trạng thái ban đầu $b \in \mathbb{F}_2^n$, phương trình $A x = b$ luôn luôn có nghiệm.<br>
+        Sự tồn tại nghiệm $x$ tương đương với việc tồn tại một cách chọn nhấn các công tắc để tắt hoàn toàn tất cả bóng đèn.<br>
+        Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

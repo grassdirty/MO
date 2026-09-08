@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học bậc cao - Bổ đề Hensel và đồng dư bậc cao</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC BẬC CAO <br> BỔ ĐỀ HENSEL VÀ ĐỒNG DƯ BẬC CAO</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát phương trình đồng dư $P(x) \equiv 0 \pmod{m}$ thường được quy về việc giải trên các modulo là lũy thừa của số nguyên tố $p^k$. Chuyên đề này trình bày Bổ đề Hensel, một công cụ cho phép thiết lập dãy nghiệm $(x_k)$ thỏa mãn $P(x_k) \equiv 0 \pmod{p^k}$ từ nghiệm cơ sở $x_1$ modulo $p$. Cơ sở lý thuyết dựa trên khai triển Taylor của đa thức hệ số nguyên và đạo hàm hình thức. Các bài toán tập trung vào tính giải được của phương trình phi tuyến và đếm số lượng nghiệm modulo $p^k$.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Khai triển Taylor trên vành đa thức nguyên)</div>
+        Cho đa thức $P(x) \in \mathbb{Z}[x]$ có bậc $n$. Với mọi số nguyên $a$ và $h$, ta có khai triển:
+        $$ P(a + h) = P(a) + h P'(a) + h^2 \frac{P''(a)}{2!} + \dots + h^n \frac{P^{(n)}(a)}{n!} $$
+        Do $P(x)$ có hệ số nguyên, các biểu thức $\frac{P^{(k)}(a)}{k!}$ luôn là các số nguyên.<br>
+        Đặc biệt, lấy modulo $h^2$, ta thu được hệ thức tuyến tính hóa:
+        $$ P(a + h) \equiv P(a) + h P'(a) \pmod{h^2} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét đa thức $P(x) = \sum_{i=0}^n c_i x^i$ với các hệ số $c_i \in \mathbb{Z}$. Thay $x = a + h$, ta có:</p>
+        $$ P(a+h) = \sum_{i=0}^n c_i (a+h)^i $$
+        <p>Sử dụng nhị thức Newton để khai triển $(a+h)^i$:</p>
+        $$ (a+h)^i = \sum_{j=0}^i \binom{i}{j} a^{i-j} h^j $$
+        <p>Thay vào biểu thức của $P(a+h)$ và đổi thứ tự lấy tổng, ta nhóm các số hạng theo lũy thừa của $h$:</p>
+        $$ P(a+h) = \sum_{k=0}^n h^k \left( \sum_{i=k}^n c_i \binom{i}{k} a^{i-k} \right) $$
+        <p>Mặt khác, đạo hàm cấp $k$ của $x^i$ là $i(i-1)\dots(i-k+1)x^{i-k}$. Tại $x = a$, ta có:</p>
+        $$ \frac{P^{(k)}(a)}{k!} = \sum_{i=k}^n c_i \frac{i(i-1)\dots(i-k+1)}{k!} a^{i-k} = \sum_{i=k}^n c_i \binom{i}{k} a^{i-k} $$
+        <p>Vì hệ số $c_i$, hệ số nhị thức $\binom{i}{k}$ và $a^{i-k}$ đều là các số nguyên, nên $\frac{P^{(k)}(a)}{k!}$ luôn là một số nguyên.</p>
+        <p>Thay biểu thức này trở lại, ta thu được khai triển Taylor:</p>
+        $$ P(a+h) = \sum_{k=0}^n h^k \frac{P^{(k)}(a)}{k!} = P(a) + h P'(a) + h^2 \frac{P''(a)}{2!} + \dots + h^n \frac{P^{(n)}(a)}{n!} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bổ đề Hensel - Trường hợp nghiệm đơn)</div>
+        Cho đa thức $P(x) \in \mathbb{Z}[x]$ và $p$ là một số nguyên tố. Giả sử tồn tại một số nguyên $x_k$ thỏa mãn hai điều kiện:
+        <ol>
+            <li>$P(x_k) \equiv 0 \pmod{p^k}$ với $k \ge 1$.</li>
+            <li>$P'(x_k) \not\equiv 0 \pmod p$.</li>
+        </ol>
+        Khi đó, tồn tại duy nhất một số nguyên $t \in \{0, 1, \dots, p-1\}$ sao cho $x_{k+1} = x_k + t p^k$ là nghiệm của phương trình modulo $p^{k+1}$:
+        $$ P(x_{k+1}) \equiv 0 \pmod{p^{k+1}} $$
+        Hệ quả: Nếu $P(x) \equiv 0 \pmod p$ có một nghiệm $x_1$ thỏa mãn $P'(x_1) \not\equiv 0 \pmod p$, thì phương trình $P(x) \equiv 0 \pmod{p^k}$ có duy nhất một nghiệm $x_k \equiv x_1 \pmod p$ với mọi số nguyên dương $k$.
+    </div>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Đặt $x_{k+1} = x_k + t p^k$. Áp dụng khai triển Taylor cho đa thức $P(x)$ với $a = x_k$ và $h = t p^k$:</p>
+        $$ P(x_k + t p^k) = P(x_k) + t p^k P'(x_k) + (t p^k)^2 \frac{P''(x_k)}{2!} + \dots $$
+        <p>Xét phương trình trên modulo $p^{k+1}$. Do $k \ge 1$, ta có $2k \ge k+1$, nên tất cả các số hạng từ bậc 2 trở đi đều chia hết cho $p^{k+1}$.<br>
+        Đồng dư thức trở thành:</p>
+        $$ P(x_{k+1}) \equiv P(x_k) + t p^k P'(x_k) \pmod{p^{k+1}} $$
+        <p>Ta cần tìm $t$ sao cho $P(x_{k+1}) \equiv 0 \pmod{p^{k+1}}$. Điều này tương đương với:</p>
+        $$ P(x_k) + t p^k P'(x_k) \equiv 0 \pmod{p^{k+1}} $$
+        <p>Do $P(x_k) \equiv 0 \pmod{p^k}$ theo giả thiết, tồn tại số nguyên $m$ sao cho $P(x_k) = m p^k$. Chia cả hai vế cho $p^k$:</p>
+        $$ m + t P'(x_k) \equiv 0 \pmod p \implies t P'(x_k) \equiv -m \pmod p $$
+        <p>Vì $P'(x_k) \not\equiv 0 \pmod p$, tồn tại phần tử nghịch đảo của $P'(x_k)$ modulo $p$. Phương trình bậc nhất theo $t$ có nghiệm duy nhất modulo $p$. Chọn $t \in \{0, 1, \dots, p-1\}$, ta xác định được duy nhất $x_{k+1}$ modulo $p^{k+1}$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Tính giải được của Thặng dư bậc hai modulo $p^k$)</div>
+        Cho $p$ là một số nguyên tố lẻ và $a$ là một số nguyên không chia hết cho $p$. Chứng minh rằng phương trình $x^2 \equiv a \pmod{p^k}$ có nghiệm với mọi số nguyên dương $k$ khi và chỉ khi $a$ là thặng dư bậc hai modulo $p$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $P(x) = x^2 - a$.</p>
+        <p>$(\Rightarrow)$ Giả sử $x^2 \equiv a \pmod{p^k}$ có nghiệm $x_k$ với mọi $k \ge 1$. Đặc biệt với $k=1$, $x_1^2 \equiv a \pmod p$ có nghiệm. Theo định nghĩa, $a$ là thặng dư bậc hai modulo $p$.</p>
+
+        <p>$(\Leftarrow)$ Giả sử $a$ là thặng dư bậc hai modulo $p$. Tồn tại số nguyên $x_1$ sao cho:</p>
+        $$ x_1^2 \equiv a \pmod p \implies P(x_1) \equiv 0 \pmod p $$
+        <p>Vì $p \nmid a$, ta có $x_1 \not\equiv 0 \pmod p$.<br>
+        Đạo hàm hình thức của đa thức $P(x)$ là $P'(x) = 2x$.<br>
+        Tại $x = x_1$, ta có $P'(x_1) = 2x_1$.</p>
+        <p>Do $p$ là số nguyên tố lẻ ($p \ge 3$), $p \nmid 2$. Kết hợp với $p \nmid x_1$, ta suy ra:</p>
+        $$ P'(x_1) = 2x_1 \not\equiv 0 \pmod p $$
+        <p>Nghiệm $x_1$ thỏa mãn hai điều kiện của Bổ đề Hensel (Định lý 1.2): $P(x_1) \equiv 0 \pmod p$ và $P'(x_1) \not\equiv 0 \pmod p$.</p>
+        <p>Theo hệ quả của Bổ đề Hensel, từ nghiệm cơ sở $x_1$, ta có thể xây dựng dãy nghiệm duy nhất $(x_k)$ thỏa mãn $P(x_k) \equiv 0 \pmod{p^k}$ và $x_k \equiv x_{k-1} \pmod{p^{k-1}}$ với mọi $k \ge 1$.</p>
+        <p>Vậy phương trình $x^2 \equiv a \pmod{p^k}$ luôn có nghiệm với mọi số nguyên dương $k$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Thặng dư bậc hai modulo $2^k$)</div>
+        Cho $a$ là một số nguyên lẻ. Khảo sát điều kiện có nghiệm của phương trình $x^2 \equiv a \pmod{2^k}$ với $k \ge 3$. Chứng minh rằng phương trình có nghiệm khi và chỉ khi $a \equiv 1 \pmod 8$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đa thức $P(x) = x^2 - a$. Đạo hàm $P'(x) = 2x$.<br>
+        Với $p=2$, nếu $x$ là nghiệm của $x^2 \equiv a \pmod 2$, vì $a$ lẻ nên $x$ phải lẻ.<br>
+        Tuy nhiên, $P'(x) = 2x \equiv 0 \pmod 2$. Do đạo hàm chia hết cho $p=2$, Bổ đề Hensel cơ bản (Định lý 1.2) không thể áp dụng trực tiếp từ $k=1$.<br>
+        Ta cần mở rộng Bổ đề Hensel cho trường hợp $p=2$.</p>
+        <p>Khai triển Taylor cho $P(x_k + t 2^{k-1})$:</p>
+        $$ P(x_k + t 2^{k-1}) = (x_k + t 2^{k-1})^2 - a = x_k^2 - a + x_k t 2^k + t^2 2^{2k-2} $$
+        <p>Để phương trình có nghiệm từ $k=3$ trở đi, ta xét điều kiện cơ sở tại $k=3$.<br>
+        Phương trình $x^2 \equiv a \pmod 8$.<br>
+        Vì $x$ là số nguyên lẻ, ta có $x^2 \equiv 1 \pmod 8$.<br>
+        Do đó, điều kiện cần để phương trình có nghiệm modulo $2^k$ ($k \ge 3$) là $a \equiv 1 \pmod 8$.</p>
+
+        <p>Ta chứng minh điều kiện này là đủ bằng quy nạp. Giả sử $a \equiv 1 \pmod 8$.<br>
+        Với $k=3$, phương trình $x^2 \equiv a \pmod 8$ có nghiệm $x_3 = 1$.<br>
+        Giả sử tồn tại số nguyên lẻ $x_k$ sao cho $x_k^2 \equiv a \pmod{2^k}$ (với $k \ge 3$).<br>
+        Ta cần tìm $t \in \{0, 1\}$ sao cho $x_{k+1} = x_k + t 2^{k-1}$ là nghiệm của $x^2 \equiv a \pmod{2^{k+1}}$.</p>
+        <p>Tính $P(x_{k+1})$:</p>
+        $$ x_{k+1}^2 - a = (x_k + t 2^{k-1})^2 - a = (x_k^2 - a) + x_k t 2^k + t^2 2^{2k-2} $$
+        <p>Do $k \ge 3$, ta có $2k - 2 \ge k + 1$. Do đó số hạng $t^2 2^{2k-2} \equiv 0 \pmod{2^{k+1}}$.<br>
+        Phương trình $x_{k+1}^2 - a \equiv 0 \pmod{2^{k+1}}$ trở thành:</p>
+        $$ (x_k^2 - a) + x_k t 2^k \equiv 0 \pmod{2^{k+1}} $$
+        <p>Vì $x_k^2 - a \equiv 0 \pmod{2^k}$ theo giả thiết quy nạp, tồn tại số nguyên $m$ sao cho $x_k^2 - a = m 2^k$.<br>
+        Chia hai vế của phương trình đồng dư cho $2^k$:</p>
+        $$ m + x_k t \equiv 0 \pmod 2 \implies x_k t \equiv m \pmod 2 $$
+        <p>Vì $x_k$ là số nguyên lẻ, $\gcd(x_k, 2) = 1$, phương trình này có duy nhất một nghiệm $t \in \{0, 1\}$ modulo 2.<br>
+        Chọn $t$ là nghiệm này, ta xác định được $x_{k+1}$ thỏa mãn yêu cầu.<br>
+        Theo nguyên lý quy nạp, điều kiện cần và đủ là $a \equiv 1 \pmod 8$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (China High School Mathematics League - Phương trình đa thức modulo $p^2$)</div>
+        Cho $p$ là số nguyên tố lẻ. Đếm số lượng nghiệm phân biệt modulo $p^2$ của phương trình:
+        $$ x^{p-1} - 1 \equiv 0 \pmod{p^2} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $P(x) = x^{p-1} - 1$.<br>
+        Bước 1: Giải phương trình trên modulo $p$.<br>
+        Theo Định lý Fermat nhỏ, phương trình $x^{p-1} - 1 \equiv 0 \pmod p$ có đúng $p-1$ nghiệm phân biệt modulo $p$, đó là tập hợp $\{1, 2, \dots, p-1\}$.</p>
+        <p>Bước 2: Áp dụng Bổ đề Hensel để nâng nghiệm.<br>
+        Đạo hàm hình thức của $P(x)$ là $P'(x) = (p-1)x^{p-2}$.<br>
+        Với mỗi nghiệm $x_1 \in \{1, 2, \dots, p-1\}$, ta kiểm tra điều kiện đạo hàm:</p>
+        $$ P'(x_1) = (p-1)x_1^{p-2} \equiv -x_1^{p-2} \pmod p $$
+        <p>Vì $\gcd(x_1, p) = 1$, ta có $x_1^{p-2} \not\equiv 0 \pmod p$.<br>
+        Do đó, $P'(x_1) \not\equiv 0 \pmod p$ với mọi nghiệm $x_1$ của phương trình cơ sở.</p>
+        <p>Theo Bổ đề Hensel (Định lý 1.2), mỗi nghiệm $x_1$ modulo $p$ sẽ được nâng lên thành duy nhất một nghiệm $x_2$ modulo $p^2$ thỏa mãn $x_2 \equiv x_1 \pmod p$.<br>
+        Vì phương trình bậc $p-1$ trên modulo $p$ có đúng $p-1$ nghiệm phân biệt, mỗi nghiệm này ánh xạ 1-1 tới một nghiệm modulo $p^2$.<br>
+        Số lượng nghiệm phân biệt modulo $p^2$ của phương trình là $p-1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Romanian National Olympiad - Phân tích nghiệm kép Modulo)</div>
+        Cho $p$ là số nguyên tố lẻ. Giải phương trình đồng dư sau theo modulo $p^2$:
+        $$ x^p - x \equiv 0 \pmod{p^2} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $P(x) = x^p - x$.<br>
+        Bước 1: Giải phương trình modulo $p$.<br>
+        Theo Định lý Fermat nhỏ, $x^p \equiv x \pmod p$ đúng với mọi số nguyên $x$.<br>
+        Do đó, phương trình $P(x) \equiv 0 \pmod p$ có đúng $p$ nghiệm phân biệt modulo $p$, tập nghiệm là $\{0, 1, \dots, p-1\}$.</p>
+
+        <p>Bước 2: Kiểm tra đạo hàm hình thức.<br>
+        Tính $P'(x) = p x^{p-1} - 1$.<br>
+        Xét trên modulo $p$, ta có:</p>
+        $$ P'(x) \equiv 0 \cdot x^{p-1} - 1 \equiv -1 \pmod p $$
+        <p>Vì $-1 \not\equiv 0 \pmod p$, điều kiện $P'(x_1) \not\equiv 0 \pmod p$ được thỏa mãn với mọi nghiệm $x_1 \in \{0, 1, \dots, p-1\}$.</p>
+
+        <p>Bước 3: Nâng nghiệm lên modulo $p^2$.<br>
+        Vì mọi nghiệm modulo $p$ đều thỏa mãn điều kiện của Bổ đề Hensel, mỗi nghiệm $x_1$ sẽ được nâng lên duy nhất một nghiệm $x_2$ modulo $p^2$.<br>
+        Do đó, có đúng $p$ nghiệm phân biệt modulo $p^2$.<br>
+        Ta có thể chỉ ra dạng của các nghiệm này.<br>
+        Với $x_1 = 0$, $P(0) = 0 \equiv 0 \pmod{p^2}$. Vậy $x = 0$ là một nghiệm.<br>
+        Với $x_1 \in \{1, 2, \dots, p-1\}$, theo định lý Euler, ta xét modulo $p^2$.<br>
+        Tập các số nguyên tố cùng nhau với $p^2$ tạo thành một nhóm nhân có cấp $\varphi(p^2) = p(p-1)$.<br>
+        Một phần tử $x$ là nghiệm của $x^p \equiv x \pmod{p^2} \implies x^{p-1} \equiv 1 \pmod{p^2}$ (do $p \nmid x$).<br>
+        Phương trình $x^{p-1} \equiv 1 \pmod{p^2}$ có đúng $p-1$ nghiệm trong hệ thặng dư modulo $p^2$. (Các nghiệm này được nâng từ $p-1$ nghiệm modulo $p$ trong Bài toán 3.2).<br>
+        Tổng số nghiệm của phương trình là $1 + (p-1) = p$ nghiệm.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Định lý Lifting - Khảo sát nghiệm đa thức)</div>
+        Cho đa thức $P(x) = x^3 - x + 1$. Khảo sát sự tồn tại nghiệm của phương trình $P(x) \equiv 0 \pmod{11^k}$ với $k \ge 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bước 1: Giải phương trình modulo $p = 11$.<br>
+        Ta kiểm tra các giá trị $x \in \{0, 1, \dots, 10\}$ vào đa thức $P(x)$:</p>
+        <ul>
+            <li>$P(0) = 1$</li>
+            <li>$P(1) = 1$</li>
+            <li>$P(2) = 2^3 - 2 + 1 = 7$</li>
+            <li>$P(3) = 3^3 - 3 + 1 = 25 \equiv 3 \pmod{11}$</li>
+            <li>$P(4) = 4^3 - 4 + 1 = 61 \equiv 6 \pmod{11}$</li>
+            <li>$P(5) = 5^3 - 5 + 1 = 121 \equiv 0 \pmod{11}$</li>
+        </ul>
+        <p>Ta tìm được một nghiệm $x_1 = 5$.<br>
+        Tiếp tục kiểm tra các giá trị còn lại để tìm thêm nghiệm:</p>
+        <ul>
+            <li>$P(6) \equiv (-5)^3 - (-5) + 1 = -125 + 5 + 1 = -119 \equiv 2 \pmod{11}$</li>
+            <li>$P(7) \equiv (-4)^3 + 5 = -59 \equiv 7 \pmod{11}$</li>
+            <li>$P(8) \equiv (-3)^3 + 4 = -23 \equiv 10 \pmod{11}$</li>
+            <li>$P(9) \equiv (-2)^3 + 3 = -5 \equiv 6 \pmod{11}$</li>
+            <li>$P(10) \equiv (-1)^3 + 2 = 1 \pmod{11}$</li>
+        </ul>
+        <p>Vậy phương trình có duy nhất một nghiệm modulo $11$ là $x_1 = 5$.</p>
+
+        <p>Bước 2: Kiểm tra điều kiện đạo hàm.<br>
+        Đạo hàm hình thức của đa thức là $P'(x) = 3x^2 - 1$.<br>
+        Thay nghiệm $x_1 = 5$ vào đạo hàm:</p>
+        $$ P'(5) = 3(5)^2 - 1 = 75 - 1 = 74 $$
+        <p>Xét modulo $11$:</p>
+        $$ 74 = 11 \cdot 6 + 8 \equiv 8 \pmod{11} $$
+        <p>Do $P'(5) \equiv 8 \not\equiv 0 \pmod{11}$, nghiệm $x_1 = 5$ thỏa mãn điều kiện của Bổ đề Hensel.</p>
+
+        <p>Bước 3: Kết luận.<br>
+        Theo Bổ đề Hensel, từ nghiệm đơn $x_1 = 5$ modulo $11$, phương trình $P(x) \equiv 0 \pmod{11^k}$ sẽ có duy nhất một nghiệm $x_k$ modulo $11^k$ với mọi số nguyên dương $k \ge 1$.<br>
+        Ta có thể tìm $x_2$ modulo $121$ bằng công thức $x_2 = 5 + 11t$.<br>
+        Giải $P(5) + 11t P'(5) \equiv 0 \pmod{121}$.</p>
+        <p>$121 + 11t (74) \equiv 0 \pmod{121} \implies 121 + 11t (8) \equiv 0 \pmod{121}$.<br>
+        Chia cho 11: $11 + 8t \equiv 0 \pmod{11} \implies 8t \equiv 0 \pmod{11} \implies t \equiv 0 \pmod{11}$.</p>
+        <p>Vậy $x_2 = 5 + 11(0) = 5$ là nghiệm của phương trình modulo 121.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp đếm - Nguyên lý Bao hàm - Loại trừ và Ứng dụng</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP ĐẾM <br> NGUYÊN LÝ BAO HÀM - LOẠI TRỪ VÀ ỨNG DỤNG</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đếm số lượng phần tử của một tập hợp tuân theo nhiều điều kiện ràng buộc là một bài toán nền tảng của Tổ hợp rời rạc. Chuyên đề này hình thức hóa Nguyên lý Bao hàm - Loại trừ (PIE) bằng phương pháp đánh giá tổ hợp. Các định lý quan trọng như công thức tính số hoán vị không điểm bất động (Derangement) và hàm phi Euler được thiết lập kèm chứng minh. Các bài toán áp dụng minh họa quy trình chuyển đổi điều kiện phức hợp thành các giao tập hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong các bài toán đếm nâng cao, ta thường gặp khái niệm về "Hàm số" (Functions) và các phân loại của nó. Dưới đây là định nghĩa cần thiết để áp dụng cho Bài toán 3.1:</i></p>
+    
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Hàm Toàn ánh - Surjective Function)</div>
+        Cho hai tập hợp $X$ (tập nguồn) và $Y$ (tập đích). Một hàm số $f: X \to Y$ được gọi là <strong>toàn ánh</strong> nếu với mọi phần tử $y \in Y$, luôn tồn tại ít nhất một phần tử $x \in X$ sao cho $f(x) = y$. <br>
+        Nói cách khác, tập giá trị của hàm số bao phủ toàn bộ tập đích $Y$ (không có phần tử nào trong $Y$ bị bỏ sót).
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Nguyên lý Bao hàm - Loại trừ (PIE))</div>
+        Cho $A_1, A_2, \dots, A_n$ là $n$ tập hợp hữu hạn. Ký hiệu $|X|$ là số lượng phần tử của tập hợp $X$. Số phần tử của tập hợp hợp $\bigcup_{i=1}^n A_i$ được tính bởi công thức:
+        $$ \begin{aligned}
+        \left| \bigcup_{i=1}^n A_i \right| &= \sum_{i=1}^n |A_i| - \sum_{1 \le i \lt j \le n} |A_i \cap A_j| + \sum_{1 \le i \lt j \lt k \le n} |A_i \cap A_j \cap A_k| \\
+        &\quad - \dots + (-1)^{n-1} |A_1 \cap A_2 \cap \dots \cap A_n|
+        \end{aligned} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét một phần tử $x$ bất kỳ thuộc hợp của $n$ tập hợp này. Giả sử $x$ thuộc đúng $m$ tập hợp trong số $n$ tập hợp đã cho ($1 \le m \le n$). Ta cần chứng minh rằng phần tử $x$ được đếm đúng $1$ lần ở vế phải của công thức.</p>
+        <ul>
+            <li>Trong tổng thứ nhất $\sum |A_i|$, phần tử $x$ được đếm $\binom{m}{1}$ lần (vì nó thuộc $m$ tập hợp).</li>
+            <li>Trong tổng thứ hai $\sum |A_i \cap A_j|$, phần tử $x$ chỉ được đếm khi cả $A_i$ và $A_j$ đều chứa $x$. Số cách chọn 2 tập hợp chứa $x$ từ $m$ tập hợp là $\binom{m}{2}$. Vậy $x$ được đếm $\binom{m}{2}$ lần.</li>
+            <li>Lập luận tương tự, trong tổng chứa giao của $k$ tập hợp, $x$ được đếm $\binom{m}{k}$ lần.</li>
+        </ul>
+        <p>Tổng số lần đếm phần tử $x$ ở vế phải của công thức là:</p>
+        $$ S = \binom{m}{1} - \binom{m}{2} + \binom{m}{3} - \dots + (-1)^{m-1} \binom{m}{m} $$
+        <p>Theo khai triển nhị thức Newton cho biểu thức $(1 - 1)^m$:</p>
+        $$ 0 = (1 - 1)^m = \binom{m}{0} - \binom{m}{1} + \binom{m}{2} - \dots + (-1)^m \binom{m}{m} $$
+        <p>Chuyển vế, ta thu được:</p>
+        $$ \binom{m}{1} - \binom{m}{2} + \dots + (-1)^{m-1} \binom{m}{m} = \binom{m}{0} = 1 $$
+        <p>Vậy $S = 1$. Mọi phần tử thuộc hợp các tập hợp đều được đếm đúng một lần. Phần tử không thuộc hợp thì không được đếm lần nào. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Số hoán vị không điểm bất động - Derangement)</div>
+        Một hoán vị của tập hợp $\{1, 2, \dots, n\}$ được gọi là một hoán vị không điểm bất động (derangement) nếu không có phần tử nào giữ nguyên vị trí ban đầu của nó. Số lượng các hoán vị như vậy, ký hiệu là $D_n$, được tính bởi:
+        $$ D_n = n! \left( 1 - \frac{1}{1!} + \frac{1}{2!} - \frac{1}{3!} + \dots + (-1)^n \frac{1}{n!} \right) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Gọi $U$ là tập hợp tất cả các hoán vị của $n$ phần tử. Ta có $|U| = n!$.<br>
+        Gọi $A_i$ là tập hợp các hoán vị mà phần tử thứ $i$ giữ nguyên vị trí ban đầu ($1 \le i \le n$).<br>
+        Số lượng hoán vị không điểm bất động là số phần tử không thuộc bất kỳ tập $A_i$ nào.<br>
+        Theo nguyên lý phần bù:</p>
+        $$ D_n = |U| - \left| \bigcup_{i=1}^n A_i \right| $$
+        
+        <p>Ta tính kích thước của các giao tập hợp.<br>
+        Đối với tập $A_i$, vì phần tử $i$ cố định, $n-1$ phần tử còn lại có thể hoán vị tùy ý. Vậy $|A_i| = (n-1)!$.<br>
+        Giao của $k$ tập hợp phân biệt $A_{i_1} \cap A_{i_2} \cap \dots \cap A_{i_k}$ là tập các hoán vị có $k$ phần tử $i_1, \dots, i_k$ bị cố định. Số phần tử tự do còn lại là $n-k$, nên kích thước của giao này là $(n-k)!$.<br>
+        Số lượng cách chọn $k$ tập hợp từ $n$ tập hợp là $\binom{n}{k}$.</p>
+        
+        <p>Áp dụng Định lý 1.1 (PIE) cho tập hợp hợp $\bigcup A_i$:</p>
+        $$ \left| \bigcup_{i=1}^n A_i \right| = \binom{n}{1} (n-1)! - \binom{n}{2} (n-2)! + \dots + (-1)^{n-1} \binom{n}{n} 0! $$
+        <p>Sử dụng đẳng thức $\binom{n}{k} (n-k)! = \frac{n!}{k!(n-k)!} (n-k)! = \frac{n!}{k!}$, ta thay vào biểu thức của $D_n$:</p>
+        $$ D_n = n! - \left( \frac{n!}{1!} - \frac{n!}{2!} + \frac{n!}{3!} - \dots + (-1)^{n-1} \frac{n!}{n!} \right) $$
+        <p>Rút $n!$ làm nhân tử chung, ta thu được:</p>
+        $$ D_n = n! \left( 1 - \frac{1}{1!} + \frac{1}{2!} - \dots + (-1)^n \frac{1}{n!} \right) $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Công thức hàm Phi Euler $\varphi(n)$)</div>
+        Cho $n$ là một số nguyên dương có phân tích ra thừa số nguyên tố là $n = p_1^{\alpha_1} p_2^{\alpha_2} \dots p_k^{\alpha_k}$. Bằng Nguyên lý Bao hàm - Loại trừ, hãy chứng minh:
+        $$ \varphi(n) = n \left(1 - \frac{1}{p_1}\right) \left(1 - \frac{1}{p_2}\right) \dots \left(1 - \frac{1}{p_k}\right) $$
+        trong đó $\varphi(n)$ là số lượng các số nguyên dương không vượt quá $n$ và nguyên tố cùng nhau với $n$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $U = \{1, 2, \dots, n\}$ là tập hợp các số nguyên dương không vượt quá $n$. Kích thước của $U$ là $|U| = n$.<br>
+        Gọi $A_i$ là tập hợp các số trong $U$ chia hết cho số nguyên tố $p_i$ (với $i = 1, 2, \dots, k$).</p>
+        
+        <p>Một số trong tập $U$ nguyên tố cùng nhau với $n$ khi và chỉ khi nó không chia hết cho bất kỳ số nguyên tố $p_i$ nào. Do đó, số lượng các số này là:</p>
+        $$ \varphi(n) = |U| - \left| \bigcup_{i=1}^k A_i \right| $$
+        
+        <p>Theo nguyên lý PIE, ta cần tính kích thước của các giao tập hợp.<br>
+        Số lượng các số trong $U$ chia hết cho $p_i$ là $|A_i| = \frac{n}{p_i}$.<br>
+        Giao của hai tập hợp $A_i \cap A_j$ (với $i \neq j$) là tập hợp các số chia hết cho cả $p_i$ và $p_j$. Vì $p_i, p_j$ là các số nguyên tố phân biệt, điều kiện này tương đương với việc chia hết cho tích $p_i p_j$.<br>
+        Kích thước của giao hai tập hợp là $|A_i \cap A_j| = \frac{n}{p_i p_j}$.<br>
+        Tổng quát, giao của $m$ tập hợp tương ứng với việc chia hết cho tích của $m$ số nguyên tố đó.</p>
+        
+        <p>Áp dụng Định lý 1.1 (PIE):</p>
+        $$ \left| \bigcup_{i=1}^k A_i \right| = \sum_{i=1}^k \frac{n}{p_i} - \sum_{1 \le i \lt j \le k} \frac{n}{p_i p_j} + \dots + (-1)^{k-1} \frac{n}{p_1 p_2 \dots p_k} $$
+        <p>Thay vào công thức của $\varphi(n)$:</p>
+        $$ \varphi(n) = n - \sum_{i=1}^k \frac{n}{p_i} + \sum_{1 \le i \lt j \le k} \frac{n}{p_i p_j} - \dots + (-1)^k \frac{n}{p_1 p_2 \dots p_k} $$
+        <p>Rút $n$ làm nhân tử chung, ta nhận thấy biểu thức còn lại là khai triển của tích:</p>
+        $$ \varphi(n) = n \left(1 - \frac{1}{p_1}\right) \left(1 - \frac{1}{p_2}\right) \dots \left(1 - \frac{1}{p_k}\right) $$
+        <p>Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Romanian National Olympiad - Đếm số lượng toàn ánh)</div>
+        Cho hai tập hợp $X$ và $Y$ sao cho $|X| = m$ và $|Y| = n$ với $m \ge n \ge 1$. Tính số lượng tất cả các hàm toàn ánh $f: X \to Y$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $Y = \{y_1, y_2, \dots, y_n\}$.<br>
+        Gọi $U$ là tập hợp tất cả các hàm số từ $X$ vào $Y$. Số lượng hàm số là $|U| = n^m$.</p>
+        <p>Một hàm $f$ không phải là toàn ánh nếu tồn tại ít nhất một phần tử của $Y$ không thuộc tập giá trị của $f$.<br>
+        Gọi $A_i$ là tập hợp các hàm số $f: X \to Y$ sao cho phần tử $y_i$ không nằm trong tập giá trị của $f$, tức là $f(x) \neq y_i$ với mọi $x \in X$.<br>
+        Số lượng hàm toàn ánh cần tìm là:</p>
+        $$ S = |U| - \left| \bigcup_{i=1}^n A_i \right| $$
+        
+        <p>Xét kích thước của các tập $A_i$. Tập $A_i$ chứa các hàm số từ $X$ ánh xạ vào tập $Y \setminus \{y_i\}$. Vì tập đích bây giờ có $n-1$ phần tử, số lượng hàm số như vậy là $(n-1)^m$. Vậy $|A_i| = (n-1)^m$.</p>
+        <p>Tương tự, giao của $k$ tập hợp $A_{i_1} \cap \dots \cap A_{i_k}$ chứa các hàm số ánh xạ vào tập hợp đích có $n-k$ phần tử. Số lượng hàm số là $(n-k)^m$.<br>
+        Số cách chọn $k$ tập hợp từ $n$ tập hợp là $\binom{n}{k}$.</p>
+        <p>Áp dụng PIE:</p>
+        $$ \left| \bigcup_{i=1}^n A_i \right| = \binom{n}{1}(n-1)^m - \binom{n}{2}(n-2)^m + \dots + (-1)^{n-2} \binom{n}{n-1} 1^m $$
+        <p>Do đó, số lượng hàm toàn ánh là:</p>
+        $$ S = n^m - \binom{n}{1}(n-1)^m + \binom{n}{2}(n-2)^m - \dots + (-1)^{n-1} \binom{n}{n-1} 1^m $$
+        <p>Công thức này có thể được viết gọn dưới dạng tổng:</p>
+        $$ S = \sum_{k=0}^n (-1)^k \binom{n}{k} (n-k)^m $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (All-Russian Olympiad - Biến thể Derangement)</div>
+        Có $n$ người mang theo $n$ chiếc mũ và tham dự một bữa tiệc. Khi ra về, mỗi người lấy ngẫu nhiên một chiếc mũ. Tính số cách để có đúng $k$ người lấy đúng chiếc mũ của mình ($0 \le k \le n$).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi số lượng người lấy đúng chiếc mũ của mình là $k$.<br>
+        Đầu tiên, ta chọn ra $k$ người trong số $n$ người để họ lấy đúng mũ của mình. Số cách chọn là $\binom{n}{k}$.</p>
+        
+        <p>Đối với $n-k$ người còn lại, yêu cầu bài toán đòi hỏi không có ai trong số họ lấy đúng chiếc mũ ban đầu của mình.<br>
+        Phân bố mũ cho $n-k$ người này là bài toán hoán vị không điểm bất động (Derangement) đối với tập hợp $n-k$ phần tử.<br>
+        Theo Định lý 1.2, số lượng cách phân bố này là $D_{n-k}$.</p>
+        
+        <p>Vì hai bước chọn người và phân bố mũ độc lập với nhau, tổng số cách thỏa mãn yêu cầu là tích của hai giá trị:</p>
+        $$ S_k = \binom{n}{k} \cdot D_{n-k} $$
+        <p>Thay công thức $D_{n-k}$ vào:</p>
+        $$ S_k = \frac{n!}{k!(n-k)!} (n-k)! \sum_{i=0}^{n-k} \frac{(-1)^i}{i!} = \frac{n!}{k!} \sum_{i=0}^{n-k} \frac{(-1)^i}{i!} $$
+        <p><em>Nhận xét:</em> Tổng tất cả các trường hợp $k$ từ $0$ đến $n$ phải bằng tổng số hoán vị $n!$. Tức là $\sum_{k=0}^n \binom{n}{k} D_{n-k} = n!$. Đây là một hệ thức tổ hợp liên kết các giá trị Derangement.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (China National Olympiad - Đếm chuỗi ký tự)</div>
+        Có bao nhiêu chuỗi ký tự độ dài $n$ ($n \ge 3$) được tạo ra từ bảng chữ cái $\{A, B, C\}$ sao cho chuỗi đó chứa ít nhất một ký tự $A$, ít nhất một ký tự $B$ và ít nhất một ký tự $C$?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $U$ là tập hợp tất cả các chuỗi độ dài $n$ được tạo ra từ $\{A, B, C\}$. Ta có $|U| = 3^n$.<br>
+        Gọi $X_A$ là tập hợp các chuỗi độ dài $n$ <strong>không chứa</strong> ký tự $A$. Tương tự, định nghĩa $X_B$ và $X_C$.<br>
+        Yêu cầu bài toán là tìm số lượng chuỗi không thuộc bất kỳ tập nào trong ba tập trên. Số lượng chuỗi hợp lệ là:</p>
+        $$ S = |U| - |X_A \cup X_B \cup X_C| $$
+        
+        <p>Ta tính kích thước của các tập hợp và các giao tập hợp.</p>
+        <ul>
+            <li> Tập $X_A$ chứa các chuỗi chỉ được tạo ra từ $\{B, C\}$. Độ dài chuỗi là $n$, nên $|X_A| = 2^n$. Bằng lập luận tương tự, $|X_B| = |X_C| = 2^n$.</li>
+            <li> Giao của hai tập hợp $X_A \cap X_B$ là các chuỗi không chứa cả $A$ và $B$. Vậy chuỗi này chỉ chứa ký tự $C$. Số lượng chuỗi như vậy là $|X_A \cap X_B| = 1^n = 1$. Tương tự, $|X_B \cap X_C| = |X_C \cap X_A| = 1$.</li>
+            <li> Giao của ba tập hợp $X_A \cap X_B \cap X_C$ là tập các chuỗi không chứa $A, B$ và $C$. Vì bảng chữ cái chỉ có 3 ký tự, không thể tạo ra chuỗi độ dài $n \ge 3$ nào. Kích thước giao này là $0$.</li>
+        </ul>
+        
+        <p>Áp dụng PIE cho hợp của ba tập hợp:</p>
+        $$ |X_A \cup X_B \cup X_C| = (|X_A| + |X_B| + |X_C|) - (|X_A \cap X_B| + |X_B \cap X_C| + |X_C \cap X_A|) + |X_A \cap X_B \cap X_C| $$
+        <p>Thay các giá trị đã tính:</p>
+        $$ |X_A \cup X_B \cup X_C| = 3 \cdot 2^n - 3 \cdot 1 + 0 = 3 \cdot 2^n - 3 $$
+        <p>Do đó, số lượng chuỗi thỏa mãn điều kiện bài toán là:</p>
+        $$ S = 3^n - (3 \cdot 2^n - 3) = 3^n - 3 \cdot 2^n + 3 $$
+        <p>Bài toán minh họa cách áp dụng PIE để xử lý các điều kiện "chứa ít nhất", bằng cách chuyển đổi thành bài toán đếm phần bù "không chứa" và xét giao của các tập hợp.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

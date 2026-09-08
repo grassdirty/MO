@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số và Đa thức - Đa thức đối xứng và hệ thức Newton</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ VÀ ĐA THỨC <br> ĐA THỨC ĐỐI XỨNG VÀ HỆ THỨC NEWTON</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát cấu trúc của đa thức đối xứng là một kỹ thuật cơ bản trong đại số. Chuyên đề này trình bày định lý cơ bản về đa thức đối xứng và các hệ thức Newton (Newton-Girard) liên hệ giữa tổng lũy thừa và đa thức đối xứng sơ cấp. Các bài toán ứng dụng tập trung vào việc quy đổi hệ phương trình nhiều biến, tính toán giá trị biểu thức và phân tích tính nguyên của dãy số.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đa thức đối xứng sơ cấp và Tổng lũy thừa)</div>
+        Cho $n$ biến số $x_1, x_2, \dots, x_n$. Các đa thức đối xứng sơ cấp (elementary symmetric polynomials), ký hiệu là $e_k$, được định nghĩa như sau:
+        $$ \begin{aligned}
+        e_0 &= 1 \\
+        e_1 &= \sum_{1 \le i \le n} x_i \\
+        e_2 &= \sum_{1 \le i \lt j \le n} x_i x_j \\
+        &\dots \\
+        e_n &= x_1 x_2 \dots x_n
+        \end{aligned} $$
+        Với $k \gt n$, quy ước $e_k = 0$.<br>
+        Tổng lũy thừa bậc $k$ của các biến, ký hiệu là $p_k$, được định nghĩa bởi:
+        $$ p_k = \sum_{i=1}^n x_i^k = x_1^k + x_2^k + \dots + x_n^k \quad (k \ge 0) $$
+        (Quy ước $p_0 = n$).
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý cơ bản của Đa thức đối xứng)</div>
+        Mọi đa thức đối xứng với hệ số nguyên (hoặc hữu tỉ, thực, phức) theo các biến $x_1, x_2, \dots, x_n$ đều có thể được biểu diễn duy nhất dưới dạng một đa thức của các đa thức đối xứng sơ cấp $e_1, e_2, \dots, e_n$ với cùng tập hệ số tương ứng.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh định lý bằng phương pháp quy nạp theo thứ tự từ điển (lexicographic order) của các đơn thức.</p>
+        <p>Mỗi đơn thức trong đa thức có dạng $c x_1^{\alpha_1} x_2^{\alpha_2} \dots x_n^{\alpha_n}$. Ta sắp xếp các đơn thức theo thứ tự từ điển: $(\alpha_1, \alpha_2, \dots, \alpha_n) \gt (\beta_1, \beta_2, \dots, \beta_n)$ nếu ở vị trí đầu tiên $i$ (từ trái sang) mà hai bộ số khác nhau, ta có $\alpha_i \gt \beta_i$.</p>
+        <p>Cho $P$ là một đa thức đối xứng khác hằng số. Gọi đơn thức cao nhất của $P$ theo thứ tự từ điển là $c x_1^{\alpha_1} x_2^{\alpha_2} \dots x_n^{\alpha_n}$. Vì $P$ đối xứng, việc hoán vị các biến không làm thay đổi đa thức, do đó để đạt được thứ tự lớn nhất, số mũ phải thỏa mãn $\alpha_1 \ge \alpha_2 \ge \dots \ge \alpha_n$.</p>
+        <p>Xét đa thức đối xứng được tạo từ các đa thức đối xứng sơ cấp: $Q = c \cdot e_1^{\alpha_1 - \alpha_2} e_2^{\alpha_2 - \alpha_3} \dots e_n^{\alpha_n}$.</p>
+        <p>Nhận thấy rằng đơn thức cao nhất của $Q$ cũng chính là $c x_1^{\alpha_1} x_2^{\alpha_2} \dots x_n^{\alpha_n}$.</p>
+        <p>Do đó, đa thức $P_1 = P - Q$ sẽ là một đa thức đối xứng có đơn thức cao nhất nhỏ hơn đơn thức cao nhất của $P$ theo thứ tự từ điển.</p>
+        <p>Lặp lại quá trình này đối với $P_1$. Vì thứ tự từ điển của các bộ số nguyên không âm có tổng bậc bị chặn là một tập sắp xếp tốt (well-ordered), quá trình này phải dừng lại sau hữu hạn bước. Khi đó phần dư bằng $0$, tức là $P$ được biểu diễn hoàn toàn dưới dạng đa thức của $e_1, e_2, \dots, e_n$.</p>
+        <p>Tính duy nhất được suy ra từ việc các đa thức đối xứng sơ cấp là độc lập đại số. Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Hệ thức Newton / Newton-Girard Formulas)</div>
+        Với mọi số nguyên $k \ge 1$, ta có hệ thức liên hệ tuyến tính giữa tổng lũy thừa $p_k$ và các đa thức đối xứng sơ cấp $e_i$:
+        <ol>
+            <li> Nếu $1 \le k \le n$:
+            $$ k e_k = \sum_{i=1}^k (-1)^{i-1} e_{k-i} p_i $$
+            Cụ thể:
+            $$ \begin{aligned}
+            p_1 - e_1 &= 0 \\
+            p_2 - e_1 p_1 + 2e_2 &= 0 \\
+            p_3 - e_1 p_2 + e_2 p_1 - 3e_3 &= 0
+            \end{aligned} $$
+            </li>
+            <li> Nếu $k \gt n$:
+            $$ \sum_{i=0}^n (-1)^i e_i p_{k-i} = 0 $$
+            Hay $p_k - e_1 p_{k-1} + e_2 p_{k-2} - \dots + (-1)^n e_n p_{k-n} = 0$.
+            </li>
+        </ol>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><b>Phần 2 (khi $k \gt n$):</b></p>
+        <p>Xét đa thức đặc trưng $F(t) = \prod_{i=1}^n (t - x_i) = t^n - e_1 t^{n-1} + e_2 t^{n-2} - \dots + (-1)^n e_n$.</p>
+        <p>Vì $x_i$ là nghiệm của $F(t)$, thay $t = x_i$ vào ta có:<br>
+        $x_i^n - e_1 x_i^{n-1} + e_2 x_i^{n-2} - \dots + (-1)^n e_n = 0$.</p>
+        <p>Nhân cả hai vế với $x_i^{k-n}$ (lưu ý $k \gt n$), ta được:<br>
+        $x_i^k - e_1 x_i^{k-1} + e_2 x_i^{k-2} - \dots + (-1)^n e_n x_i^{k-n} = 0$.</p>
+        <p>Lấy tổng các phương trình trên khi $i$ chạy từ $1$ đến $n$, ta trực tiếp thu được hệ thức:<br>
+        $p_k - e_1 p_{k-1} + e_2 p_{k-2} - \dots + (-1)^n e_n p_{k-n} = 0$.</p>
+
+        <p><b>Phần 1 (khi $1 \le k \le n$):</b></p>
+        <p>Ta sử dụng phương pháp đạo hàm hình thức (formal derivative). Xét hàm sinh:<br>
+        $P(t) = \prod_{i=1}^n (1 - x_i t) = \sum_{i=0}^n (-1)^i e_i t^i$ (với quy ước $e_0 = 1$).</p>
+        <p>Lấy đạo hàm của $P(t)$ theo $t$, ta có:<br>
+        $P'(t) = \sum_{i=1}^n (-1)^i i \cdot e_i t^{i-1}$.</p>
+        <p>Mặt khác, lấy đạo hàm logarit hai vế của $P(t) = \prod_{i=1}^n (1 - x_i t)$, ta được:<br>
+        $\frac{P'(t)}{P(t)} = \sum_{i=1}^n \frac{-x_i}{1 - x_i t}$.</p>
+        <p>Khai triển Taylor cho chuỗi phân thức $\frac{-x_i}{1 - x_i t} = - \sum_{j=0}^\infty x_i^{j+1} t^j$, từ đó suy ra:<br>
+        $\frac{P'(t)}{P(t)} = - \sum_{j=0}^\infty \left( \sum_{i=1}^n x_i^{j+1} \right) t^j = - \sum_{j=0}^\infty p_{j+1} t^j$.</p>
+        <p>Nhân chéo $P(t)$ lên, ta có phương trình: $P'(t) = -P(t) \sum_{j=0}^\infty p_{j+1} t^j$.<br>
+        Thay chuỗi của $P(t)$ và $P'(t)$ vào:<br>
+        $\sum_{i=1}^n (-1)^i i \cdot e_i t^{i-1} = - \left( \sum_{m=0}^n (-1)^m e_m t^m \right) \left( \sum_{j=0}^\infty p_{j+1} t^j \right)$.</p>
+        <p>Để tìm hệ thức cho $e_k$, ta cân bằng hệ số của $t^{k-1}$ ở cả hai vế. Ở vế trái, hệ số này là $(-1)^k k \cdot e_k$. Ở vế phải, hệ số của $t^{k-1}$ thu được khi $m + j = k - 1$, hay $j = k - 1 - m$. Vì $j \ge 0$ nên $m \le k-1$. Hệ số vế phải là:<br>
+        $- \sum_{m=0}^{k-1} (-1)^m e_m p_{k-m}$.</p>
+        <p>Cho hai hệ số bằng nhau, ta có:<br>
+        $(-1)^k k \cdot e_k = - \sum_{m=0}^{k-1} (-1)^m e_m p_{k-m}$.</p>
+        <p>Nhân hai vế với $(-1)^{k-1}$, chú ý rằng $(-1)^{2k-1} = -1$, phương trình trở thành:<br>
+        $-k \cdot e_k = - \sum_{m=0}^{k-1} (-1)^{k-1-m} e_m p_{k-m}$.<br>
+        Đổi biến $i = k - m$ (khi $m$ chạy từ $0$ đến $k-1$ thì $i$ chạy từ $1$ đến $k$), ta được:<br>
+        $k \cdot e_k = \sum_{i=1}^k (-1)^{i-1} e_{k-i} p_i$.</p>
+        <p>Đây chính là Hệ thức Newton phần 1. Khẳng định được chứng minh hoàn toàn.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (All-Russian Olympiad - Rút gọn tổng lũy thừa)</div>
+        Cho $x, y, z$ là ba số thực thỏa mãn đồng thời hai điều kiện:
+        $$ \begin{aligned}
+        x + y + z &= 0 \\
+        x^2 + y^2 + z^2 &= 6
+        \end{aligned} $$
+        Tính giá trị của biểu thức $P = x^4 + y^4 + z^4$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo định nghĩa, tập hợp ba biến $x, y, z$ có các đa thức đối xứng sơ cấp:<br>
+        $e_1 = x + y + z$<br>
+        $e_2 = xy + yz + zx$<br>
+        $e_3 = xyz$</p>
+        <p>Và các tổng lũy thừa: $p_k = x^k + y^k + z^k$.<br>
+        Theo giả thiết:<br>
+        $p_1 = e_1 = 0$<br>
+        $p_2 = 6$</p>
+        <p>Áp dụng Hệ thức Newton cho $k = 2$:<br>
+        $$ p_2 - e_1 p_1 + 2e_2 = 0 \implies 6 - 0 \cdot 0 + 2e_2 = 0 \implies e_2 = -3 $$</p>
+        <p>Áp dụng Hệ thức Newton cho $k = 4$ (trường hợp $k \gt n=3$):<br>
+        $$ p_4 - e_1 p_3 + e_2 p_2 - e_3 p_1 = 0 $$</p>
+        <p>Thay các giá trị đã biết $e_1 = 0, p_1 = 0, p_2 = 6, e_2 = -3$ vào phương trình:<br>
+        $$ p_4 - 0 \cdot p_3 + (-3) \cdot 6 - e_3 \cdot 0 = 0 $$
+        $$ p_4 - 18 = 0 \implies p_4 = 18 $$</p>
+        <p>Vậy $x^4 + y^4 + z^4 = 18$.<br>
+        <i>(Nhận xét: Giá trị của $p_4$ hoàn toàn độc lập với $e_3$, cho phép tính toán trực tiếp mà không cần giải chi tiết hệ phương trình).</i></p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (USAMO 1999 - Phương trình đa thức đối xứng)</div>
+        Cho ba số thực $x, y, z$ thỏa mãn các phương trình:
+        $$ \begin{aligned}
+        x + y + z &= 0 \\
+        x^3 + y^3 + z^3 &= 3 \\
+        x^5 + y^5 + z^5 &= 15
+        \end{aligned} $$
+        Khảo sát sự tồn tại của $x, y, z$ và tìm đa thức bậc 3 nhận $x, y, z$ làm nghiệm.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Sử dụng hệ thống ký hiệu $p_k$ và $e_k$. Theo giả thiết: $p_1 = 0, p_3 = 3, p_5 = 15$.<br>
+        Đồng thời $e_1 = p_1 = 0$.</p>
+        <p>Áp dụng Hệ thức Newton cho $k=2$:<br>
+        $$ p_2 - e_1 p_1 + 2e_2 = 0 \implies p_2 = -2e_2 $$</p>
+        <p>Áp dụng Hệ thức Newton cho $k=3$:<br>
+        $$ p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0 \implies 3 - 0 + 0 - 3e_3 = 0 \implies e_3 = 1 $$</p>
+        <p>Áp dụng Hệ thức Newton cho $k=4$ (với $n=3$):<br>
+        $$ p_4 - e_1 p_3 + e_2 p_2 - e_3 p_1 = 0 \implies p_4 + e_2(-2e_2) - 0 = 0 \implies p_4 = 2e_2^2 $$</p>
+        <p>Áp dụng Hệ thức Newton cho $k=5$:<br>
+        $$ p_5 - e_1 p_4 + e_2 p_3 - e_3 p_2 = 0 $$</p>
+        <p>Thay các giá trị vào phương trình này:<br>
+        $$ 15 - 0 + e_2(3) - 1(-2e_2) = 0 \implies 15 + 3e_2 + 2e_2 = 0 \implies 5e_2 = -15 \implies e_2 = -3 $$</p>
+        <p>Đa thức bậc 3 nhận $x, y, z$ làm nghiệm là:<br>
+        $$ T(t) = t^3 - e_1 t^2 + e_2 t - e_3 = 0 \implies t^3 - 3t - 1 = 0 $$</p>
+        <p>Để khảo sát sự tồn tại của các nghiệm thực, ta xét hàm số $f(t) = t^3 - 3t - 1$.<br>
+        Đạo hàm $f'(t) = 3t^2 - 3$. Đạo hàm bằng $0$ tại $t = 1$ và $t = -1$.<br>
+        Giá trị cực đại: $f(-1) = -1 + 3 - 1 = 1 \gt 0$.<br>
+        Giá trị cực tiểu: $f(1) = 1 - 3 - 1 = -3 \lt 0$.<br>
+        Vì $f(-1) \cdot f(1) \lt 0$, phương trình $f(t) = 0$ có đúng 3 nghiệm thực phân biệt.<br>
+        Do đó, tồn tại bộ ba số thực $(x, y, z)$ thỏa mãn hệ phương trình đã cho.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (China High School Mathematics League - Đánh giá tính nguyên)</div>
+        Cho ba số thực $a, b, c$ thỏa mãn $a+b+c=1$, $a^2+b^2+c^2=3$ và $a^3+b^3+c^3=7$. Chứng minh rằng với mọi số nguyên dương $n$, tổng $S_n = a^n + b^n + c^n$ luôn là một số nguyên.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta có $p_1 = 1, p_2 = 3, p_3 = 7$.<br>
+        Xác định các đa thức đối xứng sơ cấp $e_1, e_2, e_3$:<br>
+        $$ e_1 = p_1 = 1 $$</p>
+        <p>Từ $p_2 - e_1 p_1 + 2e_2 = 0 \implies 3 - 1(1) + 2e_2 = 0 \implies 2e_2 = -2 \implies e_2 = -1$.</p>
+        <p>Từ $p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0 \implies 7 - 1(3) + (-1)(1) - 3e_3 = 0 \implies 3 - 3e_3 = 0 \implies e_3 = 1$.</p>
+        <p>Ba số $a, b, c$ là nghiệm của phương trình đặc trưng:<br>
+        $$ t^3 - e_1 t^2 + e_2 t - e_3 = 0 \implies t^3 - t^2 - t - 1 = 0 $$</p>
+        <p>Do đó, với mọi nghiệm $x \in \{a, b, c\}$, ta có $x^3 = x^2 + x + 1$.<br>
+        Nhân hai vế với $x^{n-3}$ (với $n \ge 3$):<br>
+        $$ x^n = x^{n-1} + x^{n-2} + x^{n-3} $$</p>
+        <p>Lấy tổng cho cả ba biến $a, b, c$, ta thu được hệ thức truy hồi tuyến tính cho $S_n$:<br>
+        $$ S_n = S_{n-1} + S_{n-2} + S_{n-3} \quad \text{với mọi } n \ge 3 $$</p>
+        <p>Ta có các giá trị ban đầu:<br>
+        $S_0 = a^0 + b^0 + c^0 = 3 \in \mathbb{Z}$<br>
+        $S_1 = 1 \in \mathbb{Z}$<br>
+        $S_2 = 3 \in \mathbb{Z}$<br>
+        $S_3 = 7 \in \mathbb{Z}$</p>
+        <p>Vì hệ thức truy hồi cho $S_n$ là một tổ hợp tuyến tính với các hệ số nguyên (cụ thể là $1, 1, 1$) của các số hạng trước đó, và các điều kiện ban đầu đều là số nguyên, theo nguyên lý quy nạp toán học, $S_n$ là số nguyên với mọi $n \ge 0$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Romanian National Olympiad - Rút gọn phân thức đối xứng)</div>
+        Cho ba số thực phân biệt $a, b, c$ sao cho $a+b+c = 0$. Chứng minh đồng nhất thức:
+        $$ \frac{a^5 + b^5 + c^5}{5} = \left( \frac{a^3 + b^3 + c^3}{3} \right) \left( \frac{a^2 + b^2 + c^2}{2} \right) $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo giả thiết, $e_1 = p_1 = 0$.<br>
+        Sử dụng các hệ thức Newton để biểu diễn các tổng lũy thừa $p_k$ qua $e_2$ và $e_3$:</p>
+        <ul>
+            <li>$k=2$: $p_2 - e_1 p_1 + 2e_2 = 0 \implies p_2 = -2e_2$.</li>
+            <li>$k=3$: $p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0 \implies p_3 = 3e_3$.</li>
+            <li>$k=4$: $p_4 - e_1 p_3 + e_2 p_2 - e_3 p_1 = 0 \implies p_4 + e_2(-2e_2) = 0 \implies p_4 = 2e_2^2$.</li>
+            <li>$k=5$: $p_5 - e_1 p_4 + e_2 p_3 - e_3 p_2 = 0$</li>
+        </ul>
+        <p>Thay các giá trị vào:<br>
+        $$ p_5 - 0 + e_2(3e_3) - e_3(-2e_2) = 0 \implies p_5 + 3e_2 e_3 + 2e_2 e_3 = 0 \implies p_5 = -5e_2 e_3 $$</p>
+        <p>Từ các biểu diễn này, ta có:<br>
+        $$ \frac{a^5 + b^5 + c^5}{5} = \frac{p_5}{5} = -e_2 e_3 $$</p>
+        <p>Mặt khác:<br>
+        $$ \left( \frac{a^3 + b^3 + c^3}{3} \right) \left( \frac{a^2 + b^2 + c^2}{2} \right) = \frac{p_3}{3} \cdot \frac{p_2}{2} = \frac{3e_3}{3} \cdot \frac{-2e_2}{2} = e_3 \cdot (-e_2) = -e_2 e_3 $$</p>
+        <p>So sánh hai kết quả, hai vế của đồng nhất thức hoàn toàn bằng nhau. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (British Mathematical Olympiad - Phương trình bậc 4)</div>
+        Giả sử $x_1, x_2, x_3, x_4$ là 4 nghiệm của phương trình $x^4 + p x^3 + q x^2 + r x + s = 0$. Xác định tổng $S_3 = x_1^3 + x_2^3 + x_3^3 + x_4^3$ theo các hệ số $p, q, r, s$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo định lý Vieta đối với đa thức bậc 4, các đa thức đối xứng sơ cấp được xác định bởi:<br>
+        $e_1 = -p$<br>
+        $e_2 = q$<br>
+        $e_3 = -r$<br>
+        $e_4 = s$</p>
+        <p>Ta cần tính tổng lũy thừa $p_3 = S_3$.<br>
+        Sử dụng hệ thức Newton lần lượt cho $k=1, 2, 3$:</p>
+        <ol>
+            <li> $p_1 - e_1 = 0 \implies p_1 = e_1 = -p$.</li>
+            <li> $p_2 - e_1 p_1 + 2e_2 = 0 \implies p_2 = e_1^2 - 2e_2 = (-p)^2 - 2q = p^2 - 2q$.</li>
+            <li> $p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0$</li>
+        </ol>
+        <p>Thay thế các giá trị $p_1$ và $p_2$:<br>
+        $$ p_3 - (-p)(p^2 - 2q) + q(-p) - 3(-r) = 0 $$
+        $$ p_3 + p^3 - 2pq - pq + 3r = 0 $$
+        $$ p_3 + p^3 - 3pq + 3r = 0 $$</p>
+        <p>Chuyển vế để biểu diễn $p_3$:<br>
+        $$ p_3 = -p^3 + 3pq - 3r $$</p>
+        <p>Vậy tổng lập phương của bốn nghiệm là $S_3 = -p^3 + 3pq - 3r$.<br>
+        <i>(Cấu trúc này đúng bất kể số lượng nghiệm lớn hơn hoặc bằng 3, do Hệ thức Newton với $k \le n$ không phụ thuộc trực tiếp vào $n$).</i></p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đa thức và Dãy số - Nội suy Lagrange và Sai phân hữu hạn</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐA THỨC VÀ DÃY SỐ <br> NỘI SUY LAGRANGE VÀ SAI PHÂN HỮU HẠN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Phương pháp nội suy và sai phân cung cấp công cụ chuyển đổi giữa cấu trúc liên tục của đa thức và các giá trị rời rạc. Chuyên đề này trình bày Định lý nội suy Lagrange nhằm tái thiết lập đa thức từ một tập hợp điểm, và giới thiệu cơ sở đa thức Newton thông qua toán tử sai phân. Các bài toán tập trung vào việc xác định hệ số, tính toán giá trị ngoại suy và chứng minh đồng nhất thức đại số.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Nội suy Lagrange)</div>
+        Cho $n+1$ điểm phân biệt $x_0, x_1, \dots, x_n$ trên trường số thực (hoặc phức) và $n+1$ giá trị tương ứng $y_0, y_1, \dots, y_n$. Tồn tại duy nhất một đa thức $P(x)$ có bậc không vượt quá $n$ thỏa mãn $P(x_i) = y_i$ với mọi $i = 0, 1, \dots, n$.<br>
+        Đa thức này được cho bởi công thức nội suy Lagrange:
+        $$ P(x) = \sum_{i=0}^n y_i \prod_{\substack{0 \le j \le n \\ j \neq i}} \frac{x - x_j}{x_i - x_j} $$
+    </div>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Với mỗi $i$, đặt $\ell_i(x) = \prod_{j \neq i} \frac{x - x_j}{x_i - x_j}$. Đa thức $\ell_i(x)$ có bậc $n$ và thỏa mãn $\ell_i(x_i) = 1$, $\ell_i(x_j) = 0$ khi $j \neq i$.</p>
+        <p>Khi đó $P(x) = \sum_{i=0}^n y_i \ell_i(x)$ có bậc tối đa là $n$. Thay $x = x_k$, tất cả các số hạng trong tổng đều bằng 0 ngoại trừ số hạng thứ $k$ bằng $y_k \cdot 1 = y_k$.</p>
+        <p>Giả sử tồn tại một đa thức $Q(x)$ khác cũng có bậc $\le n$ thỏa mãn $Q(x_i) = y_i$. Xét $H(x) = P(x) - Q(x)$. Đa thức $H(x)$ có bậc $\le n$ nhưng có $n+1$ nghiệm phân biệt $x_0, \dots, x_n$. Do đó $H(x) \equiv 0$, suy ra $P(x)$ là duy nhất.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Toán tử Sai phân hữu hạn)</div>
+        Cho hàm số $f: \mathbb{R} \to \mathbb{R}$. Toán tử sai phân tiến cấp 1 được định nghĩa là:
+        $$ \Delta f(x) = f(x+1) - f(x) $$
+        Toán tử sai phân cấp $k$ được định nghĩa bằng quy nạp: $\Delta^k f(x) = \Delta(\Delta^{k-1} f(x))$.<br>
+        Công thức tổng quát để tính sai phân cấp $n$ là:
+        $$ \Delta^n f(x) = \sum_{k=0}^n (-1)^{n-k} \binom{n}{k} f(x+k) $$
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Sai phân của Đa thức)</div>
+        Nếu $P(x)$ là một đa thức bậc $n$ với hệ số cao nhất là $a_n$ (tức là $P(x) = a_n x^n + \dots$), thì $\Delta P(x)$ là một đa thức bậc $n-1$ với hệ số cao nhất là $n a_n$.<br>
+        Bằng quy nạp, sai phân cấp $n$ của $P(x)$ là một hằng số:
+        $$ \Delta^n P(x) = a_n \cdot n! $$
+        Và với mọi $k \gt n$, ta có $\Delta^k P(x) = 0$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh ý thứ nhất: $\Delta P(x)$ là đa thức bậc $n-1$ với hệ số cao nhất là $n a_n$.</p>
+        <p>Giả sử $P(x) = a_n x^n + a_{n-1}x^{n-1} + \dots + a_1 x + a_0$. Ta xét sai phân cấp 1:</p>
+        $$ \Delta P(x) = P(x+1) - P(x) = a_n((x+1)^n - x^n) + a_{n-1}((x+1)^{n-1} - x^{n-1}) + \dots + a_1(x+1 - x) $$
+        <p>Theo khai triển nhị thức Newton, $(x+1)^n - x^n = (x^n + n x^{n-1} + \dots + 1) - x^n = n x^{n-1} + R_1(x)$, trong đó $R_1(x)$ là đa thức có bậc $\le n-2$. Các số hạng còn lại như $a_{n-1}((x+1)^{n-1} - x^{n-1})$ cũng sinh ra các đa thức có bậc $\le n-2$.</p>
+        <p>Do đó, $\Delta P(x) = a_n n x^{n-1} + Q(x)$ với $Q(x)$ là đa thức có bậc $\le n-2$. Vậy $\Delta P(x)$ là đa thức bậc $n-1$ với hệ số cao nhất là $n a_n$.</p>
+        
+        <p>Tiếp theo, ta chứng minh bằng quy nạp theo $k$ ($1 \le k \le n$) rằng $\Delta^k P(x)$ là đa thức bậc $n-k$ với hệ số cao nhất là $n(n-1)\dots(n-k+1)a_n$.</p>
+        <p>Trường hợp $k=1$ đã được chứng minh. Giả sử mệnh đề đúng với $k-1$, tức là $\Delta^{k-1} P(x)$ là đa thức bậc $n-k+1$ với hệ số cao nhất $A = n(n-1)\dots(n-k+2)a_n$.</p>
+        <p>Khi đó $\Delta^k P(x) = \Delta(\Delta^{k-1} P(x))$. Áp dụng kết quả đã chứng minh cho đa thức bậc $n-k+1$, sai phân của nó sẽ là đa thức bậc $(n-k+1)-1 = n-k$ với hệ số cao nhất là $(n-k+1)A = n(n-1)\dots(n-k+1)a_n$. Vậy mệnh đề đúng với mọi $1 \le k \le n$.</p>
+        
+        <p>Thay $k=n$, ta được $\Delta^n P(x)$ là đa thức bậc $0$, tức là hằng số: $n(n-1)\dots(1)a_n = a_n \cdot n!$.</p>
+        <p>Với $k \gt n$, vì $\Delta^n P(x)$ là hằng số, sai phân bậc tiếp theo của nó sẽ bằng 0: $\Delta^{n+1}P(x) = a_n n! - a_n n! = 0$. Bằng quy nạp, ta có $\Delta^k P(x) = 0$ với mọi $k \gt n$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (USAMO 1975 - Xác định giá trị ngoại suy)</div>
+        Cho đa thức $P(x)$ có bậc $n$. Biết rằng $P(k) = \frac{k}{k+1}$ với mọi số nguyên $k = 0, 1, 2, \dots, n$.
+        Tính giá trị của $P(n+1)$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Phương trình $P(k) = \frac{k}{k+1}$ tương đương với $(k+1)P(k) - k = 0$ tại $k = 0, 1, \dots, n$.</p>
+        <p>Xét đa thức $Q(x) = (x+1)P(x) - x$. <br>
+        Vì $P(x)$ là đa thức bậc $n$, nên $Q(x)$ là đa thức bậc $n+1$.<br>
+        Theo giả thiết, $Q(x)$ có $n+1$ nghiệm phân biệt là $x = 0, 1, 2, \dots, n$.<br>
+        Theo Định lý Bézout, $Q(x)$ có thể phân tích thành:</p>
+        $$ Q(x) = C \cdot x(x-1)(x-2)\dots(x-n) $$
+        <p>với $C$ là một hằng số thực (hệ số cao nhất của $Q(x)$).</p>
+        <p>Để tìm $C$, ta chọn một giá trị của $x$ sao cho thành phần chứa $P(x)$ trong $Q(x)$ bị triệt tiêu. Thay $x = -1$ vào định nghĩa của $Q(x)$:</p>
+        $$ Q(-1) = (-1+1)P(-1) - (-1) = 1 $$
+        <p>Mặt khác, thay $x = -1$ vào dạng phân tích của $Q(x)$:</p>
+        $$ Q(-1) = C \cdot (-1)(-2)(-3)\dots(-1-n) = C \cdot (-1)^{n+1} (n+1)! $$
+        <p>Cân bằng hai biểu thức, ta có:</p>
+        $$ C \cdot (-1)^{n+1} (n+1)! = 1 \implies C = \frac{(-1)^{n+1}}{(n+1)!} $$
+        <p>Vậy đa thức $Q(x)$ được xác định:</p>
+        $$ Q(x) = \frac{(-1)^{n+1}}{(n+1)!} x(x-1)\dots(x-n) $$
+        <p>Tiếp theo, ta tính $P(n+1)$. Thay $x = n+1$ vào đa thức $Q(x)$:</p>
+        <p>Theo định nghĩa: $Q(n+1) = (n+2)P(n+1) - (n+1)$.</p>
+        <p>Theo dạng phân tích: </p>
+        $$ Q(n+1) = \frac{(-1)^{n+1}}{(n+1)!} (n+1)(n)(n-1)\dots(1) = \frac{(-1)^{n+1}}{(n+1)!} (n+1)! = (-1)^{n+1} $$
+        <p>Từ đó, ta thiết lập phương trình:</p>
+        $$ (n+2)P(n+1) - (n+1) = (-1)^{n+1} \implies (n+2)P(n+1) = n+1 + (-1)^{n+1} $$
+        $$ P(n+1) = \frac{n+1 + (-1)^{n+1}}{n+2} $$
+        <p>Giá trị cần tìm được xác định theo tính chẵn lẻ của $n$. Nếu $n$ chẵn, $P(n+1) = \frac{n}{n+2}$. Nếu $n$ lẻ, $P(n+1) = \frac{n+2}{n+2} = 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (China National High School Math League - Kỹ thuật tổ hợp)</div>
+        Cho đa thức $P(x)$ có bậc $n$. Biết rằng $P(k) = 2^k$ với mọi số nguyên $k = 0, 1, 2, \dots, n$.
+        Tính giá trị của $P(n+1)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $H(x) = \sum_{i=0}^n \binom{x}{i}$, trong đó $\binom{x}{i} = \frac{x(x-1)\dots(x-i+1)}{i!}$ là các đa thức cơ sở Newton.<br>
+        Bậc của $H(x)$ là $n$.<br>
+        Với mọi số nguyên $k \in \{0, 1, \dots, n\}$, ta có:</p>
+        $$ H(k) = \sum_{i=0}^n \binom{k}{i} $$
+        <p>Do $\binom{k}{i} = 0$ với mọi $i \gt k$, tổng trên rút gọn thành:</p>
+        $$ H(k) = \sum_{i=0}^k \binom{k}{i} = (1+1)^k = 2^k $$
+        <p>Đa thức $H(x)$ và $P(x)$ đều có bậc $n$ và nhận cùng giá trị tại $n+1$ điểm phân biệt $0, 1, \dots, n$. Theo tính duy nhất của đa thức nội suy, $P(x) \equiv H(x)$.</p>
+        <p>Giá trị tại $x = n+1$ là:</p>
+        $$ P(n+1) = H(n+1) = \sum_{i=0}^n \binom{n+1}{i} $$
+        <p>Áp dụng hằng đẳng thức tổng các hệ số nhị thức $\sum_{i=0}^{n+1} \binom{n+1}{i} = 2^{n+1}$:</p>
+        $$ P(n+1) = 2^{n+1} - \binom{n+1}{n+1} = 2^{n+1} - 1 $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (All-Russian Olympiad - Đa thức nhận giá trị nguyên)</div>
+        Cho $P(x)$ là một đa thức bậc $n$ sao cho $P(k)$ là một số nguyên với mọi $k = 0, 1, \dots, n$.
+        Chứng minh rằng $P(x)$ nhận giá trị nguyên với mọi số nguyên $x$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mọi đa thức bậc $n$ đều có thể biểu diễn duy nhất dưới dạng tổ hợp tuyến tính của các đa thức cơ sở Newton:</p>
+        $$ P(x) = c_0 \binom{x}{0} + c_1 \binom{x}{1} + \dots + c_n \binom{x}{n} $$
+        <p>với các hệ số $c_i$ là các hằng số. Ta sẽ chứng minh các hệ số $c_i$ đều là các số nguyên.</p>
+        <p>Tại $x = 0$: $P(0) = c_0 \binom{0}{0} = c_0$. Do $P(0) \in \mathbb{Z}$, ta có $c_0 \in \mathbb{Z}$.</p>
+        <p>Sử dụng toán tử sai phân $\Delta P(x) = P(x+1) - P(x)$.<br>
+        Dựa trên hằng đẳng thức Pascal $\binom{x+1}{i} - \binom{x}{i} = \binom{x}{i-1}$, ta có:</p>
+        $$ \Delta P(x) = c_1 \binom{x}{0} + c_2 \binom{x}{1} + \dots + c_n \binom{x}{n-1} $$
+        <p>Tại $x = 0$, $\Delta P(0) = c_1$. Do $\Delta P(0) = P(1) - P(0)$ là hiệu của hai số nguyên, suy ra $c_1 \in \mathbb{Z}$.</p>
+        <p>Bằng quy nạp, xét toán tử sai phân cấp $k$:</p>
+        $$ \Delta^k P(x) = c_k \binom{x}{0} + c_{k+1} \binom{x}{1} + \dots + c_n \binom{x}{n-k} $$
+        <p>Tại $x = 0$, $c_k = \Delta^k P(0)$.<br>
+        Theo Định nghĩa 1.1, $\Delta^k P(0) = \sum_{j=0}^k (-1)^{k-j} \binom{k}{j} P(j)$. <br>
+        Do $k \le n$, các giá trị $P(j)$ (với $0 \le j \le k$) đều là các số nguyên theo giả thiết. Biểu thức của $c_k$ là tổ hợp tuyến tính nguyên của các số nguyên, nên $c_k \in \mathbb{Z}$ với mọi $k = 0, \dots, n$.</p>
+        <p>Vì đa thức $\binom{x}{i} = \frac{x(x-1)\dots(x-i+1)}{i!}$ luôn nhận giá trị nguyên với mọi số nguyên $x$ (là số tổ hợp nếu $x \ge i$, bằng 0 nếu $0 \le x \lt i$, và liên quan đến tổ hợp âm nếu $x \lt 0$), đa thức $P(x)$ là tổng của các tích số nguyên. Từ đó, $P(x)$ nhận giá trị nguyên với mọi số nguyên $x$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Romanian TST - Đồng nhất thức hệ số)</div>
+        Cho $n$ số thực phân biệt $x_1, x_2, \dots, x_n$. Chứng minh rằng với mọi số nguyên $k$ thỏa mãn $0 \le k \le n-2$, ta có:
+        $$ \sum_{i=1}^n \frac{x_i^k}{\prod_{j \neq i} (x_i - x_j)} = 0 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $F(x) = x^k$. Vì $k \le n-2$, đa thức $F(x)$ có bậc tối đa là $n-2$.</p>
+        <p>Áp dụng công thức nội suy Lagrange (Định lý 1.1) để khôi phục $F(x)$ từ $n$ điểm $x_1, x_2, \dots, x_n$ (chú ý số lượng điểm là $n$, nên đa thức nội suy có bậc không vượt quá $n-1$):</p>
+        $$ F(x) = \sum_{i=1}^n F(x_i) \prod_{j \neq i} \frac{x - x_j}{x_i - x_j} = \sum_{i=1}^n x_i^k \prod_{j \neq i} \frac{x - x_j}{x_i - x_j} $$
+        <p>Mở rộng các số hạng trong tổng ở vế phải. Mỗi tích $\prod_{j \neq i} (x - x_j)$ là một đa thức bậc $n-1$, với hệ số của $x^{n-1}$ là $1$.</p>
+        <p>Do đó, hệ số của $x^{n-1}$ trong toàn bộ biểu thức ở vế phải là:</p>
+        $$ \sum_{i=1}^n \frac{x_i^k}{\prod_{j \neq i} (x_i - x_j)} $$
+        <p>Đồng nhất hệ số với vế trái. Vì $F(x) = x^k$ có bậc tối đa là $n-2$, hệ số của $x^{n-1}$ ở vế trái bằng 0.</p>
+        <p>Suy ra:</p>
+        $$ \sum_{i=1}^n \frac{x_i^k}{\prod_{j \neq i} (x_i - x_j)} = 0 $$
+        <p>Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (AoPS Folklore - Triệt tiêu sai phân)</div>
+        Cho $P(x)$ là đa thức bậc $n$ với hệ số cao nhất là $a_n$. Tính giá trị của biểu thức:
+        $$ S = \sum_{k=0}^n (-1)^k \binom{n}{k} P(x - k) $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta biến đổi chỉ số để đưa biểu thức về dạng sai phân chuẩn. <br>
+        Đặt $j = n - k$, khi $k$ chạy từ $0$ đến $n$ thì $j$ chạy từ $n$ về $0$. <br>
+        Đồng thời, $\binom{n}{k} = \binom{n}{n-j} = \binom{n}{j}$ và $k = n - j$.<br>
+        Biểu thức $S$ trở thành:</p>
+        $$ S = \sum_{j=0}^n (-1)^{n-j} \binom{n}{j} P(x - n + j) $$
+        <p>Đặt $y = x - n$. Biểu thức trên được viết lại thành:</p>
+        $$ S = \sum_{j=0}^n (-1)^{n-j} \binom{n}{j} P(y + j) $$
+        <p>Theo định nghĩa công thức sai phân cấp $n$ (Định nghĩa 1.1), biểu thức trên là $\Delta^n P(y)$.</p>
+        <p>Theo Định lý 1.2, sai phân cấp $n$ của một đa thức bậc $n$ có hệ số cao nhất $a_n$ luôn là một hằng số và bằng:</p>
+        $$ \Delta^n P(y) = a_n \cdot n! $$
+        <p>Vì biểu thức này là hằng số, nó không phụ thuộc vào biến số $y$ (hay biến số $x$).<br>
+        Do đó, $S = a_n \cdot n!$.</p>
+        <p>Đây là một ứng dụng của sai phân cấp cao để tính các tổng tổ hợp đan dấu.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

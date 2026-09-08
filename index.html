@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympic Toán học — Blog Tổng hợp Chuyên đề</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f6fb;
+        }
+
+        /* ===== Hero ===== */
+        .hero {
+            background: linear-gradient(135deg, #0b1f4d 0%, #1c3a8a 55%, #2a5db0 100%);
+            color: #fff;
+            text-align: center;
+            padding: 70px 20px 90px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: "";
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.08), transparent 35%),
+                radial-gradient(circle at 85% 70%, rgba(255,255,255,0.10), transparent 40%);
+            pointer-events: none;
+        }
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-size: 0.9rem; letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        .hero h1 {
+            font-size: clamp(1.9rem, 5vw, 3.2rem);
+            font-weight: 800; letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+        .hero h1 span { color: #ffd166; }
+        .hero p {
+            max-width: 720px;
+            margin: 0 auto 26px;
+            font-size: 1.05rem;
+            color: #dfe7ff;
+        }
+        .hero .stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .stat {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 14px;
+            padding: 12px 22px;
+            min-width: 110px;
+        }
+        .stat b { display: block; font-size: 1.6rem; color: #ffd166; }
+        .stat small { font-size: 0.82rem; color: #dfe7ff; }
+
+        /* ===== Toolbar ===== */
+        .toolbar {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #e3e8f2;
+            padding: 14px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .toolbar-inner { max-width: 1200px; margin: 0 auto; }
+        .search-box { position: relative; margin-bottom: 12px; }
+        .search-box input {
+            width: 100%;
+            padding: 13px 20px 13px 46px;
+            font-size: 1rem;
+            border: 2px solid #d5ddef;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .search-box input:focus { border-color: #2a5db0; }
+        .search-box svg {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            width: 20px; height: 20px;
+            stroke: #8a94ad; fill: none; stroke-width: 2;
+        }
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .pill {
+            cursor: pointer;
+            border: 1.5px solid #ccd5e8;
+            background: #fff;
+            color: #45507a;
+            border-radius: 30px;
+            padding: 7px 15px;
+            font-size: 0.88rem; font-weight: 600;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .pill:hover { border-color: #2a5db0; color: #2a5db0; transform: translateY(-1px); }
+        .pill.active { background: #2a5db0; border-color: #2a5db0; color: #fff; }
+        .result-count { margin: 6px 2px 0; font-size: 0.85rem; color: #7a86a5; }
+
+        /* ===== Cards ===== */
+        main { max-width: 1200px; margin: 0 auto; padding: 30px 20px 60px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e6ebf5;
+            border-left: 6px solid var(--c, #2a5db0);
+            padding: 22px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(20,40,90,0.14);
+        }
+        .card .num {
+            position: absolute;
+            top: 14px; right: 16px;
+            font-size: 2rem; font-weight: 800;
+            color: rgba(0,0,0,0.06);
+            line-height: 1;
+        }
+        .card .cat {
+            display: inline-block;
+            align-self: flex-start;
+            font-size: 0.74rem; font-weight: 700;
+            letter-spacing: 0.6px; text-transform: uppercase;
+            color: var(--c, #2a5db0);
+            background: color-mix(in srgb, var(--c, #2a5db0) 12%, #fff);
+            border-radius: 20px;
+            padding: 4px 12px;
+            margin-bottom: 12px;
+        }
+        .card h3 {
+            font-size: 1.08rem; color: #1a2442;
+            margin-bottom: 8px; line-height: 1.35;
+            min-height: 3.2em;
+        }
+        .card p { font-size: 0.9rem; color: #5b6685; flex-grow: 1; margin-bottom: 14px; }
+        a.card { text-decoration: none; }
+        .card .read {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--c, #2a5db0); font-weight: 700; font-size: 0.92rem;
+        }
+        .card:hover .read { text-decoration: underline; }
+
+        .no-results {
+            text-align: center; color: #7a86a5;
+            padding: 60px 20px; font-size: 1.05rem;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px 40px;
+            color: #7a86a5; font-size: 0.9rem;
+            border-top: 1px solid #e3e8f2;
+            background: #fff;
+        }
+
+        @media (max-width: 520px) {
+            .grid { grid-template-columns: 1fr; }
+            .hero { padding: 50px 16px 70px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <span class="badge">Olympic • Toán học — Thư viện Chuyên đề</span>
+        <h1>Blog Tổng hợp <span>Chuyên đề</span></h1>
+        <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
+           tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
+        <div class="stats">
+            <div class="stat"><b id="countAll">29</b><small>Chuyên đề</small></div>
+            <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
+        </div>
+    </header>
+
+    <div class="toolbar">
+        <div class="toolbar-inner">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+                <input type="text" id="search" placeholder="Tìm theo chuyên đề hoặc từ khóa...">
+            </div>
+            <div class="filters" id="filters"></div>
+            <div class="result-count" id="countText"></div>
+        </div>
+    </div>
+
+    <main>
+        <div class="grid" id="grid"></div>
+        <div class="no-results" id="noResults">Không tìm thấy chuyên đề nào phù hợp. Hãy thử từ khóa khác.</div>
+    </main>
+
+    <footer>
+        Blog tổng hợp các chuyên đề Toán học Olympic • Các bài viết thuộc thư mục OLYMPIC
+    </footer>
+
+    <script>
+        // ===== Danh mục =====
+        const CATS = {
+            fe:    { label: 'Phương trình hàm',                          color: '#800000' },
+            poly:  { label: 'Đa thức & Dãy số',                          color: '#000080' },
+            nt:    { label: 'Số học',                                    color: '#228b22' },
+            comb:  { label: 'Đại số tổ hợp',                             color: '#8b008b' },
+            ineq:  { label: 'Bất đẳng thức',                             color: '#b8860b' },
+            graph: { label: 'Lý thuyết đồ thị',                          color: '#008080' },
+            dio:   { label: 'Phương trình Diophantine',                  color: '#8b4513' }
+        };
+
+        // ===== Danh sách bài viết (phần 1) =====
+        const POSTS = [
+            { n:1,  file:'index1.html',  cat:'fe',    title:'Phương trình hàm Đa thức và Kỹ thuật phân tích nghiệm',                                  desc:'Kỹ thuật phân tích nghiệm dành cho phương trình hàm đa thức.' },
+            { n:2,  file:'index2.html',  cat:'poly',  title:'Dãy số truy hồi - Kỹ thuật tuyến tính hóa và bất biến',                                  desc:'Tuyến tính hóa dãy truy hồi và phương pháp tìm bất biến.' },
+            { n:3,  file:'index3.html',  cat:'nt',    title:'Số học bậc cao - Bổ đề nâng số mũ (LTE) và Cấp',                                        desc:'Bổ đề nâng số mũ (LTE) và khái niệm cấp của phần tử.' },
+            { n:4,  file:'index4.html',  cat:'fe',    title:'Phương trình hàm trên R - Kỹ thuật Cauchy và Điểm bất động',                            desc:'Phương trình hàm trên R: kỹ thuật Cauchy và điểm bất động.' },
+            { n:5,  file:'index5.html',  cat:'graph', title:'Lý thuyết Đồ thị - Cấu trúc và Đồ thị Cực trị',                                         desc:'Cấu trúc đồ thị và bài toán tìm đồ thị cực trị.' },
+            { n:6,  file:'index6.html',  cat:'dio',   title:'Phương trình Diophantine - Bước nhảy Vieta và Lùi vô hạn',                              desc:'Bước nhảy Vieta và phương pháp lùi vô hạn trong bài toán Diophantine.' },
+            { n:7,  file:'index7.html',  cat:'poly',  title:'Hàm sinh hình thức và Bộ lọc căn bậc n của đơn vị',                                     desc:'Hàm sinh hình thức và kỹ thuật bộ lọc căn bậc n của đơn vị.' },
+            { n:8,  file:'index8.html',  cat:'poly',  title:'Đa thức Chebyshev và tính chất cực trị Minimax',                                       desc:'Đa thức Chebyshev và tính chất cực trị minimax.' },
+            { n:9,  file:'index9.html',  cat:'poly',  title:'Đa thức Chebyshev và tính chất cực trị Minimax (bản 2)',                               desc:'Bản trình bày bổ sung về đa thức Chebyshev.' },
+            { n:10, file:'index10.html', cat:'comb',  title:'Đại số Tổ hợp - Không gian Vector trên trường hữu hạn và Định lý Oddtown',              desc:'Không gian vectơ trên trường hữu hạn và định lý Oddtown.' },
+            { n:11, file:'index11.html', cat:'poly',  title:'Đa thức và Dãy số - Nội suy Lagrange và Sai phân hữu hạn',                              desc:'Nội suy Lagrange và kỹ thuật sai phân hữu hạn.' },
+            { n:12, file:'index12.html', cat:'nt',    title:'Số học bậc cao - Thặng dư bậc hai và ký hiệu Legendre',                                 desc:'Thặng dư bậc hai và các tính chất của ký hiệu Legendre.' },
+            { n:13, file:'index13.html', cat:'nt',    title:'Số học và Dãy số - Phương trình Pell và Hệ thức truy hồi',                              desc:'Phương trình Pell và các hệ thức truy hồi liên quan.' },
+            { n:14, file:'index14.html', cat:'nt',    title:'Số học bậc cao - Định lý Zsigmondy và ước nguyên tố của dãy số',                        desc:'Định lý Zsigmondy và ước nguyên tố của dãy số.' },
+            { n:15, file:'index15.html', cat:'fe',    title:'Phương trình hàm trên tập rời rạc - Đánh giá đơn điệu và quỹ đạo bất động',             desc:'Phương trình hàm trên tập rời rạc: đánh giá đơn điệu, quỹ đạo bất động.' },
+            { n:16, file:'index16.html', cat:'nt',    title:'Số học bậc cao - Căn nguyên thủy và chỉ số',                                           desc:'Căn nguyên thủy và lý thuyết chỉ số.' },
+            { n:17, file:'index17.html', cat:'poly',  title:'Đa thức bậc cao - Đạo hàm hình thức và bội của nghiệm',                                 desc:'Đạo hàm hình thức và tính bội của nghiệm đa thức.' },
+            { n:18, file:'index18.html', cat:'comb',  title:'Số học và Tổ hợp - Định lý Lucas và Định lý Kummer',                                    desc:'Định lý Lucas và định lý Kummer trong tổ hợp.' },
+            { n:19, file:'index19.html', cat:'nt',    title:'Số học bậc cao - Bổ đề Hensel và đồng dư bậc cao',                                     desc:'Bổ đề Hensel và cách giải đồng dư bậc cao.' },
+            { n:20, file:'index20.html', cat:'ineq',  title:'Bất đẳng thức đại số - Định lý Schur và kỹ thuật p, q, r',                              desc:'Định lý Schur và kỹ thuật p, q, r cho bất đẳng thức đại số.' },
+            { n:21, file:'index21.html', cat:'ineq',  title:'Bất đẳng thức đại số - Phương pháp dồn biến (Mixing Variables)',                        desc:'Phương pháp dồn biến (mixing variables) cho bất đẳng thức.' },
+            { n:22, file:'index22.html', cat:'poly',  title:'Đại số và Đa thức - Đa thức đối xứng và hệ thức Newton',                                desc:'Đa thức đối xứng và hệ thức Newton.' },
+            { n:23, file:'index23.html', cat:'nt',    title:'Số học bậc cao - Bổ đề nâng số mũ (LTE)',                                              desc:'Bổ đề nâng số mũ (LTE) và các ứng dụng.' },
+            { n:24, file:'index24.html', cat:'comb',  title:'Tổ hợp đếm - Nguyên lý Bao hàm - Loại trừ và Ứng dụng',                              desc:'Nguyên lý bao hàm - loại trừ (PIE) và các ứng dụng trong bài toán đếm.' },
+            { n:25, file:'index25.html', cat:'ineq',  title:'Bất đẳng thức Đại số - Dãy trội và Bất đẳng thức Karamata',                           desc:'Dãy trội (majorization) và bất đẳng thức Karamata.' },
+            { n:26, file:'index26.html', cat:'comb',  title:'Tổ hợp Tập hợp - Cấu trúc đối xích và các định lý cực trị',                            desc:'Cấu trúc đối xích (antichain) và các định lý cực trị cho họ tập hợp.' },
+            { n:35, file:'index35.html', cat:'comb',  title:'Đại số Tổ hợp - Tác động nhóm và Bổ đề Burnside',                                      desc:'Tác động nhóm và bổ đề Burnside trong bài toán đếm.' },
+            { n:37, file:'index37.html', cat:'comb',  title:'Đại số Tổ hợp - Không gian Vector trên trường hữu hạn và Định lý Oddtown (bản 2)',      desc:'Bản trình bày thêm về không gian vectơ hữu hạn và Oddtown.' },
+            { n:50, file:'index50.html', cat:'graph', title:'Lý thuyết đồ thị - Tô màu đồ thị, đa thức sắc số và PIE',                               desc:'Tô màu đồ thị, đa thức sắc số và nguyên lý bù trừ (PIE).' }
+        ];
+
+        // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
+        const grid        = document.getElementById('grid');
+        const filtersEl   = document.getElementById('filters');
+        const noResults   = document.getElementById('noResults');
+        const countText   = document.getElementById('countText');
+        const searchInput = document.getElementById('search');
+
+        let activeCat = 'all';
+
+        // Tạo nút lọc danh mục
+        filtersEl.innerHTML =
+            '<button class="pill active" data-cat="all">Tất cả</button>' +
+            Object.keys(CATS).map(k =>
+                '<button class="pill" data-cat="' + k + '">' + CATS[k].label + '</button>'
+            ).join('');
+
+        filtersEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.pill');
+            if (!btn) return;
+            activeCat = btn.dataset.cat;
+            document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p === btn));
+            render();
+        });
+
+        searchInput.addEventListener('input', render);
+
+        // Bỏ dấu tiếng Việt để tìm kiếm linh hoạt (vd: gõ "phuong trinh ham")
+        function normalize(s) {
+            return s.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd');
+        }
+
+        function cardHTML(p) {
+            const c = CATS[p.cat];
+            return '<a class="card" style="--c:' + c.color + '" href="' + p.file + '">' +
+                '<span class="num">' + p.n + '</span>' +
+                '<span class="cat">' + c.label + '</span>' +
+                '<h3>' + p.title + '</h3>' +
+                '<p>' + p.desc + '</p>' +
+                '<span class="read">Mở bài viết →</span>' +
+                '</a>';
+        }
+
+        function render() {
+            const q = normalize(searchInput.value.trim()).replace(/\s+/g, ' ');
+            const list = POSTS.filter(p => {
+                const okCat = activeCat === 'all' || p.cat === activeCat;
+                if (!okCat) return false;
+                if (!q) return true;
+                const hay = normalize(p.title + ' ' + p.desc + ' ' + CATS[p.cat].label);
+                const num = String(p.n);
+                return hay.includes(q) || q === num || q.includes(num);
+            });
+
+            grid.innerHTML = list.map(cardHTML).join('');
+            noResults.style.display = list.length ? 'none' : 'block';
+            countText.textContent = 'Hiển thị ' + list.length + ' / ' + POSTS.length + ' chuyên đề';
+        }
+
+        render();
+        document.getElementById('countAll').textContent = POSTS.length;
+    </script>
+</body>
+</html>

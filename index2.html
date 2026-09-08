@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Dãy số truy hồi - Kỹ thuật tuyến tính hóa và bất biến</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: DÃY SỐ TRUY HỒI <br> KỸ THUẬT TUYẾN TÍNH HÓA VÀ BẤT BIẾN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Dãy số & Số học</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các dãy số sinh bởi hệ thức truy hồi phi tuyến là một dạng bài quan trọng trong Giải tích Tổ hợp. Chuyên đề này cung cấp các công cụ để giải quyết lớp bài toán này thông qua việc "tuyến tính hóa" hệ thức. Nền tảng của phương pháp dựa trên việc thiết lập Phương trình đặc trưng cho dãy tuyến tính cấp hai và khám phá Dạng toàn phương bất biến. Các kỹ thuật Lượng giác hóa và phương trình Diophantine cũng được tích hợp để giải quyết đặc trưng số học của dãy.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Để tiếp cận bản chất của Phương trình đặc trưng (Đại số tuyến tính) và các tính chất của dãy Fibonacci (Toán rời rạc bậc Đại học), ta cần chuẩn hóa các khái niệm sau đây dưới góc nhìn dễ hiểu hơn đối với học sinh cấp 3.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Không gian dãy số và Tính độc lập tuyến tính)</div>
+        Tập hợp tất cả các dãy số thực thỏa mãn một hệ thức truy hồi tuyến tính tạo thành một <strong>không gian vector</strong>. <br>
+        Hai dãy số $(u_n)$ và $(v_n)$ được gọi là <strong>độc lập tuyến tính</strong> nếu tỉ số của các phần tử tương ứng của chúng không phải là một hằng số (tức là không tồn tại hằng số $k$ sao cho $u_n = k v_n$ với mọi $n$). <br>
+        Đối với hệ thức truy hồi tuyến tính cấp hai $x_{n+1} = a x_n + b x_{n-1}$, mỗi dãy nghiệm được xác định duy nhất bởi 2 giá trị ban đầu $x_0$ và $x_1$. Do đó, không gian nghiệm có <strong>số chiều bằng 2</strong>. Mọi dãy nghiệm của hệ thức này đều có thể được biểu diễn dưới dạng tổ hợp tuyến tính của hai dãy nghiệm độc lập tuyến tính bất kỳ (gọi là một cơ sở).
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Hằng đẳng thức Cassini cho dãy Fibonacci)</div>
+        Cho dãy số Fibonacci được xác định bởi $F_0 = 0, F_1 = 1$ và $F_{n+1} = F_n + F_{n-1}$ với mọi $n \ge 1$. Ta luôn có:
+        $$ F_{n+1}F_{n-1} - F_n^2 = (-1)^n \quad \forall n \ge 1 $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng phương pháp quy nạp toán học.</p>
+        <p>Với $n=1$: $F_2 F_0 - F_1^2 = 1 \cdot 0 - 1^2 = -1 = (-1)^1$. Mệnh đề đúng với $n=1$.</p>
+        <p>Giả sử mệnh đề đúng với $n=k \ge 1$, tức là $F_{k+1}F_{k-1} - F_k^2 = (-1)^k$. Ta chứng minh mệnh đề đúng với $n=k+1$. Thật vậy:</p>
+        $$ \begin{aligned}
+        F_{k+2}F_k - F_{k+1}^2 &= (F_{k+1} + F_k)F_k - F_{k+1}^2 \\
+        &= F_{k+1}F_k + F_k^2 - F_{k+1}^2 \\
+        &= F_{k+1}(F_k - F_{k+1}) + F_k^2
+        \end{aligned} $$
+        <p>Từ hệ thức truy hồi $F_{k+1} = F_k + F_{k-1}$, ta suy ra $F_k - F_{k+1} = -F_{k-1}$. Thay vào biểu thức trên:</p>
+        $$ \begin{aligned}
+        F_{k+2}F_k - F_{k+1}^2 &= F_{k+1}(-F_{k-1}) + F_k^2 \\
+        &= -(F_{k+1}F_{k-1} - F_k^2) \\
+        &= -(-1)^k = (-1)^{k+1}
+        \end{aligned} $$
+        <p>Theo nguyên lý quy nạp, hằng đẳng thức Cassini được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.2 (Chu kỳ Pisano - Tính tuần hoàn của dãy Fibonacci trên Module)</div>
+        Với mọi số nguyên dương $m \ge 2$, dãy số dư của $(F_n)$ khi chia cho $m$ luôn là một dãy tuần hoàn. Chiều dài của chu kỳ này được gọi là chu kỳ Pisano, ký hiệu là $\pi(m)$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét các cặp số dư liên tiếp của dãy Fibonacci khi chia cho $m$: $(F_n \pmod m, F_{n+1} \pmod m)$.<br>
+        Vì mỗi số dư nhận giá trị từ $0$ đến $m-1$, có tối đa $m^2$ cặp số dư phân biệt có thể xảy ra.</p>
+        <p>Do dãy $(F_n)$ dài vô hạn, theo Nguyên lý Dirichlet (Pigeonhole Principle), chắc chắn phải tồn tại ít nhất hai chỉ số $i \lt j$ sao cho cặp số dư lặp lại:</p>
+        $$ F_i \equiv F_j \pmod m \quad \text{và} \quad F_{i+1} \equiv F_{j+1} \pmod m $$
+        <p>Hệ thức Fibonacci có thể dịch ngược: $F_{n-1} = F_{n+1} - F_n$. Do đó, từ cặp bằng nhau ở vị trí $i, j$, ta lùi về phía trước:</p>
+        $$ F_{i-1} \equiv F_{j-1} \pmod m, \quad F_{i-2} \equiv F_{j-2} \pmod m, \dots $$
+        <p>Lùi cho đến khi chạm chỉ số $0$, ta được $(F_0, F_1) \equiv (F_{j-i}, F_{j-i+1}) \pmod m$.<br>
+        Điều này chứng tỏ dãy số dư bắt đầu lặp lại ngay từ cặp giá trị ban đầu $(0, 1)$. Tức là dãy số dư của Fibonacci modulo $m$ là một dãy tuần hoàn (purely periodic).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Nghiệm của Phương trình đặc trưng)</div>
+        Xét dãy số $(x_n)$ thỏa mãn hệ thức truy hồi tuyến tính cấp hai:
+        $$ x_{n+1} = a x_n + b x_{n-1} \quad \forall n \ge 1 $$
+        với $a, b$ là các hằng số thực ($b \neq 0$). Phương trình bậc hai $\lambda^2 - a\lambda - b = 0$ được gọi là phương trình đặc trưng. <br>
+        Nếu phương trình này có hai nghiệm phân biệt $\lambda_1 \neq \lambda_2$, thì mọi nghiệm của hệ thức truy hồi đều có dạng:
+        $$ x_n = C_1 \lambda_1^n + C_2 \lambda_2^n $$
+        với $C_1, C_2$ là các hằng số được xác định duy nhất bởi $x_0$ và $x_1$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Thử tìm nghiệm dưới dạng $x_n = \lambda^n$ (với $\lambda \neq 0$). Thay vào hệ thức truy hồi, ta có:</p>
+        $$ \lambda^{n+1} = a \lambda^n + b \lambda^{n-1} \implies \lambda^{n-1} (\lambda^2 - a\lambda - b) = 0 $$
+        <p>Vì $\lambda \neq 0$, ta có $\lambda^2 - a\lambda - b = 0$.</p>
+        <p>Do $\lambda_1, \lambda_2$ là hai nghiệm phân biệt của phương trình đặc trưng, hai dãy số $u_n = \lambda_1^n$ và $v_n = \lambda_2^n$ là hai dãy nghiệm thỏa mãn hệ thức. Tỉ số của chúng là $\left(\frac{\lambda_1}{\lambda_2}\right)^n$ không phải là hằng số, nên chúng độc lập tuyến tính.</p>
+        <p>Theo Khái niệm 0.1, không gian nghiệm có số chiều bằng 2, hệ $\{u_n, v_n\}$ tạo thành một cơ sở. Mọi dãy nghiệm đều là tổ hợp tuyến tính của cơ sở này, tức là $x_n = C_1 \lambda_1^n + C_2 \lambda_2^n$.</p>
+        <p>Hằng số $C_1, C_2$ là nghiệm của hệ phương trình bậc nhất:</p>
+        $$ \begin{cases} C_1 + C_2 = x_0 \\ C_1 \lambda_1 + C_2 \lambda_2 = x_1 \end{cases} $$
+        <p>Định thức của hệ phương trình này là $D = \lambda_2 - \lambda_1 \neq 0$. Hệ luôn có nghiệm duy nhất $(C_1, C_2)$ tương ứng với các giá trị ban đầu.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bất biến bậc hai của Dãy tuyến tính)</div>
+        Cho dãy số $(x_n)$ thỏa mãn hệ thức truy hồi $x_{n+1} = a x_n - x_{n-1}$ với mọi $n \ge 1$. Khi đó, đại lượng:
+        $$ I_n = x_{n+1}^2 - a x_{n+1}x_n + x_n^2 $$
+        là một đại lượng bất biến, tức là $I_n = I_{n-1}$ với mọi $n \ge 1$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét độ biến thiên của đại lượng $I_n$:</p>
+        $$ \begin{aligned}
+        I_n - I_{n-1} &= (x_{n+1}^2 - a x_{n+1}x_n + x_n^2) - (x_n^2 - a x_n x_{n-1} + x_{n-1}^2) \\
+        &= x_{n+1}^2 - x_{n-1}^2 - a x_n (x_{n+1} - x_{n-1}) \\
+        &= (x_{n+1} - x_{n-1})(x_{n+1} + x_{n-1} - a x_n)
+        \end{aligned} $$
+        <p>Theo giả thiết của hệ thức truy hồi, ta có $x_{n+1} - a x_n + x_{n-1} = 0$.<br>
+        Do đó, biểu thức trong ngoặc thứ hai triệt tiêu, dẫn đến $I_n - I_{n-1} = 0$.<br>
+        Vậy $I_n$ là một hằng số không phụ thuộc vào $n$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Tuyến tính hóa dãy số)</div>
+        Cho dãy số $(u_n)$ được xác định bởi: 
+        $$ u_0 = 1, u_1 = 2, \quad \text{và} \quad u_{n+1} = \frac{u_n^2 + 1}{u_{n-1}} \quad \forall n \ge 1 $$
+        Chứng minh rằng tất cả các phần tử của dãy số $(u_n)$ đều là các số nguyên.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Hệ thức truy hồi ban đầu có dạng phi tuyến. Để chứng minh $u_n \in \mathbb{Z}$, việc tính trực tiếp sẽ gặp khó khăn do phép chia. Ta sẽ tiến hành "tuyến tính hóa" dãy số này.</p>
+        <p>Biến đổi hệ thức ban đầu:</p>
+        $$ u_{n+1} u_{n-1} = u_n^2 + 1 \implies u_{n+1} u_{n-1} - u_n^2 = 1 \quad (1) $$
+        <p>Hệ thức (1) đúng với mọi $n \ge 1$. Thay $n$ bằng $n+1$, ta có:</p>
+        $$ u_{n+2} u_n - u_{n+1}^2 = 1 \quad (2) $$
+        <p>Trừ vế theo vế hệ thức (2) cho hệ thức (1):</p>
+        $$ \begin{aligned}
+        u_{n+2} u_n - u_{n+1}^2 - (u_{n+1} u_{n-1} - u_n^2) &= 0 \\
+        u_{n+2} u_n + u_n^2 &= u_{n+1}^2 + u_{n+1} u_{n-1} \\
+        u_n (u_{n+2} + u_n) &= u_{n+1} (u_{n+1} + u_{n-1})
+        \end{aligned} $$
+        <p>Bằng phương pháp quy nạp, ta thấy $u_n \gt 0$ với mọi $n$. Chia cả hai vế cho $u_n u_{n+1}$:</p>
+        $$ \frac{u_{n+2} + u_n}{u_{n+1}} = \frac{u_{n+1} + u_{n-1}}{u_n} $$
+        <p>Điều này chứng tỏ đại lượng $C_n = \frac{u_{n+1} + u_{n-1}}{u_n}$ là một hằng số bất biến không phụ thuộc vào $n$.</p>
+        <p>Ta tính hằng số này tại $n = 1$:<br>
+        Từ hệ thức đầu, $u_2 = \frac{u_1^2 + 1}{u_0} = \frac{2^2 + 1}{1} = 5$.<br>
+        Khi đó $C_1 = \frac{u_2 + u_0}{u_1} = \frac{5 + 1}{2} = 3$.</p>
+        <p>Do đó, với mọi $n \ge 1$, ta có:</p>
+        $$ \frac{u_{n+1} + u_{n-1}}{u_n} = 3 \implies u_{n+1} = 3 u_n - u_{n-1} $$
+        <p>Dãy số phi tuyến ban đầu đã được chuyển thành một dãy truy hồi tuyến tính cấp hai với hệ số nguyên.<br>
+        Vì $u_0 = 1 \in \mathbb{Z}$, $u_1 = 2 \in \mathbb{Z}$, và $u_{n+1} = 3u_n - u_{n-1}$, bằng quy nạp toán học, ta kết luận được $u_n \in \mathbb{Z}$ với mọi $n \ge 0$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Balkan MO 1998 - Ứng dụng Bất biến)</div>
+        Cho dãy số nguyên $(x_n)$ được xác định bởi: $x_1 = 1, x_2 = 3$ và $x_{n+1} = 4x_n - x_{n-1}$ với mọi $n \ge 2$. Chứng minh rằng $3x_n^2 - 2$ luôn là một số chính phương với mọi $n \ge 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sử dụng Định lý 1.2 về bất biến bậc hai của dãy tuyến tính.<br>
+        Hệ thức truy hồi có dạng $x_{n+1} = a x_n - x_{n-1}$ với $a = 4$.<br>
+        Đại lượng bất biến là:</p>
+        $$ I_n = x_{n+1}^2 - 4 x_{n+1}x_n + x_n^2 $$
+        <p>Tính giá trị của $I_n$ tại $n = 1$:</p>
+        $$ I_1 = x_2^2 - 4x_2 x_1 + x_1^2 = 3^2 - 4(3)(1) + 1^2 = 9 - 12 + 1 = -2 $$
+        <p>Vậy với mọi $n \ge 1$, ta luôn có:</p>
+        $$ x_{n+1}^2 - 4 x_{n+1}x_n + x_n^2 = -2 $$
+        <p>Nhân cả hai vế với 3:</p>
+        $$ 3x_{n+1}^2 - 12 x_{n+1}x_n + 3x_n^2 = -6 $$
+        <p>Cộng thêm $x_n^2$ vào hai vế và phân tích để tạo hằng đẳng thức:</p>
+        $$ 3x_{n+1}^2 - 12 x_{n+1}x_n + 4x_n^2 = x_n^2 - 6 \implies (x_{n+1} - 2x_n)^2 - x_n^2 = x_n^2 - 6 $$
+        <p>Ta biến đổi lại phương trình $I_n = -2$:</p>
+        $$ x_{n+1}^2 - 4x_{n+1}x_n + 4x_n^2 - 3x_n^2 = -2 \implies (x_{n+1} - 2x_n)^2 - 3x_n^2 = -2 $$
+        <p>Chuyển vế, ta thu được:</p>
+        $$ 3x_n^2 - 2 = (x_{n+1} - 2x_n)^2 $$
+        <p>Vì $x_n$ là một dãy số nguyên (do điều kiện ban đầu nguyên và hệ thức tuyến tính hệ số nguyên), đại lượng $x_{n+1} - 2x_n$ là một số nguyên.<br>
+        Đẳng thức trên chứng minh rằng $3x_n^2 - 2$ là bình phương của một số nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (IMO 1981, Bài 3 - Phương trình Diophantine và Dãy Fibonacci)</div>
+        Tìm giá trị lớn nhất của biểu thức $m^2 + n^2$, trong đó $m$ và $n$ là các số nguyên dương thỏa mãn $1 \le m, n \le 1981$ và $(n^2 - mn - m^2)^2 = 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Phương trình $(n^2 - mn - m^2)^2 = 1$ tương đương với $n^2 - mn - m^2 = 1$ hoặc $n^2 - mn - m^2 = -1$.</p>
+        <p>Giả sử $(m, n)$ là một cặp nghiệm nguyên dương với $n \gt m$.<br>
+        Xét phép biến đổi lùi: Đặt $m_1 = n - m$ và $n_1 = m$. Rõ ràng $m_1, n_1$ cũng là các số nguyên.<br>
+        Thay vào biểu thức cấu trúc:</p>
+        $$ \begin{aligned}
+        n_1^2 - m_1 n_1 - m_1^2 &= m^2 - (n-m)m - (n-m)^2 \\
+        &= m^2 - mn + m^2 - (n^2 - 2mn + m^2) \\
+        &= m^2 + mn - n^2 = -(n^2 - mn - m^2) = \mp 1
+        \end{aligned} $$
+        <p>Vậy cặp $(m_1, n_1)$ cũng là nghiệm của phương trình. Hơn nữa, vì $n \gt m$, ta có $n_1 = m \lt n$. Quá trình "lùi" này sinh ra một chuỗi các nghiệm nhỏ dần. Quá trình chỉ dừng lại khi $m_k = n_k$.<br>
+        Nếu $m=n$, ta có $m^2 - m^2 - m^2 = \pm 1 \implies -m^2 = \pm 1 \implies m = 1$.</p>
+        <p>Chuỗi biến đổi $m_1 = n - m, n_1 = m$ tương đương với bước đi tiến $n = n_1 + m_1$ và $m = n_1$. Đây chính là hệ thức truy hồi của dãy Fibonacci: $F_{k+1} = F_k + F_{k-1}$.</p>
+        <p>Thực tế, theo Định lý 0.1 (Hằng đẳng thức Cassini):</p>
+        $$ F_{k+1}^2 - F_{k+1}F_k - F_k^2 = (-1)^k $$
+        <p>Vậy các nghiệm $(m, n)$ dương của phương trình chính là các cặp số Fibonacci liên tiếp $(F_k, F_{k+1})$.<br>
+        Ta cần tìm cặp Fibonacci liên tiếp có giá trị không vượt quá $1981$ để tối đa hóa $m^2+n^2$.</p>
+        <p>Liệt kê các số Fibonacci đầu tiên: $1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584$.<br>
+        Ta thấy $F_{16} = 987$ và $F_{17} = 1597$ đều $\le 1981$. <br>
+        Số Fibonacci tiếp theo là $F_{18} = 2584 \gt 1981$.<br>
+        Do đó, cặp $(m, n)$ lớn nhất thỏa mãn điều kiện bài toán là $(987, 1597)$.<br>
+        Giá trị lớn nhất cần tìm là: $987^2 + 1597^2$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Olympic Toán học Nga 1995 - Tuyến tính hóa bằng Lượng giác)</div>
+        Cho dãy số $(u_n)$ xác định bởi $u_1 = \frac{1}{2}$ và $u_{n+1} = \sqrt{\frac{1 + u_n}{2}}$ với mọi $n \ge 1$. Tính giới hạn sau:
+        $$ L = \lim_{n \to \infty} 4^n (1 - u_n) $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Hệ thức $u_{n+1} = \sqrt{\frac{1 + u_n}{2}}$ có cấu trúc giống công thức nhân đôi của hàm cosin: $\cos \frac{x}{2} = \sqrt{\frac{1 + \cos x}{2}}$ (với $x \in [0, \pi]$).<br>
+        Tại $n=1$, ta có $u_1 = \frac{1}{2} = \cos \frac{\pi}{3}$.<br>
+        Theo phương pháp quy nạp, ta có:</p>
+        $$ u_n = \cos \left( \frac{\pi}{3 \cdot 2^{n-1}} \right) \quad \forall n \ge 1 $$
+        <p>Để tính giới hạn, ta biến đổi biểu thức $1 - u_n$:</p>
+        $$ 1 - u_n = 1 - \cos \left( \frac{\pi}{3 \cdot 2^{n-1}} \right) = 2 \sin^2 \left( \frac{\pi}{3 \cdot 2^n} \right) $$
+        <p>Thay vào biểu thức giới hạn $L$:</p>
+        $$ L = \lim_{n \to \infty} 4^n \cdot 2 \sin^2 \left( \frac{\pi}{3 \cdot 2^n} \right) $$
+        <p>Nhân và chia cho biểu thức bên trong bình phương của hàm sin để sử dụng giới hạn cơ bản $\lim_{x \to 0} \frac{\sin x}{x} = 1$:</p>
+        $$ \begin{aligned}
+        L &= \lim_{n \to \infty} 2 \cdot 4^n \cdot \left( \frac{\pi}{3 \cdot 2^n} \right)^2 \cdot \left[ \frac{\sin \left( \frac{\pi}{3 \cdot 2^n} \right)}{\frac{\pi}{3 \cdot 2^n}} \right]^2 \\
+        &= \lim_{n \to \infty} 2 \cdot 4^n \cdot \frac{\pi^2}{9 \cdot 4^n} \cdot 1^2 \\
+        &= 2 \cdot \frac{\pi^2}{9} = \frac{2\pi^2}{9}
+        \end{aligned} $$
+        <p>Vậy giới hạn của dãy số là $L = \frac{2\pi^2}{9}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Chu kỳ Pisano trên Môđun)</div>
+        Cho dãy Fibonacci $(F_n)$ định nghĩa bởi $F_0 = 0, F_1 = 1$ và $F_{n+1} = F_n + F_{n-1}$. Chứng minh rằng với mọi số nguyên dương $n$, $F_n$ chia hết cho $7$ khi và chỉ khi $n$ chia hết cho $8$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì ta chỉ quan tâm đến tính chia hết cho 7, ta sẽ khảo sát dãy Fibonacci trên tập các số dư modulo 7. Dựa trên Định lý 0.2, dãy số dư này là một dãy tuần hoàn.</p>
+        <p>Liệt kê các số dư đầu tiên của dãy $F_n \pmod 7$:</p>
+        <ul>
+            <li>$F_0 \equiv 0$</li>
+            <li>$F_1 \equiv 1$</li>
+            <li>$F_2 = F_1 + F_0 \equiv 1$</li>
+            <li>$F_3 = 1 + 1 \equiv 2$</li>
+            <li>$F_4 = 2 + 1 \equiv 3$</li>
+            <li>$F_5 = 3 + 2 \equiv 5$</li>
+            <li>$F_6 = 5 + 3 = 8 \equiv 1$</li>
+            <li>$F_7 = 1 + 5 = 6$</li>
+            <li>$F_8 = 6 + 1 = 7 \equiv 0$</li>
+            <li>$F_9 = 0 + 6 = 6$</li>
+            <li>$F_{10} = 6 + 0 = 6$</li>
+            <li>$F_{11} = 6 + 6 = 12 \equiv 5$</li>
+            <li>$F_{12} = 5 + 6 = 11 \equiv 4$</li>
+            <li>$F_{13} = 4 + 5 = 9 \equiv 2$</li>
+            <li>$F_{14} = 2 + 4 = 6$</li>
+            <li>$F_{15} = 6 + 2 = 8 \equiv 1$</li>
+            <li>$F_{16} = 1 + 6 = 7 \equiv 0$</li>
+            <li>$F_{17} = 0 + 1 = 1$</li>
+        </ul>
+        <p>Tại $n = 16$ và $n = 17$, ta thu được cặp giá trị $(F_{16}, F_{17}) \equiv (0, 1) \pmod 7$. Cặp giá trị này hoàn toàn trùng khớp với cặp giá trị khởi tạo $(F_0, F_1)$. <br>
+        Do mỗi phần tử của dãy truy hồi bậc hai được xác định duy nhất bởi 2 phần tử ngay trước nó, chuỗi giá trị modulo 7 của dãy Fibonacci tuần hoàn với chu kỳ là $16$ (tức là chu kỳ Pisano $\pi(7) = 16$).</p>
+        <p>Khảo sát các phần tử nhận giá trị $0$ trong một chu kỳ $0 \le n \le 15$: các giá trị đó nằm tại $n = 0$ và $n = 8$.<br>
+        Dựa vào tính tuần hoàn, $F_n \equiv 0 \pmod 7$ khi và chỉ khi $n \equiv 0 \pmod{16}$ hoặc $n \equiv 8 \pmod{16}$.<br>
+        Gộp chung hai điều kiện này lại, ta được $n \equiv 0 \pmod 8$, tức là $n$ chia hết cho 8.</p>
+        <p>Vậy $F_n \vdots 7 \iff n \vdots 8$. Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

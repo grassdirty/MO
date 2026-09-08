@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Tập hợp - Cấu trúc đối xích và các định lý cực trị</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP TẬP HỢP <br> CẤU TRÚC ĐỐI XÍCH VÀ CÁC ĐỊNH LÝ CỰC TRỊ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Lý thuyết tập hợp cực trị (Extremal Set Theory) nghiên cứu kích thước lớn nhất hoặc nhỏ nhất của một họ các tập hợp thỏa mãn những ràng buộc nhất định về quan hệ bao hàm hoặc giao nhau. Chuyên đề này hình thức hóa khái niệm đối xích (antichain) và họ tập hợp giao nhau (intersecting family). Các định lý nền tảng bao gồm Bất đẳng thức LYM, Định lý Sperner và Định lý Erdős-Ko-Rado được trình bày kèm chứng minh chi tiết nhằm trang bị công cụ giải quyết các bài toán đếm phức hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Để tiếp cận lý thuyết tập hợp cực trị, học sinh cần nắm được một số khái niệm và công cụ cơ bản sau đây (thường được giảng dạy chi tiết ở bậc Đại học hoặc bồi dưỡng Học sinh giỏi):</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Họ tập hợp và Hoán vị vòng quanh)</div>
+        <ul>
+            <li><strong>Họ tập hợp (Family of Sets):</strong> Là một tập hợp mà mỗi phần tử của nó lại là một tập hợp. Ví dụ: Nếu $S = \{1, 2, 3\}$, thì $\mathcal{F} = \{\{1, 2\}, \{3\}\}$ là một họ tập hợp trên $S$.</li>
+            <li><strong>Hoán vị vòng quanh (Circular Permutation):</strong> Số cách sắp xếp $n$ phần tử phân biệt lên một vòng tròn sao cho các cách sắp xếp thu được từ nhau qua phép quay được coi là giống nhau là $(n-1)!$. Điều này giải thích tại sao trong chứng minh Định lý Erdős-Ko-Rado, ta sử dụng $(n-1)!$ vòng tròn.</li>
+        </ul>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Phương pháp 0.1 (Đếm bằng hai cách - Double Counting)</div>
+        Là phương pháp đếm số phần tử của một tập hợp các cặp $(A, B)$ có quan hệ với nhau. Bằng cách lấy tổng theo $A$ trước hoặc theo $B$ trước, ta thu được hai biểu thức bằng nhau (hoặc các bất đẳng thức). Kỹ thuật này được sử dụng trực tiếp trong chứng minh Bất đẳng thức LYM và Định lý Erdős-Ko-Rado dưới đây.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Xích và Đối xích - Chain and Antichain)</div>
+        Cho tập hợp hữu hạn $S = \{1, 2, \dots, n\}$. Một họ $\mathcal{F}$ gồm các tập con của $S$ được gọi là:
+        <ul>
+            <li> <strong>Xích (Chain):</strong> Nếu với mọi $A, B \in \mathcal{F}$, ta luôn có $A \subset B$ hoặc $B \subset A$. Một xích cực đại trong $S$ luôn có đúng $n+1$ tập hợp với các kích thước từ $0$ đến $n$.</li>
+            <li> <strong>Đối xích (Antichain):</strong> Nếu với mọi $A, B \in \mathcal{F}$ ($A \neq B$), ta luôn có $A \not\subset B$ và $B \not\subset A$. (Không có tập nào là tập con của tập khác trong họ).</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bất đẳng thức LYM: Lubell - Yamamoto - Meshalkin)</div>
+        Cho $S$ là một tập hợp gồm $n$ phần tử. Nếu $\mathcal{F}$ là một đối xích trên $S$, thì:
+        $$ \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \le 1 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sử dụng phương pháp đếm bằng hai cách kết hợp với hoán vị.</p>
+        <p>Xét tập hợp tất cả $n!$ hoán vị của các phần tử trong $S$. Mỗi hoán vị $\pi = (\pi_1, \pi_2, \dots, \pi_n)$ sinh ra đúng một xích cực đại $\mathcal{C}_\pi$ gồm các tập hợp:</p>
+        $$ \emptyset, \{\pi_1\}, \{\pi_1, \pi_2\}, \dots, \{\pi_1, \pi_2, \dots, \pi_n\} $$
+        <p>Tổng số xích cực đại có thể tạo ra là $n!$.</p>
+        <p>Xét một tập hợp $A \in \mathcal{F}$ có kích thước $|A| = k$. Ta đếm số lượng xích cực đại chứa tập hợp $A$. <br>
+        Để xích $\mathcal{C}_\pi$ chứa $A$, $k$ phần tử đầu tiên của hoán vị $\pi$ phải là các phần tử của $A$ (có $k!$ cách xếp), và $n-k$ phần tử còn lại phải nằm ở các vị trí phía sau (có $(n-k)!$ cách xếp).<br>
+        Do đó, tập hợp $A$ thuộc chính xác $k!(n-k)! = |A|! (n - |A|)!$ xích cực đại.</p>
+        <p>Tiếp theo, ta xét sự tương tác giữa đối xích $\mathcal{F}$ và các xích cực đại. Vì $\mathcal{F}$ là một đối xích (không có hai tập nào chứa nhau), và mọi cặp tập hợp trong một xích đều chứa nhau, nên mỗi xích cực đại $\mathcal{C}_\pi$ chứa <strong>tối đa 1</strong> tập hợp thuộc $\mathcal{F}$.</p>
+        <p>Ký hiệu chỉ số $\delta(A, \mathcal{C}_\pi) = 1$ nếu $A \in \mathcal{C}_\pi$ và bằng $0$ nếu ngược lại. Tính tổng số lượng các cặp $(A, \mathcal{C}_\pi)$ sao cho $A \in \mathcal{C}_\pi$:</p>
+        <ol>
+            <li> Đếm theo xích: $\sum_{\pi} \sum_{A \in \mathcal{F}} \delta(A, \mathcal{C}_\pi) \le \sum_{\pi} 1 = n!$</li>
+            <li> Đếm theo tập $A$: $\sum_{A \in \mathcal{F}} \sum_{\pi} \delta(A, \mathcal{C}_\pi) = \sum_{A \in \mathcal{F}} |A|! (n - |A|)!$</li>
+        </ol>
+        <p>Kết hợp hai cách đếm, ta thu được bất đẳng thức:</p>
+        $$ \sum_{A \in \mathcal{F}} |A|! (n - |A|)! \le n! $$
+        <p>Chia hai vế cho $n!$, ta được:</p>
+        $$ \sum_{A \in \mathcal{F}} \frac{|A|! (n - |A|)!}{n!} \le 1 \implies \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \le 1 $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Sperner)</div>
+        Cho $S$ là một tập hợp gồm $n$ phần tử. Nếu $\mathcal{F}$ là một đối xích trên $S$, thì số lượng phần tử lớn nhất của $\mathcal{F}$ không vượt quá $\binom{n}{\lfloor n/2 \rfloor}$. Tức là:
+        $$ |\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Đây là một hệ quả trực tiếp của Bất đẳng thức LYM (Định lý 1.1).</p>
+        <p>Với mọi số nguyên $k$ thỏa mãn $0 \le k \le n$, hệ số nhị thức $\binom{n}{k}$ đạt giá trị lớn nhất tại $k = \lfloor n/2 \rfloor$ (và $k = \lceil n/2 \rceil$). Do đó, ta luôn có:</p>
+        $$ \binom{n}{|A|} \le \binom{n}{\lfloor n/2 \rfloor} \quad \text{với mọi } A \in \mathcal{F} $$
+        <p>Nghịch đảo hai vế:</p>
+        $$ \frac{1}{\binom{n}{|A|}} \ge \frac{1}{\binom{n}{\lfloor n/2 \rfloor}} $$
+        <p>Áp dụng đánh giá này vào Bất đẳng thức LYM:</p>
+        $$ 1 \ge \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \ge \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{\lfloor n/2 \rfloor}} $$
+        <p>Vì mẫu số ở vế phải không phụ thuộc vào $A$, ta có thể đưa nó ra ngoài tổng:</p>
+        $$ 1 \ge \frac{1}{\binom{n}{\lfloor n/2 \rfloor}} \sum_{A \in \mathcal{F}} 1 = \frac{|\mathcal{F}|}{\binom{n}{\lfloor n/2 \rfloor}} $$
+        <p>Nhân cả hai vế với $\binom{n}{\lfloor n/2 \rfloor}$, ta thu được:</p>
+        $$ |\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} $$
+        <p>Định lý được chứng minh. (Dấu bằng đạt được khi $\mathcal{F}$ bao gồm tất cả các tập con có đúng $\lfloor n/2 \rfloor$ phần tử của $S$).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Định lý Erdős - Ko - Rado)</div>
+        Cho $S = \{1, 2, \dots, n\}$ và số nguyên dương $k$ sao cho $n \ge 2k$. Giả sử $\mathcal{F}$ là một họ các tập con của $S$ thỏa mãn đồng thời hai điều kiện:
+        <ol>
+            <li> Mọi $A \in \mathcal{F}$ đều có đúng $k$ phần tử ($|A| = k$).</li>
+            <li> Mọi $A, B \in \mathcal{F}$ đều giao nhau ($A \cap B \neq \emptyset$).</li>
+        </ol>
+        Khi đó, kích thước lớn nhất của họ $\mathcal{F}$ là:
+        $$ |\mathcal{F}| \le \binom{n-1}{k-1} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sử dụng phương pháp vòng tròn của Katona (Katona's Circle Method).</p>
+        <p>Sắp xếp $n$ phần tử của tập $S$ lên một đường tròn theo một thứ tự bất kỳ. Có tất cả $(n-1)!$ cách sắp xếp (các hoán vị vòng quanh).<br>
+        Với một hoán vị vòng quanh $\sigma$ cố định, ta xét các tập hợp $A \in \mathcal{F}$ xuất hiện dưới dạng một <strong>cung liên tiếp</strong> (gồm $k$ phần tử) trên vòng tròn này.</p>
+        <p>Ta chứng minh một bổ đề phụ: <em>Trên một vòng tròn cố định, có nhiều nhất $k$ tập hợp thuộc họ giao nhau $\mathcal{F}$ là các cung liên tiếp.</em></p>
+        <p>Thực vậy, giả sử $A_1 \in \mathcal{F}$ là một cung liên tiếp trên vòng tròn. $A_1$ chứa $k$ phần tử.<br>
+        Bất kỳ cung liên tiếp $A \in \mathcal{F}$ nào khác muốn giao với $A_1$ phải chứa ít nhất một trong hai phần tử đầu mút của $A_1$.<br>
+        Có đúng $k-1$ cung liên tiếp độ dài $k$ (khác $A_1$) chứa mút trái của $A_1$, và $k-1$ cung chứa mút phải của $A_1$.<br>
+        Tuy nhiên, nếu ta lấy một cung $X$ chứa mút trái và một cung $Y$ chứa mút phải, để $X$ và $Y$ giao nhau (theo giả thiết $\mathcal{F}$ là họ giao nhau), tổng độ dài của chúng cộng với khoảng cách giữa chúng không được vượt quá $n$. Nhưng vì $X$ đi ra ngoài phía trái, $Y$ đi ra ngoài phía phải, và $n \ge 2k$, hai cung này không thể giao nhau.<br>
+        Do đó, ta chỉ có thể chọn các cung cùng chứa một mút, dẫn đến tổng số cung (kể cả $A_1$) tối đa là $1 + (k-1) = k$.</p>
+        <p>Tiếp tục bước đếm bằng hai cách:<br>
+        Tính tổng số lượng các cặp $(A, \sigma)$ sao cho $A \in \mathcal{F}$ và $A$ là một cung liên tiếp trên vòng tròn $\sigma$.</p>
+        <ol>
+            <li> Đếm theo hoán vị vòng quanh $\sigma$: Mỗi vòng tròn có tối đa $k$ tập $A$. Tổng số vòng tròn là $(n-1)!$. Suy ra số cặp $\le k \cdot (n-1)!$.</li>
+            <li> Đếm theo tập $A$: Cố định một tập $A \in \mathcal{F}$. Để $A$ là một cung liên tiếp, $k$ phần tử của $A$ phải đứng cạnh nhau trên vòng tròn (có $k!$ cách xếp), và $n-k$ phần tử còn lại có $(n-k)!$ cách xếp. Tuy nhiên, vì là vòng tròn, ta xem khối $A$ như một phần tử duy nhất, kết hợp với $n-k$ phần tử kia tạo thành $(n-k)$ phần tử tự do. Số vòng tròn mà $A$ là một cung là $k! (n-k)!$. </li>
+        </ol>
+        <p>Từ hai cách đếm, ta có bất đẳng thức:</p>
+        $$ |\mathcal{F}| \cdot k! (n-k)! \le k \cdot (n-1)! $$
+        <p>Chia hai vế cho $k! (n-k)!$:</p>
+        $$ |\mathcal{F}| \le \frac{k \cdot (n-1)!}{k! (n-k)!} = \frac{(n-1)!}{(k-1)! (n-k)!} = \binom{n-1}{k-1} $$
+        <p>Định lý được chứng minh. (Dấu bằng đạt được khi ta cố định 1 phần tử của $S$ và chọn $k-1$ phần tử còn lại từ $n-1$ phần tử).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (All-Russian Olympiad - Phân ban Ủy ban)</div>
+        Trong một đại hội có $n$ đại biểu tham dự. Người ta cần thành lập các ủy ban từ các đại biểu này sao cho không có ủy ban nào là tập con của một ủy ban khác. Chứng minh rằng số lượng ủy ban tối đa có thể thành lập không thể vượt quá $\binom{n}{\lfloor n/2 \rfloor}$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi đại biểu có thể được coi là một phần tử của tập hợp $S = \{1, 2, \dots, n\}$.<br>
+        Mỗi ủy ban là một tập con của tập hợp $S$.<br>
+        Gọi họ tất cả các ủy ban được thành lập là $\mathcal{F}$.</p>
+        <p>Theo yêu cầu của bài toán, không có ủy ban nào là tập hợp con của ủy ban khác. <br>
+        Nghĩa là: Với mọi $A, B \in \mathcal{F}$ ($A \neq B$), ta luôn có $A \not\subset B$ và $B \not\subset A$.<br>
+        Theo Định nghĩa 1.1, họ tập hợp $\mathcal{F}$ tạo thành một <strong>đối xích (antichain)</strong> trên tập hợp $S$.</p>
+        <p>Áp dụng trực tiếp Định lý Sperner (Định lý 1.2), kích thước lớn nhất của một đối xích trên tập hợp $n$ phần tử bị chặn trên bởi:</p>
+        $$ |\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} $$
+        <p>Do đó, số lượng ủy ban tối đa có thể thành lập không vượt quá $\binom{n}{\lfloor n/2 \rfloor}$.</p>
+        <p>Cấu hình đạt giá trị tối đa này xảy ra khi người ta thành lập tất cả các ủy ban sao cho mỗi ủy ban đều có đúng $\lfloor n/2 \rfloor$ đại biểu.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Austrian Regional Competition - Hệ tập hợp giao nhau)</div>
+        Cho $S = \{1, 2, \dots, n\}$. Gọi $\mathcal{F}$ là một họ các tập con của $S$ (không giới hạn kích thước) sao cho với mọi $A, B \in \mathcal{F}$, ta luôn có $A \cap B \neq \emptyset$. Chứng minh rằng $|\mathcal{F}| \le 2^{n-1}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tập hợp $S$ có tổng cộng $2^n$ tập con.</p>
+        <p>Ta chia tất cả $2^n$ tập con này thành $2^{n-1}$ cặp. Mỗi cặp gồm một tập con $X$ và phần bù của nó $X^c = S \setminus X$.<br>
+        Ta có $X \cap X^c = \emptyset$ với mọi tập con $X$.</p>
+        <p>Theo giả thiết, họ $\mathcal{F}$ là một họ giao nhau, nghĩa là bất kỳ hai tập hợp nào trong $\mathcal{F}$ đều phải có phần tử chung.<br>
+        Do $X$ và $X^c$ không có phần tử chung, họ $\mathcal{F}$ không thể chứa đồng thời cả $X$ và $X^c$.<br>
+        Nói cách khác, từ mỗi cặp $(X, X^c)$, họ $\mathcal{F}$ chỉ có thể chứa tối đa 1 tập hợp.</p>
+        <p>Vì có tổng cộng $2^{n-1}$ cặp rời nhau và vét cạn toàn bộ các tập con của $S$, số lượng tập hợp trong $\mathcal{F}$ không thể vượt quá số lượng các cặp này.<br>
+        Do đó:</p>
+        $$ |\mathcal{F}| \le 2^{n-1} $$
+        <p>Dấu bằng có thể xảy ra khi ta chọn họ $\mathcal{F}$ gồm tất cả các tập con của $S$ có chứa phần tử $1$. Mọi tập hợp trong họ này đều giao nhau tại phần tử $1$, và có đúng $2^{n-1}$ tập hợp như vậy.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (China High School Mathematics League - Đánh giá giao tập hợp)</div>
+        Cho $n$ là một số nguyên chẵn. Giả sử $\mathcal{F}$ là một họ các tập con của $\{1, 2, \dots, n\}$ thỏa mãn hai điều kiện:
+        <ol>
+            <li> Mọi tập $A \in \mathcal{F}$ đều có đúng $\frac{n}{2}$ phần tử.</li>
+            <li> Mọi $A, B \in \mathcal{F}$ đều giao nhau.</li>
+        </ol>
+        Hỏi họ $\mathcal{F}$ có thể có tối đa bao nhiêu phần tử?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta áp dụng Định lý Erdős-Ko-Rado (Định lý 1.3).</p>
+        <p>Trong bài toán này, kích thước của tập hợp nền là $n$ và kích thước của mỗi tập con là $k = \frac{n}{2}$.<br>
+        Ta kiểm tra điều kiện của định lý EKR: $n \ge 2k$.<br>
+        Với $k = \frac{n}{2}$, ta có $2k = n$, do đó điều kiện $n \ge 2k$ được thỏa mãn dưới dạng đẳng thức.<br>
+        Theo định lý EKR, kích thước lớn nhất của họ $\mathcal{F}$ là:</p>
+        $$ |\mathcal{F}| \le \binom{n-1}{k-1} = \binom{n-1}{\frac{n}{2} - 1} $$
+        
+        <p>Có thể chứng minh trực tiếp trường hợp riêng này (khi $n = 2k$) một cách đơn giản mà không cần dùng đến EKR, sử dụng tính chất phần bù (như Bài toán 3.1).</p>
+        <p>Tập hợp tất cả các tập con có độ lớn $\frac{n}{2}$ của $S$ có số lượng là $\binom{n}{n/2}$.<br>
+        Với mỗi tập hợp $A$ có kích thước $\frac{n}{2}$, phần bù của nó là $A^c = S \setminus A$ cũng có kích thước $n - \frac{n}{2} = \frac{n}{2}$.<br>
+        Vậy các tập con kích thước $\frac{n}{2}$ có thể được ghép thành $\frac{1}{2} \binom{n}{n/2}$ cặp $(A, A^c)$.<br>
+        Vì $\mathcal{F}$ là họ các tập giao nhau, nó không thể chứa cả $A$ và $A^c$ (vì $A \cap A^c = \emptyset$).<br>
+        Do đó, $\mathcal{F}$ chỉ có thể chứa tối đa 1 tập hợp từ mỗi cặp.<br>
+        Suy ra số lượng tập hợp tối đa của $\mathcal{F}$ là:</p>
+        $$ |\mathcal{F}| \le \frac{1}{2} \binom{n}{n/2} $$
+        <p>Sử dụng tính chất của hệ số nhị thức:</p>
+        $$ \frac{1}{2} \binom{n}{n/2} = \frac{1}{2} \frac{n}{(n/2)} \binom{n-1}{n/2 - 1} = \binom{n-1}{\frac{n}{2} - 1} $$
+        <p>Hai phương pháp cho ra cùng một kết quả, minh họa tính chặt chẽ của tổ hợp. Số lượng phần tử tối đa của họ $\mathcal{F}$ là $\binom{n-1}{\frac{n}{2} - 1}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Lý thuyết Đồ thị - Cấu trúc và Đồ thị Cực trị</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: LÝ THUYẾT ĐỒ THỊ <br> CẤU TRÚC VÀ ĐỒ THỊ CỰC TRỊ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Lý thuyết đồ thị cung cấp mô hình toán học để giải quyết các bài toán về quan hệ hữu hạn. Chuyên đề này hình thức hóa cấu trúc của đồ thị vô hướng, thiết lập phương pháp "Đếm bằng hai cách" qua Bổ đề bắt tay, và khảo sát các giới hạn cực trị thông qua Định lý Mantel và Định lý Kővári–Sós–Turán. Các bài toán ứng dụng được tuyển chọn để minh họa kỹ thuật xét đường đi dài nhất (Nguyên lý cực hạn trên đồ thị) và đặc trưng của đồ thị hai phía.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Đồ thị là một phân môn của Toán học Rời rạc, thường được giảng dạy chuyên sâu ở bậc Đại học. Để học sinh THPT có thể nắm bắt nội dung, ta cần hiểu một số khái niệm trực quan và công cụ bổ trợ sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Cách hiểu trực quan về Đồ thị)</div>
+        Trong thực tế, một <strong>đồ thị</strong> (graph) có thể được hình dung là một tập hợp các điểm (gọi là <strong>đỉnh</strong>) và các đoạn nối giữa 2 điểm (gọi là <strong>cạnh</strong>). <br>
+        Ví dụ: Bản đồ các thành phố là các đỉnh, và các đường cao tốc nối 2 thành phố là các cạnh.
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Phương pháp Đếm bằng hai cách (Double Counting)</div>
+        Là một kỹ thuật đếm cơ bản trong tổ hợp. Khi ta có một cấu trúc chứa các tập hợp giao nhau (ví dụ: đỉnh và cạnh), ta có thể đếm tổng số lượng quan hệ này theo hai góc nhìn khác nhau (từ đỉnh hoặc từ cạnh). Kết quả của hai cách đếm phải bằng nhau, từ đó thiết lập được các phương trình hoặc bất phương trình.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Bất đẳng thức Cauchy-Schwarz cơ bản)</div>
+        Với mọi số thực $x_1, x_2, \dots, x_n$, ta luôn có:
+        $$ \sum_{i=1}^n x_i^2 \ge \frac{1}{n} \left( \sum_{i=1}^n x_i \right)^2 $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Áp dụng Bất đẳng thức Cauchy-Schwarz cho hai bộ số $(1, 1, \dots, 1)$ (gồm $n$ số 1) và $(x_1, x_2, \dots, x_n)$:</p>
+        $$ (1^2 + 1^2 + \dots + 1^2)(x_1^2 + x_2^2 + \dots + x_n^2) \ge (1\cdot x_1 + 1\cdot x_2 + \dots + 1\cdot x_n)^2 $$
+        $$ \implies n \sum_{i=1}^n x_i^2 \ge \left( \sum_{i=1}^n x_i \right)^2 \implies \sum_{i=1}^n x_i^2 \ge \frac{1}{n} \left( \sum_{i=1}^n x_i \right)^2 $$
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đồ thị và các khái niệm cơ sở)</div>
+        Một đồ thị vô hướng $G = (V, E)$ bao gồm một tập hợp khác rỗng $V$ chứa các <strong>đỉnh</strong> (vertices) và một tập hợp $E$ chứa các <strong>cạnh</strong> (edges). Mỗi cạnh $e \in E$ là một tập con gồm đúng 2 đỉnh phân biệt của $V$.
+        <ul>
+            <li> <strong>Bậc của đỉnh:</strong> Bậc của đỉnh $v$, ký hiệu là $\deg(v)$, là số lượng các cạnh chứa $v$.</li>
+            <li> <strong>Đường đi (Path) và Chu trình (Cycle):</strong> Đường đi độ dài $k$ là một dãy các đỉnh $v_0, v_1, \dots, v_k$ đôi một phân biệt sao cho $\{v_{i-1}, v_i\} \in E$ với mọi $i=1, \dots, k$. Nếu $k \ge 3$ và bổ sung thêm cạnh $\{v_k, v_0\} \in E$, ta được một chu trình độ dài $k+1$, ký hiệu là $C_{k+1}$. Hình tam giác là chu trình $C_3$.</li>
+            <li> <strong>Đồ thị hai phía (Bipartite Graph):</strong> Đồ thị $G$ được gọi là đồ thị hai phía nếu tập đỉnh $V$ có thể phân hoạch thành hai tập rời nhau $X$ và $Y$ ($X \cup Y = V, X \cap Y = \emptyset$) sao cho mọi cạnh của $G$ đều có một đầu mút thuộc $X$ và một đầu mút thuộc $Y$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Bắt tay - Handshaking Lemma)</div>
+        Đối với một đồ thị vô hướng $G = (V, E)$ hữu hạn bất kỳ, tổng bậc của tất cả các đỉnh bằng đúng 2 lần số lượng cạnh của đồ thị.
+        $$ \sum_{v \in V} \deg(v) = 2|E| $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng phương pháp đếm bằng hai cách (Double Counting) trên tập hợp các cặp liên thuộc $S = \{ (v, e) \mid v \in V, e \in E, v \in e \}$.</p>
+        <ul>
+            <li> <em>Đếm theo đỉnh:</em> Mỗi đỉnh $v \in V$ tham gia vào đúng $\deg(v)$ cạnh, do đó số lượng các cặp $(v, e)$ chứa $v$ chính là $\deg(v)$. Tổng số cặp trong $S$ là $\sum_{v \in V} \deg(v)$.</li>
+            <li> <em>Đếm theo cạnh:</em> Mỗi cạnh $e = \{u, v\} \in E$ chứa đúng 2 đỉnh $u$ và $v$, do đó mỗi cạnh tham gia vào đúng 2 cặp $(u, e)$ và $(v, e)$ trong $S$. Tổng số cặp trong $S$ là $2|E|$.</li>
+        </ul>
+        <p>Từ hai cách đếm trên, ta thu được đẳng thức $\sum_{v \in V} \deg(v) = 2|E|$.</p>
+        <p>Hệ quả trực tiếp: Số lượng các đỉnh có bậc lẻ trong bất kỳ đồ thị nào cũng phải là một số chẵn.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Mantel về đồ thị không chứa tam giác)</div>
+        Nếu đồ thị $G = (V, E)$ có $n$ đỉnh và không chứa bất kỳ một hình tam giác nào (không chứa $C_3$), thì số lượng cạnh của đồ thị không vượt quá $\lfloor \frac{n^2}{4} \rfloor$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Do $G$ không chứa tam giác, nếu hai đỉnh $u$ và $v$ kề nhau (tức là $\{u, v\} \in E$), chúng không thể có bất kỳ một đỉnh kề chung nào.<br>
+        Gọi $N(u)$ và $N(v)$ là tập hợp các đỉnh kề với $u$ và $v$. Ta có $|N(u)| = \deg(u)$ và $|N(v)| = \deg(v)$.</p>
+        <p>Vì $N(u) \cap N(v) = \emptyset$ (nếu giao nhau tại $w$, thì $u, v, w$ tạo thành tam giác), tập hợp $N(u) \cup N(v)$ là tập con của $V$.<br>
+        Do đó: $|N(u)| + |N(v)| \le |V| \implies \deg(u) + \deg(v) \le n$.</p>
+        <p>Lấy tổng bất đẳng thức này trên tất cả các cạnh $\{u, v\} \in E$:</p>
+        $$ \sum_{\{u, v\} \in E} (\deg(u) + \deg(v)) \le \sum_{\{u, v\} \in E} n = n|E| $$
+        <p>Mặt khác, trong tổng bên trái, mỗi đỉnh $w \in V$ xuất hiện chính xác $\deg(w)$ lần (mỗi lần cho một cạnh liên thuộc với nó). Do đó:</p>
+        $$ \sum_{\{u, v\} \in E} (\deg(u) + \deg(v)) = \sum_{w \in V} (\deg(w))^2 $$
+        <p>Áp dụng bất đẳng thức Cauchy-Schwarz (Định lý 0.1):</p>
+        $$ \sum_{w \in V} (\deg(w))^2 \ge \frac{1}{n} \left( \sum_{w \in V} \deg(w) \right)^2 $$
+        <p>Theo Bổ đề 1.1, $\sum_{w \in V} \deg(w) = 2|E|$. Thay vào:</p>
+        $$ n|E| \ge \frac{1}{n} (2|E|)^2 = \frac{4|E|^2}{n} \implies |E| \le \frac{n^2}{4} $$
+        <p>Vì $|E|$ là số nguyên, ta có $|E| \le \lfloor \frac{n^2}{4} \rfloor$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Kővári–Sós–Turán cho chu trình $C_4$)</div>
+        Cho một đồ thị vô hướng $G = (V, E)$ có $n$ đỉnh và $m$ cạnh. Giả sử $G$ không chứa bất kỳ chu trình độ dài 4 nào (đồ thị không chứa $C_4$). Chứng minh rằng:
+        $$ m \le \frac{n}{4} \left( 1 + \sqrt{4n - 3} \right) $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sử dụng phương pháp "Đếm bằng hai cách" thông qua cấu trúc "Quả anh đào" (Cherry). Một quả anh đào là một đường đi có độ dài 2, tức là một bộ ba đỉnh $(u, w, v)$ sao cho $w$ kề với cả $u$ và $v$. Đỉnh $w$ được gọi là tâm của quả anh đào.</p>
+        <p>Gọi $S$ là số lượng tất cả các quả anh đào trong đồ thị $G$. Ta sẽ đếm $S$ bằng hai cách: đếm theo tâm $w$ và đếm theo cặp hai đầu mút $\{u, v\}$.</p>
+
+        <p><strong>Cách 1: Đếm theo tâm $w$.</strong><br>
+        Cố định một đỉnh $w \in V$. Số lượng các đỉnh kề với $w$ là $\deg(w)$.<br>
+        Để tạo ra một quả anh đào có tâm là $w$, ta chỉ cần chọn ra 2 đỉnh bất kỳ từ tập hợp các đỉnh kề của $w$. <br>
+        Số cách chọn là $\binom{\deg(w)}{2}$.<br>
+        Tổng số quả anh đào trên toàn đồ thị được tính bằng cách lấy tổng trên tất cả các đỉnh:</p>
+        $$ S = \sum_{w \in V} \binom{\deg(w)}{2} = \sum_{w \in V} \frac{\deg(w)(\deg(w) - 1)}{2} = \frac{1}{2} \sum_{w \in V} (\deg(w))^2 - \frac{1}{2} \sum_{w \in V} \deg(w) $$
+        <p>Theo Bổ đề Bắt tay, $\sum_{w \in V} \deg(w) = 2m$. Áp dụng bất đẳng thức Cauchy-Schwarz cho tổng bình phương:</p>
+        $$ \sum_{w \in V} (\deg(w))^2 \ge \frac{1}{n} \left( \sum_{w \in V} \deg(w) \right)^2 = \frac{4m^2}{n} $$
+        <p>Từ đó, ta có đánh giá chặn dưới cho $S$:</p>
+        $$ S \ge \frac{2m^2}{n} - m $$
+
+        <p><strong>Cách 2: Đếm theo cặp đầu mút $\{u, v\}$.</strong><br>
+        Cố định một cặp đỉnh $\{u, v\}$ bất kỳ trong $V$. Có tổng cộng $\binom{n}{2}$ cặp như vậy.<br>
+        Nếu hai đỉnh $u$ và $v$ có từ 2 đỉnh kề chung trở lên (giả sử là $w_1$ và $w_2$), thì 4 đỉnh $u, w_1, v, w_2$ sẽ tạo thành một chu trình độ dài 4 ($C_4$).<br>
+        Tuy nhiên, giả thiết bài toán khẳng định đồ thị không chứa $C_4$. Do đó, hai đỉnh bất kỳ $u$ và $v$ chỉ có thể có <strong>tối đa 1</strong> đỉnh kề chung.<br>
+        Nói cách khác, một cặp đỉnh $\{u, v\}$ có thể làm đầu mút cho tối đa 1 quả anh đào.<br>
+        Tổng số quả anh đào $S$ không thể vượt quá tổng số cặp đỉnh phân biệt trong đồ thị:</p>
+        $$ S \le \binom{n}{2} = \frac{n(n-1)}{2} $$
+
+        <p><strong>Thiết lập bất đẳng thức:</strong><br>
+        Kết hợp chặn dưới từ Cách 1 và chặn trên từ Cách 2, ta thu được:</p>
+        $$ \frac{2m^2}{n} - m \le \frac{n(n-1)}{2} $$
+        <p>Nhân hai vế với $2n$, ta được một bất phương trình bậc hai đối với $m$:</p>
+        $$ 4m^2 - 2nm - n^2(n-1) \le 0 $$
+        <p>Xét phương trình $4m^2 - 2nm - n^2(n-1) = 0$:</p>
+        $$ \Delta' = (-n)^2 - 4(1)(-n^2(n-1)) = n^2 + 4n^3 - 4n^2 = 4n^3 - 3n^2 = n^2(4n - 3) $$
+        <p>Nghiệm dương của phương trình là:</p>
+        $$ m = \frac{n + \sqrt{n^2(4n-3)}}{4} = \frac{n}{4} \left( 1 + \sqrt{4n - 3} \right) $$
+        <p>Do hệ số $a=4 \gt 0$, bất phương trình $\le 0$ buộc $m$ phải nằm giữa hai nghiệm. Do đó:</p>
+        $$ m \le \frac{n}{4} \left( 1 + \sqrt{4n - 3} \right) $$
+        <p>Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Nguyên lý Cực hạn trên Đồ thị)</div>
+        Cho đồ thị $G = (V, E)$ có bậc nhỏ nhất của các đỉnh là $\delta \ge 2$. Chứng minh rằng đồ thị $G$ chứa ít nhất một đường đi có độ dài lớn hơn hoặc bằng $\delta$ và chứa ít nhất một chu trình có độ dài lớn hơn hoặc bằng $\delta + 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì đồ thị có số đỉnh hữu hạn, độ dài của một đường đi trên đồ thị là hữu hạn. <br>
+        Áp dụng Nguyên lý Cực hạn, xét $P$ là <strong>đường đi dài nhất</strong> trong đồ thị $G$.<br>
+        Giả sử $P$ là dãy các đỉnh $v_1, v_2, \dots, v_k$. Độ dài của đường đi $P$ là $k-1$.<br>
+        Xét đỉnh đầu mút $v_1$ của đường đi $P$.<br>
+        Tất cả các đỉnh kề với $v_1$ bắt buộc phải nằm trên đường đi $P$. Giả sử phản chứng tồn tại một đỉnh $w$ kề với $v_1$ mà $w \notin \{v_1, v_2, \dots, v_k\}$. Khi đó, ta có thể nối $w$ vào đầu đường đi $P$ để tạo thành đường đi mới $w, v_1, v_2, \dots, v_k$ dài hơn $P$, mâu thuẫn với tính cực đại của $P$.<br>
+        Vì bậc của $v_1$ lớn hơn hoặc bằng $\delta$, $v_1$ có ít nhất $\delta$ đỉnh kề. Và do tất cả các đỉnh kề này đều nằm trên $P$, đường đi $P$ phải chứa ít nhất $\delta + 1$ đỉnh (bao gồm $v_1$ và $\delta$ đỉnh kề).<br>
+        Độ dài của đường đi $P$ là $k-1 \ge (\delta + 1) - 1 = \delta$. Khẳng định thứ nhất được chứng minh.</p>
+
+        <p>Để tạo ra chu trình, ta xét đỉnh kề xa nhất của $v_1$ trên đường đi $P$.<br>
+        Gọi các đỉnh kề với $v_1$ trên $P$ là $v_{i_1}, v_{i_2}, \dots, v_{i_m}$ với $m \ge \delta$.<br>
+        Sắp xếp theo thứ tự xuất hiện trên $P$, giả sử $v_{i_m}$ là đỉnh kề với $v_1$ có chỉ số lớn nhất.<br>
+        Do $v_1$ có ít nhất $\delta$ đỉnh kề trên $P$, chỉ số lớn nhất $i_m$ phải lớn hơn hoặc bằng $\delta + 1$.<br>
+        Nối cạnh $\{v_{i_m}, v_1\}$, ta tạo thành một chu trình gồm các đỉnh $v_1, v_2, \dots, v_{i_m}$.<br>
+        Độ dài của chu trình này là $i_m \ge \delta + 1$. Khẳng định thứ hai được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Đặc trưng Đồ thị hai phía - Định lý König)</div>
+        Chứng minh rằng một đồ thị vô hướng $G$ là đồ thị hai phía khi và chỉ khi đồ thị $G$ không chứa bất kỳ một chu trình độ dài lẻ nào.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>$(\Rightarrow)$ Giả sử $G$ là đồ thị hai phía, tập đỉnh được phân hoạch thành $X$ và $Y$.<br>
+        Mọi cạnh của $G$ đều nối một đỉnh thuộc $X$ với một đỉnh thuộc $Y$.<br>
+        Xét một chu trình bất kỳ $C = v_1, v_2, \dots, v_k, v_1$.<br>
+        Nếu $v_1 \in X$, thì $v_2 \in Y$, $v_3 \in X, \dots$ Nói chung, $v_i \in X$ nếu $i$ lẻ, và $v_i \in Y$ nếu $i$ chẵn.<br>
+        Vì $v_k$ kề với $v_1 \in X$, đỉnh $v_k$ bắt buộc phải thuộc $Y$. Do đó $k$ phải là một số chẵn.<br>
+        Vậy mọi chu trình trong $G$ đều có độ dài chẵn, tức là $G$ không chứa chu trình lẻ.</p>
+
+        <p>$(\Leftarrow)$ Giả sử $G$ không chứa chu trình lẻ. Ta sẽ chứng minh $G$ là đồ thị hai phía.<br>
+        Không mất tính tổng quát, giả sử $G$ liên thông (nếu không, ta xét từng thành phần liên thông).<br>
+        Chọn một đỉnh $v_0$ bất kỳ làm gốc. Phân hoạch tập đỉnh $V$ thành hai tập $X$ và $Y$ như sau:</p>
+        <ul>
+            <li>$X$ chứa tất cả các đỉnh $u$ mà đường đi ngắn nhất từ $v_0$ đến $u$ có độ dài chẵn.</li>
+            <li>$Y$ chứa tất cả các đỉnh $w$ mà đường đi ngắn nhất từ $v_0$ đến $w$ có độ dài lẻ.</li>
+        </ul>
+        <p>Rõ ràng $X \cap Y = \emptyset$ và $X \cup Y = V$.<br>
+        Cần chứng minh không có hai đỉnh nào cùng thuộc $X$ (hoặc cùng thuộc $Y$) kề nhau.<br>
+        Giả sử phản chứng, tồn tại $u, v \in X$ sao cho $\{u, v\} \in E$.<br>
+        Gọi $P_u$ và $P_v$ là đường đi ngắn nhất từ $v_0$ đến $u$ và $v$. Theo định nghĩa, độ dài của $P_u$ và $P_v$ đều là số chẵn.<br>
+        Cấu trúc $P_u \cup P_v \cup \{u, v\}$ tạo thành một chu trình chứa $v_0$. Nếu $P_u$ và $P_v$ giao nhau lần cuối tại $w$ trước khi phân tách đến $u$ và $v$, chu trình thực sự được tạo ra là từ $w$ đến $u$, qua $v$, rồi về $w$.<br>
+        Độ dài từ $w$ đến $u$ cùng tính chẵn lẻ với độ dài từ $v_0$ đến $u$ (và tương tự cho $v$). Tổng độ dài hai nhánh từ $w$ đến $u$ và $w$ đến $v$ là $(d(v_0, u) - d(v_0, w)) + (d(v_0, v) - d(v_0, w)) = d(v_0, u) + d(v_0, v) - 2d(v_0, w)$.<br>
+        Vì $d(v_0, u)$ và $d(v_0, v)$ cùng chẵn, tổng độ dài hai nhánh này là số chẵn.<br>
+        Chu trình có độ dài bằng tổng độ dài hai nhánh cộng thêm 1 (cạnh $\{u, v\}$). Suy ra độ dài chu trình là Số chẵn $+ 1 = \text{Số lẻ}$.<br>
+        Điều này mâu thuẫn với giả thiết $G$ không chứa chu trình lẻ.<br>
+        Giả thiết phản chứng sai. Phân hoạch $X, Y$ hợp lệ. Đồ thị $G$ là đồ thị hai phía.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (IMO 1998, Bài 2 (Biến thể) - Đếm giải đấu)</div>
+        Trong một giải thi đấu cờ vua, $n$ kỳ thủ thi đấu vòng tròn một lượt (mỗi người đấu đúng một ván với mọi người khác, không có kết quả hòa). Một bộ ba kỳ thủ $(A, B, C)$ được gọi là một "vòng tròn lặp" nếu $A$ thắng $B$, $B$ thắng $C$, và $C$ thắng $A$. Ký hiệu $d_i$ là số ván thắng của kỳ thủ thứ $i$. Chứng minh rằng số lượng "vòng tròn lặp" trong giải đấu là:
+        $$ \frac{n(n-1)(n-2)}{6} - \sum_{i=1}^n \frac{d_i(d_i - 1)}{2} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giải đấu được mô hình hóa thành một đồ thị có hướng hoàn chỉnh (Tournament Graph) với $n$ đỉnh. Cạnh có hướng từ $A$ đến $B$ nghĩa là $A$ thắng $B$. Bậc ra (out-degree) của đỉnh $i$ chính là $d_i$.<br>
+        Số lượng bộ ba kỳ thủ bất kỳ là $\binom{n}{3} = \frac{n(n-1)(n-2)}{6}$.</p>
+        <p>Xét một bộ ba kỳ thủ bất kỳ. Trong một đồ thị có hướng hoàn chỉnh, 3 đỉnh chỉ có thể tạo thành hai cấu hình:</p>
+        <ol>
+            <li><strong>Chu trình có hướng (Vòng tròn lặp):</strong> $A \to B \to C \to A$. Trong cấu hình này, bậc ra của mỗi đỉnh trong nội bộ 3 đỉnh đều bằng 1.</li>
+            <li><strong>Cấu hình bắc cầu:</strong> $A \to B, A \to C$ và $B \to C$. Trong cấu hình này, có một đỉnh (đỉnh $A$) thắng cả hai đỉnh còn lại, tức là bậc ra nội bộ của $A$ là 2. Đỉnh này được gọi là "đỉnh thống trị" của bộ ba.</li>
+        </ol>
+
+        <p>Nhận xét: Một bộ ba không phải là vòng tròn lặp khi và chỉ khi nó có chính xác 1 đỉnh thống trị.<br>
+        Số lượng các bộ ba không phải vòng tròn lặp bằng số lượng các cấu hình trong đó một đỉnh thắng 2 đỉnh khác.<br>
+        Đếm theo từng đỉnh $i$: Kỳ thủ $i$ có $d_i$ ván thắng. Số lượng cặp kỳ thủ mà $i$ cùng thắng là $\binom{d_i}{2} = \frac{d_i(d_i - 1)}{2}$.<br>
+        Mỗi cặp như vậy, cùng với đỉnh $i$, tạo thành đúng một bộ ba không lặp có đỉnh thống trị là $i$.<br>
+        Lấy tổng trên toàn bộ $n$ đỉnh, số lượng các bộ ba không phải vòng tròn lặp là $\sum_{i=1}^n \binom{d_i}{2}$.</p>
+        <p>Do đó, số lượng vòng tròn lặp bằng tổng số bộ ba trừ đi số lượng bộ ba không lặp:</p>
+        $$ S = \binom{n}{3} - \sum_{i=1}^n \binom{d_i}{2} = \frac{n(n-1)(n-2)}{6} - \sum_{i=1}^n \frac{d_i(d_i - 1)}{2} $$
+        <p>Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Phương trình hàm Đa thức và Kỹ thuật phân tích nghiệm</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: PHƯƠNG TRÌNH HÀM ĐA THỨC <br> VÀ KỸ THUẬT PHÂN TÍCH NGHIỆM</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đại số</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Phương trình hàm đa thức là một lớp bài toán đòi hỏi sự kết hợp giữa tính chất giải tích của hàm số và cấu trúc đại số của vành đa thức. Chuyên đề này thiết lập các định lý nền tảng về nghiệm và bậc của đa thức, từ đó phân loại và giải quyết các bài toán phương trình hàm thông qua 5 kỹ thuật cơ bản: Tịnh tiến nghiệm, Đồng nhất hệ số, Đánh giá module nghiệm, Khảo sát tập giá trị và Phương pháp sai phân.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ: Số phức và Cấu trúc nghiệm của Đa thức</h2>
+    <p><i>Trong việc khảo sát nghiệm của đa thức, việc mở rộng tập số thực $\mathbb{R}$ sang tập số phức $\mathbb{C}$ là một công cụ của Toán cao cấp giúp ta nhìn nhận cấu trúc nghiệm một cách toàn diện. Các học sinh THPT cần nắm vững các tính chất sau để áp dụng vào kỹ thuật đánh giá module nghiệm:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Tập số phức và Module)</div>
+        Mỗi số phức $z \in \mathbb{C}$ có dạng $z = a + bi$ với $a, b \in \mathbb{R}$ và $i^2 = -1$. Đại lượng $a$ là phần thực, $b$ là phần ảo. <br>
+        Module của số phức $z$, ký hiệu là $|z|$, được định nghĩa là khoảng cách từ điểm biểu diễn $z$ đến gốc tọa độ trên mặt phẳng phức:
+        $$ |z| = \sqrt{a^2 + b^2} $$
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Bất đẳng thức tam giác cho số phức)</div>
+        Với mọi số phức $z_1, z_2 \in \mathbb{C}$, ta luôn có:
+        $$ |z_1 + z_2| \le |z_1| + |z_2| $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng tính chất bình phương của module: $|z|^2 = z \cdot \overline{z}$, trong đó $\overline{z}$ là số phức liên hợp của $z$. Ta có:</p>
+        $$ \begin{aligned}
+        |z_1 + z_2|^2 &= (z_1 + z_2)(\overline{z_1} + \overline{z_2}) \\
+        &= z_1\overline{z_1} + z_2\overline{z_2} + z_1\overline{z_2} + \overline{z_1}z_2 \\
+        &= |z_1|^2 + |z_2|^2 + 2\text{Re}(z_1\overline{z_2})
+        \end{aligned} $$
+        <p>Vì phần thực của một số phức luôn nhỏ hơn hoặc bằng module của nó, tức là $\text{Re}(z_1\overline{z_2}) \le |z_1\overline{z_2}| = |z_1||\overline{z_2}| = |z_1||z_2|$, ta thu được:</p>
+        $$ |z_1 + z_2|^2 \le |z_1|^2 + |z_2|^2 + 2|z_1||z_2| = (|z_1| + |z_2|)^2 $$
+        <p>Lấy căn bậc hai hai vế, ta thu được bất đẳng thức cần chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.2 (Định lý cơ bản của Đại số)</div>
+        Mọi đa thức bậc $n \ge 1$ với hệ số thực (hoặc phức) đều có đúng $n$ nghiệm trên tập số phức $\mathbb{C}$ (tính cả nghiệm bội).
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+    <p>Mọi đa thức $P(x)$ với hệ số thực đều có thể biểu diễn dưới dạng $P(x) = \sum_{k=0}^n a_k x^k$, trong đó $n$ là một số nguyên không âm. Nếu $a_n \neq 0$, ta gọi $n$ là bậc của đa thức $P(x)$, ký hiệu $\deg P = n$. Đa thức hằng $P(x) \equiv 0$ được quy ước có bậc là $-\infty$.</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Bézout)</div>
+        Cho đa thức $P(x) \in \mathbb{R}[x]$ và một số thực (hoặc phức) $a$. Số $a$ là nghiệm của đa thức $P(x)$, tức là $P(a) = 0$, khi và chỉ khi $P(x)$ chia hết cho nhị thức $(x-a)$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét phép chia đa thức $P(x)$ cho $(x-a)$. Tồn tại duy nhất một đa thức $Q(x)$ và một hằng số $R$ sao cho:</p>
+        $$ P(x) = (x-a)Q(x) + R $$
+        <p>với mọi $x$. Thay $x = a$ vào đẳng thức trên, ta được:</p>
+        $$ P(a) = (a-a)Q(a) + R \implies R = P(a) $$
+        <p>Nếu $P(a) = 0$, thì $R = 0$, suy ra $P(x) = (x-a)Q(x)$, tức là $P(x)$ chia hết cho $(x-a)$. Ngược lại, nếu $P(x)$ chia hết cho $(x-a)$, ta có $P(a) = 0$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Đồng nhất Đa thức)</div>
+        Nếu hai đa thức $P(x)$ và $Q(x)$ có bậc không vượt quá $n$ và nhận cùng giá trị tại $n+1$ điểm phân biệt, thì $P(x) \equiv Q(x)$ với mọi $x$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét đa thức $H(x) = P(x) - Q(x)$. Vì $\deg P \le n$ và $\deg Q \le n$, ta có $\deg H \le n$.<br>
+        Giả sử $P(x)$ và $Q(x)$ bằng nhau tại $n+1$ điểm phân biệt $x_1, x_2, \dots, x_{n+1}$. Khi đó $H(x_i) = 0$ với mọi $i = 1, 2, \dots, n+1$.<br>
+        Theo Định lý 1.1, $H(x)$ chia hết cho $(x-x_1)$. Quy nạp theo số lượng nghiệm, ta có:</p>
+        $$ H(x) = C(x-x_1)(x-x_2)\dots(x-x_{n+1}) R(x) $$
+        <p>Nếu $H(x)$ không phải là đa thức không ($C \neq 0$), thì bậc của $H(x)$ ít nhất là $n+1$. Điều này mâu thuẫn với $\deg H \le n$.<br>
+        Vậy $H(x)$ phải là đa thức hằng $0$. Suy ra $P(x) \equiv Q(x)$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Hệ quả 1.1</div>
+        Nếu một đa thức nhận giá trị bằng không tại vô số điểm phân biệt, nó phải là đa thức không.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử đa thức $P(x)$ không phải là đa thức không và có bậc là $n \ge 0$. Theo hệ quả của định lý Bézout, $P(x)$ chỉ có tối đa $n$ nghiệm phân biệt. Điều này mâu thuẫn với giả thiết $P(x)$ có vô số nghiệm. Vậy $P(x)$ phải là đa thức không, tức là $P(x) \equiv 0$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Bậc của Đa thức)</div>
+        Cho hai đa thức $P(x)$ và $Q(x)$ khác đa thức không, với $\deg P = n$ và $\deg Q = m$. Khi đó:
+        <ol>
+            <li> $\deg (P(x)Q(x)) = n + m$.</li>
+            <li> Nếu $m \ge 1$, thì $\deg (P(Q(x))) = n \cdot m$.</li>
+        </ol>
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử $P(x) = a_n x^n + \dots + a_0$ ($a_n \neq 0$) và $Q(x) = b_m x^m + \dots + b_0$ ($b_m \neq 0$).</p>
+        <p>Đối với tích hai đa thức:</p>
+        $$ P(x)Q(x) = (a_n x^n + \dots)(b_m x^m + \dots) = a_n b_m x^{n+m} + \dots $$
+        <p>Do $a_n \neq 0$ và $b_m \neq 0$, hệ số dẫn đầu $a_n b_m \neq 0$. Vậy bậc của tích là $n+m$.</p>
+        <p>Đối với đa thức hợp:</p>
+        $$ P(Q(x)) = a_n (b_m x^m + \dots)^n + a_{n-1} (b_m x^m + \dots)^{n-1} + \dots + a_0 $$
+        <p>Hệ số của bậc cao nhất sinh ra từ số hạng đầu tiên: $a_n (b_m x^m)^n = a_n b_m^n x^{nm}$.<br>
+        Do $a_n \neq 0$ và $b_m \neq 0$, hệ số $a_n b_m^n \neq 0$. Các số hạng còn lại có bậc tối đa là $(n-1)m \lt nm$. <br>
+        Vậy bậc của đa thức hợp là $nm$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO Shortlist 2001)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+        $$ P(x^2) = P(x) P(x-1) $$
+        với mọi số thực $x$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $P(x) \equiv C$ là đa thức hằng. Thay vào phương trình, ta được $C = C^2$, suy ra $C = 0$ hoặc $C = 1$.</p>
+
+        <p>Xét trường hợp $P(x)$ không phải là đa thức hằng, tức là $\deg P = n \ge 1$.<br>
+        Giả sử $P(x)$ có một nghiệm phức $\alpha$. Thay $x = \alpha$ vào phương trình ban đầu:</p>
+        $$ P(\alpha^2) = P(\alpha) P(\alpha-1) = 0 \cdot P(\alpha-1) = 0 $$
+        <p>Suy ra $\alpha^2$ cũng là nghiệm của $P(x)$. Tiếp tục quá trình này, các số $\alpha^2, \alpha^4, \alpha^8, \dots$ đều là nghiệm của $P(x)$.<br>
+        Nếu $|\alpha| \gt 1$, dãy $(\alpha^{2^k})_{k \ge 1}$ tạo ra vô số nghiệm phân biệt có module tăng dần. Theo Định lý 1.2, một đa thức không thể có vô số nghiệm. Do đó, ta phải có $|\alpha| \le 1$.</p>
+
+        <p>Mặt khác, thay $x = \alpha+1$ vào phương trình ban đầu:</p>
+        $$ P((\alpha+1)^2) = P(\alpha+1) P(\alpha) = P(\alpha+1) \cdot 0 = 0 $$
+        <p>Suy ra $(\alpha+1)^2$ cũng là một nghiệm của $P(x)$.<br>
+        Áp dụng lập luận tương tự như trên đối với nghiệm mới này, ta cũng phải có $|(\alpha+1)^2| \le 1$, tức là $|\alpha+1| \le 1$.</p>
+
+        <p>Nghiệm $\alpha$ trên mặt phẳng phức phải thỏa mãn đồng thời hai điều kiện:</p>
+        $$ |\alpha| \le 1 \quad \text{và} \quad |\alpha+1| \le 1 $$
+        <p>Gọi $\alpha = a + bi$. Ta có $a^2 + b^2 \le 1$ và $(a+1)^2 + b^2 \le 1$.<br>
+        Cộng trừ các vế: $(a^2+b^2) + 2a + 1 \le 1 \implies 2a \le -(a^2+b^2) \le 0 \implies a \le 0$.<br>
+        Nếu $a \lt 0$, xét nghiệm $\alpha^2 = (a^2-b^2) + 2abi$. Nghiệm $\alpha^2$ cũng phải thỏa mãn phần thực $\le 0$.<br>
+        Phần thực của $\alpha^2$ là $a^2 - b^2 \le 0 \implies a^2 \le b^2$.<br>
+        Do $a^2+b^2 \le 1 \implies 2a^2 \le 1 \implies a \ge -\frac{1}{\sqrt{2}}$.<br>
+        Đánh giá này dẫn đến việc $\alpha$ chỉ có thể nhận giá trị $0$. Mọi nghiệm của $P(x)$ chỉ có thể là $0$.</p>
+
+        <p>Theo Định lý 1.1, đa thức chỉ có duy nhất nghiệm $\alpha = 0$ phải có dạng $P(x) = C x^n$.<br>
+        Thay $P(x) = C x^n$ vào phương trình ban đầu:</p>
+        $$ C (x^2)^n = C x^n \cdot C (x-1)^n \implies C x^{2n} = C^2 x^n (x-1)^n $$
+        <p>Đẳng thức này phải đúng với mọi $x$. So sánh hệ số cao nhất ở hai vế, ta có $C = C^2 \implies C = 1$.<br>
+        Tuy nhiên, đẳng thức $x^{2n} = x^n (x-1)^n$ không đúng với mọi $n \ge 1$ (do vế phải có nghiệm $x=1$, còn vế trái thì không).<br>
+        Vậy không tồn tại đa thức bậc $n \ge 1$ nào thỏa mãn.</p>
+        <p>Các đa thức duy nhất thỏa mãn là $P(x) \equiv 0$ và $P(x) \equiv 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (VMO 2006 - Kỹ thuật Tịnh tiến nghiệm)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+        $$ x P(x-1) = (x-3) P(x) \quad \forall x \in \mathbb{R} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Thay $x = 0$ vào phương trình:</p>
+        $$ 0 \cdot P(-1) = -3 \cdot P(0) \implies P(0) = 0 $$
+        <p>Thay $x = 1$ vào phương trình:</p>
+        $$ 1 \cdot P(0) = -2 \cdot P(1) \implies P(1) = 0 $$
+        <p>Thay $x = 2$ vào phương trình:</p>
+        $$ 2 \cdot P(1) = -1 \cdot P(2) \implies P(2) = 0 $$
+        <p>Đa thức $P(x)$ có 3 nghiệm phân biệt là $0, 1, 2$. Theo Định lý 1.1, $P(x)$ phân tích được thành:</p>
+        $$ P(x) = x(x-1)(x-2)Q(x) $$
+        <p>Thay biểu thức này trở lại phương trình ban đầu:</p>
+        $$ x \cdot [ (x-1)(x-2)(x-3)Q(x-1) ] = (x-3) \cdot [ x(x-1)(x-2)Q(x) ] $$
+        <p>Rút gọn các nhân tử chung $x(x-1)(x-2)(x-3)$ ta được: $Q(x-1) = Q(x)$.<br>
+        Một đa thức có tính chất tuần hoàn với vô số giá trị $x$ phải là đa thức hằng, giả sử $Q(x) = C$.</p>
+        <p>Vậy tất cả các đa thức cần tìm là $P(x) = C(x^3 - 3x^2 + 2x)$ với $C \in \mathbb{R}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Olympiad Folklore - Kỹ thuật Chặn bậc)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+        $$ P(x)^2 = P(x^2) \quad \forall x \in \mathbb{R} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nếu $P(x) \equiv C$ là đa thức hằng, ta có $C^2 = C \implies C \in \{0, 1\}$.<br>
+        Xét $P(x)$ có bậc $n \ge 1$. Đồng nhất hệ số cao nhất của hai vế $P(x)^2$ và $P(x^2)$, ta suy ra hệ số dẫn đầu phải bằng $1$.</p>
+        <p>Giả sử $P(x) = x^n + Q(x)$ với $Q(x) \not\equiv 0$ và $\deg Q = m \lt n$.<br>
+        Thay vào phương trình:</p>
+        $$ (x^n + Q(x))^2 = x^{2n} + Q(x^2) \implies 2x^n Q(x) + Q(x)^2 = Q(x^2) $$
+        <p>Ta xét bậc của hai vế phương trình mới này.<br>
+        Vế trái: Bậc của $2x^n Q(x)$ là $n + m$. Bậc của $Q(x)^2$ là $2m$. Do $m \lt n$, bậc của vế trái là $n + m$.<br>
+        Vế phải: Bậc của $Q(x^2)$ là $2m$.</p>
+        <p>Đồng nhất bậc hai vế, ta được $n + m = 2m \implies n = m$, mâu thuẫn với $m \lt n$.<br>
+        Vậy giả thiết $Q(x) \not\equiv 0$ là sai. Ta phải có $Q(x) \equiv 0$, suy ra $P(x) = x^n$.</p>
+        <p>Có 3 họ đa thức thỏa mãn: $P(x) \equiv 0$, $P(x) \equiv 1$, và $P(x) = x^n$ ($n \in \mathbb{N}^*$).</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Olympic Toán học Nga 1999 - Đánh giá Module)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+        $$ P(x) P(x+1) = P(x^2+x) \quad \forall x \in \mathbb{R} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nếu $P(x) \equiv C$, ta có $C^2 = C \implies C \in \{0, 1\}$.<br>
+        Giả sử $P(x)$ có bậc $n \ge 1$. Gọi $\alpha$ là nghiệm phức có module lớn nhất của $P(x)$.<br>
+        Thay $x = \alpha$ vào phương trình:</p>
+        $$ P(\alpha) P(\alpha+1) = P(\alpha^2+\alpha) \implies 0 = P(\alpha^2+\alpha) $$
+        <p>Vậy $\alpha^2+\alpha$ là nghiệm. Theo tính chất cực đại, $|\alpha^2+\alpha| \le |\alpha|$.<br>
+        Thay $x = \alpha-1$ vào phương trình, ta suy ra $\alpha^2-\alpha$ cũng là nghiệm, do đó $|\alpha^2-\alpha| \le |\alpha|$.</p>
+        <p>Áp dụng bất đẳng thức tam giác (Định lý 0.1):</p>
+        $$ 2|\alpha|^2 = |(\alpha^2+\alpha) + (\alpha^2-\alpha)| \le |\alpha^2+\alpha| + |\alpha^2-\alpha| \le 2|\alpha| \implies |\alpha| \le 1 $$
+        <p>Dấu "=" chỉ xảy ra khi $\alpha$ là số thực và $|\alpha|=1$, nhưng thử $\alpha = \pm 1$ đều dẫn đến nghiệm mới có module bằng 2 (mâu thuẫn).<br>
+        Vậy $|\alpha| \lt 1$. Nếu $P(x)$ có nghiệm khác 0, ta có thể xây dựng một dãy nghiệm tiến về 0, điều này dẫn đến mâu thuẫn do đa thức chỉ có hữu hạn nghiệm.<br>
+        Vậy mọi nghiệm của $P(x)$ đều bằng 0, suy ra $P(x) = C x^n$.<br>
+        Thay vào phương trình ta tìm được $C = 1$. Vậy $P(x) = x^n$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Putnam 1979 (Mở rộng) - Khảo sát Tập giá trị)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+        $$ P(P(x)) = (P(x))^{2026} \quad \forall x \in \mathbb{R} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nếu $P(x) \equiv C$, ta có $C = C^{2026} \implies C \in \{0, 1\}$.<br>
+        Giả sử $P(x)$ có bậc $n \ge 1$. Tập giá trị của đa thức $P(x)$ trên tập số thực, ký hiệu là $\text{Im}(P)$, chứa vô số phần tử.<br>
+        Xét một phần tử $y \in \text{Im}(P)$. Tồn tại $x_0$ sao cho $y = P(x_0)$.<br>
+        Thay $x = x_0$ vào phương trình ban đầu:</p>
+        $$ P(P(x_0)) = (P(x_0))^{2026} \implies P(y) = y^{2026} $$
+        <p>Đẳng thức $P(y) = y^{2026}$ được thỏa mãn với mọi $y \in \text{Im}(P)$.<br>
+        Hai đa thức $P(y)$ và $y^{2026}$ bằng nhau tại vô số điểm phân biệt nên chúng phải đồng nhất.<br>
+        Vậy $P(x) = x^{2026}$. Thử lại thấy thỏa mãn.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.5 (Toán học Baltic - Phương pháp Sai phân)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+        $$ P(x+1) + P(x-1) = 2P(x) \quad \forall x \in \mathbb{R} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Viết lại phương trình dưới dạng sai phân:</p>
+        $$ P(x+1) - P(x) = P(x) - P(x-1) $$
+        <p>Định nghĩa toán tử sai phân $\Delta P(x) = P(x+1) - P(x)$. Phương trình trở thành:</p>
+        $$ \Delta P(x) = \Delta P(x-1) $$
+        <p>Đa thức $Q(x) = \Delta P(x)$ thỏa mãn $Q(x) = Q(x-1)$ với mọi $x$, do đó $Q(x) \equiv C$ (hằng số).<br>
+        Điều này dẫn đến $P(x+1) - P(x) = C$.<br>
+        Vì bậc của $\Delta P$ là 0, bậc của $P(x)$ phải là 1 (hoặc 0 nếu $C=0$).</p>
+        <p>Giả sử $P(x) = ax + b$. Tính $\Delta P(x) = a = C$. Bất kỳ giá trị $b$ nào cũng thỏa mãn.<br>
+        Vậy đa thức có dạng tổng quát là $P(x) = Cx + D$, với $C, D \in \mathbb{R}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

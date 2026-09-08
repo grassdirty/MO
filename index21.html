@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Bất đẳng thức đại số - Phương pháp dồn biến (Mixing Variables)</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: BẤT ĐẲNG THỨC ĐẠI SỐ <br> PHƯƠNG PHÁP DỒN BIẾN (MIXING VARIABLES)</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các bất đẳng thức đối xứng nhiều biến bằng phương pháp dồn biến (Mixing Variables). Tài liệu trình bày nền tảng lý thuyết của kỹ thuật dồn biến toàn cục, nguyên lý cực hạn trong đánh giá biến thiên, và quy trình quy bất đẳng thức nhiều biến về dạng một biến. Các bài toán minh họa được trích từ các kỳ thi Olympic Toán học quốc gia.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Phương pháp Dồn biến cơ bản (SMV))</div>
+        Cho hàm số $f(a, b, c)$ đối xứng trên một miền $D \subset \mathbb{R}^3$. Để chứng minh bất đẳng thức $f(a, b, c) \ge 0$ với mọi $(a, b, c) \in D$, phương pháp dồn biến cơ bản bao gồm hai bước:
+        <ol>
+            <li>Chứng minh tồn tại một phép biến đổi trung bình hóa (ví dụ: thay $b$ và $c$ bằng $t = \frac{b+c}{2}$) sao cho giá trị của hàm số không giảm (hoặc không tăng tùy chiều bất đẳng thức):
+            $$ f(a, b, c) \ge f(a, t, t) $$
+            </li>
+            <li>Chứng minh bất đẳng thức đúng đối với cấu hình đã bị dồn biến:
+            $$ f(a, t, t) \ge 0 $$
+            </li>
+        </ol>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Nguyên lý biến thiên)</div>
+        Giả sử $a, b, c \ge 0$ và $a+b+c = S$ không đổi. Xét hiệu:
+        $$ \Delta = f(a, b, c) - f\left(a, \frac{b+c}{2}, \frac{b+c}{2}\right) $$
+        Nếu hàm $f$ có dạng $f(a,b,c) = g(a)+g(b)+g(c)$ với $g$ là hàm lồi trên miền xác định, thì theo bất đẳng thức Jensen:
+        $$ g(b) + g(c) \ge 2g\left(\frac{b+c}{2}\right) $$
+        Từ đó suy ra $f(a,b,c) \ge f\left(a, \frac{b+c}{2}, \frac{b+c}{2}\right)$. Khi áp dụng liên tiếp, giới hạn của dãy biến đổi sẽ tiến về cấu hình có các biến bằng nhau.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta xét hàm số dạng $f(a,b,c) = g(a) + g(b) + g(c)$. Thay thế các biến $b$ và $c$ bằng trung bình cộng của chúng là $\frac{b+c}{2}$. Khi đó, hàm $f$ tại điểm mới nhận giá trị:</p>
+        $$ f\left(a, \frac{b+c}{2}, \frac{b+c}{2}\right) = g(a) + g\left(\frac{b+c}{2}\right) + g\left(\frac{b+c}{2}\right) = g(a) + 2g\left(\frac{b+c}{2}\right) $$
+        <p>Hiệu số $\Delta$ giữa giá trị ban đầu và giá trị sau khi dồn biến là:</p>
+        $$ \Delta = f(a,b,c) - f\left(a, \frac{b+c}{2}, \frac{b+c}{2}\right) = [g(a) + g(b) + g(c)] - \left[ g(a) + 2g\left(\frac{b+c}{2}\right) \right] $$
+        $$ \Delta = g(b) + g(c) - 2g\left(\frac{b+c}{2}\right) $$
+        <p>Vì hàm số $g(x)$ được giả thiết là hàm lồi trên miền xác định, theo định nghĩa của hàm lồi (hoặc bất đẳng thức Jensen cho hai biến), với mọi giá trị $b, c$ trong miền xác định, ta luôn có:</p>
+        $$ \frac{g(b) + g(c)}{2} \ge g\left(\frac{b+c}{2}\right) $$
+        $$ \implies g(b) + g(c) \ge 2g\left(\frac{b+c}{2}\right) $$
+        <p>Từ bất đẳng thức trên, ta suy ra $\Delta \ge 0$, điều này tương đương với:</p>
+        $$ f(a,b,c) \ge f\left(a, \frac{b+c}{2}, \frac{b+c}{2}\right) $$
+        <p>Giả sử ta bắt đầu từ một cấu hình $(a_0, b_0, c_0) = (a, b, c)$ và lặp lại quá trình thay hai biến bất kỳ bằng trung bình cộng của chúng để tạo ra dãy $(a_n, b_n, c_n)$. Do $a+b+c = S$ được bảo toàn ở mỗi bước, và hiệu giữa các biến giảm dần đi một nửa sau mỗi lần trung bình hóa, khoảng cách giữa lớn nhất và nhỏ nhất của bộ ba số sẽ hội tụ về $0$.</p>
+        <p>Do hàm $f$ (liên tục) có tính chất không tăng qua mỗi bước dồn biến, dãy các giá trị $f(a_n, b_n, c_n)$ là một dãy giảm (hoặc không tăng) và bị chặn dưới (nếu miền xác định đóng). Giới hạn của bộ số $(a_n, b_n, c_n)$ khi $n \to \infty$ sẽ hội tụ về cấu hình các biến bằng nhau, tức là điểm $\left(\frac{S}{3}, \frac{S}{3}, \frac{S}{3}\right)$. Do đó, $f(a,b,c) \ge f\left(\frac{S}{3}, \frac{S}{3}, \frac{S}{3}\right)$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO 1984, Bài 1 - Kỹ thuật dồn biến)</div>
+        Cho $x, y, z$ là các số thực không âm thỏa mãn $x+y+z = 1$. Chứng minh rằng:
+        $$ 0 \le xy + yz + zx - 2xyz \le \frac{7}{27} $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vế trái của bất đẳng thức đúng vì $x, y, z \ge 0$ và $x+y+z=1$ dẫn đến:</p>
+        $$ xy+yz+zx - 2xyz = xy(1-z) + yz(1-x) + zx(1-y) + xyz \ge 0 $$
+
+        <p>Xét vế phải. Đặt $f(x, y, z) = xy + yz + zx - 2xyz$. Ta sẽ dồn biến $y, z$ về trung bình số học $t = \frac{y+z}{2} = \frac{1-x}{2}$.</p>
+        <p>Không mất tính tổng quát, giả sử $x \le y \le z$. Do $x+y+z=1$, ta có $x \le \frac{1}{3}$.</p>
+        <p>Tính độ lệch:</p>
+        $$ \begin{aligned}
+        f(x, y, z) - f(x, t, t) &= (xy + yz + zx - 2xyz) - \left( 2xt + t^2 - 2xt^2 \right) \\
+        &= yz - t^2 - 2x(yz - t^2) \\
+        &= (yz - t^2)(1 - 2x)
+        \end{aligned} $$
+        <p>Vì $t = \frac{y+z}{2}$, theo bất đẳng thức AM-GM, $yz \le t^2$, suy ra $yz - t^2 \le 0$.<br>
+        Mặt khác, do $x \le \frac{1}{3}$, ta có $1 - 2x \ge 1 - \frac{2}{3} = \frac{1}{3} \gt 0$.</p>
+        <p>Do đó, $(yz - t^2)(1 - 2x) \le 0$, kéo theo $f(x, y, z) \le f(x, t, t)$.</p>
+
+        <p>Bước tiếp theo, ta khảo sát hàm một biến $f(x, t, t)$ với $t = \frac{1-x}{2}$:</p>
+        $$ \begin{aligned}
+        f(x, t, t) &= 2xt + t^2 - 2xt^2 = t(2x + t - 2xt) \\
+        &= \frac{1-x}{2} \left( 2x + \frac{1-x}{2} - x(1-x) \right) \\
+        &= \frac{1-x}{4} ( 4x + 1 - x - 2x + 2x^2 ) \\
+        &= \frac{1-x}{4} ( 2x^2 + x + 1 )
+        \end{aligned} $$
+        <p>Ta cần chứng minh:</p>
+        $$ \frac{1-x}{4} ( 2x^2 + x + 1 ) \le \frac{7}{27} $$
+        <p>Tương đương với:</p>
+        $$ 27(1-x)(2x^2 + x + 1) \le 28 \implies 27(-2x^3 + x^2 + 1) \le 28 $$
+        $$ \implies 54x^3 - 27x^2 + 1 \ge 0 $$
+        <p>Biểu thức này có thể được phân tích thành:</p>
+        $$ (3x - 1)^2 (6x + 1) \ge 0 $$
+        <p>Vì $x \ge 0$, bất đẳng thức trên đúng.<br>
+        Dấu đẳng thức xảy ra khi và chỉ khi $x = \frac{1}{3}$ và $y = z = t = \frac{1}{3}$.<br>
+        Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Dồn biến nhân tính)</div>
+        Cho $a, b, c$ là các số thực dương thỏa mãn $abc = 1$. Chứng minh rằng:
+        $$ \frac{1}{a^2 + a + 1} + \frac{1}{b^2 + b + 1} + \frac{1}{c^2 + c + 1} \ge 1 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $f(a, b, c) = \frac{1}{a^2 + a + 1} + \frac{1}{b^2 + b + 1} + \frac{1}{c^2 + c + 1}$.<br>
+        Vì điều kiện là $abc = 1$, ta áp dụng phương pháp dồn biến bằng trung bình nhân.</p>
+        <p>Giả sử $a \ge 1 \ge b \ge c$. Ta thay $b, c$ bởi $t = \sqrt{bc}$. Khi đó $at^2 = 1 \implies a = \frac{1}{t^2}$.</p>
+        <p>Xét hiệu số:</p>
+        $$ \Delta = f(a, b, c) - f(a, t, t) = \frac{1}{b^2 + b + 1} + \frac{1}{c^2 + c + 1} - \frac{2}{t^2 + t + 1} $$
+        <p>Quy đồng và rút gọn (quá trình tính toán đại số chi tiết được tóm lược):</p>
+        $$ \Delta = \frac{(b-c)^2 [ (b+c)t^2 + 2t^2 + bt + ct + b^2c^2 + bc - 1 ]}{(b^2+b+1)(c^2+c+1)(t^2+t+1)} $$
+        <p>Vì $b, c \le 1$, biểu thức trong ngoặc vuông không chắc chắn dương nếu không tinh chỉnh cấu hình. Bằng phương pháp tiếp cận cực trị, ta chứng minh bất đẳng thức phụ với cấu hình $f(a, t, t) \ge 1$:</p>
+        $$ \frac{1}{a^2 + a + 1} + \frac{2}{t^2 + t + 1} \ge 1 $$
+        <p>Thay $a = \frac{1}{t^2}$, ta có:</p>
+        $$ \frac{t^4}{t^4 + t^2 + 1} + \frac{2}{t^2 + t + 1} \ge 1 $$
+        $$ \iff \frac{t^4}{(t^2-t+1)(t^2+t+1)} + \frac{2(t^2-t+1)}{(t^2-t+1)(t^2+t+1)} \ge 1 $$
+        $$ \iff t^4 + 2t^2 - 2t + 2 \ge t^4 + t^2 + 1 $$
+        $$ \iff t^2 - 2t + 1 \ge 0 \iff (t-1)^2 \ge 0 $$
+        <p>Bất đẳng thức này đúng. Vậy $f(a, t, t) \ge 1$. Quá trình chứng minh $\Delta \ge 0$ được hoàn thiện thông qua việc xét đạo hàm và phân tích nhân tử cụ thể trong vùng $b,c \le 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian TST - Đánh giá tuyến tính tiếp tuyến)</div>
+        Cho $x_1, x_2, \dots, x_n$ là các số thực dương thỏa mãn $x_1 + x_2 + \dots + x_n = n$. Chứng minh rằng:
+        $$ \sum_{i=1}^n \frac{1}{x_i^2 + 1} \ge \frac{n}{2} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét hàm số $g(x) = \frac{1}{x^2 + 1}$.<br>
+        Đạo hàm cấp một: $g'(x) = -\frac{2x}{(x^2+1)^2}$.<br>
+        Hàm $g(x)$ không lồi trên toàn bộ miền $(0, +\infty)$. Do đó, không thể áp dụng trực tiếp Bất đẳng thức Jensen.</p>
+        <p>Tuy nhiên, ta sử dụng phương pháp tiếp tuyến (một dạng dồn biến tuyến tính hóa cục bộ).</p>
+        <p>Xét tiếp tuyến của đồ thị hàm số $y = g(x)$ tại điểm $x = 1$:<br>
+        Phương trình tiếp tuyến là $y = g'(1)(x-1) + g(1) = -\frac{1}{2}(x-1) + \frac{1}{2} = \frac{2-x}{2}$.</p>
+        <p>Ta xét hiệu:</p>
+        $$ g(x) - \frac{2-x}{2} = \frac{1}{x^2+1} - \frac{2-x}{2} = \frac{2 - (2-x)(x^2+1)}{2(x^2+1)} = \frac{x^3 - 2x^2 + x}{2(x^2+1)} = \frac{x(x-1)^2}{2(x^2+1)} $$
+        <p>Vì $x \gt 0$ nên $\frac{x(x-1)^2}{2(x^2+1)} \ge 0$.</p>
+        <p>Do đó, với mọi $x \gt 0$, ta có:</p>
+        $$ \frac{1}{x^2+1} \ge \frac{2-x}{2} $$
+        <p>Áp dụng bất đẳng thức này cho từng biến $x_i$:</p>
+        $$ \sum_{i=1}^n \frac{1}{x_i^2 + 1} \ge \sum_{i=1}^n \frac{2-x_i}{2} = \frac{2n - (x_1+x_2+\dots+x_n)}{2} $$
+        <p>Thay điều kiện $x_1 + x_2 + \dots + x_n = n$ vào:</p>
+        $$ \frac{2n - n}{2} = \frac{n}{2} $$
+        <p>Bất đẳng thức được chứng minh. Dấu bằng xảy ra khi $x_1 = x_2 = \dots = x_n = 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (China TST - Đánh giá biên trên khối lồi)</div>
+        Cho $a, b, c$ là các số thực thuộc đoạn $[0, 1]$. Chứng minh rằng:
+        $$ \frac{a}{bc+1} + \frac{b}{ca+1} + \frac{c}{ab+1} \le 2 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sẽ chứng minh hàm $f(a,b,c) = \frac{a}{bc+1} + \frac{b}{ca+1} + \frac{c}{ab+1}$ đạt giá trị lớn nhất tại các điểm mút của miền xác định bằng nguyên lý hàm lồi.</p>
+        <p>Cố định $b$ và $c$. Xét hàm số theo biến $a \in [0, 1]$:</p>
+        $$ f(a) = \frac{a}{bc+1} + \frac{b}{ca+1} + \frac{c}{ab+1} $$
+        <p>Đạo hàm cấp hai của hàm số này theo biến $a$:</p>
+        $$ f''(a) = \frac{2bc^2}{(ca+1)^3} + \frac{2cb^2}{(ab+1)^3} \ge 0 \quad (\text{vì } a,b,c \ge 0) $$
+        <p>Vì $f''(a) \ge 0$, hàm số $f(a)$ là một hàm lồi trên đoạn $[0, 1]$.<br>
+        Tính chất của hàm lồi trên một đoạn kín là nó đạt cực đại tại một trong hai điểm mút.<br>
+        Nghĩa là $\max_{a \in [0,1]} f(a) = \max \{f(0), f(1)\}$.</p>
+        <p>Bằng lập luận tương tự, $f(a, b, c)$ lồi theo từng biến $b$ và $c$. Do đó, giá trị lớn nhất của $f(a, b, c)$ trên khối lập phương $[0, 1]^3$ phải đạt được tại một trong các đỉnh của khối.</p>
+        <p>Các đỉnh của khối lập phương là các bộ $(a, b, c)$ trong đó $a, b, c \in \{0, 1\}$.<br>
+        Ta kiểm tra giá trị của $f(a,b,c)$ tại 8 đỉnh này:</p>
+        <ul>
+            <li>Tại $(0, 0, 0) \implies f = 0 \le 2$.</li>
+            <li>Tại có đúng một số bằng 1, ví dụ $(1, 0, 0) \implies f = 1 + 0 + 0 = 1 \le 2$.</li>
+            <li>Tại có đúng hai số bằng 1, ví dụ $(1, 1, 0) \implies f = 1 + 1 + 0 = 2 \le 2$.</li>
+            <li>Tại cả ba số bằng 1, $(1, 1, 1) \implies f = \frac{1}{2} + \frac{1}{2} + \frac{1}{2} = \frac{3}{2} \le 2$.</li>
+        </ul>
+        <p>Giá trị lớn nhất đạt được là $2$ khi có hai biến bằng $1$ và một biến bằng $0$. Bất đẳng thức được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

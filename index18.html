@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học và Tổ hợp - Định lý Lucas và Định lý Kummer</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ TỔ HỢP <br> ĐỊNH LÝ LUCAS VÀ ĐỊNH LÝ KUMMER</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát tính chia hết của các hệ số tổ hợp là một lớp bài toán liên kết trực tiếp giữa phân tích số học và cấu trúc rời rạc. Chuyên đề này trình bày Định lý Lucas về thặng dư của hệ số nhị thức modulo một số nguyên tố và Định lý Kummer về số mũ $p$-adic thông qua phép nhớ trong hệ cơ số $p$. Các bài toán áp dụng tập trung vào việc đếm số lượng hệ số nhị thức không chia hết cho $p$, đánh giá tính chẵn lẻ và xử lý các hệ thức đồng dư tổ hợp.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Biểu diễn trong hệ cơ số $p$)</div>
+        Cho $p$ là một số nguyên tố và $n$ là một số nguyên không âm. Biểu diễn của $n$ trong hệ cơ số $p$ có dạng:
+        $$ n = n_k p^k + n_{k-1} p^{k-1} + \dots + n_1 p + n_0 $$
+        trong đó các chữ số $n_i$ thỏa mãn $0 \le n_i \lt p$ với mọi $i = 0, 1, \dots, k$.<br>
+        Ký hiệu ngắn gọn: $n = (n_k n_{k-1} \dots n_1 n_0)_p$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Lucas)</div>
+        Cho $p$ là một số nguyên tố. Giả sử $n$ và $m$ là các số nguyên không âm có biểu diễn trong hệ cơ số $p$ lần lượt là:
+        $$ n = n_k p^k + \dots + n_1 p + n_0 $$
+        $$ m = m_k p^k + \dots + m_1 p + m_0 $$
+        Khi đó, thặng dư của hệ số nhị thức $\binom{n}{m}$ theo modulo $p$ được tính bằng tích các hệ số nhị thức của từng chữ số tương ứng:
+        $$ \binom{n}{m} \equiv \prod_{i=0}^k \binom{n_i}{m_i} \pmod p $$
+        Quy ước: Nếu $m_i \gt n_i$, thì $\binom{n_i}{m_i} = 0$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng hàm sinh và khai triển nhị thức trên trường $\mathbb{Z}_p$.</p>
+        <p>Ta có hằng đẳng thức $(1+x)^p \equiv 1 + x^p \pmod p$. Bằng quy nạp, ta suy ra $(1+x)^{p^i} \equiv 1 + x^{p^i} \pmod p$ với mọi $i \ge 0$.</p>
+        <p>Xét đa thức $F(x) = (1+x)^n$ trên $\mathbb{Z}_p$:</p>
+        $$ (1+x)^n = (1+x)^{n_0 + n_1 p + \dots + n_k p^k} = (1+x)^{n_0} ((1+x)^p)^{n_1} \dots ((1+x)^{p^k})^{n_k} $$
+        $$ \equiv (1+x)^{n_0} (1+x^p)^{n_1} \dots (1+x^{p^k})^{n_k} \pmod p $$
+        <p>Hệ số của $x^m$ ở vế trái là $\binom{n}{m}$.</p>
+        <p>Vì $m = m_0 + m_1 p + \dots + m_k p^k$ là biểu diễn duy nhất trong hệ cơ số $p$, số hạng $x^m$ ở vế phải chỉ có thể được tạo ra bằng cách lấy $x^{m_0}$ từ nhân tử thứ nhất, $x^{p m_1}$ từ nhân tử thứ hai, ..., và $x^{p^k m_k}$ từ nhân tử thứ $k+1$.</p>
+        <p>Hệ số của quá trình trích xuất này là $\binom{n_0}{m_0} \binom{n_1}{m_1} \dots \binom{n_k}{m_k}$.</p>
+        <p>Đồng nhất hệ số hai vế, ta thu được Định lý Lucas.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Kummer)</div>
+        Cho $p$ là số nguyên tố và $n, m$ là các số nguyên thỏa mãn $n \ge m \ge 0$. Số mũ $p$-adic của hệ số nhị thức $\binom{n}{m}$, ký hiệu là $v_p\left(\binom{n}{m}\right)$, bằng số lần <strong>nhớ</strong> (carries) khi thực hiện phép cộng $m$ và $n-m$ trong hệ cơ số $p$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Theo Định lý Legendre, $v_p(x!) = \sum_{i=1}^\infty \lfloor \frac{x}{p^i} \rfloor$.<br>
+        Áp dụng cho $\binom{n}{m} = \frac{n!}{m!(n-m)!}$, ta có:</p>
+        $$ v_p\left(\binom{n}{m}\right) = \sum_{i=1}^\infty \left( \left\lfloor \frac{n}{p^i} \right\rfloor - \left\lfloor \frac{m}{p^i} \right\rfloor - \left\lfloor \frac{n-m}{p^i} \right\rfloor \right) $$
+        <p>Mỗi số hạng trong tổng trên có dạng $\lfloor x+y \rfloor - \lfloor x \rfloor - \lfloor y \rfloor$. Giá trị này luôn bằng $1$ nếu phần thập phân của $x$ và $y$ cộng lại $\ge 1$ (tương ứng với việc có một phép nhớ tại vị trí thứ $i$ khi cộng trong cơ số $p$), và bằng $0$ nếu không có phép nhớ. Do đó, tổng này là tổng số lần nhớ.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Đếm hệ số nhị thức không chia hết cho $p$)</div>
+        Cho $p$ là một số nguyên tố và $n$ là một số nguyên dương. Có bao nhiêu số nguyên $m$ thỏa mãn $0 \le m \le n$ sao cho hệ số nhị thức $\binom{n}{m}$ không chia hết cho $p$?
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo Định lý Lucas, $\binom{n}{m} \equiv \prod_{i=0}^k \binom{n_i}{m_i} \pmod p$, trong đó $n_i$ và $m_i$ là các chữ số trong biểu diễn cơ số $p$ của $n$ và $m$.</p>
+        <p>Để $\binom{n}{m}$ không chia hết cho $p$, điều kiện cần và đủ là thặng dư modulo $p$ của nó khác $0$.<br>
+        Tích $\prod_{i=0}^k \binom{n_i}{m_i} \not\equiv 0 \pmod p$ khi và chỉ khi mọi nhân tử trong tích đều khác $0 \pmod p$.</p>
+        <p>Vì $0 \le n_i \lt p$ và $0 \le m_i \lt p$, hệ số $\binom{n_i}{m_i}$ bằng 0 khi và chỉ khi $m_i \gt n_i$.<br>
+        Do đó, điều kiện để $\binom{n_i}{m_i} \not\equiv 0 \pmod p$ là:</p>
+        $$ 0 \le m_i \le n_i \quad \text{với mọi } i = 0, 1, \dots, k $$
+        <p>Với mỗi vị trí $i$, chữ số $m_i$ có thể nhận bất kỳ giá trị nguyên nào từ $0$ đến $n_i$. Có $n_i + 1$ cách chọn chữ số $m_i$.</p>
+        <p>Vì các vị trí $i$ độc lập với nhau trong biểu diễn cơ số $p$, số lượng cách chọn số $m$ là tích số lượng cách chọn các chữ số $m_i$.<br>
+        Số lượng các số $m$ thỏa mãn điều kiện là:</p>
+        $$ \prod_{i=0}^k (n_i + 1) $$
+        <p>Bài toán được giải quyết thông qua cấu trúc của Định lý Lucas.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Tính chẵn lẻ của cấu trúc tổ hợp)</div>
+        Chứng minh rằng với mọi số nguyên dương $k$, mọi hệ số nhị thức của khai triển $(x+y)^{2^k-1}$ đều là số lẻ.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $n = 2^k - 1$. Hệ số của $x^m y^{n-m}$ trong khai triển là $\binom{n}{m}$ với $0 \le m \le n$.</p>
+        <p>Ta xét biểu diễn của $n$ trong hệ cơ số $p = 2$.<br>
+        Vì $n = 2^k - 1 = 1 \cdot 2^{k-1} + 1 \cdot 2^{k-2} + \dots + 1 \cdot 2^1 + 1 \cdot 2^0$, biểu diễn cơ số 2 của $n$ gồm $k$ chữ số, và tất cả các chữ số đó đều bằng $1$:</p>
+        $$ n = (\underbrace{11\dots1}_k)_2 $$
+        <p>Giả sử $m$ là một số nguyên bất kỳ thỏa mãn $0 \le m \le n$. Biểu diễn cơ số 2 của $m$ là $m = (m_{k-1} \dots m_1 m_0)_2$, trong đó mỗi $m_i \in \{0, 1\}$.</p>
+        <p>Áp dụng Định lý Lucas cho $p = 2$:</p>
+        $$ \binom{n}{m} \equiv \prod_{i=0}^{k-1} \binom{n_i}{m_i} \equiv \prod_{i=0}^{k-1} \binom{1}{m_i} \pmod 2 $$
+        <p>Vì $m_i \in \{0, 1\}$, ta luôn có $\binom{1}{0} = 1$ và $\binom{1}{1} = 1$.<br>
+        Do đó, $\binom{1}{m_i} = 1$ với mọi khả năng của $m_i$.</p>
+        <p>Tích các hệ số này đồng dư với $1 \pmod 2$:</p>
+        $$ \binom{n}{m} \equiv 1 \pmod 2 $$
+        <p>Điều này chứng tỏ $\binom{n}{m}$ là một số lẻ với mọi $0 \le m \le 2^k - 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (China High School Mathematics League - Phương trình chia hết)</div>
+        Tìm tất cả các số nguyên dương $n$ sao cho $\binom{2n}{n}$ không chia hết cho 4.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Điều kiện $\binom{2n}{n}$ không chia hết cho 4 tương đương với việc số mũ 2-adic của $\binom{2n}{n}$ nhỏ hơn 2, tức là:</p>
+        $$ v_2\left(\binom{2n}{n}\right) \le 1 $$
+        <p>Theo Định lý Kummer (Định lý 1.2), $v_2\left(\binom{2n}{n}\right)$ bằng số lần nhớ khi thực hiện phép cộng $n + n$ trong hệ cơ số 2.</p>
+        <p>Phép cộng $n + n$ trong hệ cơ số 2 tương đương với việc dịch trái các bit của $n$ thêm một vị trí (vì $n + n = 2n$).<br>
+        Số lần nhớ trong phép cộng $n + n$ bằng số lượng chữ số 1 trong biểu diễn nhị phân của $n$.</p>
+        <p>Gọi $s_2(n)$ là tổng các chữ số của $n$ trong hệ cơ số 2. Ta có $v_2\left(\binom{2n}{n}\right) = s_2(n)$.<br>
+        Theo điều kiện của bài toán:</p>
+        $$ s_2(n) \le 1 $$
+        <p>Vì $n$ là một số nguyên dương, $n \ge 1$, nên biểu diễn nhị phân của $n$ phải có ít nhất một chữ số 1.<br>
+        Suy ra $s_2(n) \ge 1$.<br>
+        Kết hợp hai bất đẳng thức, ta bắt buộc phải có $s_2(n) = 1$.</p>
+        <p>Một số nguyên dương có tổng các chữ số trong hệ nhị phân bằng 1 khi và chỉ khi nó là một lũy thừa của 2.<br>
+        Vậy, các số nguyên $n$ thỏa mãn điều kiện bài toán là $n = 2^k$ với $k$ là số nguyên không âm.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Romanian National Olympiad - Mức độ chia hết)</div>
+        Cho $p$ là số nguyên tố và $a, b$ là các số nguyên dương. Chứng minh rằng:
+        $$ v_p\left( \binom{p a}{p b} \right) = v_p\left( \binom{a}{b} \right) $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Sử dụng Định lý Kummer (Định lý 1.2) để đếm số lần nhớ.</p>
+        <p>Số mũ $v_p\left( \binom{a}{b} \right)$ bằng số lần nhớ khi cộng $b$ và $a-b$ trong hệ cơ số $p$.<br>
+        Gọi số lần nhớ này là $C_1$.</p>
+        <p>Ta xét biểu diễn của $pa, pb$ và $p(a-b)$ trong hệ cơ số $p$.<br>
+        Bất kỳ số nguyên $x$ nào, khi nhân với $p$, biểu diễn cơ số $p$ của nó sẽ được thêm một chữ số $0$ vào tận cùng bên phải. Tức là các chữ số bị dịch sang trái 1 vị trí.</p>
+        <p>Phép cộng $pb + p(a-b) = pa$ tương đồng với phép cộng $b + (a-b) = a$, chỉ khác là có thêm chữ số $0$ ở hàng đơn vị.<br>
+        Chữ số hàng đơn vị là $0 + 0 = 0$, không sinh ra bất kỳ phép nhớ nào.<br>
+        Tại các hàng tiếp theo (từ vị trí thứ 1 trở đi), quá trình cộng và nhớ diễn ra giống hệt như quá trình cộng $b + (a-b)$.</p>
+        <p>Do đó, số lần nhớ khi cộng $pb$ và $p(a-b)$ trong hệ cơ số $p$, gọi là $C_2$, bằng số lần nhớ khi cộng $b$ và $a-b$.</p>
+        $$ C_2 = C_1 $$
+        <p>Theo Định lý Kummer, $C_2 = v_p\left( \binom{p a}{p b} \right)$ và $C_1 = v_p\left( \binom{a}{b} \right)$.<br>
+        Suy ra $v_p\left( \binom{p a}{p b} \right) = v_p\left( \binom{a}{b} \right)$. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Balkan Mathematical Olympiad - Tính chia hết tuần hoàn)</div>
+        Cho $p$ là một số nguyên tố. Chứng minh rằng với mọi số nguyên dương $m, n$, ta có đồng dư thức:
+        $$ \binom{n p^k}{m p^k} \equiv \binom{n}{m} \pmod p $$
+        với mọi số nguyên dương $k$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán có thể được chứng minh bằng quy nạp kết hợp với đa thức hàm sinh, hoặc sử dụng trực tiếp Định lý Lucas. Ta chọn tiếp cận bằng Định lý Lucas để duy trì tính hệ thống.</p>
+        <p>Biểu diễn của $n$ trong hệ cơ số $p$ là $n = (n_r \dots n_1 n_0)_p$.<br>
+        Khi nhân $n$ với $p^k$, ta thêm $k$ chữ số $0$ vào tận cùng bên phải của biểu diễn.<br>
+        Vậy biểu diễn cơ số $p$ của $n p^k$ là:</p>
+        $$ n p^k = (n_r \dots n_1 n_0 \underbrace{0 \dots 0}_k)_p $$
+        <p>Tương tự, biểu diễn cơ số $p$ của $m p^k$ là:</p>
+        $$ m p^k = (m_s \dots m_1 m_0 \underbrace{0 \dots 0}_k)_p $$
+        <p>(Nếu $m \gt n$, $\binom{np^k}{mp^k} = 0 \equiv \binom{n}{m} \pmod p$). Giả sử $m \le n$.</p>
+        <p>Áp dụng Định lý Lucas cho $\binom{n p^k}{m p^k}$ theo hệ cơ số $p$:</p>
+        $$ \binom{n p^k}{m p^k} \equiv \left( \prod_{i=0}^r \binom{n_i}{m_i} \right) \cdot \underbrace{\binom{0}{0} \dots \binom{0}{0}}_k \pmod p $$
+        <p>Vì $\binom{0}{0} = 1$, các số hạng tương ứng với $k$ chữ số 0 tận cùng không làm thay đổi tích.<br>
+        Biểu thức tích còn lại là thặng dư của $\binom{n}{m}$ theo Định lý Lucas:</p>
+        $$ \prod_{i=0}^r \binom{n_i}{m_i} \equiv \binom{n}{m} \pmod p $$
+        <p>Từ hai đồng dư thức trên, tính chất bắc cầu cho ta:</p>
+        $$ \binom{n p^k}{m p^k} \equiv \binom{n}{m} \pmod p $$
+        <p>Đồng dư thức được chứng minh. Phương pháp này chỉ ra rằng việc thêm các khối số 0 vào hệ cơ số $p$ bảo toàn tính chất thặng dư của hệ số nhị thức.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

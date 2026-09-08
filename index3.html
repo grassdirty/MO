@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học bậc cao - Bổ đề nâng số mũ (LTE) và Cấp</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC BẬC CAO <br> BỔ ĐỀ NÂNG SỐ MŨ (LTE) VÀ CẤP</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Số học</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát số mũ của một số nguyên tố phân tích ra từ một biểu thức lũy thừa là phương pháp quan trọng để giải quyết các phương trình Diophantine mũ. Chuyên đề này hình thức hóa và chứng minh Bổ đề nâng số mũ (Lifting The Exponent Lemma - LTE) phân tách cho số nguyên tố lẻ và số nguyên tố chẵn ($p=2$). Sự kết hợp giữa LTE và khái niệm Cấp của một phần tử (Order modulo $p$) thiết lập một phương pháp để xử lý các bài toán chia hết trong TST và IMO.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Số mũ p-adic)</div>
+        Cho $p$ là một số nguyên tố và $n$ là một số nguyên khác $0$. Số mũ p-adic của $n$, ký hiệu là $v_p(n)$, được định nghĩa là số mũ cao nhất của $p$ chia hết $n$. <br>
+        Nói cách khác, $v_p(n)=k$ khi và chỉ khi $n=p^k \cdot m$ với $\gcd(m,p)=1$.<br>
+        Quy ước: $v_p(xy)=v_p(x)+v_p(y)$ và $v_p(x+y) \ge \min(v_p(x), v_p(y))$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Nâng số mũ (LTE) đối với số nguyên tố lẻ)</div>
+        Cho $p$ là một số nguyên tố lẻ. $x, y$ là hai số nguyên không chia hết cho $p$. Nếu $p \mid x-y$, thì với mọi số nguyên dương $n$, ta có:
+        $$v_p(x^n - y^n) = v_p(x-y) + v_p(n)$$
+        <i>Mở rộng:</i> Nếu $n$ là một số nguyên dương lẻ và $p \mid x+y$, thì:
+        $$v_p(x^n + y^n) = v_p(x+y) + v_p(n)$$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh định lý bằng quy nạp theo số mũ $v_p(n)$.</p>
+        <p><strong>Bước cơ sở 1:</strong> Khảo sát trường hợp $n=p$. Giả sử $x-y=p^k \cdot m$ (với $p \nmid m, k \ge 1$), tức là $x=y+p^k m$. Thay vào biểu thức $x^p-y^p$:</p>
+        $$x^p - y^p = (y + p^k m)^p - y^p = \sum_{i=1}^p \binom{p}{i} y^{p-i} (p^k m)^i$$
+        <p>Số hạng đầu tiên ứng với $i=1$: $\binom{p}{1} y^{p-1} p^k m = p^{k+1} m y^{p-1}$. Do $p \nmid m$ và $p \nmid y$, số hạng này có số mũ p-adic là $k+1$.<br>
+        Xét các số hạng tiếp theo ($2 \le i \le p$): $\binom{p}{i}$ luôn chứa nhân tử $p$ (do $p$ nguyên tố và $i \lt p$), trừ khi $i=p$ thì hệ số là 1 nhưng phần lũy thừa là $(p^k m)^p = p^{kp} m^p$. Vì $p \ge 3$ và $k \ge 1$, ta có $kp \ge 3k \ge k+2$. Các số hạng trung gian $i \ge 2$ chứa $p$ với số mũ ít nhất là $1+2k \ge k+2$.<br>
+        Tất cả các số hạng từ $i=2$ đến $p$ đều chia hết cho $p^{k+2}$, trong khi số hạng $i=1$ chỉ chia hết cho $p^{k+1}$ mà không chia hết cho $p^{k+2}$.<br>
+        Theo tính chất của định giá p-adic, tổng sẽ có số mũ p-adic đúng bằng $k+1$.<br>
+        Vậy $v_p(x^p - y^p) = v_p(x-y) + 1$.</p>
+
+        <p><strong>Bước cơ sở 2:</strong> Khảo sát trường hợp $\gcd(n,p)=1$. Ta có:<br>
+        $x^n - y^n = (x-y)(x^{n-1} + x^{n-2}y + \dots + y^{n-1})$.<br>
+        Do $x \equiv y \pmod p$, tổng nhân tử thứ hai đồng dư với $n y^{n-1} \pmod p$. Vì $p \nmid n$ và $p \nmid y$, phần nhân tử thứ hai không chia hết cho $p$.<br>
+        Vậy $v_p(x^n - y^n) = v_p(x-y) = v_p(x-y) + v_p(n)$.</p>
+
+        <p><strong>Bước quy nạp:</strong> Viết $n=p^\alpha \cdot b$ với $\gcd(b,p)=1$. <br>
+        Sử dụng Bước 2, $v_p(x^n - y^n) = v_p((x^{p^\alpha})^b - (y^{p^\alpha})^b) = v_p(x^{p^\alpha} - y^{p^\alpha})$.<br>
+        Áp dụng Bước 1 liên tiếp $\alpha$ lần:<br>
+        $v_p(x^{p^\alpha} - y^{p^\alpha}) = v_p(x^{p^{\alpha-1}} - y^{p^{\alpha-1}}) + 1 = \dots = v_p(x-y) + \alpha$.<br>
+        Vì $\alpha = v_p(n)$, định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bổ đề Nâng số mũ đối với $p=2$)</div>
+        Cho $x, y$ là hai số nguyên lẻ sao cho $2 \mid x-y$. Với mọi số nguyên dương $n$:
+        <ol>
+            <li> Nếu $n$ là số chẵn, ta có công thức tổng quát:
+            $$v_2(x^n - y^n) = v_2(x-y) + v_2(x+y) + v_2(n) - 1$$
+            </li>
+            <li> Nếu $n$ là số lẻ, việc nâng lũy thừa không làm tăng số mũ của 2:
+            $$v_2(x^n - y^n) = v_2(x-y)$$
+            </li>
+        </ol>
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Trường hợp $n$ lẻ, áp dụng phân tích nhân tử tương tự Bước cơ sở 2 của Định lý 1.1. Do $n$ lẻ, đa thức $x^{n-1} + \dots + y^{n-1}$ có một số lẻ các số hạng lẻ, nên tổng là một số lẻ (không chia hết cho 2). Vậy $v_2(x^n - y^n) = v_2(x-y)$.</p>
+        <p>Trường hợp $n$ chẵn, ta viết $n=2^\alpha \cdot m$ với $m$ lẻ và $\alpha \ge 1$.<br>
+        Sử dụng hằng đẳng thức hiệu hai bình phương $\alpha$ lần:</p>
+        $$x^{2^\alpha m} - y^{2^\alpha m} = (x^m - y^m)(x^m + y^m)(x^{2m} + y^{2m}) \dots (x^{2^{\alpha-1}m} + y^{2^{\alpha-1}m})$$
+        <p>Vì $x, y$ lẻ, $x^{2^k m}$ và $y^{2^k m}$ là các số chính phương lẻ, nên chúng đồng dư với $1 \pmod 8$.<br>
+        Do đó, tổng $x^{2^k m} + y^{2^k m} \equiv 1 + 1 = 2 \pmod 8$ với mọi $k \ge 1$.<br>
+        Số mũ của 2 trong mỗi nhân tử tổng (từ $k=1$ đến $\alpha-1$) luôn bằng 1. Có $\alpha-1$ nhân tử như vậy, đóng góp $\alpha-1$ vào $v_2$.<br>
+        Với $x^m \pm y^m$, do $m$ lẻ, $v_2(x^m - y^m) = v_2(x-y)$ và $v_2(x^m + y^m) = v_2(x+y)$.<br>
+        Cộng dồn số mũ:<br>
+        $v_2 = v_2(x-y) + v_2(x+y) + (\alpha - 1) = v_2(x-y) + v_2(x+y) + v_2(n) - 1$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Cấp của một phần tử - Order modulo $p$)</div>
+        Cho số nguyên tố $p$ và số nguyên $a$ sao cho $p \nmid a$. Cấp của $a$ modulo $p$, ký hiệu $d = \text{ord}_p(a)$, là số nguyên dương nhỏ nhất thỏa mãn $a^d \equiv 1 \pmod p$.<br>
+        Khi đó, với mọi số nguyên dương $n$:
+        $$a^n \equiv 1 \pmod p \iff d \mid n$$
+        Đặc biệt, theo Định lý Fermat nhỏ, $a^{p-1} \equiv 1 \pmod p$, nên $d \mid p-1$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Phần này thuộc về kiến thức Lý thuyết Nhóm ở bậc Đại học. Tuy nhiên, ta có thể chứng minh dễ hiểu bằng số học cơ bản như sau:</p>
+        <p><strong>1. Chứng minh $a^n \equiv 1 \pmod p \iff d \mid n$:</strong></p>
+        <p>$(\Leftarrow)$ Nếu $d \mid n$, tồn tại số nguyên dương $k$ sao cho $n = kd$. Khi đó:</p>
+        $$a^n = a^{kd} = (a^d)^k \equiv 1^k = 1 \pmod p$$
+        <p>$(\Rightarrow)$ Nếu $a^n \equiv 1 \pmod p$. Thực hiện phép chia có dư $n$ cho $d$, ta được $n = qd + r$ với $0 \le r \lt d$. Ta có:</p>
+        $$1 \equiv a^n = a^{qd+r} = (a^d)^q \cdot a^r \equiv 1^q \cdot a^r = a^r \pmod p$$
+        <p>Suy ra $a^r \equiv 1 \pmod p$. Vì $d$ là số nguyên dương <strong>nhỏ nhất</strong> thỏa mãn $a^d \equiv 1 \pmod p$ và $0 \le r \lt d$, ta bắt buộc phải có $r = 0$. Do đó $d \mid n$.</p>
+        <p><strong>2. Chứng minh $d \mid p-1$:</strong></p>
+        <p>Theo Định lý Fermat nhỏ, vì $p$ là số nguyên tố và $p \nmid a$, ta luôn có $a^{p-1} \equiv 1 \pmod p$.</p>
+        <p>Áp dụng kết quả vừa chứng minh ở phần 1 với $n = p-1$, ta suy ra $d \mid p-1$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO 1990 - Bài 3)</div>
+        Tìm tất cả các số nguyên dương $n \gt 1$ thỏa mãn điều kiện:
+        $$n^2 \mid 2^n + 1$$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì $2^n + 1$ là một số lẻ, $n^2$ phải là một số lẻ, kéo theo $n$ là số lẻ.<br>
+        Gọi $p$ là ước nguyên tố nhỏ nhất của $n$. Vì $n$ lẻ nên $p \ge 3$.<br>
+        Từ giả thiết $p \mid n \implies p \mid 2^n + 1$, ta có đồng dư thức:</p>
+        $$2^n \equiv -1 \pmod p$$
+        <p>Bình phương hai vế, ta thu được: $2^{2n} \equiv 1 \pmod p$.<br>
+        Gọi $d = \text{ord}_p(2)$ là cấp của $2$ modulo $p$. Theo Định lý 1.3, ta có:<br>
+        $d \mid 2n$ và $d \mid p-1$.</p>
+        <p>Vì $d \mid 2n$, ước chung lớn nhất $\gcd(d, n)$ phải là một ước của $d$. Tuy nhiên, do $d \mid p-1$, mọi ước nguyên tố của $d$ đều nhỏ hơn $p$. <br>
+        Theo cách chọn $p$ là ước nguyên tố <strong>nhỏ nhất</strong> của $n$, $n$ không thể có ước chung nguyên tố nào với $d$.<br>
+        Do đó, $\gcd(d, n) = 1$. Kết hợp với $d \mid 2n$, ta suy ra $d \mid 2$.</p>
+        <p>Các giá trị khả dĩ của $d$ là $1$ hoặc $2$.</p>
+        <ul>
+            <li> Nếu $d=1$: $2^1 \equiv 1 \pmod p \implies p \mid 1$ (Mâu thuẫn).</li>
+            <li> Nếu $d=2$: $2^2 \equiv 1 \pmod p \implies p \mid 3 \implies p = 3$.</li>
+        </ul>
+        <p>Vậy $3$ là ước nguyên tố nhỏ nhất của $n$. Tức là $3 \mid n$.</p>
+
+        <p>Viết $n=3^k \cdot m$ với $k \ge 1$ và $\gcd(m, 3)=1$.<br>
+        Ta có $n^2 \mid 2^n + 1 \implies (3^k m)^2 \mid 2^{3^k m} + 1 \implies 3^{2k} \mid 2^n + 1$.<br>
+        Điều này đồng nghĩa với việc $v_3(2^n + 1) \ge 2k$.</p>
+        <p>Áp dụng Bổ đề LTE (Định lý 1.1 phần mở rộng cho tổng lũy thừa lẻ) với $p=3, x=2, y=1$.<br>
+        Vì $3 \mid 2+1$, và $n$ là số lẻ, ta có:</p>
+        $$v_3(2^n + 1) = v_3(2^n + 1^n) = v_3(2+1) + v_3(n) = 1 + k$$
+        <p>Thay vào bất đẳng thức số mũ:</p>
+        $$1 + k \ge 2k \implies k \le 1$$
+        <p>Vì $k \ge 1$ (do $3 \mid n$), ta bắt buộc phải có $k=1$.<br>
+        Do đó, $n = 3m$.</p>
+        <p>Ta chứng minh $m=1$. Giả sử $m \gt 1$, gọi $q$ là ước nguyên tố nhỏ nhất của $m$. Rõ ràng $q \ge 5$ (do $q \gt p = 3$).<br>
+        Vì $q \mid n \implies q \mid 2^n + 1 \implies 2^n \equiv -1 \pmod q \implies 2^{2n} \equiv 1 \pmod q$.<br>
+        Gọi $h = \text{ord}_q(2)$. Lập luận tương tự, $h \mid 2n = 6m$ và $h \mid q-1$.<br>
+        Vì $q$ là ước nguyên tố nhỏ nhất của $m$, $\gcd(h, m) = 1$. Do đó $h \mid 6$.<br>
+        Suy ra $2^6 \equiv 1 \pmod q \implies q \mid 63 \implies q = 3$ hoặc $q = 7$.<br>
+        Vì $q \ge 5$, ta phải có $q = 7$.<br>
+        Tuy nhiên, $q \mid 2^n + 1 \implies 7 \mid 2^{3m} + 1 = 8^m + 1$.<br>
+        Mặt khác, $8 \equiv 1 \pmod 7$, nên $8^m + 1 \equiv 1^m + 1 = 2 \pmod 7$.<br>
+        Điều này chứng tỏ $7 \nmid 2^n + 1$, mâu thuẫn.</p>
+        <p>Do đó $m=1$. Suy ra $n=3$. Thử lại: $n^2 = 9$, $2^3 + 1 = 9$, $9 \mid 9$ (Thỏa mãn).<br>
+        Kết luận: Giá trị duy nhất của $n$ là $n=3$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (IMO Shortlist 2010 N3)</div>
+        Tìm tất cả các số nguyên dương $n$ sao cho:
+        $$n^n \mid (n+1)^n - 1$$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trường hợp $n=1$: $1^1 \mid 2^1 - 1 \implies 1 \mid 1$ (Thỏa mãn).<br>
+        Trường hợp $n \ge 2$:<br>
+        Điều kiện bài toán đòi hỏi với mọi ước nguyên tố $p$ của $n$, ta phải có:</p>
+        $$v_p(n^n) \le v_p((n+1)^n - 1^n)$$
+        <p>Tương đương với $n \cdot v_p(n) \le v_p((n+1)^n - 1)$.<br>
+        Kiểm tra điều kiện để áp dụng LTE: $p \mid (n+1) - 1$ (do $p \mid n$). Vậy điều kiện cơ sở đã thỏa mãn.</p>
+        <p>Nếu $p$ là số nguyên tố lẻ, áp dụng LTE (Định lý 1.1):</p>
+        $$v_p((n+1)^n - 1^n) = v_p(n+1 - 1) + v_p(n) = v_p(n) + v_p(n) = 2 v_p(n)$$
+        <p>Bất đẳng thức trở thành:</p>
+        $$n \cdot v_p(n) \le 2 v_p(n)$$
+        <p>Vì $v_p(n) \ge 1$, ta chia hai vế cho $v_p(n)$ và thu được $n \le 2$.<br>
+        Nếu $n$ có ước nguyên tố lẻ $p$, thì $n \ge p \ge 3$, mâu thuẫn với $n \le 2$. <br>
+        Vậy $n$ không có ước nguyên tố lẻ nào. Suy ra $n = 2^k$.</p>
+        <p>Áp dụng LTE cho $p=2$ (Định lý 1.2) với $n=2^k$ (là số chẵn khi $k \ge 1$):</p>
+        $$v_2((n+1)^n - 1) = v_2(n) + v_2(n+2) + v_2(n) - 1 = 2k + v_2(2^k+2) - 1$$
+        <p>Vì $n \ge 2 \implies k \ge 1$, $v_2(2^k+2) = v_2(2(2^{k-1}+1)) = 1$.<br>
+        Vậy $v_2((n+1)^n - 1) = 2k + 1 - 1 = 2k$.</p>
+        <p>Bất đẳng thức số mũ trở thành:</p>
+        $$n \cdot v_2(n) \le 2k \implies n \cdot k \le 2k \implies n \le 2$$
+        <p>Vì $n = 2^k$ và $n \le 2$, ta có $n=2$. Thử lại: $2^2 \mid 3^2 - 1 \implies 4 \mid 8$ (Thỏa mãn).<br>
+        Kết luận: $n=1$ và $n=2$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Olympic Toán học Ireland 1996)</div>
+        Tìm tất cả các số nguyên tố $p$ và các số nguyên dương $a, n$ với $n \ge 2$ thỏa mãn:
+        $$2^p + 3^p = a^n$$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trường hợp $p=2$: Phương trình trở thành $2^2 + 3^2 = 13 = a^n$. Vì 13 là số nguyên tố nên không thể là một lũy thừa bậc $n \ge 2$. Không có nghiệm.</p>
+        <p>Trường hợp $p \ge 3$: $p$ là số nguyên tố lẻ.<br>
+        Ta có $2+3=5$. Theo mở rộng của LTE đối với tổng hai lũy thừa bậc lẻ, $v_5(2^p + 3^p)$ được tính như sau:<br>
+        Vì $5 \mid 2+3$, ta có:</p>
+        $$v_5(2^p + 3^p) = v_5(2+3) + v_5(p) = 1 + v_5(p)$$
+        <p>Do $a^n = 2^p + 3^p$, phương trình trở thành $a^n \equiv 0 \pmod 5$, suy ra $5 \mid a$.<br>
+        Số mũ của 5 trong $a^n$ là $v_5(a^n) = n \cdot v_5(a)$.<br>
+        Vì $v_5(a) \ge 1$ và $n \ge 2$, ta có $v_5(a^n) \ge 2$.</p>
+        <p>So khớp hai số mũ p-adic:</p>
+        $$1 + v_5(p) = v_5(a^n) \ge 2 \implies v_5(p) \ge 1$$
+        <p>Vì $p$ là số nguyên tố và $v_5(p) \ge 1$, bắt buộc $p=5$.<br>
+        Thay $p=5$ vào phương trình ban đầu:</p>
+        $$2^5 + 3^5 = 32 + 243 = 275$$
+        <p>Ta có $275 = 5^2 \cdot 11$. Số này không thể viết dưới dạng $a^n$ với $n \ge 2$ vì số mũ của thừa số nguyên tố 11 là 1 (không chia hết cho $n$).</p>
+        <p>Vậy không tồn tại bộ số nào thỏa mãn phương trình.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Olympic Toán học Nga 1996)</div>
+        Tìm tất cả các số nguyên dương $x, y, n$ với $n \ge 2$ thỏa mãn:
+        $$x^n + y^n = 2^k$$
+        trong đó $k$ là một số nguyên dương.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Từ phương trình, nếu $x, y$ có ước chung là chẵn, ta có thể rút gọn chia cho lũy thừa của 2. Giả sử $x$ và $y$ là các số lẻ. (Nếu một số chẵn và một số lẻ thì tổng là số lẻ, không thể bằng $2^k$).</p>
+        <p>Khảo sát tính chẵn lẻ của $n$:</p>
+        <p>Nếu $n$ là số chẵn ($n=2m$): Vì $x, y$ là số lẻ, bình phương của chúng luôn đồng dư $1 \pmod 4$.</p>
+        $$x^n + y^n = (x^m)^2 + (y^m)^2 \equiv 1 + 1 = 2 \pmod 4$$
+        <p>Điều này chứng tỏ $x^n + y^n$ chỉ chia hết cho 2 mà không chia hết cho 4.<br>
+        Do đó $2^k$ chỉ có thể là 2, kéo theo $k=1$.<br>
+        Khi đó $x^n + y^n = 2$. Do $x, y \in \mathbb{Z}^+$ và $n \ge 2$, ta có duy nhất nghiệm $x=y=1$, $k=1$ với mọi số chẵn $n$.</p>
+        
+        <p>Nếu $n$ là số lẻ ($n \ge 3$): Áp dụng phân tích hằng đẳng thức tổng lũy thừa lẻ:</p>
+        $$x^n + y^n = (x+y)(x^{n-1} - x^{n-2}y + \dots + y^{n-1})$$
+        <p>Vì $x, y$ lẻ, $x^i y^{n-1-i}$ luôn là số lẻ. Đa thức có đúng $n$ số hạng lẻ.<br>
+        Do $n$ lẻ, tổng $n$ số hạng lẻ là một số lẻ. <br>
+        Như vậy, nhân tử thứ hai $(x^{n-1} - \dots + y^{n-1})$ là một số lẻ lớn hơn 1 (vì $n \ge 3$ và $x,y \ge 1$).<br>
+        Tuy nhiên, tích của chúng bằng $2^k$, đòi hỏi mọi nhân tử phải là lũy thừa của 2. Một số lẻ lớn hơn 1 không thể là ước của $2^k$.<br>
+        Điều này dẫn đến mâu thuẫn, do đó không có nghiệm khi $n$ lẻ (ngoại trừ trường hợp đã xét $x=y=1$).</p>
+        <p>Kết luận: Các nghiệm cơ bản là $x=1, y=1$. Nghiệm tổng quát của phương trình là $x=2^a, y=2^a$ (với $a$ là số nguyên không âm), khi đó $x^n + y^n = 2^{an} + 2^{an} = 2^{an+1}$, tương ứng $k = an+1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (China TST 2009 - Định lý Cơ sở của Cấp)</div>
+        Chứng minh rằng không tồn tại số nguyên dương $n \gt 1$ nào thỏa mãn:
+        $$n \mid 2^n - 1$$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử tồn tại $n \gt 1$ thỏa mãn $n \mid 2^n - 1$. Vì $2^n - 1$ là một số lẻ, $n$ bắt buộc phải là một số lẻ.<br>
+        Gọi $p$ là ước nguyên tố nhỏ nhất của $n$. Do $n$ lẻ, $p \ge 3$.<br>
+        Từ $n \mid 2^n - 1$, ta có $p \mid 2^n - 1 \implies 2^n \equiv 1 \pmod p$.</p>
+        <p>Gọi $d = \text{ord}_p(2)$ là cấp của 2 modulo $p$. <br>
+        Theo Định lý 1.3, điều kiện cần và đủ để $2^n \equiv 1 \pmod p$ là $d \mid n$.<br>
+        Đồng thời, theo Định lý Fermat nhỏ, $2^{p-1} \equiv 1 \pmod p$, nên $d \mid p-1$.</p>
+        <p>Vì $d \mid p-1$, mọi ước nguyên tố của $d$ (nếu có) đều $\le d \le p-1 \lt p$.<br>
+        Tuy nhiên, do $d \mid n$, mọi ước nguyên tố của $d$ cũng là ước nguyên tố của $n$.<br>
+        Điều này mâu thuẫn với việc $p$ là ước nguyên tố <strong>nhỏ nhất</strong> của $n$.<br>
+        Do đó, $d$ không thể có ước nguyên tố nào, suy ra $d = 1$.</p>
+        <p>Nếu $d = 1$, theo định nghĩa cấp: $2^1 \equiv 1 \pmod p \implies p \mid 1$, mâu thuẫn với việc $p$ là số nguyên tố.<br>
+        Vậy không tồn tại số $n \gt 1$ nào thỏa mãn điều kiện bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

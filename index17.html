@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đa thức bậc cao - Đạo hàm hình thức và bội của nghiệm</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐA THỨC BẬC CAO <br> ĐẠO HÀM HÌNH THỨC VÀ BỘI CỦA NGHIỆM</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đạo hàm hình thức là công cụ đại số cho phép khảo sát tính chất của đa thức mà không phụ thuộc vào các khái niệm giới hạn của giải tích liên tục. Chuyên đề này trình bày định nghĩa đạo hàm trên vành đa thức, quy tắc Leibniz và tiêu chuẩn xác định nghiệm bội. Các bài toán tập trung vào việc thiết lập điều kiện để đa thức có nghiệm bội và phân tích cấu trúc của các đa thức thỏa mãn phương trình vi phân đại số.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đạo hàm hình thức)</div>
+        Cho đa thức $P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0$ thuộc vành đa thức $R[x]$ (với $R$ là một trường, thường là $\mathbb{R}$ hoặc $\mathbb{C}$). Đạo hàm hình thức của $P(x)$, ký hiệu là $P'(x)$, được định nghĩa bằng quy tắc đại số:
+        $$ P'(x) = n a_n x^{n-1} + (n-1) a_{n-1} x^{n-2} + \dots + a_1 $$
+        Đạo hàm cấp cao được định nghĩa bằng quy nạp: $P^{(k)}(x) = (P^{(k-1)})'(x)$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Các tính chất cơ bản)</div>
+        Cho $P(x), Q(x) \in R[x]$ và $c \in R$. Đạo hàm hình thức tuân mãn các tính chất sau:
+        <ol>
+            <li> Tính tuyến tính: $(c P(x) + Q(x))' = c P'(x) + Q'(x)$.</li>
+            <li> Quy tắc Leibniz (Đạo hàm của tích): $(P(x)Q(x))' = P'(x)Q(x) + P(x)Q'(x)$.</li>
+            <li> Đạo hàm của hàm hợp: $(P(Q(x)))' = P'(Q(x)) \cdot Q'(x)$.</li>
+        </ol>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh dựa trên định nghĩa đạo hàm hình thức.</p>
+        <p><strong>1. Tính tuyến tính:</strong> Từ định nghĩa, hệ số của đa thức tổng bằng tổng các hệ số tương ứng. Quá trình lấy đạo hàm trên từng đơn thức là một phép biến đổi tuyến tính, do đó bảo toàn tính chất này cho toàn bộ đa thức.</p>
+        <p><strong>2. Quy tắc Leibniz:</strong> Xét hai đơn thức $P(x) = x^m$ và $Q(x) = x^k$. Ta có:</p>
+        $$ (P(x)Q(x))' = (x^{m+k})' = (m+k)x^{m+k-1} $$
+        <p>Mặt khác:</p>
+        $$ P'(x)Q(x) + P(x)Q'(x) = (m x^{m-1})(x^k) + (x^m)(k x^{k-1}) = m x^{m+k-1} + k x^{m+k-1} = (m+k)x^{m+k-1} $$
+        <p>Nhờ tính tuyến tính, khi khai triển phân phối tích của hai đa thức bất kỳ, quy tắc này vẫn được bảo toàn.</p>
+        <p><strong>3. Đạo hàm của hàm hợp:</strong> Xét $P(x) = x^m$. Ta cần chứng minh $((Q(x))^m)' = m(Q(x))^{m-1}Q'(x)$. Kết quả này đúng khi $m=1$. Giả sử tính chất này đúng đến $m-1$, áp dụng quy tắc Leibniz cho $Q(x)^{m-1} \cdot Q(x)$:</p>
+        $$ ((Q(x))^{m})' = ((Q(x))^{m-1})' Q(x) + (Q(x))^{m-1} Q'(x) = (m-1)(Q(x))^{m-2} Q'(x) Q(x) + (Q(x))^{m-1} Q'(x) = m(Q(x))^{m-1}Q'(x) $$
+        <p>Sử dụng tính tuyến tính, ta mở rộng được cho một đa thức $P(x)$ có bậc bất kỳ. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tiêu chuẩn nghiệm bội)</div>
+        Số $\alpha$ được gọi là nghiệm bội bậc $k$ (với $k \ge 1$) của đa thức $P(x)$ nếu $P(x)$ chia hết cho $(x-\alpha)^k$ nhưng không chia hết cho $(x-\alpha)^{k+1}$.<br>
+        Điều kiện cần và đủ để $\alpha$ là nghiệm bội bậc $k$ của $P(x)$ là:
+        $$ P(\alpha) = P'(\alpha) = P''(\alpha) = \dots = P^{(k-1)}(\alpha) = 0 $$
+        và $P^{(k)}(\alpha) \neq 0$.<br>
+        Hệ quả: Đa thức $P(x)$ có ít nhất một nghiệm bội khi và chỉ khi đa thức $P(x)$ và đạo hàm $P'(x)$ có chung ít nhất một nghiệm (tức là ước chung lớn nhất $\gcd(P, P') \neq 1$).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>$(\Rightarrow)$ Giả sử $\alpha$ là nghiệm bội bậc $k$ của $P(x)$, tức là $P(x) = (x-\alpha)^k Q(x)$ với $Q(\alpha) \neq 0$.</p>
+        <p>Áp dụng quy tắc Leibniz, đạo hàm cấp $j$ (với $j \lt k$) của $P(x)$ luôn chứa nhân tử $(x-\alpha)^{k-j}$. Do đó, tại $x=\alpha$, các đạo hàm này đều bằng 0, tức $P^{(j)}(\alpha) = 0$ cho mọi $0 \le j \le k-1$.</p>
+        <p>Đối với đạo hàm cấp $k$, biểu thức thu được sau khi đạo hàm liên tiếp sẽ chứa một số hạng không bị phụ thuộc vào $(x-\alpha)$, cụ thể là $k! Q(x)$. Tại $x = \alpha$, $P^{(k)}(\alpha) = k! Q(\alpha) \neq 0$.</p>
+        
+        <p>$(\Leftarrow)$ Xét khai triển Taylor cho đa thức $P(x)$ tại $x = \alpha$:</p>
+        $$ P(x) = \sum_{i=0}^n \frac{P^{(i)}(\alpha)}{i!} (x-\alpha)^i $$
+        <p>Theo giả thiết, $P^{(i)}(\alpha) = 0$ với mọi $i \lt k$ và $P^{(k)}(\alpha) \neq 0$. Khai triển được rút gọn thành:</p>
+        $$ P(x) = (x-\alpha)^k \sum_{i=k}^n \frac{P^{(i)}(\alpha)}{i!} (x-\alpha)^{i-k} $$
+        <p>Đặt phần tổng là $Q(x)$. Ta có $Q(\alpha) = \frac{P^{(k)}(\alpha)}{k!} \neq 0$. Vậy $\alpha$ là nghiệm bội bậc $k$ của $P(x)$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (All-Russian Olympiad - Sự tồn tại nghiệm bội)</div>
+        Cho $n$ là một số nguyên dương. Chứng minh rằng đa thức sau không có bất kỳ nghiệm bội nào trên trường số phức:
+        $$ P_n(x) = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \dots + \frac{x^n}{n!} $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử phản chứng rằng đa thức $P_n(x)$ có một nghiệm bội $\alpha \in \mathbb{C}$.<br>
+        Theo Định lý 1.2, $\alpha$ là nghiệm bội của $P_n(x)$ khi và chỉ khi nó là nghiệm chung của $P_n(x)$ và đạo hàm $P'_n(x)$. Tức là:</p>
+        $$ P_n(\alpha) = 0 \quad \text{và} \quad P'_n(\alpha) = 0 $$
+        <p>Tiến hành tính đạo hàm hình thức của $P_n(x)$:</p>
+        $$ P'_n(x) = 0 + 1 + \frac{2x}{2!} + \frac{3x^2}{3!} + \dots + \frac{nx^{n-1}}{n!} $$
+        <p>Rút gọn các phân số, ta được:</p>
+        $$ P'_n(x) = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \dots + \frac{x^{n-1}}{(n-1)!} $$
+        <p>So sánh biểu thức của $P_n(x)$ và $P'_n(x)$, ta nhận thấy mối liên hệ:</p>
+        $$ P_n(x) = P'_n(x) + \frac{x^n}{n!} $$
+        <p>Thay $x = \alpha$ vào đẳng thức trên, ta có:</p>
+        $$ P_n(\alpha) = P'_n(\alpha) + \frac{\alpha^n}{n!} $$
+        <p>Do $\alpha$ là nghiệm chung, $P_n(\alpha) = 0$ và $P'_n(\alpha) = 0$. Phương trình trở thành:</p>
+        $$ 0 = 0 + \frac{\alpha^n}{n!} \implies \frac{\alpha^n}{n!} = 0 \implies \alpha = 0 $$
+        <p>Như vậy, nếu $P_n(x)$ có nghiệm bội, nghiệm đó phải là $\alpha = 0$.<br>
+        Thay $\alpha = 0$ vào đa thức ban đầu, ta có:</p>
+        $$ P_n(0) = 1 + 0 + 0 + \dots + 0 = 1 \neq 0 $$
+        <p>Do đó, $\alpha = 0$ không thể là nghiệm của đa thức $P_n(x)$.<br>
+        Điều này dẫn đến mâu thuẫn, cho thấy đa thức $P_n(x)$ không có bất kỳ nghiệm bội nào.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (China High School Mathematics League - Điều kiện tham số)</div>
+        Tìm điều kiện cần và đủ của các tham số thực $a$ và $b$ để đa thức $P(x) = x^n + ax + b$ (với $n \ge 2$) có nghiệm bội.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đa thức $P(x)$ có nghiệm bội $\alpha$ khi và chỉ khi:</p>
+        $$ P(\alpha) = 0 \implies \alpha^n + a\alpha + b = 0 \quad (1) $$
+        $$ P'(\alpha) = 0 \implies n\alpha^{n-1} + a = 0 \quad (2) $$
+        <p>Từ phương trình $(2)$, ta có:</p>
+        $$ \alpha^{n-1} = -\frac{a}{n} \quad (3) $$
+        <p>Nếu $\alpha = 0$, từ $(3)$ suy ra $a = 0$. Thay vào $(1)$ thu được $b = 0$. Khi $a = b = 0$, đa thức là $x^n$, có nghiệm bội $x = 0$. Ta xét trường hợp $\alpha \neq 0$.</p>
+        <p>Thay $\alpha^{n-1}$ vào phương trình $(1)$, ta viết lại $\alpha^n$ thành $\alpha \cdot \alpha^{n-1}$:</p>
+        $$ \alpha \left( -\frac{a}{n} \right) + a\alpha + b = 0 $$
+        $$ \alpha \left( a - \frac{a}{n} \right) + b = 0 \implies \alpha \left( \frac{a(n-1)}{n} \right) = -b $$
+        <p>Do $n \ge 2$, nếu $a = 0$ thì $b = 0$, điều này quay lại trường hợp đa thức $x^n$. Giả sử $a \neq 0$:</p>
+        $$ \alpha = \frac{-nb}{a(n-1)} $$
+        <p>Thay biểu thức của $\alpha$ trở lại phương trình $(3)$:</p>
+        $$ \left( \frac{-nb}{a(n-1)} \right)^{n-1} = -\frac{a}{n} $$
+        <p>Khai triển lũy thừa:</p>
+        $$ \frac{(-1)^{n-1} n^{n-1} b^{n-1}}{a^{n-1} (n-1)^{n-1}} = -\frac{a}{n} $$
+        <p>Nhân chéo hai vế (với $a \neq 0$):</p>
+        $$ (-1)^{n-1} n^n b^{n-1} = -a^n (n-1)^{n-1} $$
+        <p>Nhân hai vế với $-1$, ta được điều kiện liên hệ giữa $a$ và $b$:</p>
+        $$ (-1)^n n^n b^{n-1} = a^n (n-1)^{n-1} $$
+        <p>Đây là điều kiện cần và đủ để đa thức $P(x)$ có nghiệm bội. (Nếu $a=0, b=0$ thì đẳng thức này vẫn đúng do hai vế đều bằng 0).</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian National Olympiad - Đa thức thỏa mãn phương trình vi phân)</div>
+        Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ có bậc $n \ge 1$ thỏa mãn phương trình:
+        $$ P(x) \cdot P''(x) = \frac{n-1}{n} (P'(x))^2 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $P(x)$ có một nghiệm thực $r$ với bội là $k \ge 1$.<br>
+        Khi đó, $P(x)$ có thể được viết dưới dạng $P(x) = (x-r)^k Q(x)$, trong đó $Q(r) \neq 0$.<br>
+        Sử dụng đạo hàm hình thức (Quy tắc Leibniz):</p>
+        $$ P'(x) = k(x-r)^{k-1} Q(x) + (x-r)^k Q'(x) = (x-r)^{k-1} [ k Q(x) + (x-r) Q'(x) ] $$
+        <p>Ký hiệu $H(x) = k Q(x) + (x-r) Q'(x)$. Nhận xét rằng $H(r) = k Q(r) \neq 0$. Do đó, nghiệm $r$ của $P'(x)$ có bội $k-1$.<br>
+        Tiếp tục đạo hàm để tìm $P''(x)$:</p>
+        $$ P''(x) = (k-1)(x-r)^{k-2} H(x) + (x-r)^{k-1} H'(x) = (x-r)^{k-2} [ (k-1)H(x) + (x-r)H'(x) ] $$
+        <p>Thay các biểu thức của $P(x), P'(x)$ và $P''(x)$ vào phương trình ban đầu:</p>
+        $$ \begin{aligned}
+        VT &= (x-r)^k Q(x) \cdot (x-r)^{k-2} [ (k-1)H(x) + (x-r)H'(x) ] \\
+        &= (x-r)^{2k-2} Q(x) [ (k-1)H(x) + (x-r)H'(x) ]
+        \end{aligned} $$
+        $$ \begin{aligned}
+        VP &= \frac{n-1}{n} \left( (x-r)^{k-1} H(x) \right)^2 \\
+        &= \frac{n-1}{n} (x-r)^{2k-2} (H(x))^2
+        \end{aligned} $$
+        <p>Vì phương trình đúng với mọi $x$, ta rút gọn nhân tử $(x-r)^{2k-2}$ ở cả hai vế (xét trên miền $x \neq r$ rồi sử dụng tính liên tục):</p>
+        $$ Q(x) [ (k-1)H(x) + (x-r)H'(x) ] = \frac{n-1}{n} (H(x))^2 $$
+        <p>Bây giờ, ta xét giá trị của phương trình này tại điểm $x = r$.<br>
+        Thay $x = r$, biểu thức $(r-r)H'(r)$ bằng $0$. Phương trình trở thành:</p>
+        $$ Q(r) \cdot (k-1)H(r) = \frac{n-1}{n} (H(r))^2 $$
+        <p>Thay $H(r) = k Q(r)$:</p>
+        $$ Q(r) (k-1) k Q(r) = \frac{n-1}{n} k^2 (Q(r))^2 $$
+        $$ k(k-1) (Q(r))^2 = \frac{n-1}{n} k^2 (Q(r))^2 $$
+        <p>Do $Q(r) \neq 0$ và $k \ge 1$ (nên $k \neq 0$), ta rút gọn:</p>
+        $$ k-1 = \frac{n-1}{n} k \implies n(k-1) = k(n-1) \implies nk - n = kn - k \implies n = k $$
+        <p>Kết quả $k = n$ cho thấy nếu $r$ là một nghiệm của $P(x)$, thì bội của nghiệm này bằng bậc của đa thức.<br>
+        Do đa thức $P(x)$ có bậc $n$, nó chỉ có tối đa $n$ nghiệm (tính cả bội). Vậy $P(x)$ chỉ có một nghiệm duy nhất $r$ với bội $n$.<br>
+        Suy ra $P(x) = c(x-r)^n$ với $c$ là một hằng số thực khác $0$ và $r \in \mathbb{R}$.</p>
+        <p>Thử lại vào phương trình:</p>
+        $$ P'(x) = cn(x-r)^{n-1} $$
+        $$ P''(x) = cn(n-1)(x-r)^{n-2} $$
+        $$ VT = c(x-r)^n \cdot cn(n-1)(x-r)^{n-2} = c^2 n(n-1) (x-r)^{2n-2} $$
+        $$ VP = \frac{n-1}{n} [ cn(x-r)^{n-1} ]^2 = \frac{n-1}{n} c^2 n^2 (x-r)^{2n-2} = c^2 n(n-1) (x-r)^{2n-2} $$
+        <p>Hai vế bằng nhau.<br>
+        Kết luận: Đa thức cần tìm có dạng $P(x) = c(x-r)^n$ với $c \neq 0$ và $r \in \mathbb{R}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Polish Mathematical Olympiad - Bất đẳng thức Đạo hàm)</div>
+        Cho $P(x)$ là một đa thức bậc $n$ có $n$ nghiệm thực phân biệt. Chứng minh rằng với mọi số thực $x$, ta luôn có:
+        $$ (P'(x))^2 - P(x)P''(x) > 0 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $r_1, r_2, \dots, r_n$ là $n$ nghiệm thực phân biệt của đa thức $P(x)$.<br>
+        Theo định lý phân tích nhân tử, $P(x)$ có thể được viết dưới dạng:</p>
+        $$ P(x) = c(x-r_1)(x-r_2)\dots(x-r_n) $$
+        <p>với $c$ là hằng số khác $0$.<br>
+        Lấy logarit tự nhiên giá trị tuyệt đối của hai vế (với $x \neq r_i$):</p>
+        $$ \ln |P(x)| = \ln |c| + \sum_{i=1}^n \ln |x-r_i| $$
+        <p>Đạo hàm hai vế theo $x$, ta thu được biểu thức của đạo hàm lôgarit (Logarithmic derivative):</p>
+        $$ \frac{P'(x)}{P(x)} = \sum_{i=1}^n \frac{1}{x-r_i} $$
+        <p>Biểu thức này có thể được chứng minh trực tiếp bằng quy tắc đạo hàm tích mà không cần thông qua logarit, áp dụng được trên cấu trúc đại số và đúng với mọi $x \neq r_i$.</p>
+        <p>Tiếp tục đạo hàm biểu thức trên một lần nữa theo $x$.<br>
+        Sử dụng quy tắc đạo hàm của thương số cho vế trái:</p>
+        $$ \left( \frac{P'(x)}{P(x)} \right)' = \frac{P''(x)P(x) - P'(x)P'(x)}{(P(x))^2} = \frac{P''(x)P(x) - (P'(x))^2}{(P(x))^2} $$
+        <p>Đạo hàm của vế phải:</p>
+        $$ \left( \sum_{i=1}^n \frac{1}{x-r_i} \right)' = \sum_{i=1}^n \frac{-1}{(x-r_i)^2} $$
+        <p>Cân bằng hai biểu thức, ta có:</p>
+        $$ \frac{P''(x)P(x) - (P'(x))^2}{(P(x))^2} = - \sum_{i=1}^n \frac{1}{(x-r_i)^2} $$
+        <p>Nhân cả hai vế với $-1$:</p>
+        $$ \frac{(P'(x))^2 - P(x)P''(x)}{(P(x))^2} = \sum_{i=1}^n \frac{1}{(x-r_i)^2} $$
+        <p>Vì $x \neq r_i$, các số hạng ở vế phải có dạng bình phương dưới mẫu nên luôn dương.<br>
+        Tổng của $n$ số thực dương là một số thực dương:</p>
+        $$ \sum_{i=1}^n \frac{1}{(x-r_i)^2} > 0 $$
+        <p>Do đó, vế trái cũng phải lớn hơn 0:</p>
+        $$ \frac{(P'(x))^2 - P(x)P''(x)}{(P(x))^2} > 0 $$
+        <p>Vì mẫu số $(P(x))^2 > 0$ với mọi $x \neq r_i$, ta nhân cả hai vế với mẫu số để thu được:</p>
+        $$ (P'(x))^2 - P(x)P''(x) > 0 \quad \text{với mọi } x \neq r_i $$
+        <p>Còn tại các điểm nghiệm $x = r_i$, ta có $P(r_i) = 0$.<br>
+        Thay vào biểu thức cần chứng minh:</p>
+        $$ (P'(r_i))^2 - P(r_i)P''(r_i) = (P'(r_i))^2 - 0 = (P'(r_i))^2 $$
+        <p>Vì $P(x)$ có $n$ nghiệm thực phân biệt, không có nghiệm nào là nghiệm bội. Theo Định lý 1.2, tại mọi nghiệm $r_i$, đạo hàm $P'(r_i) \neq 0$.<br>
+        Suy ra $(P'(r_i))^2 > 0$.<br>
+        Vậy bất đẳng thức đúng trên toàn bộ tập số thực $\mathbb{R}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

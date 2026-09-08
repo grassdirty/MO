@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Phương trình Diophantine - Bước nhảy Vieta và Lùi vô hạn</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý / Phương pháp (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: PHƯƠNG TRÌNH DIOPHANTINE <br> BƯỚC NHẢY VIETA VÀ LÙI VÔ HẠN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Số học & Đại số</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Việc khảo sát các phương trình Diophantine phi tuyến thường gặp khó khăn nếu chỉ sử dụng các kỹ thuật phân tích nhân tử hay đồng dư thông thường. Kỹ thuật Bước nhảy Vieta (Vieta Jumping) cung cấp một thuật toán giải quyết lớp phương trình bậc hai nhiều biến bằng cách cố định một biến, coi phương trình là bậc hai đối với biến còn lại, và sử dụng Định lý Vieta kết hợp với Nguyên lý Cực hạn để sinh ra một dãy các nghiệm mới nhằm thiết lập mâu thuẫn hoặc truy xuất nghiệm cơ sở.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Cấu trúc của Phương trình Diophantine bậc hai)</div>
+        Một phương trình Diophantine đối với hai biến $x, y$ được gọi là có cấu trúc bậc hai nếu nó có thể được viết dưới dạng:
+        $$ A x^2 + B xy + C y^2 + D x + E y + F = 0 $$
+        với $A, B, C, D, E, F$ là các hằng số hoặc các biểu thức phụ thuộc vào một tham số nguyên $k$. Đặc trưng của phương pháp là hệ số $A = 1$ (hoặc $A$ là hằng số) giúp quá trình sinh nghiệm luôn giữ được tính nguyên.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Vieta và Bảo toàn tính nguyên)</div>
+        Xét phương trình bậc hai ẩn $X$:
+        $$ X^2 - S \cdot X + P = 0 $$
+        với các hệ số $S, P \in \mathbb{Z}$. Nếu phương trình có một nghiệm $X_1 \in \mathbb{Z}$, thì phương trình có nghiệm thứ hai $X_2$ cũng thuộc $\mathbb{Z}$, và nghiệm này được xác định bởi:
+        $$ X_2 = S - X_1 \quad \text{hoặc} \quad X_2 = \frac{P}{X_1} \text{ (nếu } X_1 \neq 0) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Theo Định lý Vieta cho phương trình bậc hai, tổng hai nghiệm là $X_1 + X_2 = S$ và tích hai nghiệm là $X_1 X_2 = P$.</p>
+        <p>Do $S$ là số nguyên và $X_1$ là số nguyên, ta suy ra $X_2 = S - X_1$ là một số nguyên. Tính chất này cho phép thiết lập một nghiệm nguyên mới từ một nghiệm nguyên đã biết.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Nguyên lý cực hạn và Lùi vô hạn - Infinite Descent)</div>
+        Mọi tập hợp khác rỗng các số nguyên không âm đều có phần tử nhỏ nhất (Nguyên lý Cực hạn). Do đó, không tồn tại một dãy vô hạn giảm ngặt các số nguyên dương:
+        $$ a_1 \gt a_2 \gt a_3 \gt \dots \gt 0 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử phản chứng rằng tồn tại một dãy vô hạn giảm ngặt các số nguyên dương $a_1 \gt a_2 \gt a_3 \gt \dots \gt 0$.<br>
+        Gọi $S = \{a_1, a_2, a_3, \dots\}$ là tập hợp các phần tử của dãy này. Vì $a_1 \in S$, $S$ là một tập con khác rỗng của tập các số nguyên dương $\mathbb{Z}^+$.</p>
+        <p>Theo Nguyên lý Cực hạn (Well-ordering Principle), mọi tập con khác rỗng của $\mathbb{Z}^+$ đều phải có phần tử nhỏ nhất. Gọi phần tử nhỏ nhất của tập $S$ là $a_k$.</p>
+        <p>Tuy nhiên, theo tính chất của dãy giảm ngặt, tồn tại phần tử tiếp theo là $a_{k+1} \in S$ sao cho $a_{k+1} \lt a_k$. Điều này mâu thuẫn với giả thiết $a_k$ là phần tử nhỏ nhất của $S$.</p>
+        <p>Sự mâu thuẫn này chứng minh rằng không thể tồn tại dãy số nguyên dương vô hạn giảm ngặt.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Phương pháp giải: Thuật toán Bước nhảy Vieta (Vieta Jumping)</div>
+        Thuật toán Bước nhảy Vieta thường hoạt động theo 4 bước cơ bản:
+        <ol>
+            <li><strong>Giả sử phản chứng:</strong> Giả sử tồn tại một nghiệm vi phạm kết luận của bài toán. Từ đó, chọn ra một nghiệm $(x_0, y_0)$ "nhỏ nhất" theo một tiêu chuẩn nào đó (ví dụ $x_0 + y_0$ đạt giá trị nhỏ nhất).</li>
+            <li><strong>Thiết lập phương trình bậc hai:</strong> Cố định $y_0$, xem phương trình ban đầu là phương trình bậc hai ẩn $X$. Phương trình này đã có sẵn một nghiệm là $x_0$.</li>
+            <li><strong>Sinh nghiệm mới:</strong> Sử dụng Định lý Vieta để tính nghiệm thứ hai $x_1$. Đánh giá $x_1$ là số nguyên.</li>
+            <li><strong>Tạo mâu thuẫn:</strong> Đánh giá dấu và độ lớn của $x_1$ thông qua phương trình bậc hai. Chứng minh $x_1 \ge 0$ và chỉ ra một cấu hình mới $(x_1, y_0)$ cũng thỏa mãn phương trình nhưng lại có "kích thước" nhỏ hơn $(x_0, y_0)$, dẫn đến mâu thuẫn với tính cực tiểu đã giả sử ban đầu.</li>
+        </ol>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO 1988, Bài 6)</div>
+        Cho $a$ và $b$ là các số nguyên dương sao cho $a b + 1$ là một ước của $a^2 + b^2$. Chứng minh rằng biểu thức:
+        $$ \frac{a^2 + b^2}{ab + 1} $$
+        là bình phương của một số nguyên.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $k = \frac{a^2 + b^2}{ab + 1}$. Theo giả thiết, $k$ là một số nguyên dương. Ta cần chứng minh $k$ là một số chính phương.</p>
+        <p>Giả sử phản chứng rằng $k$ không phải là số chính phương. <br>
+        Xét tập hợp tất cả các cặp số nguyên dương $(a, b)$ thỏa mãn phương trình:</p>
+        $$ \frac{a^2 + b^2}{ab + 1} = k \iff a^2 - k a b + b^2 - k = 0 \quad (1) $$
+        <p>Do ta giả sử tồn tại ít nhất một cặp như vậy, tập hợp các cặp nghiệm này khác rỗng. <br>
+        Áp dụng Nguyên lý Cực hạn, ta chọn ra cặp nghiệm $(A, B)$ thỏa mãn tổng $A + B$ đạt giá trị nhỏ nhất.</p>
+        <p>Do tính đối xứng của $A$ và $B$ trong phương trình (1), không mất tính tổng quát, ta giả sử $A \ge B$.<br>
+        Nếu $A = B$, phương trình trở thành $\frac{2A^2}{A^2 + 1} = k$. Vì $A \ge 1$, ta có $A^2 + 1 \gt A^2$, suy ra $k \lt 2$. Mà $k$ nguyên dương nên $k=1$, tức là một số chính phương (trái với giả thiết). Vậy $A \gt B$.</p>
+
+        <p>Cố định giá trị $B$, ta xét phương trình bậc hai đối với ẩn $x$:</p>
+        $$ x^2 - (kB) x + B^2 - k = 0 \quad (2) $$
+        <p>Phương trình (2) có một nghiệm là $x_1 = A$.<br>
+        Theo Định lý Vieta, phương trình này có nghiệm thứ hai $x_2$ thỏa mãn:</p>
+        $$ x_1 + x_2 = kB \implies x_2 = kB - A \quad (3)$$
+        $$ x_1 \cdot x_2 = B^2 - k \implies x_2 = \frac{B^2 - k}{A} \quad (4)$$
+        
+        <p>Từ (3), vì $k, B, A$ là các số nguyên nên $x_2$ là một số nguyên. <br>
+        Cặp $(x_2, B)$ cũng là nghiệm của phương trình (1).<br>
+        Ta đánh giá dấu của $x_2$. <br>
+        Nếu $x_2 = 0$, từ (4) ta có $B^2 - k = 0 \implies k = B^2$, tức là $k$ là số chính phương, mâu thuẫn với giả thiết phản chứng. Vậy $x_2 \neq 0$.</p>
+        
+        <p>Nếu $x_2 \lt 0$, vì $x_2$ là số nguyên, ta có $x_2 \le -1$.<br>
+        Từ $x_2^2 - k B x_2 + B^2 - k = 0$, ta viết lại thành:
+        $$ x_2^2 + B^2 = k B x_2 + k = k(B x_2 + 1) $$
+        Nếu $x_2 \lt 0$, vế trái $x_2^2 + B^2 \ge 1$. Đối với vế phải, vì $B \ge 1$ và $x_2 \le -1 \implies B x_2 \le -1 \implies B x_2 + 1 \le 0$. Do $k \gt 0$, vế phải sẽ $\le 0$.<br>
+        Điều này dẫn đến mâu thuẫn vì vế trái $\gt 0$ còn vế phải $\le 0$.<br>
+        Vậy $x_2$ là một số nguyên dương. Điều này chứng tỏ cặp $(x_2, B)$ là một cặp số nguyên dương thỏa mãn phương trình.</p>
+
+        <p>Cuối cùng, ta đánh giá độ lớn của $x_2$.<br>
+        Theo giả thiết $A \gt B$, từ (4) ta có:</p>
+        $$ x_2 = \frac{B^2 - k}{A} \lt \frac{A^2 - k}{A} \lt A $$
+        <p>Do đó $x_2 \lt A$. Tổng các thành phần của nghiệm mới là $x_2 + B \lt A + B$.</p>
+        <p>Tuy nhiên, ta đã chọn $(A, B)$ là nghiệm nguyên dương có tổng nhỏ nhất. Sự tồn tại của cặp nghiệm nguyên dương $(x_2, B)$ với tổng nhỏ hơn đã tạo ra một mâu thuẫn.</p>
+        <p>Giả thiết phản chứng sai. Khẳng định $k$ là số chính phương được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Phương trình Markov)</div>
+        Tìm tất cả các cặp số nguyên dương $(x, y)$ thỏa mãn điều kiện $xy$ là một ước của $x^2 + y^2 + 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $x^2 + y^2 + 1 = k x y$ với $k \in \mathbb{N}^*$.<br>
+        Giả sử tồn tại một nghiệm $(x, y)$. Gọi $(x_0, y_0)$ là nghiệm nguyên dương sao cho tổng $x_0 + y_0$ là nhỏ nhất. Không mất tính tổng quát, giả sử $x_0 \ge y_0$.</p>
+        <p>Cố định $y_0$, xét phương trình bậc hai theo ẩn $t$:</p>
+        $$ t^2 - (k y_0) t + y_0^2 + 1 = 0 $$
+        <p>Phương trình này có một nghiệm là $t_1 = x_0$. Theo Định lý Vieta, nghiệm thứ hai $t_2$ thỏa mãn:</p>
+        $$ t_1 + t_2 = k y_0 \implies t_2 = k y_0 - x_0 \in \mathbb{Z} $$
+        $$ t_1 \cdot t_2 = y_0^2 + 1 \implies t_2 = \frac{y_0^2 + 1}{x_0} $$
+        <p>Vì $y_0^2 + 1 \gt 0$ và $x_0 \gt 0$, ta có $t_2 \gt 0$. <br>
+        Vậy $(t_2, y_0)$ cũng là một cặp nghiệm nguyên dương của phương trình.</p>
+        <p>Do tính nhỏ nhất của $x_0 + y_0$, ta có $t_2 + y_0 \ge x_0 + y_0 \implies t_2 \ge x_0$.<br>
+        Thay $t_2 = \frac{y_0^2 + 1}{x_0}$ vào bất đẳng thức này:</p>
+        $$ \frac{y_0^2 + 1}{x_0} \ge x_0 \implies y_0^2 + 1 \ge x_0^2 $$
+        <p>Vì $x_0 \ge y_0$, ta xét hai trường hợp:</p>
+        <ul>
+            <li>Nếu $x_0 = y_0$: Khi đó $2x_0^2 + 1 = k x_0^2 \implies 1 = (k-2)x_0^2$.<br>
+            Do $x_0 \in \mathbb{Z}^+$, ta có $x_0 = 1$ và $k-2 = 1 \implies k = 3$. Cặp nghiệm thu được là $(1, 1)$.</li>
+            <li>Nếu $x_0 \gt y_0 \implies x_0 \ge y_0 + 1$:<br>
+            Bình phương hai vế: $x_0^2 \ge (y_0 + 1)^2 = y_0^2 + 2y_0 + 1 \gt y_0^2 + 1$.<br>
+            Điều này mâu thuẫn với bất đẳng thức $y_0^2 + 1 \ge x_0^2$ vừa tìm được.</li>
+        </ul>
+        <p>Vậy trường hợp $x_0 \gt y_0$ không chứa nghiệm nhỏ nhất. Nghiệm nhỏ nhất là $(1, 1)$, ứng với $k = 3$.<br>
+        Từ đó, tất cả các nghiệm của bài toán phải thỏa mãn phương trình $x^2 + y^2 + 1 = 3xy$.</p>
+        <p>Áp dụng thuật toán Vieta Jumping (tạo ra dãy tăng để sinh nghiệm mới):<br>
+        Từ nghiệm $(1, 1)$, cố định $y=1$, nghiệm thứ hai là $t_2 = 3(1) - 1 = 2$. Ta có nghiệm $(2, 1)$.<br>
+        Từ $(2, 1)$, cố định $y=2$, nghiệm thứ hai là $t_2 = 3(2) - 1 = 5$. Ta có nghiệm $(5, 2)$.<br>
+        Chuỗi các nghiệm này tương ứng với các cặp số Fibonacci có chỉ số lẻ liên tiếp: $(F_{2n-1}, F_{2n+1})$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Crux Mathematicorum - Biến thể hệ số)</div>
+        Cho $a$ và $b$ là hai số nguyên dương sao cho $a b - 1$ là một ước của $a^2 + b^2$. Chứng minh rằng $\frac{a^2 + b^2}{ab - 1} = 5$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $k = \frac{a^2 + b^2}{ab - 1}$ với $k \in \mathbb{N}^*$.<br>
+        Giả sử $k \neq 5$. Xét tập hợp các cặp số nguyên dương $(a, b)$ thỏa mãn $a^2 - k a b + b^2 + k = 0$.<br>
+        Chọn cặp $(A, B)$ có $A + B$ nhỏ nhất. Giả sử $A \ge B$.</p>
+        <p>Nếu $A = B$, ta có $2A^2 = k(A^2 - 1)$. Nếu $A=1$, mẫu số $A^2-1=0$, không hợp lệ. <br>
+        Nếu $A \ge 2$, ta có $k = \frac{2A^2}{A^2 - 1} = 2 + \frac{2}{A^2 - 1}$. <br>
+        Để $k$ nguyên, $A^2 - 1$ phải là ước của 2. Điều này chỉ xảy ra khi $A^2 - 1 = 1 \implies A^2 = 2$ hoặc $A^2 - 1 = 2 \implies A^2 = 3$, cả hai đều không cho $A$ nguyên.<br>
+        Vậy không tồn tại nghiệm với $A=B$. Suy ra $A \gt B$.</p>
+        <p>Xét phương trình ẩn $x$: $x^2 - (kB) x + B^2 + k = 0$.<br>
+        Có một nghiệm $x_1 = A$. Nghiệm thứ hai $x_2 = kB - A = \frac{B^2 + k}{A}$.<br>
+        $x_2$ là số nguyên. Vì $B^2+k \gt 0$ và $A \gt 0$, ta có $x_2 \gt 0$.<br>
+        Do đó $(x_2, B)$ là một cặp nghiệm nguyên dương mới.<br>
+        Theo giả thiết cực tiểu, $x_2 + B \ge A + B \implies x_2 \ge A$.<br>
+        Sử dụng công thức tích Vieta: $\frac{B^2 + k}{A} \ge A \implies B^2 + k \ge A^2$.</p>
+        <p>Mặt khác, $(A, B)$ thỏa mãn $A^2 + B^2 + k = k A B \implies B^2 + k = k A B - A^2$.<br>
+        Thế vào bất đẳng thức trên: $k A B - A^2 \ge A^2 \implies k A B \ge 2A^2 \implies k B \ge 2A \implies k \ge \frac{2A}{B}$.<br>
+        Vì $A \gt B$, ta có $A \ge B + 1$, do đó $k \ge \frac{2(B+1)}{B} = 2 + \frac{2}{B} \gt 2$.</p>
+        
+        <p>Nếu $B = 1$, phương trình ban đầu là $A^2 + 1 = k(A - 1) \implies A^2 - 1 + 2 = k(A - 1) \implies A + 1 + \frac{2}{A - 1} = k$.<br>
+        Để $k$ nguyên, $A - 1$ là ước của $2 \implies A - 1 \in \{1, 2\} \implies A \in \{2, 3\}$.</p>
+        <ul>
+            <li>Nếu $A = 2, B = 1$, ta tính được $k = \frac{2^2+1^2}{2(1)-1} = 5$.</li>
+            <li>Nếu $A = 3, B = 1$, ta tính được $k = \frac{3^2+1^2}{3(1)-1} = \frac{10}{2} = 5$.</li>
+        </ul>
+        <p>Vậy nếu $B=1$, ta có $k=5$.</p>
+        
+        <p>Xét trường hợp $B \ge 2$. Ta có $A \gt B \ge 2$, do đó $A \ge 3$.<br>
+        Từ $B^2 + k \ge A^2$, kết hợp với $k = \frac{A^2+B^2}{AB-1} \le \frac{A^2+(A-1)^2}{A(A-1)-1} = \frac{2A^2-2A+1}{A^2-A-1} = 2 + \frac{3}{A^2-A-1}$.<br>
+        Với $A \ge 3$, mẫu số $A^2-A-1 \ge 3^2-3-1 = 5$.<br>
+        Do đó $\frac{3}{A^2-A-1} \le \frac{3}{5}$.<br>
+        Kéo theo $k \le 2 + \frac{3}{5} \lt 3$. <br>
+        Vì $k$ nguyên và $k \gt 2$, điều này dẫn đến mâu thuẫn.<br>
+        Trường hợp $B \ge 2$ không tồn tại nghiệm nhỏ nhất. Mọi nghiệm nhỏ nhất phải rơi vào $B=1$, và khi đó $k=5$. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (IMO 2007, Bài 5 - Kỹ thuật nhân hệ số)</div>
+        Cho $a$ và $b$ là hai số nguyên dương sao cho $4ab - 1$ là một ước của $(4a^2 - 1)^2$. Chứng minh rằng $a = b$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $a \neq b$. Tồn tại hằng số $k \in \mathbb{Z}^+$ sao cho $(4a^2 - 1)^2 = k(4ab - 1)$.<br>
+        Ta có $(4ab - 1) \equiv 0 \pmod{4ab - 1} \implies 4ab \equiv 1 \pmod{4ab - 1}$.<br>
+        Nhân giả thiết với $b^2$:</p>
+        $$ b^2(4a^2 - 1)^2 \equiv 0 \pmod{4ab - 1} $$
+        <p>Khai triển:</p>
+        $$ b^2(16a^4 - 8a^2 + 1) = 16a^4 b^2 - 8a^2 b^2 + b^2 = (4ab)^2 a^2 - 2(4ab)ab + b^2 $$
+        <p>Thế $4ab \equiv 1 \pmod{4ab - 1}$ vào:</p>
+        $$ 1^2 \cdot a^2 - 2 \cdot 1 \cdot ab + b^2 = a^2 - 2ab + b^2 = (a - b)^2 $$
+        <p>Vậy $(4ab - 1)$ là một ước của $(a - b)^2$.<br>
+        Phương trình trở thành: $(a - b)^2 = k(4ab - 1)$ với $k \in \mathbb{N}^*$. (Đây là dạng của phương pháp Vieta Jumping).</p>
+        
+        <p>Giả sử tồn tại nghiệm $a \neq b$, ta chọn cặp $(A, B)$ thỏa mãn phương trình trên và tổng $A + B$ là nhỏ nhất.<br>
+        Không mất tính tổng quát, giả sử $A \gt B \ge 1$.<br>
+        Cố định $B$, xét phương trình bậc hai đối với $x$:</p>
+        $$ x^2 - 2Bx + B^2 = k(4Bx - 1) \iff x^2 - 2B(2k + 1)x + B^2 + k = 0 $$
+        <p>Nghiệm $x_1 = A$. Nghiệm thứ hai $x_2$ thỏa mãn:</p>
+        $$ x_1 + x_2 = 2B(2k + 1) \implies x_2 = 2B(2k + 1) - A \in \mathbb{Z} $$
+        $$ x_1 \cdot x_2 = B^2 + k \implies x_2 = \frac{B^2 + k}{A} $$
+        <p>Vì $B^2 + k \gt 0$ và $A \gt 0$, ta có $x_2 \gt 0$. Vậy $(x_2, B)$ là một cặp nghiệm nguyên dương.<br>
+        Do tính cực tiểu của $A + B$, ta có $x_2 + B \ge A + B \implies x_2 \ge A$.<br>
+        Tích Vieta: $A \cdot x_2 = B^2 + k \implies A^2 \le B^2 + k$.<br>
+        Từ phương trình của cặp $(A, B)$:</p>
+        $$ k = \frac{(A - B)^2}{4AB - 1} $$
+        <p>Thế $k$ vào bất đẳng thức $A^2 - B^2 \le k$:</p>
+        $$ A^2 - B^2 \le \frac{(A - B)^2}{4AB - 1} $$
+        <p>Vì $A \gt B$, chia hai vế cho $(A - B) \gt 0$:</p>
+        $$ A + B \le \frac{A - B}{4AB - 1} $$
+        <p>Tuy nhiên, $4AB - 1 \ge 4(1)(1) - 1 = 3 \gt 0$, nên vế phải:</p>
+        $$ \frac{A - B}{4AB - 1} \lt A - B \lt A + B $$
+        <p>Ta thu được $A + B \lt A + B$, một mâu thuẫn.<br>
+        Điều này chứng tỏ không tồn tại cặp nghiệm nào với $a \neq b$. <br>
+        Vậy ta có $a = b$. Thử lại với $a = b$: $4a^2 - 1 \mid (4a^2 - 1)^2$, thỏa mãn điều kiện bài toán.<br>
+        Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

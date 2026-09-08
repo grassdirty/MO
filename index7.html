@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Hàm sinh hình thức và Bộ lọc căn bậc n của đơn vị</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: HÀM SINH HÌNH THỨC <br> VÀ BỘ LỌC CĂN BẬC $n$ CỦA ĐƠN VỊ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp & Dãy số</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đại số hóa bài toán đếm là một phương pháp quan trọng trong Toán học rời rạc. Chuyên đề này giới thiệu lý thuyết Chuỗi lũy thừa hình thức (Formal Power Series) để xây dựng Hàm sinh cho các dãy số. Sự kết hợp giữa khai triển nhị thức Newton suy rộng và bộ lọc nghiệm phức của đơn vị cung cấp một thuật toán toàn diện để giải quyết các bài toán phân hoạch tập hợp, phương trình Diophantine tuyến tính và truy xuất công thức tổng quát của dãy truy hồi phi tuyến.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Hàm sinh và khai triển lũy thừa phân số/âm là kiến thức thường gặp ở bậc Đại học. Để áp dụng được, học sinh THPT cần nắm được hai công cụ bổ trợ sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Kiến thức bổ trợ 1: Khai triển Maclaurin</div>
+        Trong giải tích, một hàm số $f(x)$ khả vi vô hạn tại điểm $x=0$ có thể được khai triển thành một chuỗi đa thức vô hạn (chuỗi Maclaurin) như sau:
+        $$ f(x) = f(0) + \frac{f'(0)}{1!}x + \frac{f''(0)}{2!}x^2 + \dots + \frac{f^{(n)}(0)}{n!}x^n + \dots $$
+        Công cụ này cho phép ta chuyển đổi các hàm phân thức, hàm căn thức thành các chuỗi đa thức vô hạn để xét hệ số.
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Kiến thức bổ trợ 2: Số phức và Căn bậc $n$ của đơn vị</div>
+        Phương trình $z^n = 1$ trên tập số phức có đúng $n$ nghiệm phân biệt. Các nghiệm này được biểu diễn dưới dạng lượng giác là $\omega_k = \cos\frac{2k\pi}{n} + i\sin\frac{2k\pi}{n}$ với $k = 0, 1, \dots, n-1$.<br>
+        Dựa vào công thức Euler $e^{i\theta} = \cos\theta + i\sin\theta$, nếu ta đặt $\omega = e^{\frac{2\pi i}{n}}$, thì $n$ nghiệm của phương trình chính là $1, \omega, \omega^2, \dots, \omega^{n-1}$.<br>
+        Vì $\omega^n = 1$ và $\omega \neq 1$, ta có hằng đẳng thức:
+        $$ \omega^{n-1} + \omega^{n-2} + \dots + \omega + 1 = \frac{\omega^n - 1}{\omega - 1} = 0 $$
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hàm sinh thường - Ordinary Generating Function)</div>
+        Cho một dãy số $(a_n)_{n=0}^\infty$. Hàm sinh thường của dãy $(a_n)$ là một chuỗi lũy thừa hình thức biến $x$ được định nghĩa bởi:
+        $$ A(x) = \sum_{n=0}^\infty a_n x^n = a_0 + a_1 x + a_2 x^2 + \dots $$
+        Trong giải tích tổ hợp, ta không quan tâm đến bán kính hội tụ của chuỗi này mà chỉ coi nó như một cấu trúc đại số để lưu trữ thông tin của dãy số thông qua các hệ số.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Khai triển Nhị thức Newton suy rộng)</div>
+        Với mọi số thực $\alpha$ và số thực $x$ thỏa mãn $|x| \lt 1$, ta có khai triển:
+        $$ (1+x)^\alpha = \sum_{n=0}^\infty \binom{\alpha}{n} x^n $$
+        trong đó hệ số nhị thức suy rộng được tính bằng $\binom{\alpha}{n} = \frac{\alpha(\alpha-1)\dots(\alpha-n+1)}{n!}$.<br>
+        Đặc biệt, khi $\alpha = -k$ (với $k$ là số nguyên dương), thay $x$ bằng $-x$, ta có khai triển quan trọng trong bài toán đếm:
+        $$ \frac{1}{(1-x)^k} = \sum_{n=0}^\infty \binom{n+k-1}{k-1} x^n $$
+        Hệ số của $x^n$ là số nghiệm nguyên không âm của phương trình $x_1 + x_2 + \dots + x_k = n$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Áp dụng khai triển Maclaurin cho hàm số $f(x) = (1+x)^\alpha$. Ta tính các đạo hàm cấp cao của $f(x)$:</p>
+        $$ f'(x) = \alpha(1+x)^{\alpha-1} \implies f'(0) = \alpha $$
+        $$ f''(x) = \alpha(\alpha-1)(1+x)^{\alpha-2} \implies f''(0) = \alpha(\alpha-1) $$
+        <p>Tổng quát, đạo hàm cấp $n$ tại $x=0$ là: $f^{(n)}(0) = \alpha(\alpha-1)\dots(\alpha-n+1)$.<br>
+        Thay vào công thức Maclaurin, hệ số của $x^n$ là $\frac{\alpha(\alpha-1)\dots(\alpha-n+1)}{n!}$. Ký hiệu giá trị này là $\binom{\alpha}{n}$, ta thu được khai triển thứ nhất.</p>
+
+        <p>Xét trường hợp đặc biệt $\alpha = -k$ với $k \in \mathbb{Z}^+$. Hệ số của $x^n$ là:</p>
+        $$ \binom{-k}{n} = \frac{-k(-k-1)\dots(-k-n+1)}{n!} $$
+        <p>Rút dấu âm từ $n$ thừa số ở tử:</p>
+        $$ \binom{-k}{n} = (-1)^n \frac{k(k+1)\dots(k+n-1)}{n!} = (-1)^n \frac{(n+k-1)!}{n!(k-1)!} = (-1)^n \binom{n+k-1}{n} = (-1)^n \binom{n+k-1}{k-1} $$
+        <p>Khi đó, hàm số trở thành $(1+x)^{-k} = \sum_{n=0}^\infty (-1)^n \binom{n+k-1}{k-1} x^n$.<br>
+        Thay biến $x$ bằng $-x$, ta được:</p>
+        $$ (1-x)^{-k} = \sum_{n=0}^\infty (-1)^n \binom{n+k-1}{k-1} (-x)^n = \sum_{n=0}^\infty \binom{n+k-1}{k-1} x^n $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bộ lọc căn bậc $n$ của đơn vị - Roots of Unity Filter)</div>
+        Cho $n$ là một số nguyên dương. Gọi $\omega = e^{\frac{2\pi i}{n}} = \cos\frac{2\pi}{n} + i\sin\frac{2\pi}{n}$ là căn nguyên thủy bậc $n$ của đơn vị.<br>
+        Khi đó, với mọi số nguyên $m$, ta có tính chất lọc (Filter):
+        $$ \frac{1}{n} \sum_{j=0}^{n-1} \omega^{jm} = \begin{cases} 1 & \text{nếu } n \mid m \\ 0 & \text{nếu } n \nmid m \end{cases} $$
+        <i>Ứng dụng:</i> Nếu $P(x) = \sum_{k=0}^\infty a_k x^k$ là hàm sinh, tổng các hệ số của các số hạng có số mũ chia hết cho $n$ được tính bằng:
+        $$ \sum_{n \mid k} a_k = \frac{1}{n} \sum_{j=0}^{n-1} P(\omega^j) $$
+    </div>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Nếu $n \mid m$, tức là tồn tại số nguyên $q$ sao cho $m = qn$. Khi đó:</p>
+        $$ \omega^{jm} = (\omega^n)^{jq} = 1^{jq} = 1 $$
+        <p>Tổng sẽ là $\frac{1}{n} \sum_{j=0}^{n-1} 1 = \frac{n}{n} = 1$.</p>
+        <p>Nếu $n \nmid m$, thì $\omega^m \neq 1$. Áp dụng công thức tổng cấp số nhân:</p>
+        $$ \sum_{j=0}^{n-1} (\omega^m)^j = \frac{1 - (\omega^m)^n}{1 - \omega^m} = \frac{1 - (\omega^n)^m}{1 - \omega^m} = \frac{1 - 1^m}{1 - \omega^m} = 0 $$
+        <p>Vậy tính chất lọc được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO 1995, Bài 6 - Ứng dụng Bộ lọc nghiệm phức)</div>
+        Cho $p$ là một số nguyên tố lẻ. Tìm số lượng các tập hợp con $A$ của tập hợp $S = \{1, 2, \dots, 2p\}$ thỏa mãn đồng thời hai điều kiện:
+        <ol>
+            <li> $A$ có chính xác $p$ phần tử.</li>
+            <li> Tổng các phần tử của $A$ chia hết cho $p$.</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $N$ là số lượng tập con thỏa mãn điều kiện bài toán.<br>
+        Để kiểm soát đồng thời số lượng phần tử của tập con và tổng các phần tử, ta xây dựng một đa thức hàm sinh hai biến:</p>
+        $$ F(x, y) = \prod_{k=1}^{2p} (1 + y x^k) $$
+        <p>Khi khai triển $F(x, y)$, mỗi số hạng có dạng $y^{|A|} x^{\sum_{a \in A} a}$ tương ứng với một tập con $A \subseteq S$.<br>
+        Để lấy các tập con có đúng $p$ phần tử, ta trích xuất hệ số của $y^p$ trong khai triển $F(x, y)$. Gọi đa thức này là $C(x)$:</p>
+        $$ C(x) = [y^p] F(x, y) $$
+        <p>Hệ số của $x^m$ trong $C(x)$ chính là số lượng tập con có đúng $p$ phần tử và có tổng bằng $m$.<br>
+        Bài toán yêu cầu tính tổng các hệ số của $C(x)$ tại các số mũ $m$ chia hết cho $p$.<br>
+        Áp dụng Bộ lọc căn nguyên thủy bậc $p$ của đơn vị (Định lý 1.2), gọi $\omega = e^{2\pi i / p}$, số lượng tập con cần tìm là:</p>
+        $$ N = \frac{1}{p} \sum_{j=0}^{p-1} C(\omega^j) $$
+
+        <p>Ta tiến hành tính $C(\omega^j)$ với mỗi $j \in \{0, 1, \dots, p-1\}$.</p>
+        <p><b>Trường hợp 1:</b> $j = 0 \implies \omega^0 = 1$.<br>
+        Ta có $F(1, y) = \prod_{k=1}^{2p} (1 + y) = (1+y)^{2p}$.<br>
+        Hệ số của $y^p$ trong khai triển này là:</p>
+        $$ C(1) = \binom{2p}{p} $$
+
+        <p><b>Trường hợp 2:</b> $1 \le j \le p-1$.<br>
+        Vì $p$ là số nguyên tố và $1 \le j \le p-1$, $\omega^j$ cũng là một căn nguyên thủy bậc $p$ của đơn vị.<br>
+        Tập hợp các lũy thừa $\{(\omega^j)^1, (\omega^j)^2, \dots, (\omega^j)^p\}$ thực chất là một hoán vị của tập hợp $\{1, \omega, \omega^2, \dots, \omega^{p-1}\}$.<br>
+        Xét đa thức $z^p - 1 = (z-1)(z-\omega)\dots(z-\omega^{p-1})$. <br>
+        Thay $z = -y^{-1}$ và nhân hai vế với $(-y)^p$, ta thu được hằng đẳng thức:</p>
+        $$ \prod_{k=1}^p (1 + y \omega^k) = 1 - (-y)^p = 1 + y^p $$
+        <p>(Lưu ý: do $p$ là số nguyên tố lẻ nên $(-y)^p = -y^p$).<br>
+        Tập hợp số mũ từ $1$ đến $2p$ là hai chu kỳ tuần hoàn modulo $p$. Do đó:</p>
+        $$ F(\omega^j, y) = \prod_{k=1}^{2p} (1 + y (\omega^j)^k) = \left( \prod_{m=1}^p (1 + y \omega^m) \right)^2 = (1 + y^p)^2 = 1 + 2y^p + y^{2p} $$
+        <p>Hệ số của $y^p$ trong đa thức này là:</p>
+        $$ C(\omega^j) = [y^p] (1 + 2y^p + y^{2p}) = 2 $$
+        <p>Giá trị này bằng 2 với mọi $j \in \{1, 2, \dots, p-1\}$.</p>
+
+        <p><b>Tổng hợp kết quả:</b><br>
+        Thế các giá trị $C(\omega^j)$ vào công thức bộ lọc:</p>
+        $$ N = \frac{1}{p} \left( C(1) + \sum_{j=1}^{p-1} C(\omega^j) \right) = \frac{1}{p} \left( \binom{2p}{p} + (p-1) \cdot 2 \right) $$
+        <p>Vậy số lượng các tập con thỏa mãn điều kiện bài toán là $\frac{1}{p} \binom{2p}{p} + \frac{2p-2}{p}$.<br>
+        Bài toán được giải quyết.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Truy xuất công thức số Catalan)</div>
+        Dãy số Catalan $(C_n)$ được định nghĩa bởi $C_0 = 1$ và hệ thức truy hồi chập:
+        $$ C_n = \sum_{i=0}^{n-1} C_i C_{n-1-i} \quad \forall n \ge 1 $$
+        Bằng phương pháp hàm sinh, hãy thiết lập công thức tổng quát tính $C_n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $F(x) = \sum_{n=0}^\infty C_n x^n$ là hàm sinh thường của dãy Catalan.<br>
+        Xét bình phương của hàm sinh:</p>
+        $$ (F(x))^2 = \left( \sum_{i=0}^\infty C_i x^i \right) \left( \sum_{j=0}^\infty C_j x^j \right) = \sum_{k=0}^\infty \left( \sum_{i=0}^k C_i C_{k-i} \right) x^k $$
+        <p>Nhân hai vế với $x$:</p>
+        $$ x(F(x))^2 = \sum_{k=0}^\infty \left( \sum_{i=0}^k C_i C_{k-i} \right) x^{k+1} $$
+        <p>Đặt $n = k+1$, ta chuyển chỉ số:</p>
+        $$ x(F(x))^2 = \sum_{n=1}^\infty \left( \sum_{i=0}^{n-1} C_i C_{n-1-i} \right) x^n $$
+        <p>Theo hệ thức truy hồi, biểu thức trong ngoặc chính là $C_n$. Do đó:</p>
+        $$ x(F(x))^2 = \sum_{n=1}^\infty C_n x^n = F(x) - C_0 = F(x) - 1 $$
+        <p>Ta thu được phương trình đại số đối với hàm sinh $F(x)$:</p>
+        $$ x (F(x))^2 - F(x) + 1 = 0 $$
+        <p>Giải phương trình bậc hai này theo biến $F(x)$:</p>
+        $$ F(x) = \frac{1 \pm \sqrt{1 - 4x}}{2x} $$
+        <p>Để xác định dấu $\pm$, ta xét giới hạn $\lim_{x \to 0} F(x) = C_0 = 1$. <br>
+        Nếu chọn dấu $+$, $\lim_{x \to 0} \frac{1 + \sqrt{1-4x}}{2x} = \infty$ (không hợp lệ).<br>
+        Vậy ta phải chọn dấu $-$:</p>
+        $$ F(x) = \frac{1 - \sqrt{1 - 4x}}{2x} $$
+        <p>Sử dụng khai triển Newton suy rộng (Định lý 1.1) cho $\sqrt{1-4x} = (1 - 4x)^{1/2}$:</p>
+        $$ (1-4x)^{1/2} = \sum_{n=0}^\infty \binom{1/2}{n} (-4x)^n $$
+        <p>Hệ số của $x^{n+1}$ trong khai triển $(1-4x)^{1/2}$ là:</p>
+        $$ \binom{1/2}{n+1} (-4)^{n+1} = \frac{\frac{1}{2} \cdot \left(-\frac{1}{2}\right) \cdot \left(-\frac{3}{2}\right) \dots \left(-\frac{2n-1}{2}\right)}{(n+1)!} (-1)^{n+1} 4^{n+1} $$
+        <p>Gộp các dấu âm: có $n$ dấu âm ở tử số và $(-1)^{n+1}$, tổng cộng là $(-1)^{2n+1} = -1$.</p>
+        $$ = -\frac{1 \cdot 3 \cdot 5 \dots (2n-1)}{2^{n+1} (n+1)!} 4^{n+1} = - \frac{2^{n+1} \cdot 1 \cdot 3 \dots (2n-1)}{(n+1)!} $$
+        <p>Nhân cả tử và mẫu với $n! \cdot 2^n = 2 \cdot 4 \dots 2n$, ta có:</p>
+        $$ = - \frac{2 \cdot (2n)!}{(n+1)! n!} = - \frac{2}{n+1} \binom{2n}{n} $$
+        <p>Thế vào biểu thức $F(x)$:</p>
+        $$ F(x) = \frac{1 - \left( 1 - \sum_{n=0}^\infty \frac{2}{n+1} \binom{2n}{n} x^{n+1} \right)}{2x} = \sum_{n=0}^\infty \frac{1}{n+1} \binom{2n}{n} x^n $$
+        <p>Đồng nhất hệ số của $x^n$, ta thu được công thức của số Catalan:</p>
+        $$ C_n = \frac{1}{n+1} \binom{2n}{n} $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (VMO 2014, Bài 4 - Tổ hợp chia hết)</div>
+        Tìm số lượng các dãy số có độ dài $n$ ($n \ge 1$), được tạo thành từ các chữ số thuộc tập $\{1, 2, 3\}$, sao cho tổng các phần tử của dãy là một số chia hết cho 3.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $a_n$ là số lượng dãy độ dài $n$ thỏa mãn yêu cầu bài toán.<br>
+        Mỗi phần tử trong dãy có thể nhận các giá trị $1, 2, 3$. Ta xây dựng đa thức hàm sinh cho việc chọn 1 phần tử:</p>
+        $$ P(x) = x^1 + x^2 + x^3 = x(1 + x + x^2) $$
+        <p>Khi tạo dãy độ dài $n$, ta nhân đa thức này $n$ lần. Đa thức tổng quát là:</p>
+        $$ F(x) = (P(x))^n = x^n (1 + x + x^2)^n $$
+        <p>Hệ số của $x^m$ trong $F(x)$ chính là số lượng dãy độ dài $n$ có tổng các phần tử bằng $m$.<br>
+        Bài toán yêu cầu tính tổng các hệ số tại các lũy thừa chia hết cho 3.<br>
+        Sử dụng Bộ lọc căn bậc 3 của đơn vị (Định lý 1.2). Gọi $\omega = e^{2\pi i / 3}$. Ta có $\omega^3 = 1$ và $1 + \omega + \omega^2 = 0$.<br>
+        Số lượng dãy thỏa mãn là:</p>
+        $$ a_n = \frac{1}{3} \left( F(1) + F(\omega) + F(\omega^2) \right) $$
+        <p>Tính các giá trị:</p>
+        <ul>
+            <li> Tại $x = 1$: $F(1) = 1^n (1 + 1 + 1^2)^n = 3^n$.</li>
+            <li> Tại $x = \omega$: $F(\omega) = \omega^n (1 + \omega + \omega^2)^n = \omega^n \cdot 0^n = 0$.</li>
+            <li> Tại $x = \omega^2$: $F(\omega^2) = (\omega^2)^n (1 + \omega^2 + \omega^4)^n = \omega^{2n} (1 + \omega^2 + \omega)^n = 0$.</li>
+        </ul>
+        <p>Thay các giá trị này vào công thức bộ lọc:</p>
+        $$ a_n = \frac{1}{3} (3^n + 0 + 0) = 3^{n-1} $$
+        <p>Kết luận: Số lượng dãy thỏa mãn điều kiện là $3^{n-1}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học bậc cao - Thặng dư bậc hai và ký hiệu Legendre</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC BẬC CAO <br> THẶNG DƯ BẬC HAI VÀ KÝ HIỆU LEGENDRE</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát tính giải được của phương trình đồng dư bậc hai là một trong những chủ đề quan trọng của Số học. Chuyên đề này hệ thống hóa các định lý liên quan đến Thặng dư bậc hai, bao gồm Tiêu chuẩn Euler, Bổ đề Gauss và Luật Tương hỗ Bậc hai. Các bài toán được trích xuất từ các kỳ thi Olympic Quốc gia nhằm minh họa ứng dụng của ký hiệu Legendre trong việc chứng minh vô nghiệm đối với phương trình Diophantine và khảo sát đặc trưng của ước nguyên tố.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Thặng dư bậc hai và Ký hiệu Legendre)</div>
+        Cho $p$ là một số nguyên tố lẻ và $a$ là một số nguyên. Số $a$ được gọi là thặng dư bậc hai modulo $p$ nếu tồn tại số nguyên $x$ sao cho $x^2 \equiv a \pmod p$. Ngược lại, $a$ được gọi là phi thặng dư bậc hai modulo $p$.<br>
+        Ký hiệu Legendre, ký hiệu là $\left(\frac{a}{p}\right)$, được định nghĩa như sau:
+        $$ \left(\frac{a}{p}\right) = \begin{cases} 1 & \text{nếu } a \text{ là thặng dư bậc hai modulo } p \text{ và } p \nmid a \\ -1 & \text{nếu } a \text{ là phi thặng dư bậc hai modulo } p \\ 0 & \text{nếu } p \mid a \end{cases} $$
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Tiêu chuẩn Euler)</div>
+        Với mọi số nguyên tố lẻ $p$ và số nguyên $a$, ta có đồng dư thức:
+        $$ \left(\frac{a}{p}\right) \equiv a^{\frac{p-1}{2}} \pmod p $$
+        Hệ quả trực tiếp: Ký hiệu Legendre có tính chất nhân tính, tức là $\left(\frac{ab}{p}\right) = \left(\frac{a}{p}\right) \left(\frac{b}{p}\right)$. Đặc biệt, $\left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}}$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Nếu $p \mid a$, hai vế đều đồng dư $0 \pmod p$.<br>
+        Giả sử $p \nmid a$. Theo Định lý Fermat nhỏ, $a^{p-1} \equiv 1 \pmod p$.<br>
+        Do đó, $(a^{\frac{p-1}{2}} - 1)(a^{\frac{p-1}{2}} + 1) \equiv 0 \pmod p$. Vì $p$ là số nguyên tố, $a^{\frac{p-1}{2}} \equiv 1 \pmod p$ hoặc $a^{\frac{p-1}{2}} \equiv -1 \pmod p$.</p>
+        <ul>
+            <li> Nếu $\left(\frac{a}{p}\right) = 1$, tồn tại $x$ sao cho $x^2 \equiv a \pmod p$. Khi đó $a^{\frac{p-1}{2}} \equiv (x^2)^{\frac{p-1}{2}} = x^{p-1} \equiv 1 \pmod p$.</li>
+            <li> Nếu $\left(\frac{a}{p}\right) = -1$, phương trình $x^2 \equiv a \pmod p$ vô nghiệm. Với mỗi số nguyên $i \in \{1, 2, \dots, p-1\}$, tồn tại duy nhất số nguyên $j \in \{1, 2, \dots, p-1\}$ sao cho $i \cdot j \equiv a \pmod p$. Do phương trình vô nghiệm, $i \neq j$. Tập hợp $\{1, 2, \dots, p-1\}$ được chia thành $\frac{p-1}{2}$ cặp phân biệt có tích đồng dư $a$.</li>
+        </ul>
+        <p>Lấy tích tất cả các cặp này: $(p-1)! \equiv a^{\frac{p-1}{2}} \pmod p$.<br>
+        Theo Định lý Wilson, $(p-1)! \equiv -1 \pmod p$. Suy ra $a^{\frac{p-1}{2}} \equiv -1 \pmod p$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bổ đề Gauss và Luật Tương hỗ Bậc hai)</div>
+        Với số nguyên tố lẻ $p$, ta có $\left(\frac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}}$. Tức là 2 là thặng dư bậc hai modulo $p$ khi và chỉ khi $p \equiv \pm 1 \pmod 8$.<br>
+        Luật Tương hỗ Bậc hai (Gauss): Với hai số nguyên tố lẻ $p, q$ phân biệt:
+        $$ \left(\frac{p}{q}\right) \left(\frac{q}{p}\right) = (-1)^{\frac{p-1}{2} \cdot \frac{q-1}{2}} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><b>1. Chứng minh Bổ đề Gauss cho $\left(\frac{2}{p}\right)$:</b><br>
+        Xét tập hợp $S = \{1, 2, \dots, \frac{p-1}{2}\}$. Nhân mỗi phần tử của $S$ với 2, ta được tập hợp $S' = \{2, 4, \dots, p-1\}$.<br>
+        Theo Bổ đề Gauss, $\left(\frac{2}{p}\right) = (-1)^n$, trong đó $n$ là số lượng các phần tử trong $S'$ lớn hơn $\frac{p}{2}$.<br>
+        Các phần tử của $S'$ có dạng $2k$. Để $2k \gt \frac{p}{2}$, ta cần $k \gt \frac{p}{4}$.<br>
+        Số lượng các phần tử thỏa mãn là $n = \frac{p-1}{2} - \lfloor \frac{p}{4} \rfloor$.<br>
+        Xét các trường hợp modulo 8 của $p$:</p>
+        <ul>
+            <li> Nếu $p \equiv 1 \pmod 8$, $p = 8m+1 \implies n = 4m - 2m = 2m$ (chẵn) $\implies \left(\frac{2}{p}\right) = 1$.</li>
+            <li> Nếu $p \equiv 3 \pmod 8$, $p = 8m+3 \implies n = (4m+1) - 2m = 2m+1$ (lẻ) $\implies \left(\frac{2}{p}\right) = -1$.</li>
+            <li> Nếu $p \equiv 5 \pmod 8$, $p = 8m+5 \implies n = (4m+2) - (2m+1) = 2m+1$ (lẻ) $\implies \left(\frac{2}{p}\right) = -1$.</li>
+            <li> Nếu $p \equiv 7 \pmod 8$, $p = 8m+7 \implies n = (4m+3) - (2m+1) = 2m+2$ (chẵn) $\implies \left(\frac{2}{p}\right) = 1$.</li>
+        </ul>
+        <p>Gộp các kết quả lại, ta có $\left(\frac{2}{p}\right) = (-1)^{\frac{p^2-1}{8}}$.</p>
+        
+        <p><b>2. Chứng minh Luật Tương hỗ Bậc hai (phương pháp hình học của Eisenstein):</b><br>
+        Xét hình chữ nhật trên hệ tọa độ $Oxy$ với các đỉnh $(0,0), (\frac{p}{2}, 0), (\frac{p}{2}, \frac{q}{2}), (0, \frac{q}{2})$.<br>
+        Gọi $T$ là số điểm lưới nguyên $(x, y)$ nằm nghiêm ngặt bên trong hình chữ nhật này. Ta có $T = \frac{p-1}{2} \cdot \frac{q-1}{2}$.<br>
+        Đường chéo nối $(0,0)$ và $(\frac{p}{2}, \frac{q}{2})$ có phương trình $y = \frac{q}{p}x$. Vì $p, q$ là hai số nguyên tố lẻ phân biệt, không có điểm lưới nguyên nào nằm trên đường chéo này.<br>
+        Số điểm lưới nằm dưới đường chéo là $N_1 = \sum_{x=1}^{\frac{p-1}{2}} \lfloor \frac{qx}{p} \rfloor$.<br>
+        Số điểm lưới nằm trên đường chéo là $N_2 = \sum_{y=1}^{\frac{q-1}{2}} \lfloor \frac{py}{q} \rfloor$.<br>
+        Ta có $N_1 + N_2 = T = \frac{p-1}{2} \cdot \frac{q-1}{2}$.<br>
+        Theo Bổ đề Gauss, ta có thể chứng minh được $\left(\frac{q}{p}\right) = (-1)^{N_1}$ và $\left(\frac{p}{q}\right) = (-1)^{N_2}$.<br>
+        Nhân hai biểu thức lại, ta được:</p>
+        $$ \left(\frac{p}{q}\right) \left(\frac{q}{p}\right) = (-1)^{N_1 + N_2} = (-1)^{\frac{p-1}{2} \cdot \frac{q-1}{2}} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (All-Russian Olympiad - Phân tích ước nguyên tố)</div>
+        Cho biểu thức $A(n) = n^2 + n + 1$ với $n$ là số nguyên. Chứng minh rằng mọi ước nguyên tố lẻ của $A(n)$ đều có dạng $6k + 1$, ngoại trừ số nguyên tố $3$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $p$ là một ước nguyên tố lẻ của biểu thức $A(n) = n^2 + n + 1$. Ta có:</p>
+        $$ n^2 + n + 1 \equiv 0 \pmod p $$
+        <p>Vì $p$ là số nguyên tố lẻ, $\gcd(4, p) = 1$, ta nhân cả hai vế của đồng dư thức với 4:</p>
+        $$ \begin{aligned}
+        4n^2 + 4n + 4 &\equiv 0 \pmod p \\
+        \iff (2n + 1)^2 + 3 &\equiv 0 \pmod p \\
+        \iff (2n + 1)^2 &\equiv -3 \pmod p
+        \end{aligned} $$
+        <p>Điều này chứng tỏ $-3$ là một thặng dư bậc hai modulo $p$. Do đó, ký hiệu Legendre $\left(\frac{-3}{p}\right) = 1$.<br>
+        Ta sử dụng tính chất nhân tính của ký hiệu Legendre:</p>
+        $$ 1 = \left(\frac{-3}{p}\right) = \left(\frac{-1}{p}\right) \left(\frac{3}{p}\right) $$
+        <p>Áp dụng Tiêu chuẩn Euler, ta có $\left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}}$.<br>
+        Áp dụng Luật Tương hỗ Bậc hai của Gauss cho hai số nguyên tố $3$ và $p$:</p>
+        $$ \left(\frac{3}{p}\right) \left(\frac{p}{3}\right) = (-1)^{\frac{p-1}{2} \cdot \frac{3-1}{2}} = (-1)^{\frac{p-1}{2}} $$
+        <p>Từ đẳng thức này, vì $\left(\frac{p}{3}\right) \in \{-1, 1\}$, ta có thể nhân cả hai vế với $\left(\frac{p}{3}\right)$ để được:</p>
+        $$ \left(\frac{3}{p}\right) = (-1)^{\frac{p-1}{2}} \left(\frac{p}{3}\right) $$
+        <p>Thay giá trị của $\left(\frac{-1}{p}\right)$ và $\left(\frac{3}{p}\right)$ vào phương trình ban đầu:</p>
+        $$ 1 = \left[ (-1)^{\frac{p-1}{2}} \right] \cdot \left[ (-1)^{\frac{p-1}{2}} \left(\frac{p}{3}\right) \right] $$
+        $$ 1 = (-1)^{p-1} \left(\frac{p}{3}\right) = \left(\frac{p}{3}\right) $$
+        <p>Kết quả $\left(\frac{p}{3}\right) = 1$ có nghĩa là $p$ là một thặng dư bậc hai modulo $3$.<br>
+        Các lớp đồng dư modulo $3$ là $0, 1, 2$. <br>
+        Bình phương của chúng modulo 3 lần lượt là: $0^2 \equiv 0$, $1^2 \equiv 1$, $2^2 \equiv 1 \pmod 3$.<br>
+        Do $p \neq 3$ (theo giả thiết), $p \not\equiv 0 \pmod 3$. <br>
+        Vậy lớp thặng dư bậc hai duy nhất modulo $3$ là $1$. Suy ra $p \equiv 1 \pmod 3$.<br>
+        Vì $p$ là số nguyên tố lẻ, $p \equiv 1 \pmod 2$.<br>
+        Kết hợp $p \equiv 1 \pmod 3$ và $p \equiv 1 \pmod 2$, theo Định lý Thặng dư Trung Hoa, ta có $p \equiv 1 \pmod 6$.<br>
+        Nghĩa là tồn tại số nguyên $k$ sao cho $p = 6k + 1$. </p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Australian Math Olympiad - Tồn tại vô hạn số nguyên tố)</div>
+        Chứng minh rằng tồn tại vô hạn các số nguyên tố có dạng $4k + 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử phản chứng chỉ có hữu hạn các số nguyên tố có dạng $4k + 1$. <br>
+        Ký hiệu tập hợp tất cả các số nguyên tố này là $S = \{p_1, p_2, \dots, p_m\}$.<br>
+        Xét số nguyên dương $N$ được xây dựng như sau:</p>
+        $$ N = (2 p_1 p_2 \dots p_m)^2 + 1 $$
+        <p>Ta có $N \gt 1$, do đó $N$ phải có ít nhất một ước nguyên tố, gọi là $q$.<br>
+        Vì $(2 p_1 \dots p_m)^2$ là một số chẵn, $N$ là số lẻ. Do đó ước nguyên tố $q$ phải là số nguyên tố lẻ.<br>
+        Từ $q \mid N$, ta có:</p>
+        $$ (2 p_1 p_2 \dots p_m)^2 + 1 \equiv 0 \pmod q \implies (2 p_1 p_2 \dots p_m)^2 \equiv -1 \pmod q $$
+        <p>Điều này chứng tỏ $-1$ là một thặng dư bậc hai modulo $q$, hay $\left(\frac{-1}{q}\right) = 1$.<br>
+        Áp dụng Tiêu chuẩn Euler (Định lý 1.1):</p>
+        $$ 1 = \left(\frac{-1}{q}\right) \equiv (-1)^{\frac{q-1}{2}} \pmod q $$
+        <p>Vì $q \gt 2$, hệ thức trên tương đương với đẳng thức trên tập số nguyên: $(-1)^{\frac{q-1}{2}} = 1$.<br>
+        Điều này xảy ra khi và chỉ khi $\frac{q-1}{2}$ là một số chẵn, tức là $\frac{q-1}{2} = 2k \implies q = 4k + 1$.<br>
+        Vậy $q$ là một số nguyên tố có dạng $4k + 1$. <br>
+        Theo giả thiết ban đầu, $q$ phải thuộc tập $S$, tức là $q = p_i$ với một chỉ số $i \in \{1, 2, \dots, m\}$.<br>
+        Tuy nhiên, theo cách xây dựng $N$, khi chia $N$ cho bất kỳ $p_i$ nào, số dư luôn bằng $1$. Do đó $p_i$ không thể là ước của $N$.<br>
+        Điều này dẫn đến mâu thuẫn. Do đó, có vô hạn các số nguyên tố dạng $4k + 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (China High School Mathematics League - Phương trình Diophantine)</div>
+        Chứng minh rằng phương trình $x^2 + 5y^2 = 17z^2$ không có nghiệm nguyên nào khác ngoài nghiệm $(x,y,z)=(0,0,0)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử phương trình có nghiệm nguyên không phải là $(0,0,0)$. Chia các biến cho ước chung lớn nhất của chúng, ta có thể giả sử $\gcd(x, y, z) = 1$.<br>
+        Xét phương trình modulo $17$:</p>
+        $$ x^2 + 5y^2 \equiv 0 \pmod{17} $$
+        <p>Nếu $17 \mid y$, thì từ đồng dư thức trên, ta có $17 \mid x^2 \implies 17 \mid x$.<br>
+        Nếu cả $x$ và $y$ đều chia hết cho 17, thì vế trái $x^2 + 5y^2$ chia hết cho $17^2$.<br>
+        Phương trình ban đầu dẫn đến $17^2 \mid 17z^2 \implies 17 \mid z^2 \implies 17 \mid z$.<br>
+        Khi đó $\gcd(x, y, z) \ge 17$, điều này mâu thuẫn do ta đã giả sử $\gcd(x, y, z) = 1$.<br>
+        Do đó, $17 \nmid y$. Tồn tại phần tử nghịch đảo của $y$ modulo 17. Nhân hai vế của đồng dư thức với $(y^{-1})^2$:</p>
+        $$ (x y^{-1})^2 + 5 \equiv 0 \pmod{17} \implies (x y^{-1})^2 \equiv -5 \pmod{17} $$
+        <p>Điều này đòi hỏi $-5$ phải là một thặng dư bậc hai modulo 17, tức là $\left(\frac{-5}{17}\right) = 1$.<br>
+        Ta tiến hành tính Ký hiệu Legendre này:</p>
+        $$ \left(\frac{-5}{17}\right) = \left(\frac{-1}{17}\right) \left(\frac{5}{17}\right) $$
+        <p>Theo Tiêu chuẩn Euler, $\left(\frac{-1}{17}\right) = (-1)^{\frac{17-1}{2}} = (-1)^8 = 1$.<br>
+        Theo Luật Tương hỗ Bậc hai (Định lý 1.2) cho $p=5, q=17$:</p>
+        $$ \left(\frac{5}{17}\right) \left(\frac{17}{5}\right) = (-1)^{\frac{5-1}{2} \cdot \frac{17-1}{2}} = (-1)^{2 \cdot 8} = 1 $$
+        <p>Suy ra $\left(\frac{5}{17}\right) = \left(\frac{17}{5}\right)$.<br>
+        Tính $\left(\frac{17}{5}\right)$: Vì $17 \equiv 2 \pmod 5$, ta có $\left(\frac{17}{5}\right) = \left(\frac{2}{5}\right)$.<br>
+        Lớp đồng dư modulo 5 là $0, 1, 2, 3, 4$. Bình phương: $0^2 \equiv 0$, $1^2 \equiv 1$, $2^2 \equiv 4$, $3^2 \equiv 4$, $4^2 \equiv 1 \pmod 5$.<br>
+        Số $2$ không phải là thặng dư bậc hai modulo 5, nên $\left(\frac{2}{5}\right) = -1$.<br>
+        Thay ngược lại: $\left(\frac{-5}{17}\right) = 1 \cdot (-1) = -1$.<br>
+        Mâu thuẫn này cho thấy $\left(\frac{-5}{17}\right) = 1$ là không thể xảy ra.<br>
+        Vậy phương trình không có nghiệm nguyên nào khác $(0, 0, 0)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Austria Federal Competition - Phương trình Lebesgue)</div>
+        Chứng minh rằng phương trình $x^3 + 7 = y^2$ không có nghiệm nguyên $(x, y)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử tồn tại nghiệm nguyên $(x, y)$.<br>
+        Xét phương trình modulo 4: <br>
+        Mọi số chính phương $y^2$ chỉ đồng dư với $0$ hoặc $1 \pmod 4$.<br>
+        Do đó, vế phải $y^2 \equiv 0$ hoặc $1 \pmod 4$.<br>
+        Vế trái $x^3 + 7 \equiv x^3 + 3 \pmod 4$.</p>
+        <ul>
+            <li> Nếu $x$ chẵn, $x^3 \equiv 0 \pmod 4 \implies x^3 + 3 \equiv 3 \pmod 4$. Phương trình vô nghiệm vì $3 \not\equiv 0, 1 \pmod 4$.</li>
+        </ul>
+        <p>Vậy $x$ phải là số lẻ.<br>
+        Biến đổi phương trình ban đầu:</p>
+        $$ y^2 + 1 = x^3 + 8 = (x + 2)(x^2 - 2x + 4) $$
+        <p>Vì $x$ là số lẻ, $x^2 \equiv 1 \pmod 4$. <br>
+        Xét nhân tử $x^2 - 2x + 4 = x^2 - 2x + 1 + 3 = (x - 1)^2 + 3$.<br>
+        Vì $x$ lẻ, $x - 1$ là số chẵn. Do đó $(x - 1)^2 \equiv 0 \pmod 4$.<br>
+        Suy ra $(x - 1)^2 + 3 \equiv 3 \pmod 4$.</p>
+        <p>Nhân tử $x^2 - 2x + 4$ là một số lẻ và có dạng $4k + 3$.<br>
+        Mọi số nguyên dương có dạng $4k + 3$ phải có ít nhất một ước nguyên tố $q$ có dạng $4k + 3$.<br>
+        Từ $x^2 - 2x + 4 \mid y^2 + 1$, ta suy ra $q \mid y^2 + 1$.</p>
+        $$ y^2 + 1 \equiv 0 \pmod q \implies y^2 \equiv -1 \pmod q $$
+        <p>Điều này chứng tỏ $\left(\frac{-1}{q}\right) = 1$.<br>
+        Tuy nhiên, theo Tiêu chuẩn Euler, $\left(\frac{-1}{q}\right) = (-1)^{\frac{q-1}{2}}$.<br>
+        Vì $q \equiv 3 \pmod 4$, nên $q = 4k + 3$. Khi đó $\frac{q-1}{2} = \frac{4k+2}{2} = 2k + 1$ là một số lẻ.<br>
+        Do đó $\left(\frac{-1}{q}\right) = -1$, mâu thuẫn với $\left(\frac{-1}{q}\right) = 1$.<br>
+        Vậy phương trình không có nghiệm nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Argentina National Olympiad - Phân tích Thặng dư Bậc hai)</div>
+        Cho $p$ là số nguyên tố có dạng $4k + 3$. Giả sử tồn tại các số nguyên $a, b$ sao cho $p \mid a^2 + b^2$. Chứng minh rằng $p \mid a$ và $p \mid b$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử phản chứng rằng $p \nmid a$ hoặc $p \nmid b$.<br>
+        Từ $p \mid a^2 + b^2$, ta có:</p>
+        $$ a^2 + b^2 \equiv 0 \pmod p $$
+        <p>Nếu $p \mid a$, thì $p \mid b^2 \implies p \mid b$. Khi đó mệnh đề bài toán được chứng minh. Do giả thiết phản chứng, ta giả sử $p \nmid a$ và $p \nmid b$.<br>
+        Tồn tại nghịch đảo modulo $p$ của $b$, ký hiệu là $b^{-1}$. Nhân hai vế của đồng dư thức với $(b^{-1})^2$:</p>
+        $$ (a b^{-1})^2 + 1 \equiv 0 \pmod p \implies (a b^{-1})^2 \equiv -1 \pmod p $$
+        <p>Điều này chỉ ra rằng $-1$ là một thặng dư bậc hai modulo $p$.<br>
+        Áp dụng Tiêu chuẩn Euler:</p>
+        $$ 1 = \left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}} $$
+        <p>Vì $p = 4k + 3$, ta có $\frac{p-1}{2} = \frac{4k+2}{2} = 2k + 1$.<br>
+        Số mũ $2k + 1$ là một số lẻ, do đó $(-1)^{2k+1} = -1$.<br>
+        Ta thu được $1 = -1$, mâu thuẫn.</p>
+        <p>Do đó, không thể xảy ra trường hợp $p \nmid a$ và $p \nmid b$. Phải có $p \mid a$ và $p \mid b$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

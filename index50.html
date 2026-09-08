@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Lý thuyết đồ thị - Tô màu đồ thị, đa thức sắc số và PIE</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: LÝ THUYẾT ĐỒ THỊ <br> TÔ MÀU ĐỒ THỊ, ĐA THỨC SẮC SỐ VÀ NGUYÊN LÝ BAO HÀM - LOẠI TRỪ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: Phân tích Tổ hợp Hiện đại</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đánh giá số lượng màu tối thiểu cần thiết để tô các đỉnh của một đồ thị sao cho không có hai đỉnh kề nào cùng màu là một bài toán quan trọng trong Toán rời rạc. Chuyên đề này không dừng lại ở việc tìm Số Sắc số, mà tiến xa hơn bằng cách thiết lập Đa thức Sắc số để đếm tổng số cách tô màu. Thông qua công thức Xóa - Chập và Nguyên lý Bao hàm - Loại trừ, chúng ta phân tích cấu trúc đồ thị thành các thành phần liên thông, tạo ra những hệ thức truy hồi để giải quyết các bài thi Olympic quốc gia.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ: Phép chập cạnh và Nguyên lý PIE</h2>
+    <p><i>Để có thể áp dụng các định lý sâu sắc về Đa thức sắc số, học sinh cần làm quen với hai công cụ nền tảng sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Phép chập cạnh - Edge Contraction)</div>
+        Cho đồ thị $G$ và một cạnh $e$ nối hai đỉnh $u, v$. <strong>Phép chập cạnh</strong> $e$, ký hiệu là $G/e$, là quá trình gộp hai đỉnh $u$ và $v$ thành một đỉnh duy nhất $w$. Đỉnh $w$ này sẽ được nối với tất cả các đỉnh trước đây đã từng kề với $u$ hoặc kề với $v$. Các cạnh song song (nếu có) được tạo ra trong quá trình này sẽ được gộp thành một cạnh đơn.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Nguyên lý Bao hàm - Loại trừ (PIE))</div>
+        Cho $N$ tập hợp hữu hạn $A_1, A_2, \dots, A_N$. Lực lượng (số phần tử) của tập hợp các phần tử không thuộc bất kỳ tập nào trong $N$ tập trên, nằm trong không gian mẫu $\Omega$, được tính bằng:
+        $$ \left| \Omega \setminus \bigcup_{i=1}^N A_i \right| = |\Omega| - \sum_{i} |A_i| + \sum_{i < j} |A_i \cap A_j| - \dots + (-1)^N |A_1 \cap \dots \cap A_N| $$
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Tô màu đồ thị hợp lệ và Số Sắc số)</div>
+        Cho đồ thị đơn vô hướng $G = (V, E)$.
+        <ul>
+            <li> <strong>Tô màu đỉnh hợp lệ (Proper Vertex Coloring):</strong> Là một phép gán màu cho mỗi đỉnh của đồ thị sao cho với mọi cạnh $e = uv \in E$, đỉnh $u$ và đỉnh $v$ phải được gán hai màu khác nhau.</li>
+            <li> <strong>Số Sắc số (Chromatic Number) $\chi(G)$:</strong> Là số lượng màu ít nhất cần thiết để có thể tô màu hợp lệ đồ thị $G$. Đồ thị có thể tô màu hợp lệ bằng $k$ màu được gọi là đồ thị $k$-tô được (k-colorable).</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Giới hạn Bậc cực đại - Greedy Coloring Bound)</div>
+        Mọi đồ thị $G$ đều có số sắc số không vượt quá bậc cực đại của nó cộng 1. Ký hiệu $\Delta(G)$ là bậc cực đại của $G$ (đỉnh có nhiều cạnh nối nhất), ta luôn có:
+        $$ \chi(G) \le \Delta(G) + 1 $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh định lý bằng <strong>phương pháp quy nạp toán học</strong> theo số đỉnh $n$ của đồ thị.</p>
+        <p><em>Bước cơ sở ($n=1$):</em> Đồ thị chỉ có 1 đỉnh. Bậc cực đại $\Delta(G) = 0$. Ta chỉ cần 1 màu để tô, và $\chi(G) = 1 \le 0 + 1$. Mệnh đề đúng.</p>
+
+        <p><em>Bước quy nạp:</em> Giả sử định lý đúng cho mọi đồ thị có $n-1$ đỉnh. Xét đồ thị $G$ có $n$ đỉnh với bậc cực đại là $\Delta(G)$.<br>
+        Ta chọn một đỉnh $v$ bất kỳ của $G$ và xóa nó khỏi đồ thị (xóa cả các cạnh kề với $v$). Ký hiệu đồ thị còn lại là $G' = G - v$.<br>
+        Bậc cực đại của $G'$ không thể lớn hơn bậc cực đại của đồ thị gốc $G$. Tức là $\Delta(G') \le \Delta(G)$.</p>
+        
+        <p>Vì $G'$ có $n-1$ đỉnh, theo giả thiết quy nạp, ta có thể tô màu hợp lệ $G'$ bằng tối đa $\Delta(G') + 1$ màu, do đó cũng có thể tô bằng $\Delta(G) + 1$ màu.</p>
+        
+        <p>Bây giờ, ta khôi phục đỉnh $v$ và các cạnh của nó trở lại đồ thị. <br>
+        Số lượng cạnh kề với $v$ trong $G$ không vượt quá $\Delta(G)$. Điều này có nghĩa là đỉnh $v$ nối với tối đa $\Delta(G)$ đỉnh khác. <br>
+        Giả sử ta đã sử dụng danh sách màu gồm $\Delta(G) + 1$ màu để tô cho $G'$. Các đỉnh kề với $v$ sẽ sử dụng nhiều nhất là $\Delta(G)$ màu khác nhau từ danh sách này.<br>
+        Do tổng số màu trong danh sách là $\Delta(G) + 1$, nên <strong>luôn còn ít nhất 1 màu</strong> chưa được sử dụng bởi bất kỳ đỉnh nào kề với $v$.<br>
+        Ta lấy màu còn lại này gán cho $v$. Phép tô màu vẫn đảm bảo tính hợp lệ cho toàn bộ đồ thị $G$.</p>
+        <p>Vậy $G$ có thể được tô màu bằng $\Delta(G) + 1$ màu. Quy nạp được hoàn thành.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Đa thức Sắc số và Hệ thức Xóa - Chập)</div>
+        Ký hiệu $P(G, k)$ là số lượng cách tô màu đỉnh hợp lệ đồ thị $G$ bằng $k$ màu. Đối với bất kỳ đồ thị $G$ nào, $P(G, k)$ luôn là một đa thức theo biến $k$.<br>
+        Hơn nữa, với một cạnh $e$ bất kỳ thuộc đồ thị $G$, ta luôn có hệ thức truy hồi:
+        $$ P(G, k) = P(G-e, k) - P(G/e, k) $$
+        Trong đó:
+        <ul>
+            <li> $G-e$ là đồ thị thu được từ $G$ bằng cách <strong>xóa</strong> cạnh $e$.</li>
+            <li> $G/e$ là đồ thị thu được từ $G$ bằng cách <strong>chập</strong> hai đầu mút của cạnh $e$ lại thành một đỉnh duy nhất.</li>
+        </ul>
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử cạnh $e$ nối hai đỉnh $u$ và $v$. Xét đồ thị $G-e$ (đồ thị $G$ sau khi đã cắt đứt liên kết giữa $u$ và $v$).<br>
+        Trong một phép tô màu hợp lệ của đồ thị $G-e$ bằng $k$ màu, có hai trường hợp xảy ra đối với màu của $u$ và $v$:</p>
+        <ol>
+            <li> $u$ và $v$ được tô <strong>khác màu</strong>. Nếu vậy, phép tô màu này cũng sẽ là một phép tô màu hợp lệ cho đồ thị $G$ ban đầu (vì khi lắp cạnh $e$ trở lại, $u$ và $v$ đã khác màu rồi). Số lượng cách tô màu loại này là $P(G, k)$.</li>
+            <li> $u$ và $v$ được tô <strong>cùng màu</strong>. Trong trường hợp này, nếu ta lắp cạnh $e$ trở lại, phép tô màu sẽ bị vi phạm. Tuy nhiên, số lượng cách tô màu $G-e$ sao cho $u$ và $v$ cùng màu hoàn toàn tương đương với số lượng cách tô màu đồ thị $G/e$. Thao tác "chập" $u$ và $v$ thành một đỉnh duy nhất (gọi là $w$) mang ý nghĩa rằng đỉnh mới $w$ này sẽ kế thừa tất cả các lân cận của cả $u$ và $v$. Bất kỳ màu nào gán cho $w$ hợp lệ trong $G/e$ đều có thể gán ngược lại cho cả $u$ và $v$ trong $G-e$. Do đó, số lượng cách tô màu loại này bằng $P(G/e, k)$.</li>
+        </ol>
+
+        <p>Tổng số cách tô màu $G-e$ là tổng của cả hai trường hợp trên:</p>
+        $$ P(G-e, k) = P(G, k) + P(G/e, k) $$
+        <p>Chuyển vế, ta thu được Hệ thức Xóa - Chập: $P(G, k) = P(G-e, k) - P(G/e, k)$.</p>
+        <p>Bằng cách áp dụng hệ thức này lặp đi lặp lại để loại bỏ dần các cạnh, ta sẽ phân rã đồ thị $G$ thành một tập hợp các đồ thị không có cạnh (đồ thị rời rạc). Số cách tô màu đồ thị $n$ đỉnh không có cạnh là $k^n$. Mọi phép Xóa - Chập tạo ra các tổ hợp tuyến tính của $k^m$. Do đó, $P(G, k)$ là một đa thức theo $k$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Biểu diễn Bao hàm - Loại trừ của Đa thức Sắc số)</div>
+        Chứng minh rằng đối với một đồ thị $G = (V, E)$, đa thức sắc số có thể được tính bằng công thức tổng trên tập hợp tất cả các tập con của tập cạnh:
+        $$ P(G, k) = \sum_{F \subseteq E} (-1)^{|F|} k^{c(F)} $$
+        Trong đó, $F$ chạy qua tất cả các tập con của tập cạnh $E$, và $c(F)$ là số lượng <strong>thành phần liên thông</strong> của đồ thị phụ tạo bởi tập đỉnh $V$ và tập cạnh $F$ (bao gồm cả các đỉnh cô lập).
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sẽ sử dụng Nguyên lý Bao hàm - Loại trừ (PIE) lên cấu trúc đồ thị.</p>
+
+        <p>Xét không gian mẫu $\Omega$ là tập hợp <strong>tất cả các cách tô màu</strong> các đỉnh của $G$ bằng $k$ màu, mà không cần quan tâm đến việc hai đỉnh kề nhau có trùng màu hay không.<br>
+        Vì có $|V|$ đỉnh và mỗi đỉnh có $k$ sự lựa chọn độc lập, tổng số cách tô màu tùy ý là $|\Omega| = k^{|V|}$.</p>
+
+        <p>Ta muốn đếm số lượng cách tô màu <strong>hợp lệ</strong>, tức là không có cạnh nào bị vi phạm (hai đầu mút cùng màu).<br>
+        Với mỗi cạnh $e \in E$ nối $u$ và $v$, ta gọi $A_e$ là tập hợp các cách tô màu mà cạnh $e$ <strong>bị vi phạm</strong> (nghĩa là $u$ và $v$ được tô cùng màu).<br>
+        Số cách tô màu hợp lệ là số lượng phần tử thuộc $\Omega$ nhưng không nằm trong bất kỳ tập $A_e$ nào:</p>
+        $$ P(G, k) = \left| \Omega \setminus \bigcup_{e \in E} A_e \right| $$
+        
+        <p>Theo Nguyên lý Bao hàm - Loại trừ:</p>
+        $$ P(G, k) = |\Omega| - \sum_{e \in E} |A_e| + \sum_{e_1 \neq e_2} |A_{e_1} \cap A_{e_2}| - \dots = \sum_{F \subseteq E} (-1)^{|F|} \left| \bigcap_{e \in F} A_e \right| $$
+        <p>Quy ước: Khi $F = \emptyset$, $\bigcap_{e \in \emptyset} A_e = \Omega$.</p>
+
+        <p>Ta tính giao của các tập vi phạm: $\left| \bigcap_{e \in F} A_e \right|$.<br>
+        Biểu thức này đếm số lượng cách tô màu sao cho <strong>tất cả các cạnh trong tập $F$ đều bị vi phạm</strong>.<br>
+        Điều này có nghĩa là, với mọi cạnh $e \in F$ nối $u$ và $v$, ta phải ép đỉnh $u$ và đỉnh $v$ có <strong>cùng một màu</strong>.</p>
+        
+        <p>Xét đồ thị phụ sinh bởi tập cạnh $F$ trên tập đỉnh $V$, đồ thị phụ này sẽ chia tập $V$ thành một số thành phần liên thông. Ký hiệu số thành phần liên thông này là $c(F)$. (Các đỉnh không thuộc cạnh nào trong $F$ sẽ đứng một mình tạo thành một thành phần liên thông riêng lẻ).</p>
+        
+        <p>Để điều kiện ép màu được thỏa mãn trên toàn bộ tập $F$, tất cả các đỉnh nằm trong <strong>cùng một thành phần liên thông</strong> phải được tô bằng <strong>cùng một màu duy nhất</strong>. Các thành phần liên thông khác nhau có thể được chọn màu độc lập với nhau.<br>
+        Bởi vì có $c(F)$ thành phần liên thông, và mỗi thành phần có thể tự do chọn 1 trong $k$ màu, tổng số cách tô màu thỏa mãn điều kiện này là:</p>
+        $$ \left| \bigcap_{e \in F} A_e \right| = k^{c(F)} $$
+        <p>Thay kết quả này vào công thức PIE, ta thu được:</p>
+        $$ P(G, k) = \sum_{F \subseteq E} (-1)^{|F|} k^{c(F)} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (British Mathematical Olympiad - Đa thức sắc số của Chu trình)</div>
+        Một vòng cổ được tạo thành từ $n$ hạt ($n \ge 3$) xếp thành một vòng tròn. Bạn có $k$ loại màu khác nhau. Hãy tìm một công thức tính số lượng cách tô màu các hạt sao cho không có hai hạt nào kề nhau trên vòng tròn có cùng màu. Từ đó chứng minh đa thức đó luôn chia hết cho $(k-1)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vòng cổ gồm $n$ hạt xếp thành vòng tròn là Đồ thị Chu trình độ dài $n$, ký hiệu là $C_n$.<br>
+        Ta cần tìm Đa thức Sắc số $P(C_n, k)$.</p>
+        
+        <p>Ta sử dụng Hệ thức Xóa - Chập (Định lý 1.2). Chọn một cạnh $e$ bất kỳ trên chu trình $C_n$.</p>
+        <ul>
+            <li> Đồ thị $C_n - e$ (xóa cạnh $e$) trở thành một <strong>Đường đi</strong> (Path graph) có độ dài $n$, ký hiệu $P_n$.</li>
+            <li> Đồ thị $C_n / e$ (chập hai mút của $e$) sẽ rút ngắn vòng tròn đi 1 đỉnh, trở thành một <strong>Chu trình</strong> có độ dài $n-1$, ký hiệu $C_{n-1}$.</li>
+        </ul>
+        <p>Theo Định lý 1.2:</p>
+        $$ P(C_n, k) = P(P_n, k) - P(C_{n-1}, k) $$
+        
+        <p>Ta tìm số cách tô màu cho đường đi $P_n$.<br>
+        Đường đi có $n$ đỉnh xếp thẳng hàng: $v_1 - v_2 - \dots - v_n$.<br>
+        Đỉnh $v_1$ có thể chọn bất kỳ màu nào trong $k$ màu. Đỉnh $v_2$ phải khác màu $v_1$, nên có $(k-1)$ cách. Đỉnh $v_3$ khác $v_2$, có $(k-1)$ cách...<br>
+        Do đó, số cách tô màu đường đi là: $P(P_n, k) = k(k-1)^{n-1}$.</p>
+        
+        <p>Thay vào hệ thức đệ quy:</p>
+        $$ P(C_n, k) = k(k-1)^{n-1} - P(C_{n-1}, k) $$
+        <p>Ta giải phương trình sai phân: Đặt $A_n = P(C_n, k)$. Ta có:</p>
+        $$ A_n = k(k-1)^{n-1} - A_{n-1} $$
+        <p>Biến đổi hệ thức:</p>
+        $$ A_n - (k-1)^n = - \left[ A_{n-1} - (k-1)^{n-1} \right] $$
+        <p>Dãy $B_n = A_n - (k-1)^n$ là một cấp số nhân với công bội $(-1)$. Do đó:</p>
+        $$ B_n = (-1)^{n-3} B_3 $$
+        <p>Ta tính $A_3 = P(C_3, k)$. Đồ thị $C_3$ là một tam giác, số cách tô là $k(k-1)(k-2)$.</p>
+        $$ B_3 = A_3 - (k-1)^3 = k(k-1)(k-2) - (k-1)^3 = (k-1)[k^2 - 2k - (k^2 - 2k + 1)] = -(k-1) $$
+        <p>Vậy:</p>
+        $$ B_n = (-1)^{n-3} \cdot (-1)(k-1) = (-1)^n (k-1) $$
+        <p>Thay $B_n$ trở lại, ta thu được đa thức sắc số của chu trình:</p>
+        $$ P(C_n, k) = (k-1)^n + (-1)^n (k-1) $$
+        <p>Nhóm nhân tử chung $(k-1)$:</p>
+        $$ P(C_n, k) = (k-1) \left[ (k-1)^{n-1} + (-1)^n \right] $$
+        <p>Đa thức luôn chia hết cho $(k-1)$ với mọi $n \ge 3$. Bài toán BMO được giải quyết.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Tính hai phía và Chu trình chẵn)</div>
+        Cho một đồ thị liên thông $G$ trên mặt phẳng (planar graph). Chứng minh rằng nếu toàn bộ các đa giác tạo thành các "mặt" (regions/faces) của đồ thị đều có chu vi (số cạnh bao quanh) là một số chẵn, thì đồ thị này có thể tô bằng 2 màu (nghĩa là nó là đồ thị hai phía - Bipartite Graph).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Một đồ thị có thể tô bằng 2 màu ($\chi(G) \le 2$) khi và chỉ khi đồ thị đó không chứa bất kỳ một chu trình có độ dài lẻ nào.<br>
+        Do đó, bài toán yêu cầu ta chứng minh: Nếu mọi mặt của đồ thị phẳng đều được giới hạn bởi một chu trình chẵn, thì mọi chu trình bất kỳ trong đồ thị cũng phải có độ dài chẵn.</p>
+
+        <p>Xét một đồ thị phẳng. Các mặt cơ sở (không bị phân chia thêm) gọi là các mặt sơ cấp. Theo giả thiết, biên của mọi mặt sơ cấp đều là một chu trình có độ dài chẵn.<br>
+        Xét một chu trình bất kỳ $C$ trong đồ thị $G$. Bởi vì đồ thị là phẳng, chu trình $C$ sẽ tạo ra một đường cong khép kín trên mặt phẳng, chia mặt phẳng thành 2 miền: miền trong và miền ngoài.<br>
+        Miền trong của chu trình $C$ sẽ bao gồm sự chắp vá của một số mặt sơ cấp. Giả sử các mặt sơ cấp nằm bên trong $C$ là $F_1, F_2, \dots, F_m$.<br>
+        Gọi $E(C)$ là số lượng cạnh nằm trên chu trình $C$ (tức là độ dài của chu trình $C$).<br>
+        Gọi $E(F_i)$ là số lượng cạnh bao quanh mặt sơ cấp $F_i$. Theo giả thiết, $E(F_i)$ là số chẵn với mọi $i = 1, \dots, m$.</p>
+
+        <p>Ta tính tổng số cạnh của tất cả các mặt sơ cấp nằm bên trong $C$:</p>
+        $$ S = \sum_{i=1}^m E(F_i) $$
+        <p>Do tất cả các $E(F_i)$ đều là số chẵn, tổng $S$ là một số chẵn.</p>
+
+        <p>Bây giờ ta phân tích tổng $S$ theo một cách đếm khác (Double Counting).<br>
+        Các cạnh tham gia vào việc tạo thành các mặt sơ cấp $F_1, \dots, F_m$ được chia thành 2 loại:</p>
+        <ol>
+            <li><strong>Các cạnh nằm trên biên của chu trình $C$:</strong> Mỗi cạnh loại này chỉ thuộc về đúng 1 mặt sơ cấp bên trong $C$ (bởi vì mặt còn lại của cạnh này hướng ra bên ngoài chu trình $C$).</li>
+            <li><strong>Các cạnh nằm hoàn toàn bên trong $C$ (cạnh ranh giới giữa các $F_i$):</strong> Mỗi cạnh loại này sẽ đóng vai trò là ranh giới chung cho <strong>đúng 2</strong> mặt sơ cấp (một ở phía bên này, một ở phía bên kia).</li>
+        </ol>
+
+        <p>Do đó, khi ta lấy tổng số cạnh của tất cả các mặt sơ cấp $F_i$, mỗi cạnh nằm trên biên $C$ được đếm đúng 1 lần, và mỗi cạnh ranh giới bên trong được đếm đúng 2 lần. Ta có phương trình đếm:</p>
+        $$ S = E(C) + 2 \cdot (\text{số cạnh ranh giới bên trong}) $$
+        <p>Chuyển vế, ta được độ dài của chu trình $C$:</p>
+        $$ E(C) = S - 2 \cdot (\text{số cạnh ranh giới bên trong}) $$
+        <p>Ta đã biết $S$ là một số chẵn. Tích $2 \times (\dots)$ cũng là một số chẵn. Hiệu của hai số chẵn là một số chẵn.<br>
+        Do đó, độ dài của chu trình $C$, tức là $E(C)$, là một <strong>số chẵn</strong>.</p>
+        <p>Vì $C$ là một chu trình bất kỳ được chọn ngẫu nhiên trong đồ thị, ta kết luận mọi chu trình trong đồ thị $G$ đều có độ dài chẵn.<br>
+        Hệ quả là đồ thị không chứa chu trình lẻ, nên nó có Số Sắc số $\chi(G) \le 2$ (đồ thị hai phía). Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Mở rộng tính suy thoái - Degeneracy)</div>
+        Một đồ thị $G$ được gọi là $d$-suy thoái ($d$-degenerate) nếu <strong>mọi đồ thị con</strong> của nó đều chứa ít nhất một đỉnh có bậc nhỏ hơn hoặc bằng $d$. Chứng minh rằng mọi đồ thị $d$-suy thoái đều có Số sắc số $\chi(G) \le d + 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán này cung cấp một chặn trên tổng quát hơn so với Định lý 1.1 (chặn bởi bậc cực đại $\Delta(G) + 1$), vì $d$ có thể nhỏ hơn $\Delta(G)$ rất nhiều.</p>
+
+        <p>Ta chứng minh bằng <strong>phương pháp quy nạp toán học</strong> theo số lượng đỉnh $n$ của đồ thị.<br>
+        <em>Bước cơ sở ($n=1$):</em> Đồ thị có 1 đỉnh. Đồ thị này là $d$-suy thoái với mọi $d \ge 0$. Số sắc số là $1 \le d+1$. Mệnh đề đúng.</p>
+
+        <p><em>Bước quy nạp:</em> Giả sử mọi đồ thị $d$-suy thoái có $n-1$ đỉnh đều có thể tô màu hợp lệ bằng $d+1$ màu.<br>
+        Xét một đồ thị $G$ có $n$ đỉnh và là đồ thị $d$-suy thoái.<br>
+        Theo định nghĩa của tính $d$-suy thoái, khi xét chính đồ thị $G$, phải tồn tại ít nhất một đỉnh $v \in G$ sao cho bậc của nó $\deg(v) \le d$.<br>
+        Ta loại bỏ đỉnh $v$ và tất cả các cạnh nối với $v$ ra khỏi đồ thị $G$. Gọi đồ thị còn lại là $G' = G - v$.<br>
+        Tính chất "mọi đồ thị con đều chứa một đỉnh bậc $\le d$" được bảo toàn khi ta lấy tập con (do một đồ thị con của $G'$ cũng chính là một đồ thị con của $G$). Do đó đồ thị $G'$ vẫn là một đồ thị $d$-suy thoái.<br>
+        Đồ thị $G'$ có $n-1$ đỉnh. Theo giả thiết quy nạp, $G'$ có thể được tô màu hợp lệ bằng một tập hợp gồm $d+1$ màu.</p>
+
+        <p>Bây giờ ta lắp đỉnh $v$ trở lại đồ thị để khôi phục $G$.<br>
+        Đỉnh $v$ được nối với tối đa $d$ đỉnh khác trong $G$ (vì $\deg(v) \le d$).<br>
+        Tất cả các đỉnh nối với $v$ này (khi nằm trong $G'$) chỉ sử dụng tối đa $d$ màu khác nhau.<br>
+        Ta có trong tay một tập hợp tổng cộng $d+1$ màu. Dù cho $d$ đỉnh kề có sử dụng $d$ màu phân biệt, thì luôn còn dư ít nhất một màu chưa được sử dụng.<br>
+        Ta chọn màu dư thừa này và gán cho đỉnh $v$.<br>
+        Vì màu này khác hoàn toàn với tất cả các màu của các đỉnh kề với $v$, phép gán màu này không tạo ra bất kỳ cạnh vi phạm nào.<br>
+        Việc tô màu là hợp lệ cho toàn bộ đồ thị $G$.<br>
+        Do đó, $\chi(G) \le d+1$. Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

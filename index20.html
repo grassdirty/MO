@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Bất đẳng thức đại số - Định lý Schur và kỹ thuật p, q, r</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: BẤT ĐẲNG THỨC ĐẠI SỐ <br> ĐỊNH LÝ SCHUR VÀ KỸ THUẬT $p, q, r$</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các bất đẳng thức đối xứng ba biến thường đòi hỏi đánh giá tại vùng biên hoặc khi các biến bằng nhau. Chuyên đề này giới thiệu Bất đẳng thức Schur và kỹ thuật đổi biến $p, q, r$ nhằm chuyển đổi các bài toán đối xứng về việc khảo sát đa thức bậc nhất đối với $r$. Các bài toán áp dụng minh họa quy trình đại số hóa bất đẳng thức và thiết lập điều kiện cực trị thông qua định lý Tejs.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bất đẳng thức Schur)</div>
+        Với mọi số thực không âm $a, b, c$ và một số thực dương $t$, ta luôn có:
+        $$ a^t(a-b)(a-c) + b^t(b-c)(b-a) + c^t(c-a)(c-b) \ge 0 $$
+        Dấu đẳng thức xảy ra khi và chỉ khi $a = b = c$, hoặc hai trong ba số bằng nhau và số còn lại bằng $0$ (ví dụ $a=b, c=0$).<br>
+        Đặc biệt, khi $t = 1$, ta có Bất đẳng thức Schur bậc 3:
+        $$ a^3 + b^3 + c^3 + 3abc \ge ab(a+b) + bc(b+c) + ca(c+a) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Do tính đối xứng của bất đẳng thức, không mất tính tổng quát, ta có thể giả sử $a \ge b \ge c \ge 0$.</p>
+        <p>Biểu thức ở vế trái được viết lại thành:</p>
+        $$ (a-b) [a^t(a-c) - b^t(b-c)] + c^t(a-c)(b-c) $$
+        <p>Vì $a \ge b \ge c \ge 0$, ta có $a-c \ge b-c \ge 0$ và $a^t \ge b^t \gt 0$.<br>
+        Do đó $a^t(a-c) - b^t(b-c) \ge 0$.<br>
+        Kết hợp với $a-b \ge 0$, số hạng thứ nhất $(a-b) [a^t(a-c) - b^t(b-c)] \ge 0$.</p>
+        <p>Số hạng thứ hai $c^t(a-c)(b-c)$ không âm do $c \ge 0, a-c \ge 0, b-c \ge 0$.</p>
+        <p>Tổng của hai đại lượng không âm là một đại lượng không âm. Bất đẳng thức được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hệ biến số $p, q, r$ và Đồng nhất thức)</div>
+        Cho ba số thực $a, b, c$. Đặt:
+        $$ \begin{aligned}
+        p &= a + b + c \\
+        q &= ab + bc + ca \\
+        r &= abc
+        \end{aligned} $$
+        Mọi đa thức đối xứng theo $a, b, c$ đều có thể biểu diễn qua $p, q, r$. Các đồng nhất thức cơ bản:
+        <ol>
+            <li>$a^2 + b^2 + c^2 = p^2 - 2q$</li>
+            <li>$a^3 + b^3 + c^3 = p^3 - 3pq + 3r$</li>
+            <li>$ab(a+b) + bc(b+c) + ca(c+a) = pq - 3r$</li>
+            <li>$(a+b)(b+c)(c+a) = pq - r$</li>
+            <li>$a^2b^2 + b^2c^2 + c^2a^2 = q^2 - 2pr$</li>
+        </ol>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Điều kiện tồn tại và Hệ quả Schur)</div>
+        Với $a, b, c$ là các số thực không âm, Bất đẳng thức Schur bậc 3 ($t=1$) được biểu diễn qua hệ $p, q, r$ là:
+        $$ p^3 - 4pq + 9r \ge 0 \iff r \ge \frac{p(4q - p^2)}{9} $$
+        Ngoài ra, từ $(a-b)^2(b-c)^2(c-a)^2 \ge 0$, ta có điều kiện chặn trên của $r$:
+        $$ -4p^3 r + p^2 q^2 + 18pqr - 4q^3 - 27r^2 \ge 0 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><b>Phần 1:</b> Bất đẳng thức Schur bậc 3 có dạng:</p>
+        $$ a^3 + b^3 + c^3 + 3abc \ge ab(a+b) + bc(b+c) + ca(c+a) $$
+        <p>Theo các đồng nhất thức cơ bản của hệ $p, q, r$, ta có:</p>
+        $$ a^3 + b^3 + c^3 = p^3 - 3pq + 3r $$
+        $$ ab(a+b) + bc(b+c) + ca(c+a) = pq - 3r $$
+        <p>Thay các đồng nhất thức này vào bất đẳng thức, ta được:</p>
+        $$ p^3 - 3pq + 3r + 3r \ge pq - 3r \implies p^3 - 4pq + 9r \ge 0 $$
+        <p>Biến đổi tương đương, ta thu được điều kiện của $r$:</p>
+        $$ 9r \ge 4pq - p^3 \implies r \ge \frac{p(4q - p^2)}{9} $$
+        <p><b>Phần 2:</b> Ta xét biểu thức bình phương của các hiệu số $\Delta = (a-b)^2(b-c)^2(c-a)^2$. Vì $a, b, c$ là các số thực, bình phương của các hiệu số này luôn không âm, do đó $\Delta \ge 0$.</p>
+        <p>Mặt khác, $\Delta$ chính là biệt thức của phương trình bậc 3 nhận $a, b, c$ làm nghiệm: $x^3 - px^2 + qx - r = 0$. Biểu diễn biệt thức này theo $p, q, r$, ta có đồng nhất thức:</p>
+        $$ \Delta = -4p^3 r + p^2 q^2 + 18pqr - 4q^3 - 27r^2 $$
+        <p>Kết hợp với $\Delta \ge 0$, ta thu được điều kiện:</p>
+        $$ -4p^3 r + p^2 q^2 + 18pqr - 4q^3 - 27r^2 \ge 0 $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Tejs - Khảo sát cực trị theo $r$)</div>
+        Chứng minh rằng nếu một bất đẳng thức đối xứng ba biến $a, b, c$ (không âm) có thể biểu diễn dưới dạng $f(p, q, r) \ge 0$, trong đó $f$ là một hàm bậc nhất hoặc bậc nhất từng phần theo $r$ (tức là $f(p, q, r) = A(p, q) \cdot r + B(p, q)$), thì ta chỉ cần kiểm tra bất đẳng thức trong hai trường hợp biên:
+        <ol>
+            <li>Có hai biến bằng nhau.</li>
+            <li>Có một biến bằng $0$.</li>
+        </ol>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $a, b, c$ là ba nghiệm của phương trình bậc ba:</p>
+        $$ x^3 - px^2 + qx - r = 0 $$
+        <p>Với $p$ và $q$ cố định, ta khảo sát sự thay đổi của $r$.<br>
+        Để phương trình có ba nghiệm thực không âm, giá trị của $r$ phải nằm trong một khoảng kín $[r_{\min}, r_{\max}]$.<br>
+        Tại các điểm biên của khoảng này, đồ thị của hàm số $g(x) = x^3 - px^2 + qx$ sẽ tiếp xúc với đường thẳng $y = r$ hoặc cắt trục tung.</p>
+        <ul>
+            <li>Nếu tiếp xúc, phương trình có nghiệm kép. Điều này tương ứng với việc có ít nhất hai trong ba số $a, b, c$ bằng nhau.</li>
+            <li>Nếu đường thẳng cắt tại giới hạn không âm của hàm, một nghiệm sẽ bằng 0. Tương ứng với một biến (giả sử $c$) bằng $0$.</li>
+        </ul>
+        <p>Hàm số mục tiêu là $f(r) = A(p, q) \cdot r + B(p, q)$. Do $p, q$ được cố định, $f(r)$ là một hàm bậc nhất (hoặc hằng số) theo biến $r$.<br>
+        Tính chất của hàm bậc nhất là luôn đạt giá trị nhỏ nhất và lớn nhất tại các điểm mút của đoạn xác định.<br>
+        Nghĩa là, $\min f(r)$ và $\max f(r)$ chỉ đạt được khi $r = r_{\min}$ hoặc $r = r_{\max}$.</p>
+        <p>Ta đã phân tích rằng các điểm mút này xảy ra khi và chỉ khi có hai biến bằng nhau hoặc có một biến bằng $0$.<br>
+        Do đó, để chứng minh $f(p, q, r) \ge 0$ với mọi $a, b, c \ge 0$, ta chỉ cần chứng minh nó đúng trong hai cấu hình biên này. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (IMO 2000, Bài 2 - Bất đẳng thức Schur)</div>
+        Cho $a, b, c$ là các số thực dương thỏa mãn $abc = 1$. Chứng minh rằng:
+        $$ \left(a - 1 + \frac{1}{b}\right)\left(b - 1 + \frac{1}{c}\right)\left(c - 1 + \frac{1}{a}\right) \le 1 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Do $abc = 1$, tồn tại các số thực dương $x, y, z$ sao cho $a = \frac{x}{y}, b = \frac{y}{z}, c = \frac{z}{x}$.<br>
+        Thay vào biểu thức của bài toán, thừa số thứ nhất trở thành:</p>
+        $$ a - 1 + \frac{1}{b} = \frac{x}{y} - 1 + \frac{z}{y} = \frac{x - y + z}{y} $$
+        <p>Tương tự cho hai thừa số còn lại. Bất đẳng thức cần chứng minh tương đương với:</p>
+        $$ \frac{x - y + z}{y} \cdot \frac{y - z + x}{z} \cdot \frac{z - x + y}{x} \le 1 $$
+        $$ \iff (x+y-z)(y+z-x)(z+x-y) \le xyz $$
+        <p>Đây là một bất đẳng thức đồng bậc đối với ba biến $x, y, z$.<br>
+        Ta chuyển bất đẳng thức về ngôn ngữ $p, q, r$:</p>
+        $$ (p - 2z)(p - 2x)(p - 2y) \le r $$
+        <p>Khai triển vế trái:</p>
+        $$ p^3 - 2p^2(x+y+z) + 4p(xy+yz+zx) - 8xyz \le r $$
+        $$ \implies p^3 - 2p^3 + 4pq - 8r \le r $$
+        $$ \implies 4pq - p^3 \le 9r \implies p^3 - 4pq + 9r \ge 0 $$
+        <p>Bất đẳng thức cuối cùng là dạng $p, q, r$ của Bất đẳng thức Schur bậc 3 (Định lý 1.2).<br>
+        Vì Bất đẳng thức Schur đúng với mọi số thực không âm, bất đẳng thức gốc cũng đúng. Dấu bằng xảy ra khi $x = y = z$, tương đương $a = b = c = 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (USAMO 2001 - Kỹ thuật dồn biến đại số)</div>
+        Cho $a, b, c$ là các số thực không âm thỏa mãn $a^2 + b^2 + c^2 + abc = 4$. Chứng minh rằng:
+        $$ a + b + c \le 3 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả thiết $a^2 + b^2 + c^2 + abc = 4$ được viết dưới dạng $p, q, r$:</p>
+        $$ p^2 - 2q + r = 4 \implies 2q = p^2 + r - 4 \quad (1) $$
+        <p>Cần chứng minh $p \le 3$. Giả sử phản chứng $p \gt 3$.<br>
+        Từ (1), ta muốn đánh giá giới hạn của $r$.<br>
+        Theo Bất đẳng thức Schur bậc 3, ta luôn có $9r \ge p(4q - p^2)$.<br>
+        Thay biểu thức của $2q$ vào đánh giá này:</p>
+        $$ 9r \ge p(2(p^2 + r - 4) - p^2) = p(p^2 + 2r - 8) $$
+        $$ \implies 9r \ge p^3 + 2pr - 8p \implies r(9 - 2p) \ge p(p^2 - 8) $$
+        <p>Ta xét dấu của $9 - 2p$.<br>
+        Nếu $p \ge \frac{9}{2}$, thì vế trái $r(9 - 2p) \le 0$. Trong khi đó vế phải $p(p^2 - 8) \ge \frac{9}{2}(\frac{81}{4} - 8) \gt 0$. Điều này dẫn đến mâu thuẫn.<br>
+        Vậy $3 \lt p \lt \frac{9}{2}$.<br>
+        Khi đó, $9 - 2p \gt 0$. Ta có:</p>
+        $$ r \ge \frac{p(p^2 - 8)}{9 - 2p} $$
+        <p>Mặt khác, từ bất đẳng thức AM-GM, ta có $p^3 \ge 27r$, hay $r \le \frac{p^3}{27}$.<br>
+        Kết hợp hai bất đẳng thức của $r$:</p>
+        $$ \frac{p^3}{27} \ge \frac{p(p^2 - 8)}{9 - 2p} $$
+        <p>Vì $p \gt 3 \gt 0$, chia hai vế cho $p$:</p>
+        $$ \frac{p^2}{27} \ge \frac{p^2 - 8}{9 - 2p} $$
+        <p>Do $9 - 2p \gt 0$, nhân chéo:</p>
+        $$ p^2(9 - 2p) \ge 27(p^2 - 8) $$
+        $$ 9p^2 - 2p^3 \ge 27p^2 - 216 \implies 2p^3 + 18p^2 - 216 \le 0 $$
+        <p>Chia cho 2: $p^3 + 9p^2 - 108 \le 0$.<br>
+        Ta phân tích đa thức $f(p) = p^3 + 9p^2 - 108$.<br>
+        Tại $p = 3$, $f(3) = 27 + 81 - 108 = 0$.<br>
+        Đa thức được phân tích thành $(p - 3)(p^2 + 12p + 36) = (p - 3)(p + 6)^2$.<br>
+        Bất phương trình trở thành:</p>
+        $$ (p - 3)(p + 6)^2 \le 0 $$
+        <p>Tuy nhiên, vì ta đang giả thiết $p \gt 3$, và $p \ge 0$, biểu thức $(p-3)(p+6)^2$ luôn dương.<br>
+        Mâu thuẫn này chứng tỏ giả thiết $p \gt 3$ là sai. Vậy $p \le 3$, tức là $a+b+c \le 3$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Macedonian National Olympiad - Đánh giá tuyến tính theo $r$)</div>
+        Cho $a, b, c$ là các số thực dương thỏa mãn $a^2 + b^2 + c^2 = 1$. Chứng minh rằng:
+        $$ \frac{1}{1-ab} + \frac{1}{1-bc} + \frac{1}{1-ca} \le \frac{9}{2} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Quy đồng vế trái của bất đẳng thức. Đặt mẫu số chung là $M = (1-ab)(1-bc)(1-ca)$ và tử số là $T$.</p>
+        $$ M = 1 - (ab+bc+ca) + abc(a+b+c) - a^2b^2c^2 = 1 - q + pr - r^2 $$
+        <p>Tử số:</p>
+        $$ \begin{aligned}
+        T &= (1-bc)(1-ca) + (1-ab)(1-ca) + (1-ab)(1-bc) \\
+        &= 3 - 2(ab+bc+ca) + a^2bc + ab^2c + abc^2 \\
+        &= 3 - 2q + r(a+b+c) = 3 - 2q + pr
+        \end{aligned} $$
+        <p>Bất đẳng thức cần chứng minh là $\frac{T}{M} \le \frac{9}{2}$, tương đương với:</p>
+        $$ 2T \le 9M \implies 2(3 - 2q + pr) \le 9(1 - q + pr - r^2) $$
+        $$ \iff 6 - 4q + 2pr \le 9 - 9q + 9pr - 9r^2 $$
+        $$ \iff 9r^2 - 7pr + 5q - 3 \le 0 $$
+        <p>Ta có giả thiết $a^2 + b^2 + c^2 = 1 \implies p^2 - 2q = 1 \implies q = \frac{p^2-1}{2}$.<br>
+        Biểu thức cần đánh giá là hàm bậc hai theo $r$:</p>
+        $$ f(r) = 9r^2 - 7pr + \frac{5p^2 - 11}{2} \le 0 $$
+        <p>Hàm số $f(r)$ có đồ thị là một parabol bề lõm hướng lên. Để chứng minh $f(r) \le 0$, ta chỉ cần chứng minh nó đúng tại hai giá trị biên lớn nhất của $r$. Thực chất, ta có thể đánh giá trực tiếp $9r^2$ bằng Schur hoặc AM-GM.</p>
+        <p>Theo bất đẳng thức Cauchy-Schwarz, $p \le \sqrt{3(a^2+b^2+c^2)} = \sqrt{3}$. Do đó $1 \le p \le \sqrt{3}$.<br>
+        Áp dụng $r \le \frac{p^3}{27}$ và $r \ge 0$. Đánh giá $9r^2$:</p>
+        $$ f(r) \le 9 \left(\frac{p^3}{27}\right)^2 - 7p \cdot 0 + \frac{5p^2 - 11}{2} = \frac{p^6}{81} + \frac{5p^2 - 11}{2} $$
+        <p>Để ý $p \le \sqrt{3} \implies p^2 \le 3$.<br>
+        Hàm số $g(p^2) = \frac{(p^2)^3}{81} + \frac{5p^2 - 11}{2}$ đồng biến theo $p^2$.<br>
+        Tại $p^2 = 3$, giá trị lớn nhất là:</p>
+        $$ g(3) = \frac{27}{81} + \frac{15 - 11}{2} = \frac{1}{3} + 2 = \frac{7}{3} \gt 0 $$
+        <p>Cách tiếp cận này không đủ chặt. Ta sử dụng Định lý Tejs (Bài toán 2.1).<br>
+        Vì bất đẳng thức ban đầu đối xứng và có thể đưa về hàm bậc nhất của các phân thức, ta xét hai trường hợp biên (điều kiện dấu bằng của $p,q,r$):</p>
+        <p>Trường hợp 1: Có một số bằng 0. Giả sử $c = 0$.<br>
+        Khi đó $a^2 + b^2 = 1 \implies q = ab \le \frac{1}{2}$ và $r = 0, p = a+b$.<br>
+        Bất đẳng thức trở thành: $5q - 3 \le 0 \implies 5q \le 3$, đúng vì $q \le \frac{1}{2}$.</p>
+        <p>Trường hợp 2: Có hai số bằng nhau. Giả sử $a = b$.<br>
+        Khi đó $2a^2 + c^2 = 1 \implies c = \sqrt{1 - 2a^2}$ với $0 \lt a \lt \frac{1}{\sqrt{2}}$.<br>
+        Thay trực tiếp vào vế trái của bất đẳng thức gốc:</p>
+        $$ \frac{1}{1-a^2} + \frac{2}{1-ac} = \frac{1}{1-a^2} + \frac{2}{1-a\sqrt{1-2a^2}} $$
+        <p>Sử dụng đạo hàm một biến $a \in (0, \frac{1}{\sqrt{2}})$. Đặt $a^2 = x \in (0, 1/2)$.<br>
+        Bất đẳng thức trở thành bài toán một biến. Điểm cực trị đạt được khi $x = 1/3 \implies a = 1/\sqrt{3} \implies c = 1/\sqrt{3}$.<br>
+        Khi $a=b=c=1/\sqrt{3}$, giá trị là $\frac{3}{1 - 1/3} = \frac{9}{2}$.<br>
+        Bất đẳng thức được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

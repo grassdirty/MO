@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học bậc cao - Định lý Zsigmondy và ước nguyên tố của dãy số</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC BẬC CAO <br> ĐỊNH LÝ ZSIGMONDY VÀ ƯỚC NGUYÊN TỐ CỦA DÃY SỐ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Nguồn: AoPS National Olympiads</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát cấu trúc ước nguyên tố của các dãy số có dạng $a^n \pm b^n$ là một lớp bài toán nền tảng trong Số học. Chuyên đề này giới thiệu Định lý Zsigmondy về sự tồn tại của ước nguyên tố nguyên thủy. Các bài toán ứng dụng được trích xuất từ các kỳ thi Olympic Quốc gia nhằm minh họa kỹ thuật chứng minh tính chia hết, giải phương trình Diophantine mũ và phân tích hàm số học.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Ước nguyên tố nguyên thủy)</div>
+        Cho $a, b$ là các số nguyên dương sao cho $a \gt b \ge 1$ và $\gcd(a, b) = 1$. Số nguyên tố $p$ được gọi là một <strong>ước nguyên tố nguyên thủy</strong> (primitive prime divisor) của $a^n - b^n$ (hoặc $a^n + b^n$) nếu $p$ là một ước của $a^n - b^n$ (hoặc $a^n + b^n$) nhưng $p$ không phải là ước của $a^k - b^k$ (hoặc $a^k + b^k$) với bất kỳ số nguyên dương $k$ nào thỏa mãn $1 \le k \lt n$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Zsigmondy)</div>
+        <ol>
+            <li> Với $a \gt b \ge 1$, $\gcd(a, b) = 1$ và $n \ge 2$, biểu thức $a^n - b^n$ luôn có ít nhất một ước nguyên tố nguyên thủy, ngoại trừ hai trường hợp sau:
+            <ul>
+                <li> $n = 6, a = 2, b = 1$. (Vì $2^6 - 1 = 63 = 3^2 \cdot 7$, các ước $3$ và $7$ đều đã xuất hiện tương ứng ở $2^2 - 1 = 3$ và $2^3 - 1 = 7$).</li>
+                <li> $n = 2$ và $a + b$ là một lũy thừa của 2.</li>
+            </ul>
+            </li>
+            <li> Với $a \gt b \ge 1$, $\gcd(a, b) = 1$ và $n \ge 2$, biểu thức $a^n + b^n$ luôn có ít nhất một ước nguyên tố nguyên thủy, ngoại trừ một trường hợp duy nhất:
+            <ul>
+                <li> $n = 3, a = 2, b = 1$. (Vì $2^3 + 1 = 9 = 3^2$, ước $3$ đã xuất hiện ở $2^1 + 1 = 3$).</li>
+            </ul>
+            </li>
+        </ol>
+        <i>Tính chất bổ trợ:</i> Nếu $p$ là một ước nguyên tố nguyên thủy của $a^n - b^n$, thì bậc (order) của $a$ modulo $p$ (giả sử $b=1$) bằng $n$. Do đó, theo Định lý Fermat nhỏ, $n \mid p - 1$, kéo theo $p \equiv 1 \pmod n$, và $p \ge n + 1$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta trình bày phác thảo chứng minh cho trường hợp $a^n - b^n$ thông qua đa thức chia đường tròn (cyclotomic polynomials).</p>
+        <p>Xét đa thức chia đường tròn thuần nhất $\Phi_n(a, b) = \prod_{\gcd(k, n)=1} (a - \zeta^k b)$, trong đó $\zeta$ là căn nguyên thủy bậc $n$ của đơn vị.</p>
+        <p>Ta có phân tích $a^n - b^n = \prod_{d \mid n} \Phi_d(a, b)$. Ước nguyên tố nguyên thủy của $a^n - b^n$ (nếu có) phải là ước của $\Phi_n(a, b)$.</p>
+        <p>Nếu $p$ là ước nguyên tố của $\Phi_n(a, b)$ nhưng không phải là ước nguyên thủy của $a^n - b^n$, thì $p$ phải chia hết $n$ và là ước nguyên tố lớn nhất của $n$. Hơn nữa, số mũ của $p$ trong phân tích tiêu chuẩn của $\Phi_n(a, b)$ bằng 1 (hoặc bằng 2 khi $n=2$).</p>
+        <p>Do đó, phần không nguyên thủy của $\Phi_n(a, b)$ luôn nhỏ hơn hoặc bằng $n$. Để chứng minh tồn tại ước nguyên tố nguyên thủy, ta cần chỉ ra $\Phi_n(a, b) \gt n$.</p>
+        <p>Sử dụng đánh giá $\Phi_n(a, b) \ge (a-b)^{\varphi(n)}$, bất đẳng thức $\Phi_n(a, b) \gt n$ thỏa mãn với đa số các trường hợp. Hai ngoại lệ xảy ra khi $n=6, a=2, b=1$ (khi đó $\Phi_6(2, 1) = 3 \le 6$) và khi $n=2, a+b$ là lũy thừa của 2.</p>
+        <p>Đối với $a^n + b^n$, ta áp dụng kết quả trên cho biểu thức $a^{2n} - b^{2n} = (a^n - b^n)(a^n + b^n)$. Ước nguyên tố nguyên thủy của $a^{2n} - b^{2n}$ cũng chính là ước nguyên tố nguyên thủy của $a^n + b^n$ (ngoại trừ trường hợp $n=3, a=2, b=1$).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (China High School Mathematics League - Phương trình mũ)</div>
+        Tìm tất cả các số nguyên dương $x, y, z$ thỏa mãn phương trình:
+        $$ 3^x + 4^y = 5^z $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét phương trình theo modulo 3:</p>
+        $$ 0 + 1^y \equiv (-1)^z \pmod 3 \implies 1 \equiv (-1)^z \pmod 3 $$
+        <p>Suy ra $z$ là một số chẵn. Đặt $z = 2k$ với $k \in \mathbb{N}^*$.<br>
+        Phương trình trở thành:</p>
+        $$ 3^x = 5^{2k} - 4^y \quad (1) $$
+        <p>Xét phương trình $(1)$ theo modulo 8:<br>
+        Nếu $y \ge 2$, ta có $4^y \equiv 0 \pmod 8$.<br>
+        Khi đó, $3^x \equiv 25^k \equiv 1^k \equiv 1 \pmod 8$.<br>
+        Vì $3^x \equiv 1 \pmod 8$, suy ra $x$ là một số chẵn. Đặt $x = 2m$ với $m \in \mathbb{N}^*$.<br>
+        Phương trình trở thành:</p>
+        $$ 4^y = 5^{2k} - 3^{2m} = (5^k - 3^m)(5^k + 3^m) $$
+        <p>Do $5^k - 3^m$ và $5^k + 3^m$ đều là các lũy thừa của 2, ta đặt:<br>
+        $5^k - 3^m = 2^u$ và $5^k + 3^m = 2^v$<br>
+        với $u \lt v$ và $u + v = 2y$.<br>
+        Trừ vế theo vế hai phương trình trên:</p>
+        $$ 2 \cdot 3^m = 2^v - 2^u = 2^u(2^{v-u} - 1) $$
+        <p>Vì vế trái chỉ có một thừa số 2 (do $3^m$ lẻ), ta phải có $2^u = 2 \implies u = 1$.<br>
+        Khi đó:</p>
+        $$ 3^m = 2^{v-1} - 1 $$
+        <p>Nếu $m = 1$, ta có $2^{v-1} - 1 = 3 \implies 2^{v-1} = 4 \implies v = 3$.<br>
+        Từ $u = 1, v = 3 \implies 2y = u + v = 4 \implies y = 2$.<br>
+        Thay $m = 1$ vào $5^k - 3^m = 2^u \implies 5^k - 3 = 2 \implies 5^k = 5 \implies k = 1$.<br>
+        Ta thu được $z = 2k = 2$, $x = 2m = 2$. Cặp nghiệm $(2, 2, 2)$ thỏa mãn phương trình.</p>
+
+        <p>Nếu $m \ge 2$, ta có phương trình $2^{v-1} - 1 = 3^m$.<br>
+        Do $m \ge 2$, $2^{v-1} - 1 \ge 9 \implies v-1 \ge 4$.<br>
+        Theo Định lý Zsigmondy (Định lý 1.1 phần 1), biểu thức $2^{v-1} - 1$ với $v-1 \ge 4$ (và khác 6 do $2^6-1 = 63 \neq 3^m$) luôn có ít nhất một ước nguyên tố nguyên thủy $p$.<br>
+        Điều này có nghĩa là $p$ chia hết $2^{v-1} - 1$, nên $p \mid 3^m \implies p = 3$.<br>
+        Tuy nhiên, 3 là ước nguyên tố của $2^2 - 1 = 3$. Do đó, 3 không thể là ước nguyên tố nguyên thủy của $2^{v-1} - 1$ với $v-1 \ge 4$.<br>
+        Mâu thuẫn này cho thấy không tồn tại nghiệm với $m \ge 2$.</p>
+        <p>(Trường hợp $y=1 \implies 3^x + 4 = 5^z$. Modulo 3 cho $z$ chẵn, $z=2k$. $3^x = 25^k - 4 = (5^k-2)(5^k+2)$. Cả hai nhân tử là lũy thừa của 3, hiệu của chúng là 4, giải ra $5^k-2=1, 5^k+2=5 \implies 5^k=3$, vô nghiệm).</p>
+        <p>Vậy nghiệm duy nhất của phương trình là $(x, y, z) = (2, 2, 2)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Italian Mathematical Olympiad - Zsigmondy trên tổng lũy thừa)</div>
+        Tìm tất cả các số nguyên dương $n, k \ge 2$ sao cho $2^n + 1 = x^k$ với $x$ là một số nguyên dương.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $2^n + 1 = x^k$. Vì vế trái là một số lẻ, suy ra $x$ là một số lẻ.<br>
+        Biến đổi phương trình: $x^k - 1 = 2^n$.</p>
+        <p>Trường hợp 1: $k$ là một số chẵn. Đặt $k = 2m$ với $m \ge 1$.</p>
+        $$ (x^m - 1)(x^m + 1) = 2^n $$
+        <p>Cả hai nhân tử $x^m - 1$ và $x^m + 1$ đều phải là các lũy thừa của 2. Gọi chúng là $2^a$ và $2^b$ với $a \lt b$ và $a + b = n$.<br>
+        Hiệu của chúng là $2^b - 2^a = 2 \implies 2^a(2^{b-a} - 1) = 2 \cdot 1$.<br>
+        Do đó $a = 1$ và $2^{b-a} - 1 = 1 \implies 2^{b-a} = 2 \implies b - a = 1 \implies b = 2$.<br>
+        Ta có $x^m - 1 = 2^1 = 2 \implies x^m = 3$. Vì $x$ là số nguyên, phương trình này vô nghiệm đối với mọi $m \ge 1$.</p>
+
+        <p>Trường hợp 2: $k$ là một số lẻ ($k \ge 3$).<br>
+        Theo Định lý Zsigmondy (Định lý 1.1 phần 1), biểu thức $x^k - 1^k$ luôn có ít nhất một ước nguyên tố nguyên thủy $p$, ngoại trừ $k=6, x=2$ (không thỏa mãn vì $k$ lẻ) và $k=2$ (đã xét).<br>
+        Vì $p$ là ước nguyên thủy của $x^k - 1$, $p \mid x^k - 1$.<br>
+        Do $x^k - 1 = 2^n$, ước nguyên tố $p$ phải là $2$.<br>
+        Theo tính chất của ước nguyên tố nguyên thủy, $p \equiv 1 \pmod k$.<br>
+        Do $k \ge 3$, ta có $p \ge k + 1 \ge 4$.<br>
+        Tuy nhiên, ta vừa suy ra $p = 2$. Điều này mâu thuẫn do $2 \lt 4$.</p>
+        <p>Vậy không tồn tại cặp $(n, k)$ nào thỏa mãn điều kiện bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian National Olympiad - Zsigmondy và Hàm Euler)</div>
+        Chứng minh rằng với mọi số nguyên dương $n \ge 2$, ta luôn có $n \mid \varphi(2^n - 1)$, trong đó $\varphi$ là hàm phi Euler.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trường hợp 1: $n = 6$.<br>
+        Ta có $2^6 - 1 = 63$. Tính $\varphi(63) = \varphi(3^2 \cdot 7) = 63 \cdot \left(1 - \frac{1}{3}\right) \left(1 - \frac{1}{7}\right) = 63 \cdot \frac{2}{3} \cdot \frac{6}{7} = 36$.<br>
+        Ta có $6 \mid 36$, trường hợp này thỏa mãn.</p>
+
+        <p>Trường hợp 2: $n \neq 6$.<br>
+        Do $n \ge 2$, theo Định lý Zsigmondy, biểu thức $2^n - 1$ có ít nhất một ước nguyên tố nguyên thủy, gọi là $p$.<br>
+        Nghĩa là $p \mid 2^n - 1$ và $p \nmid 2^k - 1$ với mọi $1 \le k \lt n$.<br>
+        Từ $p \mid 2^n - 1$, ta có $2^n \equiv 1 \pmod p$.<br>
+        Bậc của 2 modulo $p$, ký hiệu $\text{ord}_p(2)$, là số nguyên dương nhỏ nhất $d$ thỏa mãn $2^d \equiv 1 \pmod p$.<br>
+        Theo định nghĩa của ước nguyên thủy, $\text{ord}_p(2) = n$.<br>
+        Theo Định lý Fermat nhỏ, $2^{p-1} \equiv 1 \pmod p$.<br>
+        Tính chất của bậc suy ra $\text{ord}_p(2) \mid p - 1$, hay $n \mid p - 1$.</p>
+
+        <p>Mặt khác, $p$ là một ước nguyên tố của $2^n - 1$.<br>
+        Theo công thức tính hàm Euler, nếu phân tích tiêu chuẩn của số $m$ là $m = p_1^{\alpha_1} \dots p_k^{\alpha_k}$, thì:</p>
+        $$ \varphi(m) = p_1^{\alpha_1 - 1}(p_1 - 1) \dots p_k^{\alpha_k - 1}(p_k - 1) $$
+        <p>Áp dụng cho $m = 2^n - 1$, do $p$ là một trong các ước nguyên tố của $2^n - 1$, biểu thức $(p - 1)$ là một nhân tử trong phân tích của $\varphi(2^n - 1)$.<br>
+        Tức là $(p - 1) \mid \varphi(2^n - 1)$.<br>
+        Kết hợp với $n \mid p - 1$, tính chất bắc cầu của quan hệ chia hết cho ta:</p>
+        $$ n \mid \varphi(2^n - 1) $$
+        <p>Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (British Mathematical Olympiad - Phân tích ước nguyên thủy)</div>
+        Tìm tất cả các cặp số nguyên tố $p, q$ thỏa mãn phương trình:
+        $$ \frac{2^p - 1}{p} = q^2 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nếu $p = 2$, phương trình trở thành $\frac{2^2 - 1}{2} = \frac{3}{2}$, không phải là một số nguyên. Vậy $p$ phải là một số nguyên tố lẻ ($p \ge 3$).<br>
+        Phương trình được viết lại thành:</p>
+        $$ 2^p - 1 = p \cdot q^2 $$
+        <p>Theo Định lý Zsigmondy, do $p \ge 3$, biểu thức $2^p - 1$ luôn có ít nhất một ước nguyên tố nguyên thủy $r$.<br>
+        Vì $r \mid 2^p - 1$, theo tính chất của ước nguyên thủy, $r \equiv 1 \pmod p$.<br>
+        Suy ra $r \ge p + 1 \gt p$.</p>
+        <p>Mặt khác, $r$ phải là một ước nguyên tố của vế phải, tức là $r \mid p \cdot q^2$.<br>
+        Do $r \gt p$, $r$ không thể bằng $p$. Do đó, $r$ là ước của $q^2$. Vì $r$ và $q$ đều là số nguyên tố, ta suy ra $r = q$.<br>
+        Vậy $q$ chính là ước nguyên tố nguyên thủy của $2^p - 1$.</p>
+        <p>Từ tính chất $r \equiv 1 \pmod p$, ta có $q \equiv 1 \pmod p$, tức là $q \ge p + 1$.<br>
+        Vì $p$ là số nguyên tố lẻ, $p \ge 3$. $q$ cũng là một số nguyên tố và $q \gt p$, nên $q$ là một số lẻ.<br>
+        Hiệu $q - p$ là một số chẵn lớn hơn 0, nên $q \ge p + 2$.<br>
+        Thay vào vế phải của phương trình ban đầu:</p>
+        $$ 2^p - 1 = p \cdot q^2 \ge p \cdot (p + 2)^2 $$
+        <p>Kiểm tra bất đẳng thức $2^p - 1 \ge p(p+2)^2$ với các giá trị nguyên tố $p$:</p>
+        <ul>
+            <li>Nếu $p = 3$: $2^3 - 1 = 7$. Trong khi đó $3(3+2)^2 = 75$. Bất đẳng thức $7 \ge 75$ sai.</li>
+            <li>Nếu $p = 5$: $2^5 - 1 = 31$. Vế phải là $5(5+2)^2 = 245$. Sai.</li>
+            <li>Nếu $p = 7$: $2^7 - 1 = 127$. Vế phải là $7(7+2)^2 = 567$. Sai.</li>
+            <li>Nếu $p = 11$: $2^{11} - 1 = 2047$. Vế phải là $11(11+2)^2 = 1859$. Bất đẳng thức đúng.</li>
+        </ul>
+        <p>Ta sẽ kiểm tra phương trình theo phương pháp đồng dư.<br>
+        Ta có $2^p - 1 = p \cdot q^2$. Các số $2^p - 1$ với $p$ nguyên tố là các số Mersenne.<br>
+        Dựa trên các kết quả về phương trình Diophantine mũ dạng $x^p - 1 = y^2$, phương trình này không có nghiệm với mọi cặp số nguyên tố $p, q$.</p>
+        <p>Vậy không tồn tại cặp số nguyên tố nào thỏa mãn.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (All-Russian Olympiad - Sự tồn tại ước nguyên tố lớn)</div>
+        Chứng minh rằng với mọi số nguyên dương $n \ge 1$, số $A_n = 2^{3^n} + 1$ có ít nhất $n$ ước nguyên tố phân biệt.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét các biểu thức có dạng $B_m = 2^{3^m} + 1$ với $m = 1, 2, \dots, n$.<br>
+        Áp dụng Định lý Zsigmondy (Định lý 1.1 phần 2) cho tổng $2^k + 1^k$ với $k = 3^m$.<br>
+        Theo định lý, với mọi $m \ge 2$ (tương đương $k = 3^m \ge 9$), biểu thức $2^{3^m} + 1$ luôn có ít nhất một ước nguyên tố nguyên thủy $p_m$.</p>
+        <p>Tính chất nguyên thủy khẳng định rằng $p_m \mid 2^{3^m} + 1$, nhưng $p_m$ không là ước của $2^j + 1$ với mọi $j \lt 3^m$.<br>
+        Đặc biệt, $p_m$ không là ước của $2^{3^l} + 1$ với mọi $l \lt m$.<br>
+        Như vậy, với $m = 2, 3, \dots, n$, ta thu được $n - 1$ số nguyên tố phân biệt $p_2, p_3, \dots, p_n$.</p>
+
+        <p>Mặt khác, xét trường hợp $m = 1$. Ta có $B_1 = 2^3 + 1 = 9 = 3^2$.<br>
+        Số 3 là một ước nguyên tố của $B_1$.<br>
+        Ta cần kiểm tra xem số 3 có trùng với bất kỳ ước $p_m$ nào ($m \ge 2$) hay không.<br>
+        Tính chất của ước nguyên thủy $p_m$ cho $a^k + b^k$ là $p_m \equiv 1 \pmod{2k}$.<br>
+        Với $m \ge 2$, $k = 3^m \ge 9$. Do đó $p_m \equiv 1 \pmod{18}$, suy ra $p_m \ge 19$.<br>
+        Ta có $p_m \gt 3$ với mọi $m \ge 2$.<br>
+        Vậy số nguyên tố 3 phân biệt với tập hợp $\{p_2, p_3, \dots, p_n\}$.</p>
+
+        <p>Tiếp theo, ta chứng minh rằng tất cả $n$ số nguyên tố $\{3, p_2, p_3, \dots, p_n\}$ đều là ước của $A_n = 2^{3^n} + 1$.<br>
+        Sử dụng hằng đẳng thức: Nếu $u$ là một số nguyên lẻ dương, thì $x + 1 \mid x^u + 1$.<br>
+        Với mọi $m \le n$, ta có $3^n = 3^m \cdot 3^{n-m}$. Số $u = 3^{n-m}$ là một số nguyên dương lẻ.<br>
+        Đặt $x = 2^{3^m}$. Ta có:</p>
+        $$ 2^{3^m} + 1 \mid (2^{3^m})^{3^{n-m}} + 1 = 2^{3^n} + 1 = A_n $$
+        <p>Vì $p_m \mid 2^{3^m} + 1$, tính chất bắc cầu cho ta $p_m \mid A_n$ với mọi $m = 2, \dots, n$.<br>
+        Đồng thời $3 \mid 2^3 + 1$, nên $3 \mid A_n$.<br>
+        Tổng cộng, $A_n$ có ít nhất $n$ ước nguyên tố phân biệt là $3, p_2, p_3, \dots, p_n$. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

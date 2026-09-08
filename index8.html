@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đa thức Chebyshev và tính chất cực trị Minimax</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐA THỨC TRONG TỔ HỢP <br> ĐA THỨC CHEBYSHEV VÀ TÍNH CHẤT CỰC TRỊ MINIMAX</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đa thức</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát độ lớn của đa thức trên một khoảng giới hạn là nền tảng của Lý thuyết Xấp xỉ. Chuyên đề này giới thiệu Đa thức Chebyshev loại I, thiết lập biểu diễn lượng giác và dạng hiển đại số. Ứng dụng trọng tâm là việc chứng minh Định lý Minimax (đánh giá chuẩn supremum của đa thức đơn khởi), khảo sát tính giao hoán qua phép hợp đa thức, và giải quyết các phương trình hàm trên miền số thực.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ: Hệ thức truy hồi tuyến tính cấp 2</h2>
+    <p><i>Để hiểu được nguồn gốc của dạng hiển đại số của đa thức Chebyshev, học sinh cần nắm được cách giải hệ thức truy hồi tuyến tính. Đây là phần kiến thức thường được dạy chuyên sâu ở bậc Đại học hoặc chuyên Toán.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Hệ thức truy hồi tuyến tính thuần nhất cấp 2)</div>
+        Một dãy số $(u_n)$ được gọi là thỏa mãn hệ thức truy hồi tuyến tính thuần nhất cấp 2 nếu có các hằng số $a, b$ ($b \neq 0$) sao cho:
+        $$ u_{n+1} = a u_n + b u_{n-1} \quad \forall n \ge 1 $$
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Phương trình đặc trưng)</div>
+        Cho dãy $(u_n)$ thỏa mãn $u_{n+1} = a u_n + b u_{n-1}$. Phương trình $\lambda^2 - a\lambda - b = 0$ được gọi là <strong>phương trình đặc trưng</strong> của dãy. <br>
+        Nếu phương trình này có hai nghiệm phân biệt $\lambda_1, \lambda_2$, thì công thức tổng quát của dãy số có dạng:
+        $$ u_n = c_1 \lambda_1^n + c_2 \lambda_2^n $$
+        trong đó $c_1, c_2$ là các hằng số được xác định bởi hai giá trị ban đầu $u_0, u_1$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta tìm các nghiệm của hệ thức dưới dạng $u_n = \lambda^n$ (với $\lambda \neq 0$). Thay vào hệ thức truy hồi, ta có:</p>
+        $$ \lambda^{n+1} = a \lambda^n + b \lambda^{n-1} \implies \lambda^{n-1} (\lambda^2 - a\lambda - b) = 0 $$
+        <p>Vì $\lambda \neq 0$, ta phải có $\lambda^2 - a\lambda - b = 0$. Giả sử phương trình này có hai nghiệm phân biệt $\lambda_1$ và $\lambda_2$. Khi đó, các dãy $(\lambda_1^n)$ và $(\lambda_2^n)$ đều thỏa mãn hệ thức truy hồi.</p>
+        <p>Do tính chất tuyến tính, mọi tổ hợp tuyến tính của hai nghiệm này cũng là nghiệm. Tức là $u_n = c_1 \lambda_1^n + c_2 \lambda_2^n$ thỏa mãn hệ thức với mọi hằng số $c_1, c_2$.</p>
+        <p>Với $u_0, u_1$ cho trước, ta có hệ phương trình:
+        $$ \begin{cases} c_1 + c_2 = u_0 \\ c_1 \lambda_1 + c_2 \lambda_2 = u_1 \end{cases} $$
+        Hệ này có định thức là $\lambda_2 - \lambda_1 \neq 0$, do đó luôn tồn tại duy nhất cặp nghiệm $(c_1, c_2)$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đa thức Chebyshev loại I)</div>
+        Dãy đa thức Chebyshev loại I, ký hiệu là $T_n(x)$, được định nghĩa bằng hệ thức truy hồi tuyến tính:
+        $$ T_0(x) = 1, \quad T_1(x) = x $$
+        $$ T_{n+1}(x) = 2x T_n(x) - T_{n-1}(x) \quad \forall n \ge 1 $$
+        Bằng quy nạp, ta thấy $T_n(x)$ là một đa thức bậc $n$ với hệ số nguyên. Với $n \ge 1$, hệ số cao nhất (leading coefficient) của $T_n(x)$ là $2^{n-1}$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Biểu diễn Lượng giác và Dạng hiển)</div>
+        Với mọi số nguyên $n \ge 0$, đa thức $T_n(x)$ thỏa mãn đẳng thức lượng giác:
+        $$ T_n(\cos \theta) = \cos(n\theta) \quad \forall \theta \in \mathbb{R} $$
+        Hệ quả, trên miền $|x| \le 1$, ta có $T_n(x) = \cos(n \arccos x)$.<br>
+        Trên toàn bộ miền thực $\mathbb{R}$, đa thức có biểu diễn dạng hiển:
+        $$ T_n(x) = \frac{1}{2} \left[ (x + \sqrt{x^2 - 1})^n + (x - \sqrt{x^2 - 1})^n \right] $$
+    </div>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><b>1. Chứng minh biểu diễn lượng giác:</b> Sử dụng phương pháp quy nạp theo $n$.</p>
+        <p>Với $n=0$: $T_0(\cos \theta) = 1 = \cos(0 \cdot \theta)$.<br>
+        Với $n=1$: $T_1(\cos \theta) = \cos \theta = \cos(1 \cdot \theta)$.</p>
+        <p>Giả sử định lý đúng đến $n$. Xét $n+1$:<br>
+        Theo công thức biến đổi tổng thành tích của hàm cosin:</p>
+        $$ \cos((n+1)\theta) + \cos((n-1)\theta) = 2 \cos \theta \cos(n\theta) $$
+        $$ \implies \cos((n+1)\theta) = 2 \cos \theta \cos(n\theta) - \cos((n-1)\theta) $$
+        <p>Theo giả thiết quy nạp, đẳng thức trên trở thành:</p>
+        $$ \cos((n+1)\theta) = 2x T_n(x) - T_{n-1}(x) = T_{n+1}(x) $$
+        <p>với $x = \cos \theta$. Do hai đa thức $T_n(x)$ và $\cos(n \arccos x)$ nhận cùng giá trị trên đoạn $[-1, 1]$ (chứa vô số điểm), chúng đồng nhất với nhau trên tập số thực.</p>
+        
+        <p><b>2. Chứng minh dạng hiển đại số:</b></p>
+        <p>Cố định $x$, ta coi $T_n(x)$ là một dãy số theo $n$. Theo hệ thức truy hồi $T_{n+1}(x) - 2x T_n(x) + T_{n-1}(x) = 0$, phương trình đặc trưng là:</p>
+        $$ \lambda^2 - 2x\lambda + 1 = 0 $$
+        <p>Giải phương trình này, ta có biệt thức $\Delta' = x^2 - 1$. Hai nghiệm của phương trình đặc trưng là $\lambda_1 = x + \sqrt{x^2 - 1}$ và $\lambda_2 = x - \sqrt{x^2 - 1}$.</p>
+        <p>Theo Định lý 0.1, công thức tổng quát của đa thức là:</p>
+        $$ T_n(x) = c_1 (x + \sqrt{x^2 - 1})^n + c_2 (x - \sqrt{x^2 - 1})^n $$
+        <p>Sử dụng các giá trị ban đầu $T_0(x) = 1$ và $T_1(x) = x$, ta thiết lập hệ phương trình:</p>
+        $$ \begin{cases} c_1 + c_2 = 1 \\ c_1 (x + \sqrt{x^2 - 1}) + c_2 (x - \sqrt{x^2 - 1}) = x \end{cases} $$
+        <p>Rút $c_2 = 1 - c_1$ thế vào phương trình thứ hai:</p>
+        $$ c_1 x + c_1 \sqrt{x^2 - 1} + x - c_1 x - \sqrt{x^2 - 1} + c_1 \sqrt{x^2 - 1} = x $$
+        $$ \implies 2 c_1 \sqrt{x^2 - 1} = \sqrt{x^2 - 1} \implies c_1 = \frac{1}{2} $$
+        <p>Suy ra $c_2 = 1 - \frac{1}{2} = \frac{1}{2}$. Thay $c_1, c_2$ vào công thức tổng quát, ta thu được biểu diễn dạng hiển của đa thức Chebyshev. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Cực đại - Cực tiểu (Minimax Theorem))</div>
+        Cho $P(x)$ là một đa thức đơn khởi (hệ số cao nhất bằng 1) có bậc $n \ge 1$. Chứng minh rằng giá trị lớn nhất của $|P(x)|$ trên đoạn $[-1, 1]$ không thể nhỏ hơn $\frac{1}{2^{n-1}}$. Tức là:
+        $$ \max_{x \in [-1, 1]} |P(x)| \ge \frac{1}{2^{n-1}} $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đa thức Chebyshev $T_n(x)$ có hệ số cao nhất là $2^{n-1}$. Ta định nghĩa đa thức Chebyshev đơn khởi tương ứng:</p>
+        $$ C_n(x) = \frac{1}{2^{n-1}} T_n(x) $$
+        <p>Đa thức $C_n(x)$ có bậc $n$ và hệ số cao nhất bằng 1.<br>
+        Vì $T_n(\cos \theta) = \cos(n\theta)$, giá trị của $T_n(x)$ dao động trong đoạn $[-1, 1]$ khi $x \in [-1, 1]$.<br>
+        Do đó, giá trị lớn nhất của $|C_n(x)|$ trên $[-1, 1]$ là $\frac{1}{2^{n-1}}$.</p>
+        
+        <p>Ta xác định các điểm cực trị của $C_n(x)$ trên đoạn $[-1, 1]$. Đa thức đạt cực trị khi $\cos(n\theta) = \pm 1$, tức là $n\theta = k\pi \implies \theta_k = \frac{k\pi}{n}$ với $k = 0, 1, \dots, n$.<br>
+        Tại các điểm $x_k = \cos \frac{k\pi}{n}$, ta có:</p>
+        $$ C_n(x_k) = \frac{1}{2^{n-1}} \cos(k\pi) = \frac{(-1)^k}{2^{n-1}} $$
+        <p>Có chính xác $n+1$ điểm $x_0 \gt x_1 \gt \dots \gt x_n$ trên đoạn $[-1, 1]$ mà tại đó $C_n(x)$ đan dấu và đạt trị tuyệt đối lớn nhất bằng $\frac{1}{2^{n-1}}$.</p>
+
+        <p>Giả sử phản chứng tồn tại một đa thức đơn khởi $P(x)$ bậc $n$ sao cho:</p>
+        $$ \max_{x \in [-1, 1]} |P(x)| \lt \frac{1}{2^{n-1}} $$
+        <p>Xét đa thức hiệu: $H(x) = C_n(x) - P(x)$.<br>
+        Vì cả $C_n(x)$ và $P(x)$ đều là đa thức bậc $n$ đơn khởi, hệ số $x^n$ của chúng triệt tiêu nhau. Suy ra $\deg H(x) \le n-1$.<br>
+        Ta khảo sát dấu của $H(x)$ tại $n+1$ điểm $x_k$:</p>
+        $$ H(x_k) = C_n(x_k) - P(x_k) = \frac{(-1)^k}{2^{n-1}} - P(x_k) $$
+        <p>Theo giả thiết phản chứng, $|P(x_k)| \lt \frac{1}{2^{n-1}}$. Do đó, dấu của $H(x_k)$ bị quyết định bởi phần tử thứ nhất:</p>
+        <ul>
+            <li> Nếu $k$ chẵn, $C_n(x_k) = \frac{1}{2^{n-1}} \gt P(x_k) \implies H(x_k) \gt 0$.</li>
+            <li> Nếu $k$ lẻ, $C_n(x_k) = -\frac{1}{2^{n-1}} \lt P(x_k) \implies H(x_k) \lt 0$.</li>
+        </ul>
+        <p>Dãy giá trị $H(x_0), H(x_1), \dots, H(x_n)$ đan dấu liên tục $n$ lần.<br>
+        Theo Định lý giá trị trung gian (Bolzano-Cauchy), đa thức $H(x)$ phải có ít nhất một nghiệm thực trên mỗi khoảng $(x_{k+1}, x_k)$.<br>
+        Tổng cộng $H(x)$ có ít nhất $n$ nghiệm thực phân biệt.</p>
+        <p>Tuy nhiên, ta đã chứng minh $\deg H(x) \le n-1$. Một đa thức có bậc $\le n-1$ không thể có $n$ nghiệm phân biệt, trừ khi nó là đa thức không ($H(x) \equiv 0$).<br>
+        Nếu $H(x) \equiv 0$, thì $P(x) \equiv C_n(x)$, kéo theo $\max |P(x)| = \frac{1}{2^{n-1}}$, mâu thuẫn với giả thiết phản chứng.</p>
+        <p>Bất đẳng thức được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Olympiad Folklore - Phân tích nghiệm và Đẳng thức)</div>
+        Xác định tất cả các nghiệm của đa thức $T_n(x)$. Từ đó chứng minh đẳng thức:
+        $$ \prod_{k=1}^n \cos \left( \frac{(2k-1)\pi}{2n} \right) = \frac{1}{2^{n-1}} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét phương trình $T_n(x) = 0$ trên đoạn $[-1, 1]$.<br>
+        Thay $x = \cos \theta$, phương trình trở thành $\cos(n\theta) = 0$.<br>
+        Nghiệm của phương trình lượng giác là $n\theta = \frac{\pi}{2} + k\pi \implies \theta_k = \frac{(2k+1)\pi}{2n}$.<br>
+        Để sinh ra các nghiệm $x_k = \cos \theta_k$ phân biệt, ta chọn $k = 0, 1, \dots, n-1$. Đổi chỉ số $m = k+1$, các nghiệm tương đương với:</p>
+        $$ x_m = \cos \left( \frac{(2m-1)\pi}{2n} \right) \quad \text{với } m = 1, 2, \dots, n $$
+        <p>Vì đa thức $T_n(x)$ có bậc $n$ và ta đã tìm được đúng $n$ nghiệm thực phân biệt trên $[-1, 1]$, đây là toàn bộ tập nghiệm của đa thức.<br>
+        Đa thức $T_n(x)$ có hệ số cao nhất là $2^{n-1}$. Áp dụng định lý phân tích nhân tử, ta có:</p>
+        $$ T_n(x) = 2^{n-1} \prod_{k=1}^n \left( x - \cos \frac{(2k-1)\pi}{2n} \right) $$
+        <p>Xét giá trị hệ số tự do của $T_n(x)$ bằng cách thay $x = 0$:</p>
+        $$ T_n(0) = \cos\left(n \frac{\pi}{2}\right) $$
+        <p>Mặt khác, thay $x=0$ vào dạng phân tích nhân tử:</p>
+        $$ T_n(0) = 2^{n-1} \prod_{k=1}^n \left( - \cos \frac{(2k-1)\pi}{2n} \right) = 2^{n-1} (-1)^n \prod_{k=1}^n \cos \frac{(2k-1)\pi}{2n} $$
+        <p>Cân bằng hai biểu thức, ta có tích các nghiệm là:</p>
+        $$ \prod_{k=1}^n \cos \frac{(2k-1)\pi}{2n} = \frac{(-1)^n \cos\left(n \frac{\pi}{2}\right)}{2^{n-1}} $$
+        <p><em>(Lưu ý: Để đẳng thức tích của đề bài $\prod = \frac{1}{2^{n-1}}$ xảy ra chặt chẽ, ta cần lấy trị tuyệt đối hoặc bổ sung điều kiện $n$ chẵn và hiệu chỉnh dấu cho $n$ lẻ, vì $\cos\left(n \frac{\pi}{2}\right) = 0$ khi $n$ lẻ. Trong nhiều tài liệu, dạng bài này được hỏi dưới dạng tính $\prod_{k=1}^n \sin(\dots)$ hoặc giới hạn ở tích bình phương để tránh bằng 0).</em></p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (IMO Shortlist - Tính giao hoán đa thức)</div>
+        Chứng minh rằng đối với mọi số nguyên dương $m, n$, ta có:
+        $$ T_n(T_m(x)) = T_{mn}(x) $$
+        Từ đó, giải phương trình $4(4x^3 - 3x)^3 - 3(4x^3 - 3x) = \frac{1}{2}$ trên tập số thực.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trên đoạn $[-1, 1]$, đặt $x = \cos \theta$. Khi đó:</p>
+        $$ T_n(T_m(x)) = T_n(T_m(\cos \theta)) = T_n(\cos(m\theta)) = \cos(n(m\theta)) = \cos(nm\theta) $$
+        <p>Mặt khác, $T_{mn}(x) = T_{mn}(\cos \theta) = \cos(mn\theta)$.<br>
+        Vì hai đa thức $T_n(T_m(x))$ và $T_{mn}(x)$ bằng nhau tại vô số điểm trên đoạn $[-1, 1]$, chúng đồng nhất trên toàn bộ tập số thực $\mathbb{R}$.</p>
+        
+        <p>Áp dụng vào phương trình: Đặt $P(x) = 4x^3 - 3x$. Ta cần giải phương trình $4(P(x))^3 - 3P(x) = \frac{1}{2}$, tức là $P(P(x)) = \frac{1}{2}$.<br>
+        Sử dụng hệ thức truy hồi của đa thức Chebyshev, ta dễ dàng tính được $T_3(x) = 4x^3 - 3x$.<br>
+        Do đó, phương trình được viết lại thành:</p>
+        $$ T_3(T_3(x)) = \frac{1}{2} $$
+        <p>Theo tính chất giao hoán vừa chứng minh, ta có $T_3(T_3(x)) = T_9(x)$. Phương trình trở thành:</p>
+        $$ T_9(x) = \frac{1}{2} $$
+        <p>Với $x \in [-1, 1]$, đặt $x = \cos \theta$ ($\theta \in [0, \pi]$):</p>
+        $$ \cos(9\theta) = \frac{1}{2} \implies 9\theta = \pm \frac{\pi}{3} + 2k\pi $$
+        <p>Từ đó, $\theta = \frac{\pi}{27} + \frac{2k\pi}{9}$ hoặc $\theta = -\frac{\pi}{27} + \frac{2k\pi}{9}$. Cho $k$ các giá trị nguyên thích hợp để $\theta \in [0, \pi]$, ta sẽ thu được 9 nghiệm thực phân biệt $x_k = \cos \theta_k$ của phương trình bậc 9 này.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (VMO 1999 - Phương trình hàm đặc trưng)</div>
+        Tìm tất cả các đa thức $P(x)$ hệ số thực thỏa mãn phương trình:
+        $$ P\left(x + \frac{1}{x}\right) = x^n + \frac{1}{x^n} \quad \forall x \neq 0 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $y = x + \frac{1}{x}$. Khi $x \gt 0$, theo bất đẳng thức AM-GM, $y \ge 2$. Khi $x \lt 0$, $y \le -2$. Tập giá trị của $y$ là $(-\infty, -2] \cup [2, +\infty)$.<br>
+        Ta tìm cách biểu diễn $x^n + \frac{1}{x^n}$ theo $y$.<br>
+        Đặt $S_n = x^n + \frac{1}{x^n}$. Ta thiết lập hệ thức truy hồi cho $S_n$:</p>
+        $$ S_n \cdot S_1 = \left( x^n + \frac{1}{x^n} \right) \left( x + \frac{1}{x} \right) = x^{n+1} + \frac{1}{x^{n+1}} + x^{n-1} + \frac{1}{x^{n-1}} = S_{n+1} + S_{n-1} $$
+        <p>Do đó $S_{n+1} = y S_n - S_{n-1}$.<br>
+        Hệ thức truy hồi này có dạng tương tự với hệ thức truy hồi của đa thức Chebyshev loại I: $T_{n+1}(u) = 2u T_n(u) - T_{n-1}(u)$.</p>
+        <p>Đặt $y = 2u$, hệ thức $S_n$ trở thành $S_{n+1} = 2u S_n - S_{n-1}$.<br>
+        Ta xét các giá trị ban đầu:<br>
+        $S_0 = 2 = 2T_0(u)$<br>
+        $S_1 = y = 2u = 2T_1(u)$</p>
+        <p>Bằng nguyên lý quy nạp toán học, ta có $S_n = 2T_n(u) = 2T_n\left(\frac{y}{2}\right)$ với mọi $n \ge 0$.</p>
+        <p>Phương trình đã cho trở thành $P(y) = 2T_n\left(\frac{y}{2}\right)$.<br>
+        Đẳng thức này đúng với mọi $y \in (-\infty, -2] \cup [2, +\infty)$ (một tập hợp chứa vô số điểm). Theo định lý đồng nhất đa thức, đẳng thức phải đúng trên toàn bộ trục thực $\mathbb{R}$.</p>
+        <p>Vậy đa thức duy nhất thỏa mãn là $P(x) = 2T_n\left(\frac{x}{2}\right)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Tính duy nhất của Đa thức Cực trị)</div>
+        Cho $P(x)$ là đa thức đơn khởi bậc $n$. Giả sử $\max_{x \in [-1, 1]} |P(x)| = \frac{1}{2^{n-1}}$. Chứng minh rằng $P(x) \equiv \frac{1}{2^{n-1}} T_n(x)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Dựa trên chứng minh Định lý Minimax (Bài toán 2.1), ta xét đa thức hiệu $H(x) = C_n(x) - P(x)$ với $C_n(x) = \frac{1}{2^{n-1}} T_n(x)$.<br>
+        Tại $n+1$ điểm cực trị $x_k = \cos \frac{k\pi}{n}$ của $C_n(x)$, ta có $C_n(x_k) = \frac{(-1)^k}{2^{n-1}}$.<br>
+        Theo giả thiết $\max_{x \in [-1, 1]} |P(x)| = \frac{1}{2^{n-1}}$, ta có $-\frac{1}{2^{n-1}} \le P(x_k) \le \frac{1}{2^{n-1}}$.</p>
+        <p>Khảo sát dấu của $H(x_k)$:</p>
+        <ul>
+            <li> Nếu $k$ chẵn, $C_n(x_k) = \frac{1}{2^{n-1}} \implies H(x_k) \ge 0$.</li>
+            <li> Nếu $k$ lẻ, $C_n(x_k) = -\frac{1}{2^{n-1}} \implies H(x_k) \le 0$.</li>
+        </ul>
+        <p>Dãy giá trị $H(x_0), H(x_1), \dots, H(x_n)$ luân phiên không âm và không dương.<br>
+        Nếu $H(x_k) \neq 0$ với mọi $k$, $H(x)$ đổi dấu $n$ lần, do đó có $n$ nghiệm. Vì $\deg H \le n-1$, dẫn đến $H(x) \equiv 0$.</p>
+        <p>Nếu $H(x_k) = 0$ tại một điểm $x_k$ nằm bên trong khoảng $(-1, 1)$, tức là $P(x_k) = C_n(x_k) = \pm \frac{1}{2^{n-1}}$. <br>
+        Vì $P(x)$ đạt giá trị cực trị tuyệt đối tại điểm trong $x_k$, đạo hàm của nó tại đó bằng 0: $P'(x_k) = 0$. <br>
+        Đồng thời, do $x_k$ là điểm cực trị của $C_n(x)$, ta cũng có $C_n'(x_k) = 0$.<br>
+        Suy ra $H'(x_k) = C_n'(x_k) - P'(x_k) = 0$.<br>
+        Điều này có nghĩa là $x_k$ là nghiệm \textbf{kép} (hoặc bội cao hơn) của $H(x)$.</p>
+        <p>Mỗi lần đếm nghiệm, các nghiệm đổi dấu đóng góp 1, còn nghiệm kép đóng góp ít nhất 2 vào tổng số nghiệm. Trong bất kỳ tình huống phân phối nghiệm nào, tổng số nghiệm của $H(x)$ (tính cả nghiệm bội) trên đoạn $[-1, 1]$ luôn đạt ít nhất $n$.</p>
+        <p>Vì $\deg H \le n-1$, đa thức $H(x)$ có nhiều nghiệm hơn số bậc của nó, do đó nó phải là đa thức không.<br>
+        Suy ra $P(x) \equiv C_n(x) = \frac{1}{2^{n-1}} T_n(x)$. Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.5 (Phương trình Pell Đa thức)</div>
+        Đa thức Chebyshev loại II, ký hiệu $U_n(x)$, được định nghĩa bởi hệ thức lượng giác $U_n(\cos \theta) = \frac{\sin((n+1)\theta)}{\sin \theta}$. <br>
+        Chứng minh rằng hai họ đa thức $T_n(x)$ và $U_{n-1}(x)$ cấu thành nghiệm của phương trình Pell trên vành đa thức:
+        $$ T_n^2(x) - (x^2 - 1) U_{n-1}^2(x) = 1 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Để chứng minh đẳng thức giữa hai đa thức, ta chỉ cần chứng minh nó đúng trên miền $x \in [-1, 1]$.<br>
+        Thay $x = \cos \theta$ (với $\theta \in [0, \pi]$). Theo định nghĩa, ta có:</p>
+        $$ T_n(x) = T_n(\cos \theta) = \cos(n\theta) $$
+        $$ U_{n-1}(x) = U_{n-1}(\cos \theta) = \frac{\sin(n\theta)}{\sin \theta} $$
+        <p>Thay các biểu thức này vào vế trái của phương trình:</p>
+        $$ \begin{aligned}
+        VT &= T_n^2(\cos \theta) - (\cos^2 \theta - 1) U_{n-1}^2(\cos \theta) \\
+        &= \cos^2(n\theta) - (-\sin^2 \theta) \frac{\sin^2(n\theta)}{\sin^2 \theta} \\
+        &= \cos^2(n\theta) + \sin^2(n\theta) \\
+        &= 1
+        \end{aligned} $$
+        <p>Do đẳng thức $T_n^2(x) - (x^2 - 1) U_{n-1}^2(x) = 1$ đúng với vô số giá trị $x \in [-1, 1]$, theo định lý đồng nhất đa thức, nó là một đồng nhất thức đúng trên toàn vành đa thức $\mathbb{R}[x]$.</p>
+        <p>Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

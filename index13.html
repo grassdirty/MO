@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học và Dãy số - Phương trình Pell và Hệ thức truy hồi</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox trong LaTeX -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ DÃY SỐ <br> PHƯƠNG TRÌNH PELL VÀ HỆ THỨC TRUY HỒI</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát phương trình Diophantine bậc hai dạng Pell $x^2 - dy^2 = 1$ thể hiện mối liên hệ giữa Số học và Dãy số. Chuyên đề này thiết lập cấu trúc tập nghiệm của phương trình Pell thông qua nghiệm cơ sở và hệ thức truy hồi tuyến tính. Các bài toán ứng dụng được trích từ các kỳ thi Olympic quốc gia, tập trung vào kỹ thuật xây dựng dãy nghiệm, xét tính nguyên của căn thức và phân tích cấu trúc của phương trình Pell tổng quát.
+    </div>
+
+    <h2>1. Kiến thức nền tảng</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Phương trình Pell loại I)</div>
+        Cho $d$ là một số nguyên dương và không phải là số chính phương. Phương trình Diophantine có dạng:
+        $$ x^2 - dy^2 = 1 $$
+        được gọi là phương trình Pell loại I. Cặp số nguyên dương $(x_1, y_1)$ thỏa mãn phương trình và có giá trị nhỏ nhất được gọi là nghiệm cơ sở của phương trình.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Cấu trúc tập nghiệm của phương trình Pell)</div>
+        Nếu $(x_1, y_1)$ là nghiệm cơ sở của phương trình $x^2 - dy^2 = 1$, thì phương trình có vô hạn nghiệm nguyên dương. Toàn bộ các nghiệm nguyên dương $(x_n, y_n)$ của phương trình được xác định bởi công thức:
+        $$ x_n + y_n\sqrt{d} = (x_1 + y_1\sqrt{d})^n \quad \text{với } n \in \mathbb{N}^* $$
+        Đồng thời, dãy nghiệm $(x_n)$ và $(y_n)$ thỏa mãn hệ thức truy hồi tuyến tính cấp hai:
+        $$ \begin{aligned}
+        x_{n+1} &= 2x_1 x_n - x_{n-1} \\
+        y_{n+1} &= 2x_1 y_n - y_{n-1}
+        \end{aligned} $$
+        với điều kiện ban đầu $x_0 = 1, y_0 = 0$ và nghiệm cơ sở $(x_1, y_1)$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Sử dụng tính chất nhân tính của chuẩn (norm) trên vành $\mathbb{Z}[\sqrt{d}]$. Định nghĩa $N(a + b\sqrt{d}) = a^2 - db^2$. Ta có $N(\alpha \beta) = N(\alpha)N(\beta)$.</p>
+        <p>Vì $N(x_1 + y_1\sqrt{d}) = x_1^2 - dy_1^2 = 1$, kéo theo $N((x_1 + y_1\sqrt{d})^n) = 1^n = 1$. Do đó các cặp $(x_n, y_n)$ đều là nghiệm.</p>
+        <p>Để tìm hệ thức truy hồi, ta xét:</p>
+        $$ x_{n+1} + y_{n+1}\sqrt{d} = (x_n + y_n\sqrt{d})(x_1 + y_1\sqrt{d}) = (x_1 x_n + d y_1 y_n) + (y_1 x_n + x_1 y_n)\sqrt{d} $$
+        <p>Từ đây, $x_{n+1} = x_1 x_n + d y_1 y_n$ và $y_{n+1} = y_1 x_n + x_1 y_n$. </p>
+        <p>Sử dụng $x_n = x_1 x_{n-1} + d y_1 y_{n-1}$ để thế và triệt tiêu $y_n$, ta thu được phương trình đặc trưng $\lambda^2 - 2x_1 \lambda + 1 = 0$, tương ứng với hệ thức truy hồi $x_{n+1} = 2x_1 x_n - x_{n-1}$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (All-Russian Olympiad - Sự tồn tại vô hạn)</div>
+        Một số nguyên dương được gọi là số tam giác nếu nó có dạng $\frac{n(n+1)}{2}$ với $n \in \mathbb{N}^*$. Chứng minh rằng tồn tại vô hạn các số nguyên dương vừa là số tam giác vừa là số chính phương.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử tồn tại số nguyên dương $m$ sao cho số tam giác thứ $n$ bằng bình phương của $m$. Ta có phương trình:</p>
+        $$ \frac{n(n+1)}{2} = m^2 $$
+        <p>Nhân cả hai vế với 8 để tạo thành bình phương:</p>
+        $$ 4n^2 + 4n = 8m^2 \implies (2n+1)^2 - 1 = 8m^2 $$
+        <p>Đặt $x = 2n+1$ và $y = m$, phương trình trở thành:</p>
+        $$ x^2 - 8y^2 = 1 $$
+        <p>Đây là phương trình Pell loại I với $d = 8$. (Lưu ý 8 không phải là số chính phương).<br>
+        Ta tìm nghiệm cơ sở của phương trình bằng cách thử các giá trị nhỏ của $y$:<br>
+        Với $y = 1 \implies x^2 = 8(1) + 1 = 9 \implies x = 3$.<br>
+        Vậy nghiệm cơ sở là $(x_1, y_1) = (3, 1)$.</p>
+        <p>Theo Định lý 1.1, phương trình $x^2 - 8y^2 = 1$ có vô hạn nghiệm nguyên dương $(x_k, y_k)$.<br>
+        Với mỗi nghiệm $(x_k, y_k)$, do $x_k^2 = 8y_k^2 + 1$ là số lẻ, $x_k$ phải là một số lẻ. Ta có thể đặt $n_k = \frac{x_k - 1}{2}$ (sẽ luôn thu được một số nguyên).<br>
+        Khi đó, $m_k = y_k$ và $n_k$ sinh ra một cặp số nguyên dương thỏa mãn điều kiện bài toán.<br>
+        Vì dãy nghiệm $(x_k)$ tăng ngặt, sẽ có vô hạn giá trị phân biệt của $n_k$. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (China National High School Mathematics League - Tuyến tính hóa)</div>
+        Cho dãy số $(a_n)$ được xác định bởi điều kiện ban đầu $a_1 = 1$ và hệ thức truy hồi:
+        $$ a_{n+1} = 3a_n + \sqrt{8a_n^2 + 1} \quad \forall n \ge 1 $$
+        Chứng minh rằng tất cả các phần tử của dãy số $(a_n)$ đều là các số nguyên.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Với $a_1 = 1$, ta tính $a_2 = 3(1) + \sqrt{8(1)^2 + 1} = 3 + 3 = 6$, là một số nguyên.<br>
+        Biến đổi hệ thức truy hồi để khử dấu căn:</p>
+        $$ a_{n+1} - 3a_n = \sqrt{8a_n^2 + 1} $$
+        <p>Bình phương hai vế:</p>
+        $$ (a_{n+1} - 3a_n)^2 = 8a_n^2 + 1 \implies a_{n+1}^2 - 6a_{n+1}a_n + 9a_n^2 = 8a_n^2 + 1 $$
+        $$ \implies a_{n+1}^2 - 6a_{n+1}a_n + a_n^2 = 1 \quad (1) $$
+        <p>Đẳng thức $(1)$ đúng với mọi $n \ge 1$. Xét đẳng thức này tại chỉ số $n-1$:</p>
+        $$ a_n^2 - 6a_n a_{n-1} + a_{n-1}^2 = 1 \quad (2) $$
+        <p>Trừ vế theo vế đẳng thức $(1)$ cho đẳng thức $(2)$:</p>
+        $$ (a_{n+1}^2 - a_{n-1}^2) - 6a_n(a_{n+1} - a_{n-1}) = 0 $$
+        $$ \implies (a_{n+1} - a_{n-1})(a_{n+1} + a_{n-1} - 6a_n) = 0 $$
+        <p>Vì dãy số $(a_n)$ là một dãy tăng ngặt (do $a_{n+1} = 3a_n + \text{số dương} \gt a_n$), ta có $a_{n+1} - a_{n-1} \neq 0$.<br>
+        Do đó, đại lượng trong ngoặc thứ hai phải bằng 0:</p>
+        $$ a_{n+1} = 6a_n - a_{n-1} $$
+        <p>Dãy số phi tuyến ban đầu đã được chuyển thành một dãy số thỏa mãn hệ thức truy hồi tuyến tính cấp 2 với hệ số nguyên.<br>
+        Vì các giá trị ban đầu $a_1 = 1 \in \mathbb{Z}$ và $a_2 = 6 \in \mathbb{Z}$, theo phương pháp quy nạp toán học, các phần tử $a_n$ của dãy đều là các số nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Australian Math Olympiad - Tổng các bình phương liên tiếp)</div>
+        Chứng minh rằng tồn tại vô hạn các số nguyên dương $n$ sao cho tổng bình phương của hai số nguyên liên tiếp $n$ và $n+1$ là một số chính phương.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $n^2 + (n+1)^2 = m^2$ với $m \in \mathbb{N}^*$.<br>
+        Khai triển và thu gọn phương trình:</p>
+        $$ 2n^2 + 2n + 1 = m^2 $$
+        <p>Nhân cả hai vế với 2 để tạo thành bình phương:</p>
+        $$ 4n^2 + 4n + 2 = 2m^2 \implies (2n+1)^2 + 1 = 2m^2 \implies (2n+1)^2 - 2m^2 = -1 $$
+        <p>Đặt $X = 2n+1$ và $Y = m$. Phương trình trở thành phương trình Pell loại II (Pell âm):</p>
+        $$ X^2 - 2Y^2 = -1 $$
+        <p>Phương trình này có nghiệm cơ sở là $(X_1, Y_1) = (1, 1)$, tương ứng với $n = 0$ và $m = 1$.<br>
+        Mọi nghiệm của phương trình Pell âm được sinh ra từ các lũy thừa bậc lẻ của nghiệm cơ sở trên vành $\mathbb{Z}[\sqrt{2}]$:</p>
+        $$ X_{2k+1} + Y_{2k+1}\sqrt{2} = (1 + \sqrt{2})^{2k+1} \quad \text{với } k \in \mathbb{N} $$
+        <p>Do chuẩn $N(1 + \sqrt{2}) = -1$, ta có $N((1 + \sqrt{2})^{2k+1}) = (-1)^{2k+1} = -1$.<br>
+        Vì vậy, tồn tại vô hạn nghiệm $(X, Y)$ của phương trình.<br>
+        Với mỗi nghiệm $X$, do $X^2 = 2Y^2 - 1$, $X$ là một số lẻ. Đặt $n = \frac{X-1}{2}$, ta thu được một số nguyên dương (khi $k \ge 1$).<br>
+        Vô hạn nghiệm $X$ tương ứng với vô hạn giá trị $n$ thỏa mãn điều kiện bài toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Albania National Olympiad - Chứng minh vô nghiệm)</div>
+        Tìm tất cả các cặp số nguyên $(x, y)$ thỏa mãn phương trình:
+        $$ x^2 - 3y^2 = -1 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Phương trình Diophantine này thuộc lớp phương trình Pell âm. Để kiểm tra tính giải được, ta xét modulo.<br>
+        Giả sử phương trình có nghiệm nguyên $(x, y)$.<br>
+        Xét phương trình theo modulo 3:</p>
+        $$ x^2 - 0 \equiv -1 \pmod 3 \implies x^2 \equiv 2 \pmod 3 $$
+        <p>Điều này đòi hỏi 2 phải là một thặng dư bậc hai modulo 3.<br>
+        Ta liệt kê bình phương của các lớp đồng dư modulo 3:<br>
+        $0^2 \equiv 0 \pmod 3$.<br>
+        $1^2 \equiv 1 \pmod 3$.<br>
+        $2^2 \equiv 1 \pmod 3$.<br>
+        Tập hợp các thặng dư bậc hai modulo 3 chỉ chứa $\{0, 1\}$. Lớp đồng dư 2 không phải là thặng dư bậc hai modulo 3.</p>
+        <p>Do đó, phương trình $x^2 \equiv 2 \pmod 3$ không có nghiệm nguyên.<br>
+        Điều này chứng tỏ phương trình ban đầu không có cặp nghiệm nguyên $(x, y)$ nào. Tập nghiệm là rỗng.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Argentina National Olympiad - Tính chia hết trong dãy nghiệm Pell)</div>
+        Chứng minh rằng phương trình $x^2 - 2y^2 = 1$ có vô hạn nghiệm nguyên dương $(x, y)$ thỏa mãn điều kiện $y$ chia hết cho $7$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nghiệm cơ sở của phương trình $x^2 - 2y^2 = 1$ là $(x_1, y_1) = (3, 2)$.<br>
+        Theo Định lý 1.1, dãy nghiệm $(y_n)$ thỏa mãn hệ thức truy hồi:</p>
+        $$ y_{n+1} = 6y_n - y_{n-1} $$
+        <p>với $y_0 = 0$ và $y_1 = 2$.<br>
+        Để khảo sát tính chia hết cho 7, ta xét dãy số $(y_n)$ trên trường $\mathbb{F}_7$ (hay modulo 7):</p>
+        <ul>
+            <li>$y_0 \equiv 0 \pmod 7$</li>
+            <li>$y_1 \equiv 2 \pmod 7$</li>
+            <li>$y_2 = 6(2) - 0 = 12 \equiv 5 \pmod 7$</li>
+            <li>$y_3 = 6(12) - 2 = 70 \equiv 0 \pmod 7$</li>
+            <li>$y_4 = 6(70) - 12 = 408 \equiv 6(0) - 5 = -5 \equiv 2 \pmod 7$</li>
+            <li>$y_5 = 6(y_4) - y_3 \equiv 6(2) - 0 = 12 \equiv 5 \pmod 7$</li>
+            <li>$y_6 = 6(y_5) - y_4 \equiv 6(5) - 2 = 28 \equiv 0 \pmod 7$</li>
+        </ul>
+        <p>Ta nhận thấy hai giá trị liên tiếp $y_3 \equiv 0$ và $y_4 \equiv 2$ lặp lại khuôn mẫu của $y_0 \equiv 0$ và $y_1 \equiv 2$.<br>
+        Do mỗi phần tử của dãy truy hồi cấp hai được xác định hoàn toàn bởi hai phần tử ngay trước nó, chuỗi giá trị của $y_n \pmod 7$ là tuần hoàn với chu kỳ 3.<br>
+        Cụ thể, chuỗi các giá trị là: $0, 2, 5, 0, 2, 5, \dots$</p>
+        <p>Từ chu kỳ này, ta có kết luận:</p>
+        $$ y_n \equiv 0 \pmod 7 \iff n \equiv 0 \pmod 3 $$
+        <p>Tức là, $y_n$ chia hết cho 7 khi và chỉ khi chỉ số $n$ là bội của 3.<br>
+        Vì có vô hạn chỉ số $n$ là bội của 3, phương trình tồn tại vô hạn nghiệm nguyên dương $(x_n, y_n)$ mà thành phần $y_n$ chia hết cho 7.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

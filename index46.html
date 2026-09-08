@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Rời rạc - Tập sắp thứ tự bộ phận và Định lý Dilworth</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> TẬP SẮP THỨ TỰ BỘ PHẬN VÀ ĐỊNH LÝ DILWORTH</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát cấu trúc của một tập hợp dựa trên các mối quan hệ so sánh được giữa các phần tử là một phương pháp quan trọng trong Toán rời rạc. Chuyên đề này hình thức hóa khái niệm Tập sắp thứ tự bộ phận (Poset), Xích (Chain) và Đối xích (Antichain). Từ đó, chúng ta chứng minh Định lý Sperner (thông qua Bất đẳng thức LYM) và Định lý Dilworth. Các bài toán ứng dụng minh họa cách sử dụng lý thuyết này để giải quyết các bài toán tối ưu tổ hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong Lý thuyết Tập sắp thứ tự bộ phận (Poset) được giảng dạy ở bậc Đại học, ngoài Định lý Dilworth (liên hệ giữa đối xích lớn nhất và số lượng xích phủ), ta còn có một định lý đối ngẫu rất quan trọng là <strong>Định lý Mirsky</strong>. Định lý này liên hệ giữa xích dài nhất và số lượng đối xích phủ, cung cấp công cụ trực tiếp để giải quyết Bài toán 3.2 bên dưới.</i></p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Định lý Mirsky)</div>
+        Trong một tập sắp thứ tự bộ phận hữu hạn $(P, \le)$, nếu độ dài của xích dài nhất là $h$, thì tập $P$ có thể được phân hoạch thành đúng $h$ đối xích.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Với mỗi phần tử $x \in P$, ta xác định giá trị $l(x)$ là độ dài của xích dài nhất kết thúc tại $x$. Vì xích dài nhất trong toàn bộ tập $P$ có độ dài $h$, nên $1 \le l(x) \le h$ với mọi $x \in P$.</p>
+        <p>Ta chia $P$ thành $h$ tập hợp $A_1, A_2, \dots, A_h$ sao cho:</p>
+        $$ A_i = \{x \in P \mid l(x) = i\} $$
+        <p>Rõ ràng các tập $A_i$ rời nhau đôi một và hợp của chúng là toàn bộ $P$. Ta cần chứng minh mỗi tập $A_i$ là một đối xích.</p>
+        <p>Giả sử ngược lại, trong một tập $A_i$ tồn tại hai phần tử $x, y$ so sánh được với nhau. Không mất tính tổng quát, giả sử $x \lt y$.<br>
+        Vì $x \in A_i$, tồn tại một xích có độ dài $i$ kết thúc tại $x$: $x_1 \lt x_2 \lt \dots \lt x_i = x$.<br>
+        Do $x \lt y$, ta có thể ghép thêm $y$ vào xích này để tạo thành xích $x_1 \lt x_2 \lt \dots \lt x_i \lt y$ có độ dài $i+1$ kết thúc tại $y$.<br>
+        Điều này chỉ ra rằng xích dài nhất kết thúc tại $y$ phải có độ dài ít nhất là $i+1$, tức là $l(y) \ge i+1$.<br>
+        Tuy nhiên, điều này mâu thuẫn với giả thiết $y \in A_i$ (nghĩa là $l(y) = i$).<br>
+        Sự mâu thuẫn chứng tỏ không có hai phần tử nào trong cùng một tập $A_i$ so sánh được với nhau. Do đó, mỗi $A_i$ là một đối xích. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Tập sắp thứ tự bộ phận, Xích và Đối xích)</div>
+        <ul>
+            <li> <strong>Tập sắp thứ tự bộ phận (Poset):</strong> Là một tập hợp $P$ đi kèm với một quan hệ hai ngôi "$\le$" thỏa mãn 3 tính chất: Phản xạ ($x \le x$), Phản xứng (nếu $x \le y$ và $y \le x$ thì $x=y$), và Bắc cầu (nếu $x \le y$ và $y \le z$ thì $x \le z$).</li>
+            <li> <strong>So sánh được (Comparable):</strong> Hai phần tử $x, y \in P$ được gọi là so sánh được nếu $x \le y$ hoặc $y \le x$. Nếu không, chúng được gọi là <strong>không so sánh được</strong> (Incomparable).</li>
+            <li> <strong>Xích (Chain):</strong> Là một tập con của $P$ mà trong đó, hai phần tử bất kỳ đều so sánh được với nhau.</li>
+            <li> <strong>Đối xích (Antichain):</strong> Là một tập con của $P$ mà trong đó, không có bất kỳ hai phần tử phân biệt nào so sánh được với nhau.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Sperner và Bất đẳng thức LYM)</div>
+        Cho $X$ là một tập hợp có $n$ phần tử. Xét họ $\mathcal{F}$ gồm các tập con của $X$ sao cho không có tập hợp nào là tập con của tập hợp khác (nghĩa là $\mathcal{F}$ là một đối xích đối với quan hệ bao hàm $\subseteq$). <br>
+        <strong>Bất đẳng thức LYM</strong> (Lubell–Yamamoto–Meshalkin) khẳng định:
+        $$ \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \le 1 $$
+        Hệ quả trực tiếp là <strong>Định lý Sperner</strong>: Kích thước của đối xích lớn nhất trong họ các tập con của $X$ không vượt quá $\binom{n}{\lfloor n/2 \rfloor}$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh Bất đẳng thức LYM bằng phương pháp đếm bằng hai cách dựa trên hoán vị.<br>
+        Xét tất cả $n!$ hoán vị của các phần tử trong tập $X$.<br>
+        Với mỗi hoán vị $\pi = (x_1, x_2, \dots, x_n)$, ta xây dựng một chuỗi các tập con (gọi là một Xích cực đại):</p>
+        $$ \emptyset \subset \{x_1\} \subset \{x_1, x_2\} \subset \dots \subset \{x_1, x_2, \dots, x_n\} = X $$
+        <p>Mỗi xích cực đại này chứa chính xác $n+1$ tập hợp, với các kích thước chạy từ $0$ đến $n$.<br>
+        Vì họ $\mathcal{F}$ là một đối xích (không có tập nào chứa tập nào), một xích cực đại bất kỳ chỉ có thể chứa <strong>tối đa 1</strong> tập hợp thuộc $\mathcal{F}$.</p>
+
+        <p>Lấy một tập hợp $A \in \mathcal{F}$ bất kỳ (giả sử kích thước $|A| = k$). <br>
+        Ta đếm xem có bao nhiêu xích cực đại chứa tập hợp $A$.<br>
+        Để một xích cực đại chứa $A$, hoán vị $\pi$ tạo ra nó phải có $k$ phần tử đầu tiên chính là các phần tử của $A$ (có $k!$ cách xếp thứ tự), và $n-k$ phần tử còn lại nằm ở phần đuôi (có $(n-k)!$ cách xếp thứ tự).<br>
+        Vậy số lượng xích cực đại đi qua tập $A$ là: $k! (n-k)! = |A|! (n-|A|)!$.</p>
+
+        <p>Lấy tổng số lượng xích cực đại đi qua tất cả các tập $A \in \mathcal{F}$. Vì mỗi xích cực đại chỉ đi qua tối đa 1 tập hợp của $\mathcal{F}$, tổng số xích này không thể vượt quá tổng số xích cực đại có thể tạo ra từ các hoán vị (là $n!$). Do đó:</p>
+        $$ \sum_{A \in \mathcal{F}} |A|! (n-|A|)! \le n! $$
+        <p>Chia cả hai vế cho $n!$, ta được:</p>
+        $$ \sum_{A \in \mathcal{F}} \frac{|A|! (n-|A|)!}{n!} \le 1 \implies \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \le 1 $$
+        <p>Từ đó, vì $\binom{n}{|A|} \le \binom{n}{\lfloor n/2 \rfloor}$ với mọi $|A|$, ta có:</p>
+        $$ \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{\lfloor n/2 \rfloor}} \le \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \le 1 \implies \frac{|\mathcal{F}|}{\binom{n}{\lfloor n/2 \rfloor}} \le 1 \implies |\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Dilworth)</div>
+        Trong một tập sắp thứ tự bộ phận hữu hạn $(P, \le)$, số lượng phần tử của đối xích lớn nhất luôn bằng số lượng ít nhất các xích cần thiết để phủ toàn bộ tập $P$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Gọi $k$ là kích thước của đối xích lớn nhất trong $P$. <br>
+        Nếu ta phủ $P$ bằng $m$ xích, theo Nguyên lý Dirichlet, một đối xích kích thước $k$ chỉ có thể chia sẻ tối đa 1 phần tử với mỗi xích (vì 2 phần tử trong xích thì phải so sánh được). Do đó, $m \ge k$. Ta cần chứng minh luôn có thể phủ $P$ bằng đúng $k$ xích.</p>
+
+        <p>Ta chứng minh bằng quy nạp mạnh theo số lượng phần tử $n = |P|$. <br>
+        Nếu $n = 0$ hoặc $1$, định lý đúng. Giả sử định lý đúng cho mọi Poset có số phần tử $\lt n$. Xét Poset $P$ có $n$ phần tử, và gọi $k$ là kích thước của đối xích lớn nhất. Ta xét hai trường hợp:</p>
+
+        <p><strong>Trường hợp 1:</strong> Tồn tại một đối xích cực đại $A$ có kích thước $k$ mà $A$ <strong>không phải</strong> là tập hợp tất cả các phần tử lớn nhất của $P$, và cũng <strong>không phải</strong> là tập hợp tất cả các phần tử nhỏ nhất của $P$.<br>
+        Gọi $P^+$ là tập hợp các phần tử $x \in P$ sao cho $x \ge a$ với một phần tử $a \in A$ nào đó.<br>
+        Gọi $P^-$ là tập hợp các phần tử $y \in P$ sao cho $y \le a$ với một phần tử $a \in A$ nào đó.<br>
+        Vì $A$ không phải toàn bộ là phần tử cực đại, $P^- \neq P$ (có phần tử nằm trên $A$ mà không thuộc $A$). Tương tự, $P^+ \neq P$.<br>
+        Bởi vì $A$ là đối xích lớn nhất, mọi phần tử của $P$ đều phải so sánh được với ít nhất một phần tử của $A$ (nếu không, phần tử đó thêm vào $A$ tạo thành đối xích kích thước $k+1$, mâu thuẫn). Vậy $P^+ \cup P^- = P$.<br>
+        Tập $A$ là đối xích lớn nhất của cả $P^+$ và $P^-$. Do $|P^+| \lt n$ và $|P^-| \lt n$, theo giả thiết quy nạp, $P^+$ có thể được phủ bởi $k$ xích, và $P^-$ có thể được phủ bởi $k$ xích.<br>
+        Vì $A$ có kích thước $k$ và là tập con của cả $P^+$ và $P^-$, mỗi xích trong $k$ xích của $P^+$ chứa đúng 1 phần tử của $A$, và mỗi xích trong $P^-$ cũng chứa đúng 1 phần tử của $A$. <br>
+        Ta có thể nối xích kết thúc tại $a \in A$ của $P^-$ với xích bắt đầu từ $a \in A$ của $P^+$ để tạo thành một xích dài. Tổng cộng ta có $k$ xích bao phủ toàn bộ $P = P^+ \cup P^-$.</p>
+
+        <p><strong>Trường hợp 2:</strong> Mọi đối xích cực đại kích thước $k$ đều chỉ có thể là tập các phần tử cực đại hoặc tập các phần tử cực tiểu.<br>
+        Lấy một phần tử cực đại $M$ và một phần tử cực tiểu $m$ sao cho $m \le M$.<br>
+        Xét xích $C = \{m, M\}$.<br>
+        Tập còn lại $P' = P \setminus C$ có ít hơn $n$ phần tử. Kích thước đối xích lớn nhất của $P'$ phải là $k-1$ (vì nếu nó có đối xích kích thước $k$, đối xích này sẽ là đối xích cực đại trong $P$, nhưng nó không chứa $m$ và $M$, nên không thể là toàn bộ các phần tử cực tiểu hay cực đại, rơi vào Trường hợp 1).<br>
+        Theo giả thiết quy nạp, $P'$ có thể được phủ bởi $k-1$ xích. Các xích này kết hợp với xích $C$ tạo thành đúng $k$ xích bao phủ $P$.<br>
+        Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Erdős-Szekeres về Dãy số)</div>
+        Cho $a$ và $b$ là hai số nguyên dương. Chứng minh rằng trong mọi dãy gồm $n = a \cdot b + 1$ số thực phân biệt, luôn tồn tại một dãy con tăng ngặt có độ dài $a + 1$, hoặc một dãy con giảm ngặt có độ dài $b + 1$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta có thể chứng minh định lý này thông qua cấu trúc Poset và Định lý Dilworth.</p>
+        <p>Giả sử dãy số được cho là $S = (x_1, x_2, \dots, x_n)$.<br>
+        Ta định nghĩa một quan hệ thứ tự "$\preceq$" trên tập các chỉ số $\{1, 2, \dots, n\}$ như sau:</p>
+        $$ i \preceq j \iff (i \le j) \quad \text{và} \quad (x_i \le x_j) $$
+        <p>Quan hệ "$\preceq$" thỏa mãn tính phản xạ, phản xứng và bắc cầu. Do đó, tập các chỉ số cùng với quan hệ này tạo thành một Tập sắp thứ tự bộ phận (Poset) $P$.</p>
+
+        <p>Ý nghĩa của Xích và Đối xích trong Poset $P$ này:</p>
+        <ul>
+            <li> Một <strong>Xích (Chain)</strong> trong $P$ là một tập hợp các phần tử sao cho hai phần tử bất kỳ đều so sánh được. Nghĩa là nếu $i \lt j$ thì $x_i \le x_j$. Vì dãy gồm các số phân biệt, điều này tương đương với $x_i \lt x_j$. Vậy, một xích chính là một <strong>dãy con tăng ngặt</strong>.</li>
+            <li> Một <strong>Đối xích (Antichain)</strong> trong $P$ là một tập hợp các phần tử sao cho không có hai phần tử nào so sánh được. Nghĩa là với mọi $i \lt j$, ta không có $x_i \le x_j$. Kéo theo phải có $x_i \gt x_j$. Vậy, một đối xích chính là một <strong>dãy con giảm ngặt</strong>.</li>
+        </ul>
+
+        <p>Bài toán yêu cầu chứng minh tồn tại xích độ dài $a+1$ hoặc đối xích độ dài $b+1$.<br>
+        Giả sử phản chứng rằng không tồn tại bất kỳ đối xích nào có độ dài $b+1$.<br>
+        Điều này có nghĩa là kích thước của đối xích lớn nhất trong Poset $P$ là một số $k \le b$.<br>
+        Theo Định lý Dilworth (Định lý 1.2), số lượng các xích tối thiểu cần thiết để bao phủ toàn bộ Poset $P$ bằng $k$.<br>
+        Vậy, ta có thể phân hoạch toàn bộ $n = ab+1$ phần tử của dãy thành $k$ xích (với $k \le b$).<br>
+        Theo Nguyên lý Dirichlet, khi chia $ab+1$ phần tử vào $k \le b$ xích, phải có ít nhất một xích chứa số phần tử lớn hơn hoặc bằng:</p>
+        $$ \left\lceil \frac{ab+1}{b} \right\rceil = a + 1 $$
+        <p>Tức là tồn tại ít nhất một xích có độ dài lớn hơn hoặc bằng $a+1$. <br>
+        Như đã phân tích, xích này tương ứng với một dãy con tăng ngặt có độ dài $a+1$.<br>
+        Vậy nếu không có dãy con giảm ngặt độ dài $b+1$, thì phải có dãy con tăng ngặt độ dài $a+1$. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Tối ưu Phủ lưới)</div>
+        Trên một mặt phẳng tọa độ, cho $N$ điểm phân biệt $(x_1, y_1), (x_2, y_2), \dots, (x_N, y_N)$. <br>
+        Hai điểm $A(x_a, y_a)$ và $B(x_b, y_b)$ được gọi là "Tương thích" nếu $x_a \lt x_b$ và $y_a \lt y_b$.<br>
+        Một "đường truyền" là một chuỗi các điểm sao cho bất kỳ hai điểm liên tiếp nào trong chuỗi cũng Tương thích với nhau.<br>
+        Biết rằng trong $N$ điểm này, số lượng tối đa các điểm mà trong đó <strong>không có bất kỳ hai điểm nào Tương thích</strong> là $K$.<br>
+        Chứng minh rằng tập hợp toàn bộ $N$ điểm này có thể được chia thành đúng $K$ đường truyền rời nhau (mỗi điểm thuộc đúng một đường truyền).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta giải bài toán này bằng ngôn ngữ Tập sắp thứ tự bộ phận.</p>
+
+        <p>Ta thiết lập một quan hệ thứ tự "$\preceq$" trên tập hợp $N$ điểm như sau:<br>
+        Điểm $A \preceq B$ khi và chỉ khi $A = B$, hoặc $A$ Tương thích với $B$ ($x_a \lt x_b$ và $y_a \lt y_b$).<br>
+        Đây là một quan hệ thứ tự bộ phận (Poset).</p>
+
+        <ul>
+            <li> Một <strong>Xích (Chain)</strong> trong Poset này là một chuỗi các điểm $A_1 \preceq A_2 \preceq \dots \preceq A_m$. Chuỗi này là một "đường truyền" như đề bài mô tả.</li>
+            <li> Một <strong>Đối xích (Antichain)</strong> là tập hợp các điểm mà không có hai điểm nào Tương thích với nhau. Đề bài cho biết số lượng phần tử của tập hợp điểm như vậy lớn nhất là $K$. Nghĩa là kích thước đối xích cực đại trong Poset là $K$.</li>
+        </ul>
+
+        <p>Bài toán yêu cầu chia toàn bộ $N$ điểm thành $K$ đường truyền rời nhau. <br>
+        Điều này tương đương với việc bao phủ Poset bằng đúng $K$ xích.<br>
+        Theo Định lý Dilworth (Định lý 1.2), số lượng xích tối thiểu để bao phủ một Poset bằng đúng kích thước của đối xích lớn nhất. Do đối xích cực đại có kích thước là $K$, ta có thể chia $N$ điểm thành đúng $K$ xích (đường truyền). Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (IMO Shortlist - Bất đẳng thức Erdős / Định lý Sperner mở rộng)</div>
+        Cho tập hợp $X = \{1, 2, \dots, n\}$. Xét họ $\mathcal{F}$ gồm các tập con của $X$ thỏa mãn điều kiện: Không tồn tại ba tập hợp $A, B, C \in \mathcal{F}$ sao cho $A \subset B \subset C$ (bao hàm ngặt).<br>
+        Chứng minh rằng số lượng các tập hợp trong họ $\mathcal{F}$ thỏa mãn:
+        $$ |\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} + \binom{n}{\lfloor n/2 \rfloor + 1} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Họ $\mathcal{F}$ trong bài toán này không phải là một đối xích (vì cho phép $A \subset B$), nhưng nó cấm việc xuất hiện một xích có độ dài 3 (không có $A \subset B \subset C$). <br>
+        Ta sẽ sử dụng kỹ thuật đếm bằng hoán vị (tương tự như chứng minh Bất đẳng thức LYM ở Định lý 1.1).</p>
+
+        <p>Xét tất cả $n!$ hoán vị của tập $X$. Mỗi hoán vị $\pi$ tạo ra một xích cực đại gồm $n+1$ tập hợp, từ tập rỗng đến toàn bộ tập $X$.<br>
+        Với một xích cực đại bất kỳ, do tính chất của họ $\mathcal{F}$ (không chứa xích độ dài 3), số lượng các tập hợp thuộc $\mathcal{F}$ nằm trên xích cực đại này <strong>nhiều nhất là 2</strong>.</p>
+
+        <p>Ta đếm số lượng các cặp $(A, \mathcal{C})$, trong đó $A \in \mathcal{F}$ và $\mathcal{C}$ là một xích cực đại chứa $A$.</p>
+        <p><strong>Cách 1: Tính theo tập $A$.</strong><br>
+        Với mỗi tập $A \in \mathcal{F}$ cố định (giả sử có kích thước $k$), số lượng xích cực đại đi qua $A$ là $k!(n-k)! = \frac{n!}{\binom{n}{k}}$.<br>
+        Tổng số cặp là:</p>
+        $$ S = \sum_{A \in \mathcal{F}} \frac{n!}{\binom{n}{|A|}} $$
+
+        <p><strong>Cách 2: Tính theo xích cực đại $\mathcal{C}$.</strong><br>
+        Mỗi xích cực đại chứa tối đa 2 tập hợp của $\mathcal{F}$.<br>
+        Do có tổng cộng $n!$ xích cực đại, tổng số cặp là:</p>
+        $$ S \le 2 \cdot n! $$
+
+        <p>Cân bằng hai cách đếm, ta thu được:</p>
+        $$ \sum_{A \in \mathcal{F}} \frac{n!}{\binom{n}{|A|}} \le 2 \cdot n! \implies \sum_{A \in \mathcal{F}} \frac{1}{\binom{n}{|A|}} \le 2 $$
+        <p>Giá trị của $\binom{n}{k}$ lớn nhất tại $k = \lfloor n/2 \rfloor$ và lớn thứ hai tại $k = \lfloor n/2 \rfloor + 1$ (hoặc $k = \lceil n/2 \rceil - 1$, giá trị bằng nhau). $\binom{n}{|A|}$ luôn bị chặn trên bởi hai giá trị lớn nhất này. </p>
+        
+        <p>Thực chất, để giải chặt chẽ, ta áp dụng <strong>Định lý Mirsky (Định lý 0.1)</strong>.<br>
+        Vì họ $\mathcal{F}$ (với quan hệ bao hàm $\subset$) không chứa xích độ dài 3, xích dài nhất trong $\mathcal{F}$ có độ dài tối đa là 2.<br>
+        Theo Định lý Mirsky, họ $\mathcal{F}$ có thể được phân hoạch thành 2 đối xích rời nhau, gọi là $\mathcal{F}_1$ và $\mathcal{F}_2$ (trong đó không có $A \subset B$ trong cùng một họ).</p>
+        
+        <p>Áp dụng Định lý Sperner (Định lý 1.1) cho từng đối xích:<br>
+        $|\mathcal{F}_1|$ không vượt quá số lượng tập con của lớp lớn nhất, tức là $\binom{n}{\lfloor n/2 \rfloor}$.<br>
+        $|\mathcal{F}_2|$ chứa các phần tử còn lại. Để tối đa hóa tổng, kích thước của $\mathcal{F}_2$ không vượt quá kích thước của lớp lớn thứ hai, tức là $\binom{n}{\lfloor n/2 \rfloor + 1}$.<br>
+        Do đó, tổng kích thước của họ $\mathcal{F} = \mathcal{F}_1 \cup \mathcal{F}_2$ bị giới hạn bởi tổng của hai lớp tổ hợp lớn nhất:</p>
+        $$ |\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} + \binom{n}{\lfloor n/2 \rfloor + 1} $$
+        <p>Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

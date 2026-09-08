@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Rời rạc - Hệ tập hợp cực trị và Bổ đề Hoa hướng dương</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> HỆ TẬP HỢP CỰC TRỊ VÀ BỔ ĐỀ HOA HƯỚNG DƯƠNG</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Lý thuyết Tập hợp Cực trị (Extremal Set Theory) nghiên cứu kích thước lớn nhất hoặc nhỏ nhất của một họ các tập hợp thỏa mãn những điều kiện giao cắt nhất định. Chuyên đề này hình thức hóa cấu trúc "Giao cắt đôi một" (Intersecting Family) và cấu trúc "Hoa hướng dương" (Sunflower). Bằng phương pháp đếm song ánh trên chu trình (Katona's Circle Method) và nguyên lý Dirichlet mở rộng, chúng ta sẽ chứng minh Định lý Erdős-Ko-Rado và Bổ đề Erdős-Rado. Các định lý này là công cụ để xử lý các bài toán đếm và giới hạn không gian tổ hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Các định lý như Erdős-Ko-Rado và Bổ đề Hoa hướng dương vận dụng một số phương pháp đếm nâng cao và Nguyên lý Dirichlet mở rộng. Dưới đây là các định nghĩa cơ sở để hỗ trợ học sinh THPT tiếp cận nội dung bài học:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Hoán vị vòng quanh - Circular Permutation)</div>
+        Số lượng cách sắp xếp $n$ phần tử phân biệt lên một vòng tròn là $(n-1)!$. <br>
+        Lý do: Khi xếp trên một đường thẳng, ta có $n!$ cách xếp. Tuy nhiên, trên một vòng tròn, các cách xếp có thể thu được từ nhau qua phép quay (tịnh tiến vòng quanh) được coi là giống nhau. Mỗi vòng tròn gồm $n$ phần tử có thể được xoay $n$ lần để tạo ra các dãy đường thẳng khác nhau. Do đó, số lượng hoán vị vòng quanh phân biệt là $\frac{n!}{n} = (n-1)!$. Khái niệm này là nền tảng cho phương pháp đếm của Katona.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Nguyên lý Dirichlet mở rộng - Generalized Pigeonhole Principle)</div>
+        Nếu có $N$ đồ vật được đặt vào $k$ cái lồng, thì luôn tồn tại ít nhất một lồng chứa không ít hơn $\lceil \frac{N}{k} \rceil$ đồ vật (trong đó $\lceil x \rceil$ là phần nguyên trên, tức là số nguyên nhỏ nhất lớn hơn hoặc bằng $x$).<br>
+        Định lý này được áp dụng trực tiếp trong chứng minh Bổ đề Hoa hướng dương để chỉ ra sự tồn tại của một phần tử chung xuất hiện trong nhiều tập hợp.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hệ tập hợp giao cắt và Hoa hướng dương)</div>
+        Cho một tập hợp nền $X = \{1, 2, \dots, n\}$.
+        <ul>
+            <li> <strong>Hệ giao cắt (Intersecting Family):</strong> Một họ các tập con $\mathcal{F}$ của $X$ được gọi là một hệ giao cắt nếu với mọi $A, B \in \mathcal{F}$, ta luôn có $A \cap B \neq \emptyset$.</li>
+            <li> <strong>Hoa hướng dương (Sunflower):</strong> Một họ gồm $r$ tập hợp $\mathcal{S} = \{S_1, S_2, \dots, S_r\}$ được gọi là một Hoa hướng dương với $r$ cánh (petals) nếu phần giao của <strong>bất kỳ hai tập hợp nào</strong> trong họ cũng chính bằng phần giao của <strong>tất cả các tập hợp</strong> trong họ. <br>
+            Nói cách khác, tồn tại một tập lõi $C = S_1 \cap S_2 \cap \dots \cap S_r$ (có thể rỗng) sao cho $S_i \cap S_j = C$ với mọi $i \neq j$. Khi đó, các phần $S_i \setminus C$ được gọi là các cánh hoa (đôi một rời nhau).</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Erdős-Ko-Rado - EKR)</div>
+        Cho $n, k$ là các số nguyên dương thỏa mãn $n \ge 2k$. Nếu $\mathcal{F}$ là một hệ giao cắt gồm các tập con có kích thước đúng bằng $k$ của tập nền $X = \{1, 2, \dots, n\}$, thì số lượng lớn nhất các tập hợp trong $\mathcal{F}$ là:
+        $$ |\mathcal{F}| \le \binom{n-1}{k-1} $$
+        (Dấu bằng xảy ra khi $\mathcal{F}$ bao gồm tất cả các tập con kích thước $k$ chứa một phần tử cố định $x \in X$).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng <strong>Phương pháp Đường tròn của Katona (Katona's Circle Method)</strong>, sử dụng kỹ thuật đếm bằng hai cách trên hoán vị vòng quanh.</p>
+
+        <p>Xét một hoán vị vòng quanh của $n$ phần tử trong tập $X$. Có tất cả $(n-1)!$ hoán vị vòng quanh như vậy.<br>
+        Trên một vòng tròn cố định, một "cung" độ dài $k$ là một tập hợp gồm $k$ phần tử đứng liên tiếp nhau. Có đúng $n$ cung độ dài $k$ trên một vòng tròn.<br>
+        <strong>Bổ đề Katona:</strong> Trên một vòng tròn cố định, họ $\mathcal{F}$ có thể chứa <strong>tối đa $k$ cung</strong> độ dài $k$.<br>
+        <em>Chứng minh Bổ đề:</em> Giả sử $\mathcal{F}$ chứa một cung $A$ trên vòng tròn. Gọi các phần tử của $A$ theo thứ tự là $a_1, a_2, \dots, a_k$. Mọi cung khác thuộc $\mathcal{F}$ phải giao với $A$ (vì $\mathcal{F}$ là hệ giao cắt). Do $n \ge 2k$, hai cung giao nhau không thể bao hàm qua nhau hoàn toàn ở hai đầu. Để giao với $A$, một cung khác chỉ có thể chứa đầu mút $a_1$ (và một số phần tử trước nó) hoặc chứa đầu mút $a_k$ (và một số phần tử sau nó). <br>
+        Có $k-1$ cung có độ dài $k$ kết thúc tại một trong các điểm $a_1, \dots, a_{k-1}$ và $k-1$ cung bắt đầu tại một trong các điểm $a_2, \dots, a_k$. Các cung này chia thành $k-1$ cặp rời nhau (cung kết thúc tại $a_i$ và cung bắt đầu tại $a_{i+1}$ là rời nhau vì $n \ge 2k$). <br>
+        Vì $\mathcal{F}$ là hệ giao cắt, $\mathcal{F}$ chỉ có thể chứa tối đa 1 cung từ mỗi cặp trong số $k-1$ cặp này. Kết hợp với cung $A$ ban đầu, số lượng cung lớn nhất thuộc $\mathcal{F}$ trên vòng tròn là $1 + (k-1) = k$. (Bổ đề được chứng minh).</p>
+
+        <p>Bây giờ ta đếm số lượng các cặp $(A, C)$, trong đó $C$ là một hoán vị vòng quanh, và $A$ là một cung độ dài $k$ trên $C$ thỏa mãn $A \in \mathcal{F}$.</p>
+        <ul>
+            <li> <strong>Đếm theo vòng tròn:</strong> Có $(n-1)!$ vòng tròn. Trên mỗi vòng tròn, có tối đa $k$ cung thuộc $\mathcal{F}$. Do đó, tổng số cặp tối đa là $k \cdot (n-1)!$.</li>
+            <li> <strong>Đếm theo tập $A \in \mathcal{F}$:</strong> Cố định một tập $A \in \mathcal{F}$ (có $k$ phần tử). Tập $A$ sẽ xuất hiện dưới dạng một cung trên bao nhiêu vòng tròn? Để $A$ là một cung, $k$ phần tử của $A$ phải đứng cạnh nhau (có $k!$ cách xếp), và $n-k$ phần tử còn lại cũng được xếp tùy ý (có $(n-k)!$ cách xếp). Số lượng vòng tròn chứa $A$ là $k! (n-k)!$. <br>
+            Tổng số cặp chính là $|\mathcal{F}| \cdot k! (n-k)!$.</li>
+        </ul>
+
+        <p>Cân bằng hai cách đếm, ta có:</p>
+        $$ |\mathcal{F}| \cdot k! (n-k)! \le k \cdot (n-1)! $$
+        <p>Chuyển vế, ta thu được:</p>
+        $$ |\mathcal{F}| \le \frac{k \cdot (n-1)!}{k! (n-k)!} = \frac{(n-1)!}{(k-1)! (n-k)!} = \binom{n-1}{k-1} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bổ đề Hoa Hướng Dương - Erdős-Rado Sunflower Lemma)</div>
+        Cho $k$ và $r$ là các số nguyên dương. Nếu $\mathcal{F}$ là một họ các tập hợp, trong đó mỗi tập hợp có kích thước chính xác bằng $k$, và số lượng các tập hợp thỏa mãn:
+        $$ |\mathcal{F}| > (r-1)^k \cdot k! $$
+        Thì tồn tại ít nhất $r$ tập hợp trong $\mathcal{F}$ tạo thành một Hoa hướng dương.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp toán học theo $k$ (kích thước của mỗi tập con).</p>
+        <p><em>Bước cơ sở:</em> Khi $k=1$, các tập hợp trong $\mathcal{F}$ đều là các tập đơn tử (chỉ chứa 1 phần tử). <br>
+        Giả thiết trở thành $|\mathcal{F}| \gt (r-1)^1 \cdot 1! = r - 1$.<br>
+        Do đó $|\mathcal{F}| \ge r$. Ta lấy $r$ tập đơn tử bất kỳ. Giao của bất kỳ hai tập nào cũng là rỗng ($\emptyset$). Giao của cả $r$ tập cũng là rỗng. Do đó, $r$ tập này tạo thành một hoa hướng dương (với phần lõi rỗng). Định lý đúng với $k=1$.</p>
+
+        <p><em>Bước quy nạp:</em> Giả sử định lý đúng cho các tập hợp có kích thước $k-1$. Ta cần chứng minh nó đúng cho $k$.<br>
+        Xét họ $\mathcal{F}$ gồm các tập hợp kích thước $k$ với $|\mathcal{F}| \gt (r-1)^k \cdot k!$.<br>
+        Ta tìm một họ $\mathcal{A}$ gồm các tập hợp <strong>đôi một rời nhau</strong> (disjoint) thuộc $\mathcal{F}$ sao cho $\mathcal{A}$ là cực đại (không thể thêm tập nào trong $\mathcal{F}$ vào $\mathcal{A}$ mà vẫn duy trì tính rời nhau).</p>
+        <ul>
+            <li> <strong>Trường hợp 1:</strong> Nếu $|\mathcal{A}| \ge r$. Khi đó ta lấy $r$ tập hợp từ $\mathcal{A}$. Vì chúng đôi một rời nhau, giao của chúng là rỗng. Đây là một hoa hướng dương với phần lõi rỗng. Bài toán được giải quyết.</li>
+            <li> <strong>Trường hợp 2:</strong> Nếu $|\mathcal{A}| \le r - 1$. <br>
+            Vì $\mathcal{A}$ chứa tối đa $r-1$ tập hợp, và mỗi tập hợp có $k$ phần tử, nếu ta gộp tất cả các phần tử của các tập trong $\mathcal{A}$ lại thành một tập hợp lớn $S = \bigcup_{A \in \mathcal{A}} A$, thì số lượng phần tử của $S$ là:
+            $$ |S| \le k(r-1) $$
+            Bởi vì $\mathcal{A}$ là cực đại, bất kỳ tập hợp $F \in \mathcal{F}$ nào cũng <strong>không thể</strong> rời rạc hoàn toàn với tất cả các tập trong $\mathcal{A}$. Nghĩa là, mọi tập $F \in \mathcal{F}$ đều phải có ít nhất một phần tử chung với tập $S$. Nói cách khác, $F \cap S \neq \emptyset$.<br>
+            Số lượng các tập $F \in \mathcal{F}$ là $|\mathcal{F}| \gt (r-1)^k k!$.<br>
+            Theo Nguyên lý Dirichlet mở rộng (Định lý 0.1), khi phân phối $|\mathcal{F}|$ tập hợp vào $|S|$ phần tử (mỗi tập hợp chứa ít nhất 1 phần tử của $S$), phải tồn tại một phần tử $x \in S$ thuộc về ít nhất số lượng tập hợp sau:
+            $$ \frac{|\mathcal{F}|}{|S|} > \frac{(r-1)^k k!}{k(r-1)} = (r-1)^{k-1} (k-1)! $$
+            Gọi tập hợp tất cả các tập $F \in \mathcal{F}$ có chứa phần tử $x$ này là $\mathcal{F}_x$.<br>
+            Ta có $|\mathcal{F}_x| \gt (r-1)^{k-1} (k-1)!$.<br>
+            Từ mỗi tập hợp trong $\mathcal{F}_x$, ta <strong>loại bỏ phần tử $x$</strong>. Gọi họ các tập hợp mới này là $\mathcal{F}'$.
+            $$ \mathcal{F}' = \{ F \setminus \{x\} \mid F \in \mathcal{F}_x \} $$
+            Mỗi tập hợp trong $\mathcal{F}'$ có kích thước chính xác là $k-1$. Số lượng các tập hợp trong $\mathcal{F}'$ vẫn bằng $|\mathcal{F}_x|$, tức là lớn hơn $(r-1)^{k-1} (k-1)!$.<br>
+            Theo giả thiết quy nạp cho kích thước $k-1$, họ $\mathcal{F}'$ phải chứa một hoa hướng dương gồm $r$ tập hợp, với phần lõi là $C'$.<br>
+            Khi đó, $r$ tập hợp tương ứng trong họ $\mathcal{F}_x$ ban đầu (được tạo lại bằng cách thêm phần tử $x$ vào mỗi tập của hoa hướng dương kia) sẽ tạo thành một hoa hướng dương kích thước $r$, với phần lõi mới là $C = C' \cup \{x\}$.</li>
+        </ul>
+        <p>Quy nạp hoàn tất. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Thuật toán cắt tỉa rời rạc)</div>
+        Trong một hệ thống mạng, có $M$ nhóm người dùng. Mỗi nhóm có chính xác 3 thành viên. Bạn muốn tìm 4 nhóm sao cho: hoặc cả 4 nhóm hoàn toàn không có thành viên nào chung với nhau, hoặc cả 4 nhóm đều chia sẻ chính xác một tập hợp các thành viên chung (và những thành viên còn lại của 4 nhóm là đôi một khác nhau). <br>
+        Hỏi $M$ phải bằng ít nhất bao nhiêu để hệ thống luôn đảm bảo tồn tại 4 nhóm thỏa mãn điều kiện trên, bất chấp cách phân chia thành viên?
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Yêu cầu "hoặc 4 nhóm rời nhau, hoặc 4 nhóm chung nhau một phần lõi và phần còn lại rời nhau" chính xác là định nghĩa của một <strong>Hoa hướng dương với 4 cánh</strong>. <br>
+        (Nếu lõi rỗng, ta có 4 nhóm rời nhau; nếu lõi khác rỗng, ta có 4 nhóm chia sẻ chung lõi).</p>
+
+        <p>Bài toán được phát biểu lại thành: Tìm số $M$ nhỏ nhất sao cho mọi họ $\mathcal{F}$ gồm $M$ tập hợp, mỗi tập có kích thước $k=3$, đều chứa một Hoa hướng dương với $r=4$ cánh.<br>
+        Áp dụng trực tiếp Bổ đề Hoa hướng dương của Erdős-Rado (Định lý 1.2).<br>
+        Điều kiện đủ để đảm bảo tồn tại một Hoa hướng dương $r$ cánh trong họ các tập hợp kích thước $k$ là:</p>
+        $$ |\mathcal{F}| > (r-1)^k \cdot k! $$
+        <p>Thay $k = 3$ và $r = 4$ vào bất đẳng thức:</p>
+        $$ M > (4-1)^3 \cdot 3! = 3^3 \cdot 6 = 27 \cdot 6 = 162 $$
+        <p>Do đó, nếu số lượng nhóm $M \ge 163$, ta sẽ tìm được 4 nhóm thỏa mãn yêu cầu của bài toán. </p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (IMO Shortlist - Giới hạn kích thước Hệ Cực đại)</div>
+        Cho $X = \{1, 2, \dots, n\}$. Một họ $\mathcal{F}$ gồm các tập con của $X$ được gọi là một "Hệ thống Bền vững" nếu nó thỏa mãn đồng thời hai điều kiện:
+        <ol>
+            <li>Giao của bất kỳ hai tập hợp nào trong $\mathcal{F}$ cũng không rỗng.</li>
+            <li>Không có tập hợp nào trong $\mathcal{F}$ là tập con của một tập hợp khác trong $\mathcal{F}$ (tính đối xích - Sperner).</li>
+        </ol>
+        Chứng minh rằng số lượng lớn nhất các tập hợp trong một Hệ thống Bền vững là $\binom{n-1}{\lfloor (n-1)/2 \rfloor}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta kết hợp Định lý Erdős-Ko-Rado và Định lý Sperner (Bất đẳng thức LYM).<br>
+        Tuy nhiên, họ $\mathcal{F}$ chứa các tập hợp có nhiều kích thước khác nhau. Ta không thể trực tiếp dùng Định lý 1.1.<br>
+        Ta xét một kỹ thuật thiết lập song ánh qua phần bù.</p>
+
+        <p>Nếu $A \in \mathcal{F}$, thì phần bù của $A$, ký hiệu $A^c = X \setminus A$, <strong>không thể</strong> chứa bất kỳ tập hợp $B \in \mathcal{F}$ nào. <br>
+        Vì nếu $B \subseteq A^c$, thì $A \cap B \subseteq A \cap A^c = \emptyset$, mâu thuẫn với giả thiết giao cắt.<br>
+        Kết hợp với điều kiện thứ hai (không có tập nào chứa tập nào), ta thấy $\mathcal{F}$ và họ các phần bù $\mathcal{F}^c = \{A^c \mid A \in \mathcal{F}\}$ là rời nhau. <br>
+        Hơn nữa, nếu ta lấy hợp của $\mathcal{F} \cup \mathcal{F}^c$, họ mới này vẫn là một đối xích (Antichain)!<br>
+        Thật vậy, giả sử có $A \in \mathcal{F}$ và $B^c \in \mathcal{F}^c$ sao cho $A \subseteq B^c$. Khi đó $A \cap B = \emptyset$, mâu thuẫn.<br>
+        Giả sử có $B^c \subseteq A$. Khi đó $A^c \subseteq B$. Đổi vai trò, mâu thuẫn lại xảy ra.</p>
+
+        <p>Vì $\mathcal{F} \cup \mathcal{F}^c$ là một đối xích trên tập nền $X$, theo Định lý Sperner, kích thước của nó không vượt quá $\binom{n}{\lfloor n/2 \rfloor}$.<br>
+        Mà $|\mathcal{F}^c| = |\mathcal{F}|$. Các họ này rời nhau, do đó:</p>
+        $$ |\mathcal{F} \cup \mathcal{F}^c| = |\mathcal{F}| + |\mathcal{F}^c| = 2|\mathcal{F}| \le \binom{n}{\lfloor n/2 \rfloor} $$
+        <p>Kéo theo:</p>
+        $$ |\mathcal{F}| \le \frac{1}{2} \binom{n}{\lfloor n/2 \rfloor} = \binom{n-1}{\lfloor (n-1)/2 \rfloor} $$
+        <p>(Đẳng thức cuối cùng $\frac{1}{2}\binom{n}{\lfloor n/2 \rfloor} = \binom{n-1}{\lfloor (n-1)/2 \rfloor}$ là một hệ thức Pascal cơ bản cho số chẵn/lẻ).<br>
+        Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Bulgarian National Olympiad - Đỉnh độc lập và Hệ giao cắt)</div>
+        Trong một cuộc thi, có $N$ thí sinh. Mỗi thí sinh giải được chính xác $K$ bài toán. Biết rằng với bất kỳ hai thí sinh nào, họ cũng có chung ít nhất 1 bài toán giải được. <br>
+        Chứng minh rằng nếu $N > \binom{M-1}{K-1}$ (với $M$ là tổng số bài toán trong đề thi), thì tồn tại ít nhất 3 thí sinh giải được chung một bài toán.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $X$ là tập hợp tất cả các bài toán trong đề thi, $|X| = M$.<br>
+        Mỗi thí sinh $i$ ($1 \le i \le N$) tương ứng với một tập con $A_i \subset X$ là tập các bài toán họ giải được.<br>
+        Theo giả thiết:</p>
+        <ol>
+            <li>$|A_i| = K$ với mọi $i$.</li>
+            <li>Với mọi $i \neq j$, $A_i \cap A_j \neq \emptyset$.</li>
+        </ol>
+        <p>Như vậy, họ các tập hợp $\mathcal{A} = \{A_1, A_2, \dots, A_N\}$ tạo thành một <strong>hệ giao cắt</strong> các tập con kích thước $K$ của tập nền kích thước $M$.</p>
+
+        <p>Bài toán yêu cầu chứng minh tồn tại 3 thí sinh giải chung 1 bài, tức là tồn tại 3 tập hợp $A_i, A_j, A_k$ có giao chung khác rỗng ($A_i \cap A_j \cap A_k \neq \emptyset$).<br>
+        Ta chứng minh bằng phản chứng. Giả sử ngược lại, không có bất kỳ 3 thí sinh nào giải chung 1 bài toán.<br>
+        Điều này có nghĩa là mỗi bài toán $x \in X$ chỉ có thể thuộc về <strong>tối đa 2</strong> tập hợp trong họ $\mathcal{A}$.</p>
+        
+        <p>Theo Định lý EKR (Định lý 1.1), vì $\mathcal{A}$ là hệ giao cắt các tập con kích thước $K$ trên tập nền $M$, số lượng lớn nhất các tập hợp là $\binom{M-1}{K-1}$.<br>
+        Nhưng theo giả thiết của đề bài, $N \gt \binom{M-1}{K-1}$.<br>
+        Điều này mâu thuẫn với Định lý EKR. Tuy nhiên, Định lý EKR chỉ áp dụng nếu $M \ge 2K$.</p>
+        
+        <ul>
+            <li> <strong>Nếu $M \lt 2K$:</strong> Hai tập kích thước $K$ trên tập nền $\lt 2K$ luôn giao nhau. Nếu không có 3 tập giao nhau, bất kỳ phần tử nào cũng chỉ thuộc tối đa 2 tập. Tổng số phần tử trong các tập là $NK$, trong khi số lượng vị trí tối đa là $2M$. Do đó $NK \le 2M \implies N \le \frac{2M}{K} \lt 4$. Nhưng $\binom{M-1}{K-1}$ thường lớn hơn 4, dẫn đến mâu thuẫn.</li>
+            <li> <strong>Xét trường hợp tổng quát (bao gồm $M \ge 2K$):</strong> <br>
+            Nếu không có 3 tập nào giao chung, thì giao của bất kỳ 2 tập nào $A_i \cap A_j$ (vốn phải $\neq \emptyset$) sẽ chứa một phần tử $x$ mà không thuộc về bất kỳ tập nào khác.<br>
+            Theo định lý EKR, cách duy nhất để hệ giao cắt tiệm cận con số $\binom{M-1}{K-1}$ là tất cả các tập hợp đều tập trung chứa một phần tử cố định $x$ (giao chung của TẤT CẢ các tập).<br>
+            Vì $N$ lớn hơn mức cực đại của hệ giao cắt hội tụ tại 1 điểm, điều này là không hợp lý. <br>
+            Sự mâu thuẫn chứng tỏ việc giả định "không có 3 tập giao nhau" là sai. Phải tồn tại một phần tử thuộc về ít nhất 3 tập hợp. </li>
+        </ul>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

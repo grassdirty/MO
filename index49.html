@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Lý thuyết Đồ thị - Chu trình Euler, Định lý Ore và Cấu trúc De Bruijn</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: LÝ THUYẾT ĐỒ THỊ <br> CHU TRÌNH EULER, ĐỊNH LÝ ORE VÀ CẤU TRÚC DE BRUIJN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Toán rời rạc</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Việc thiết lập các hành trình đi qua toàn bộ hệ thống (đỉnh hoặc cạnh) là nền tảng của bài toán tối ưu lộ trình. Chuyên đề này phân định rõ hai cấu trúc: Chu trình Euler (đi qua mọi cạnh) và Chu trình Hamilton (đi qua mọi đỉnh). Thông qua Nguyên lý Dirichlet và phương pháp xây dựng đường đi cực đại, Định lý Euler và Định lý Ore được chứng minh chi tiết. Đặc biệt, khái niệm Đồ thị De Bruijn được giới thiệu để giải quyết các bài toán xây dựng chuỗi tổ hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Chuyên đề này sử dụng một số khái niệm về Đồ thị có hướng (Directed Graph) và sự liên thông, thường được dạy ở cấp Đại học. Dưới đây là các định nghĩa và định lý cơ sở để hỗ trợ học sinh THPT hiểu rõ nội dung của Bài toán 2.1 và 3.3.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 0.1 (Đồ thị có hướng, Bậc vào và Bậc ra)</div>
+        <ul>
+            <li><strong>Đồ thị có hướng:</strong> Là đồ thị mà mỗi cạnh được gán một hướng đi từ một đỉnh xuất phát đến một đỉnh đích.</li>
+            <li><strong>Bậc vào (In-degree):</strong> Ký hiệu là $d^-(v)$, là số lượng các cạnh có hướng đi vào đỉnh $v$.</li>
+            <li><strong>Bậc ra (Out-degree):</strong> Ký hiệu là $d^+(v)$, là số lượng các cạnh có hướng xuất phát từ đỉnh $v$.</li>
+            <li><strong>Đồ thị liên thông mạnh (Strongly Connected):</strong> Một đồ thị có hướng được gọi là liên thông mạnh nếu từ bất kỳ đỉnh $u$ nào cũng có đường đi theo các cạnh có hướng đến bất kỳ đỉnh $v$ nào khác.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Bổ đề Bắt tay cho Đồ thị có hướng)</div>
+        Trong một đồ thị có hướng bất kỳ $G = (V, E)$, tổng bậc vào của tất cả các đỉnh luôn bằng tổng bậc ra của tất cả các đỉnh, và bằng tổng số cạnh của đồ thị:
+        $$ \sum_{v \in V} d^-(v) = \sum_{v \in V} d^+(v) = |E| $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Mỗi cạnh có hướng $e \in E$ nối từ đỉnh $u$ đến đỉnh $v$. Cạnh này sẽ đóng góp đúng $1$ đơn vị vào bậc ra của đỉnh $u$ ($d^+(u)$) và đóng góp đúng $1$ đơn vị vào bậc vào của đỉnh $v$ ($d^-(v)$).</p>
+        <p>Do đó, khi lấy tổng bậc vào của toàn bộ các đỉnh, mỗi cạnh trong đồ thị được đếm đúng 1 lần. Tương tự, khi lấy tổng bậc ra của toàn bộ các đỉnh, mỗi cạnh cũng được đếm đúng 1 lần. Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Chu trình Euler và Chu trình Hamilton)</div>
+        Cho đồ thị $G = (V, E)$ liên thông.
+        <ul>
+            <li> <strong>Chu trình Euler:</strong> Là một đường đi khép kín đi qua <strong>tất cả các cạnh</strong> của đồ thị, mỗi cạnh đi qua đúng một lần. (Đỉnh có thể được lặp lại).</li>
+            <li> <strong>Chu trình Hamilton:</strong> Là một đường đi khép kín đi qua <strong>tất cả các đỉnh</strong> của đồ thị, mỗi đỉnh đi qua đúng một lần (ngoại trừ đỉnh xuất phát trùng với đỉnh kết thúc).</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Euler - Điều kiện tồn tại Chu trình Euler)</div>
+        Một đồ thị vô hướng, liên thông có chứa Chu trình Euler khi và chỉ khi <strong>mọi đỉnh của đồ thị đều có bậc chẵn</strong>. <br>
+        (Đối với đồ thị có hướng liên thông mạnh, điều kiện là bậc vào bằng bậc ra tại mọi đỉnh: $d^+(v) = d^-(v)$).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>Chiều thuận ($\Rightarrow$):</strong> Giả sử đồ thị $G$ có chu trình Euler. Một người di chuyển dọc theo chu trình này. Mỗi lần người đó đi qua một đỉnh $v$ (bước vào qua một cạnh và rời đi qua một cạnh khác), người đó sử dụng 2 cạnh kề với $v$. Vì chu trình đi qua mọi cạnh đúng một lần, toàn bộ các cạnh kề với $v$ được phân thành các cặp (vào-ra). Do đó, bậc của mọi đỉnh $v$ là một số chẵn.</p>
+
+        <p><strong>Chiều đảo ($\Leftarrow$):</strong> Giả sử mọi đỉnh của $G$ đều có bậc chẵn. Ta chứng minh $G$ có chu trình Euler bằng phương pháp xây dựng (Constructive Proof).<br>
+        Bắt đầu từ một đỉnh $v_0$ bất kỳ, ta đi dọc theo các cạnh của đồ thị sao cho không lặp lại cạnh nào đã đi qua. Vì mỗi đỉnh đều có bậc chẵn, mỗi khi ta bước vào một đỉnh $v \neq v_0$, luôn còn ít nhất một cạnh chưa được sử dụng để ta bước ra (số cạnh đã dùng tại $v$ là số lẻ khi vừa bước vào, mà tổng số cạnh kề $v$ là chẵn).<br>
+        Do số cạnh là hữu hạn, quá trình này chỉ dừng lại khi ta quay trở lại đỉnh xuất phát $v_0$ và không còn cạnh nào đi ra từ $v_0$.<br>
+        Lúc này, ta đã tạo được một chu trình $C$. Nếu $C$ chứa mọi cạnh của $G$, bài toán được giải quyết.<br>
+        Nếu $C$ chưa chứa mọi cạnh, do $G$ liên thông, tồn tại một đỉnh $u$ trên chu trình $C$ kề với những cạnh chưa được đi qua.<br>
+        Ta loại bỏ các cạnh của chu trình $C$ khỏi đồ thị. Đồ thị còn lại $G'$ vẫn có tính chất mọi đỉnh đều có bậc chẵn (vì việc xóa một chu trình làm giảm bậc của mỗi đỉnh đi một số chẵn). <br>
+        Lặp lại thuật toán trên xuất phát từ đỉnh $u$ trong đồ thị $G'$, ta được một chu trình mới $C'$. <br>
+        Ta ghép $C'$ vào $C$ tại điểm $u$ để tạo thành một chu trình lớn hơn. Do đồ thị hữu hạn, sau một số bước, toàn bộ các cạnh sẽ được phủ kín. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Ore - Sự tồn tại Chu trình Hamilton)</div>
+        Cho $G$ là một đồ thị đơn vô hướng gồm $n$ đỉnh ($n \ge 3$). Nếu với <strong>mọi cặp đỉnh</strong> không kề nhau $u$ và $v$, ta luôn có tổng bậc của chúng thỏa mãn:
+        $$ \deg(u) + \deg(v) \ge n $$
+        thì đồ thị $G$ chứa một Chu trình Hamilton.
+        <br><em>(Lưu ý: Định lý Dirac - $\deg(v) \ge n/2$ với mọi $v$ - là hệ quả trực tiếp của Định lý Ore).</em>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp phản chứng kết hợp nguyên lý cực hạn.<br>
+        Giả sử tồn tại các đồ thị thỏa mãn điều kiện của định lý nhưng không có chu trình Hamilton. <br>
+        Trong số các đồ thị như vậy (với $n$ đỉnh cố định), ta chọn ra một đồ thị $G$ có <strong>số lượng cạnh lớn nhất</strong>. <br>
+        Nghĩa là, $G$ không có chu trình Hamilton, nhưng nếu ta thêm một cạnh nối hai đỉnh không kề nhau của $G$, đồ thị mới sẽ có chu trình Hamilton.</p>
+
+        <p>Vì $G$ không phải là đồ thị đầy đủ, tồn tại ít nhất hai đỉnh $u$ và $v$ không kề nhau trong $G$.<br>
+        Nếu ta thêm cạnh $uv$ vào $G$, đồ thị mới $G \cup \{uv\}$ sẽ có một chu trình Hamilton đi qua cạnh $uv$.<br>
+        Nếu ta bỏ cạnh $uv$ ra khỏi chu trình này, phần còn lại sẽ tạo thành một <strong>đường đi Hamilton</strong> (đi qua mọi đỉnh) trong đồ thị $G$ gốc, nối từ $u$ đến $v$.<br>
+        Giả sử đường đi Hamilton đó là chuỗi các đỉnh:</p>
+        $$ v_1, v_2, v_3, \dots, v_n $$
+        <p>Trong đó $v_1 = u$ và $v_n = v$.<br>
+        Ta xét tập hợp các đỉnh kề với $u$ và các đỉnh kề với $v$ trên đường đi này.<br>
+        Gọi $S$ là tập hợp các chỉ số $i$ ($2 \le i \le n$) sao cho $u$ kề với $v_i$. Số lượng phần tử của $S$ là $\deg(u)$.<br>
+        Gọi $T$ là tập hợp các chỉ số $i$ ($2 \le i \le n$) sao cho $v$ kề với $v_{i-1}$. Số lượng phần tử của $T$ là $\deg(v)$.<br>
+        Cả $S$ và $T$ đều là các tập con của tập chỉ số $\{2, 3, \dots, n\}$, tập này có $n-1$ phần tử.</p>
+
+        <p>Theo giả thiết của định lý Ore, do $u, v$ không kề nhau:</p>
+        $$ |S| + |T| = \deg(u) + \deg(v) \ge n $$
+        <p>Ta thấy $|S| + |T| \ge n \gt n-1$. Theo Nguyên lý Dirichlet (Pigeonhole Principle), hai tập hợp $S$ và $T$ phải giao nhau. Nghĩa là, tồn tại ít nhất một chỉ số $i$ sao cho $i \in S$ và $i \in T$.</p>
+        <p>Điều kiện này cho thấy đồ thị $G$ chứa đồng thời hai cạnh: $u \sim v_i$ và $v \sim v_{i-1}$.<br>
+        Khi đó, ta có thể xây dựng một chu trình mới trong $G$ như sau:<br>
+        Đi từ $v_1(u)$ dọc theo đường đi đến $v_{i-1}$, nhảy qua cạnh chéo đến $v_n(v)$, rồi đi <strong>ngược lại</strong> đường đi từ $v_n$ về $v_i$, cuối cùng nhảy qua cạnh chéo về lại $v_1(u)$.<br>
+        Chu trình này là:</p>
+        $$ v_1 \to v_2 \to \dots \to v_{i-1} \to v_n \to v_{n-1} \to \dots \to v_i \to v_1 $$
+        <p>Chu trình này đi qua toàn bộ $n$ đỉnh của đồ thị. Tức là đồ thị $G$ có chứa một chu trình Hamilton.<br>
+        Sự mâu thuẫn này chỉ ra giả thiết phản chứng ban đầu là sai. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Đồ thị De Bruijn và Mật mã Vòng khép kín)</div>
+        Chứng minh rằng với mọi số nguyên dương $k$, luôn tồn tại một vòng tròn chứa đúng $2^k$ chữ số (chỉ gồm $0$ và $1$) sao cho: Nếu ta trượt một khung cửa sổ có kích thước $k$ dọc theo vòng tròn này, ta sẽ thu được <strong>tất cả</strong> $2^k$ chuỗi nhị phân có độ dài $k$ phân biệt.<br>
+        (Ví dụ: với $k=3$, vòng tròn là $00010111$, khi cắt các đoạn độ dài 3 ta được: $000, 001, 010, 101, 011, 111, 110, 100$).
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán yêu cầu xây dựng một chuỗi cấu hình bao hàm tất cả các trạng thái có thể có. Ta sẽ biến bài toán chuỗi này thành một bài toán tìm <strong>Chu trình Euler</strong> bằng cách xây dựng Đồ thị De Bruijn.</p>
+
+        <p>Ta xây dựng một đồ thị có hướng $G$, trong đó:</p>
+        <ul>
+            <li> <strong>Mỗi đỉnh</strong> của đồ thị là một chuỗi nhị phân có độ dài $k-1$. Vì có 2 lựa chọn cho mỗi vị trí, đồ thị có đúng $2^{k-1}$ đỉnh.</li>
+            <li> <strong>Mỗi cạnh</strong> của đồ thị tương ứng với một chuỗi nhị phân có độ dài $k$.<br>
+            Cụ thể, một chuỗi độ dài $k$ có dạng $b_1 b_2 \dots b_{k-1} b_k$ sẽ được biểu diễn bởi một cạnh có hướng đi từ đỉnh $(b_1 b_2 \dots b_{k-1})$ đến đỉnh $(b_2 b_3 \dots b_k)$.<br>
+            Tiền tố độ dài $k-1$ là đỉnh xuất phát, hậu tố độ dài $k-1$ là đỉnh đích.</li>
+        </ul>
+
+        <p>Do có $2^k$ chuỗi nhị phân độ dài $k$, đồ thị sẽ có đúng $2^k$ cạnh có hướng.<br>
+        Ta xét bậc của mỗi đỉnh trong đồ thị này. Một đỉnh bất kỳ có dạng $v = (x_1 x_2 \dots x_{k-1})$.</p>
+        <ul>
+            <li> <strong>Cạnh đi ra (Out-degree):</strong> Các cạnh xuất phát từ $v$ tương ứng với việc thêm một chữ số $y \in \{0, 1\}$ vào cuối để tạo chuỗi $k$. Có đúng 2 lựa chọn cho $y$. Do đó, bậc ra của $v$ là $d^+(v) = 2$.</li>
+            <li> <strong>Cạnh đi vào (In-degree):</strong> Các cạnh đi vào $v$ tương ứng với việc thêm một chữ số $z \in \{0, 1\}$ vào đầu trước khi dịch chuyển. Có đúng 2 lựa chọn cho $z$. Do đó, bậc vào của $v$ là $d^-(v) = 2$.</li>
+        </ul>
+
+        <p>Vì tại <strong>mọi đỉnh</strong>, bậc vào luôn bằng bậc ra ($d^+ = d^- = 2$), và từ một chuỗi nhị phân bất kỳ ta luôn có thể đi đến một chuỗi nhị phân khác (tính liên thông mạnh), theo Định lý Euler cho đồ thị có hướng (Định lý 1.1), đồ thị De Bruijn <strong>chứa một Chu trình Euler</strong>.</p>
+
+        <p>Chu trình Euler này là một lộ trình khép kín đi qua <strong>tất cả các cạnh</strong> của đồ thị đúng một lần. Do mỗi cạnh đại diện cho một chuỗi nhị phân độ dài $k$ phân biệt, lộ trình này là việc viết nối tiếp các chữ số sao cho $2^k$ chuỗi con sinh ra là đôi một khác nhau. <br>
+        Vì có đúng $2^k$ cạnh, chuỗi tạo thành khi khép kín vòng tròn sẽ có $2^k$ chữ số. <br>
+        Sự tồn tại của chuỗi vòng tròn được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Domino Khép kín)</div>
+        Một bộ cờ Domino tiêu chuẩn gồm 28 quân cờ. Mỗi quân cờ có hai nửa, mỗi nửa được chấm một số điểm từ $0$ đến $6$ (bao gồm các quân có hai nửa khác nhau và các quân có hai nửa giống nhau như 0-0, 1-1). <br>
+        Hỏi có thể xếp tất cả 28 quân cờ này thành một vòng tròn khép kín theo đúng luật của trò chơi (hai nửa kề nhau của hai quân cờ phải có cùng số điểm) hay không?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta mô hình hóa luật nối Domino bằng một đồ thị vô hướng.</p>
+        <ul>
+            <li> <strong>Đỉnh của đồ thị:</strong> Đại diện cho các con số từ $0$ đến $6$. Có tất cả 7 đỉnh.</li>
+            <li> <strong>Cạnh của đồ thị:</strong> Mỗi quân cờ Domino có hai số $x$ và $y$ sẽ được biểu diễn bằng một cạnh nối đỉnh $x$ với đỉnh $y$. <br>
+            Ví dụ, quân 2-5 là cạnh nối đỉnh 2 và đỉnh 5. Các quân cờ như 3-3 sẽ được biểu diễn bằng các <strong>khuyên (loop)</strong> tại đỉnh 3.</li>
+        </ul>
+
+        <p>Việc xếp các quân cờ thành một vòng tròn tuân theo luật nối chính là việc tìm một đường đi trên đồ thị sao cho đỉnh kết thúc của cạnh này cũng là đỉnh xuất phát của cạnh tiếp theo.<br>
+        Vì ta phải sử dụng <strong>tất cả 28 quân cờ</strong>, bài toán tương đương với việc tìm một <strong>Chu trình Euler</strong> trên đồ thị này.</p>
+
+        <p>Ta xét bậc của mỗi đỉnh trong đồ thị.<br>
+        Tập hợp các quân cờ bao gồm tất cả các cặp có thể có từ $\{0, 1, 2, 3, 4, 5, 6\}$. Đồ thị được tạo ra là một đồ thị đầy đủ $K_7$ đi kèm với 1 khuyên tại mỗi đỉnh.<br>
+        Xét một đỉnh $v$ bất kỳ (từ 0 đến 6). </p>
+        <ul>
+            <li> Đỉnh $v$ được nối với 6 đỉnh còn lại bởi 6 cạnh phân biệt. (Đóng góp 6 vào bậc của đỉnh $v$).</li>
+            <li> Tại đỉnh $v$ có một khuyên (quân cờ $v-v$). Khi đi qua một khuyên, ta vừa bước vào đỉnh $v$ vừa bước ra khỏi đỉnh $v$, do đó một khuyên đóng góp đúng 2 đơn vị vào bậc của đỉnh.</li>
+        </ul>
+        <p>Tổng bậc của đỉnh $v$ là: $\deg(v) = 6 + 2 = 8$.</p>
+
+        <p>Đồ thị này liên thông, và <strong>mọi đỉnh đều có bậc chẵn</strong> (bằng 8).<br>
+        Theo Định lý Euler (Định lý 1.1), đồ thị này chứa một Chu trình Euler. <br>
+        Kết luận: Ta có thể xếp tất cả 28 quân cờ Domino thành một vòng tròn khép kín đúng luật.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Chuyến bay xuyên Quốc gia)</div>
+        Ở một đất nước có $N$ thành phố ($N \ge 3$). Một số cặp thành phố được nối với nhau bởi các đường bay hai chiều. Biết rằng, nếu hai thành phố không có chuyến bay trực tiếp nào nối với nhau, thì tổng số chuyến bay xuất phát từ cả hai thành phố này cộng lại luôn lớn hơn hoặc bằng $N$.<br>
+        Chứng minh rằng, hãng hàng không quốc gia có thể thiết kế một tour du lịch đi qua <strong>tất cả</strong> $N$ thành phố, mỗi thành phố đến thăm đúng một lần và cuối cùng bay trở về thành phố xuất phát.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta mô hình hóa bài toán bằng Lý thuyết Đồ thị:</p>
+        <ul>
+            <li> Các thành phố là các <strong>đỉnh</strong> của đồ thị. Tổng số đỉnh là $N$.</li>
+            <li> Các chuyến bay hai chiều là các <strong>cạnh vô hướng</strong> nối các đỉnh.</li>
+            <li> Số lượng chuyến bay xuất phát từ một thành phố $v$ là <strong>bậc</strong> của đỉnh $v$, ký hiệu $\deg(v)$.</li>
+            <li> Tour du lịch đi qua mọi thành phố đúng một lần và quay về nơi xuất phát chính là định nghĩa của một <strong>Chu trình Hamilton</strong>.</li>
+        </ul>
+
+        <p>Giả thiết của bài toán: "Nếu hai thành phố không có chuyến bay trực tiếp, thì tổng số chuyến bay xuất phát từ chúng $\ge N$".<br>
+        Biểu diễn sang ngôn ngữ đồ thị: Với mọi cặp đỉnh $u$ và $v$ <strong>không kề nhau</strong>, ta luôn có:</p>
+        $$ \deg(u) + \deg(v) \ge N $$
+        <p>Theo nội dung của <strong>Định lý Ore</strong> (Định lý 1.2), mọi đồ thị đơn vô hướng thỏa mãn điều kiện này đều chứa một chu trình Hamilton.<br>
+        Do đó, việc thiết kế một tour du lịch vòng quanh tất cả các thành phố như yêu cầu là khả thi. Bài toán được chứng minh bằng cách chuyển mô hình về đồ thị Hamilton.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Phân rã Mạng lưới Giao thông)</div>
+        Cho một đồ thị có hướng hữu hạn. Biết rằng tại mỗi đỉnh của đồ thị, số lượng các cạnh đi vào luôn bằng số lượng các cạnh đi ra. (Đồ thị không nhất thiết phải liên thông). Chứng minh rằng toàn bộ tập hợp các cạnh của đồ thị này có thể được phân rã thành các chu trình có hướng rời nhau (một cạnh thuộc đúng một chu trình).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta chứng minh bằng thuật toán tách chu trình kết hợp quy nạp theo số lượng cạnh $|E|$.<br>
+        Nếu $|E| = 0$, định lý đúng (tập rỗng được phân rã thành 0 chu trình).<br>
+        Giả sử định lý đúng cho mọi đồ thị thỏa mãn điều kiện có số cạnh nhỏ hơn $|E|$. Xét đồ thị có $|E| \gt 0$ cạnh và thỏa mãn $d^+(v) = d^-(v)$ tại mọi đỉnh.</p>
+
+        <p>Vì đồ thị có ít nhất 1 cạnh, tồn tại một đỉnh $v_0$ có bậc ra $d^+(v_0) \ge 1$. Do $d^+(v_0) = d^-(v_0)$, bậc vào của nó cũng $\ge 1$.<br>
+        Ta bắt đầu đi từ $v_0$ dọc theo một cạnh có hướng bất kỳ để đến $v_1$. Vì tại $v_1$ ta có một cạnh đi vào, theo giả thiết $d^+(v_1) = d^-(v_1) \ge 1$, nên tại $v_1$ có ít nhất một cạnh đi ra để ta tiếp tục đi đến $v_2$.<br>
+        Ta tiếp tục bước đi. Vì số lượng đỉnh của đồ thị là hữu hạn, quá trình di chuyển này sau một số bước sẽ dẫn đến một đỉnh $u$ mà ta <strong>đã đi qua trước đó</strong>.<br>
+        Khi đỉnh $u$ bị lặp lại, phần đường đi từ lần đầu tiên ta ở $u$ đến lần thứ hai ta gặp lại $u$ tạo thành một <strong>chu trình có hướng</strong>, gọi là $C_1$.</p>
+
+        <p>Ta loại bỏ các cạnh của chu trình $C_1$ khỏi đồ thị ban đầu để được đồ thị $G'$.<br>
+        Chu trình $C_1$ là một vòng khép kín. Mỗi khi nó đi qua đỉnh $w \in C_1$, nó sử dụng 1 cạnh đi vào và 1 cạnh đi ra.<br>
+        Do đó, khi xóa $C_1$, tại mọi đỉnh $w \in C_1$, cả bậc vào và bậc ra của nó trong $G'$ đều giảm đi 1 đơn vị. <br>
+        Tại các đỉnh không thuộc $C_1$, bậc vào và bậc ra không thay đổi.<br>
+        Kéo theo, trong đồ thị mới $G'$, tính chất <strong>số cạnh đi vào bằng số cạnh đi ra vẫn được duy trì tại mọi đỉnh</strong>.</p>
+
+        <p>Đồ thị $G'$ có số lượng cạnh nhỏ hơn đồ thị $G$. Theo giả thiết quy nạp, các cạnh của $G'$ có thể được phân rã thành các chu trình có hướng rời nhau.<br>
+        Kết hợp các chu trình này với chu trình $C_1$, ta thu được sự phân rã của toàn bộ các cạnh của $G$. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

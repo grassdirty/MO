@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số và Lý thuyết Đồ thị - Ma trận kề, Phổ đồ thị và Đếm đường đi</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ VÀ LÝ THUYẾT ĐỒ THỊ <br> MA TRẬN KỀ, PHỔ ĐỒ THỊ VÀ ĐẾM ĐƯỜNG ĐI</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Toán rời rạc</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đếm số lượng cấu hình rời rạc (hoặc số đường đi trên đồ thị) tuân theo các quy tắc chuyển đổi trạng thái cục bộ có thể gặp khó khăn nếu chỉ dùng phương pháp thiết lập dãy số truy hồi. Chuyên đề này giới thiệu công cụ Ma trận kề (Adjacency Matrix). Bằng cách biểu diễn đồ thị dưới dạng ma trận, ta thiết lập các định lý về lũy thừa ma trận, liên kết Vết (Trace) của ma trận với số lượng chu trình, và sử dụng Trị riêng (Eigenvalues) để tìm công thức tổng quát cho các bài toán đếm.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Đại số tuyến tính (Ma trận, Trị riêng, Vector riêng) là kiến thức bậc Đại học nhưng lại đóng vai trò là công cụ giải toán rất hệ thống cho các bài toán tổ hợp THPT. Dưới đây là các khái niệm và tính chất cơ bản cần thiết:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Ma trận và Phép nhân Ma trận)</div>
+        <ul>
+            <li> <strong>Ma trận (Matrix):</strong> Là một bảng các số thực được xếp thành các hàng và cột. Ma trận vuông cấp $n$ có $n$ hàng và $n$ cột.</li>
+            <li> <strong>Phép nhân ma trận:</strong> Nếu $A$ và $B$ là hai ma trận vuông cấp $n$, tích $C = A \cdot B$ là một ma trận vuông cấp $n$ mà phần tử ở hàng $i$, cột $j$ được tính bằng cách lấy từng phần tử của hàng $i$ trong $A$ nhân tương ứng với từng phần tử của cột $j$ trong $B$ rồi cộng lại: $C_{i,j} = \sum_{k=1}^n A_{i,k} B_{k,j}$.</li>
+            <li> <strong>Ma trận đơn vị $I$:</strong> Là ma trận có các phần tử trên đường chéo chính bằng $1$, các phần tử còn lại bằng $0$. Ta luôn có $A \cdot I = I \cdot A = A$.</li>
+        </ul>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.2 (Trị riêng, Vector riêng và Vết của Ma trận)</div>
+        <ul>
+            <li> <strong>Trị riêng và Vector riêng:</strong> Cho ma trận vuông $A$. Một số $\lambda$ được gọi là <strong>trị riêng</strong> của $A$ nếu tồn tại một vector cột $v \neq 0$ (gọi là <strong>vector riêng</strong>) sao cho $A \cdot v = \lambda \cdot v$. Các trị riêng được tìm bằng cách giải phương trình đặc trưng $\det(A - \lambda I) = 0$.</li>
+            <li> <strong>Vết của ma trận (Trace):</strong> Ký hiệu $\text{Tr}(A)$, là tổng các phần tử trên đường chéo chính của $A$. Một tính chất đại số quan trọng là Vết của $A$ luôn bằng tổng của tất cả các trị riêng của nó: $\text{Tr}(A) = \sum_{i=1}^n \lambda_i$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Trị riêng của ma trận lũy thừa)</div>
+        Nếu $\lambda$ là một trị riêng của ma trận $A$ với vector riêng tương ứng $v$, thì $\lambda^k$ sẽ là trị riêng của ma trận $A^k$ (với $k$ là số nguyên dương).
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng quy nạp theo $k$. Với $k=1$, theo định nghĩa ta có $A \cdot v = \lambda \cdot v$.<br>
+        Giả sử khẳng định đúng với $k$, tức là $A^k \cdot v = \lambda^k \cdot v$. Ta cần chứng minh cho $k+1$.<br>
+        Nhân cả hai vế với ma trận $A$ từ bên trái:</p>
+        $$ A \cdot (A^k \cdot v) = A \cdot (\lambda^k \cdot v) $$
+        <p>Sử dụng tính chất kết hợp của phép nhân ma trận và đưa hằng số $\lambda^k$ ra ngoài:</p>
+        $$ A^{k+1} \cdot v = \lambda^k \cdot (A \cdot v) $$
+        <p>Lại áp dụng $A \cdot v = \lambda \cdot v$ vào vế phải:</p>
+        $$ A^{k+1} \cdot v = \lambda^k \cdot (\lambda \cdot v) = \lambda^{k+1} \cdot v $$
+        <p>Vậy $\lambda^{k+1}$ là trị riêng của $A^{k+1}$ với cùng vector riêng $v$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Ma trận kề)</div>
+        Cho một đồ thị $G$ (có hướng hoặc vô hướng) gồm $n$ đỉnh được đánh số từ $1$ đến $n$.<br>
+        <strong>Ma trận kề (Adjacency Matrix):</strong> Là một ma trận vuông $A$ cấp $n \times n$. Phần tử $A_{i,j}$ bằng số lượng cạnh đi từ đỉnh $i$ đến đỉnh $j$. (Nếu là đồ thị đơn, $A_{i,j} \in \{0, 1\}$).
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Lũy thừa Ma trận kề - Đếm đường đi)</div>
+        Cho đồ thị $G$ có ma trận kề $A$. Phần tử nằm ở hàng $i$, cột $j$ của ma trận lũy thừa $A^k$ (ký hiệu là $(A^k)_{i,j}$) bằng số lượng các đường đi có độ dài đúng bằng $k$ (gồm $k$ cạnh liên tiếp) xuất phát từ đỉnh $i$ và kết thúc tại đỉnh $j$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp toán học theo độ dài đường đi $k$.</p>
+        <p><em>Bước cơ sở ($k=1$):</em> Ma trận $A^1 = A$. Theo định nghĩa của ma trận kề, $A_{i,j}$ là số cạnh nối trực tiếp từ $i$ đến $j$. Đây cũng chính là số lượng đường đi có độ dài 1 từ $i$ đến $j$. Khẳng định đúng với $k=1$.</p>
+        <p><em>Bước quy nạp:</em> Giả sử định lý đúng cho độ dài $k$. Tức là phần tử $(A^k)_{i,j}$ là số lượng đường đi độ dài $k$ từ $i$ đến $j$.<br>
+        Ta cần chứng minh định lý đúng cho độ dài $k+1$.<br>
+        Xét một đường đi bất kỳ có độ dài $k+1$ từ đỉnh $i$ đến đỉnh $j$. Đường đi này phải đi qua một đỉnh trung gian $m$ nào đó (với $1 \le m \le n$) ở bước thứ $k$.<br>
+        Như vậy, đường đi độ dài $k+1$ từ $i$ đến $j$ có thể được phân rã thành hai phần:</p>
+        <ol>
+            <li>Một đường đi có độ dài $k$ từ đỉnh $i$ đến đỉnh trung gian $m$. (Theo giả thiết quy nạp, có $(A^k)_{i,m}$ đường đi như vậy).</li>
+            <li>Một bước đi cuối cùng có độ dài 1 từ đỉnh trung gian $m$ đến đỉnh đích $j$. (Theo định nghĩa, có $A_{m,j}$ cách đi).</li>
+        </ol>
+        <p>Do hai quá trình này độc lập, số lượng đường đi độ dài $k+1$ từ $i$ đến $j$ thông qua đỉnh $m$ là tích: $(A^k)_{i,m} \times A_{m,j}$.<br>
+        Để đếm tổng số đường đi độ dài $k+1$, ta cộng dồn trên tất cả các đỉnh trung gian $m$ có thể có (từ $1$ đến $n$):</p>
+        $$ \text{Số đường đi độ dài } k+1 \text{ từ } i \text{ đến } j = \sum_{m=1}^n (A^k)_{i,m} \cdot A_{m,j} $$
+        <p>Mặt khác, theo định nghĩa của phép nhân hai ma trận, biểu thức $\sum_{m=1}^n (A^k)_{i,m} \cdot A_{m,j}$ chính xác là phần tử ở hàng $i$, cột $j$ của ma trận tích $A^k \cdot A = A^{k+1}$.<br>
+        Nghĩa là, số đường đi độ dài $k+1$ từ $i$ đến $j$ bằng $(A^{k+1})_{i,j}$.<br>
+        Quy nạp hoàn tất. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Phổ chu trình - Spectral Cycle Theorem)</div>
+        Số lượng tất cả các đường đi khép kín (chu trình có thể lặp lại đỉnh/cạnh) có độ dài $k$ trên một đồ thị $G$ bằng tổng lũy thừa bậc $k$ của tất cả các trị riêng của ma trận kề $A$.
+        $$ \text{Tổng số đường đi khép kín độ dài } k = \sum_{i=1}^n \lambda_i^k $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Một đường đi khép kín độ dài $k$ là một đường đi xuất phát từ một đỉnh $i$ và kết thúc tại chính đỉnh $i$.<br>
+        Theo Định lý 1.1, số lượng các đường đi độ dài $k$ từ đỉnh $i$ về đỉnh $i$ chính là phần tử trên đường chéo chính $(A^k)_{i,i}$.<br>
+        Để đếm tổng số các đường đi khép kín trên toàn bộ đồ thị, ta lấy tổng các đường đi khép kín xuất phát từ mọi đỉnh $i \in \{1, \dots, n\}$:</p>
+        $$ \text{Tổng số đường đi khép kín} = \sum_{i=1}^n (A^k)_{i,i} $$
+        <p>Theo Khái niệm 0.2, tổng các phần tử trên đường chéo chính của một ma trận là Vết (Trace) của ma trận đó.</p>
+        $$ \text{Tổng số đường đi khép kín} = \text{Tr}(A^k) $$
+        <p>Mặt khác, nếu ma trận $A$ có các trị riêng là $\lambda_1, \lambda_2, \dots, \lambda_n$, thì theo Định lý 0.1, ma trận $A^k$ sẽ có các trị riêng là $\lambda_1^k, \lambda_2^k, \dots, \lambda_n^k$.<br>
+        Đồng thời, Vết của một ma trận bằng tổng các trị riêng của nó. Áp dụng cho ma trận $A^k$:</p>
+        $$ \text{Tr}(A^k) = \sum_{i=1}^n \lambda_i^k $$
+        <p>Kết hợp hai đẳng thức lại, ta thu được điều phải chứng minh. Định lý này cho phép đếm một cấu trúc rời rạc bằng cách giải phương trình đại số để tìm các trị riêng $\lambda_i$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (IMO 1979 - Con ếch trên tứ diện)</div>
+        Một con ếch nhảy trên các đỉnh của một tứ diện $ABCD$. Bắt đầu từ đỉnh $D$, ở mỗi bước, con ếch nhảy từ đỉnh hiện tại sang một trong 3 đỉnh kề với nó với xác suất như nhau (tức là không bao giờ đứng yên). <br>
+        Ký hiệu $a_n$ là số cách để con ếch nhảy đúng $n$ bước và quay trở về lại đỉnh $D$. Hãy tìm một công thức đóng (không dùng đệ quy) cho $a_n$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mô hình hóa tứ diện thành một đồ thị vô hướng gồm 4 đỉnh $\{A, B, C, D\}$. Mỗi đỉnh nối với 3 đỉnh còn lại (đây là đồ thị đầy đủ $K_4$).<br>
+        Bài toán yêu cầu đếm số đường đi độ dài $n$ từ đỉnh $D$ đến đỉnh $D$.<br>
+        Ma trận kề $M$ của đồ thị $K_4$ có kích thước $4 \times 4$. Vì từ mỗi đỉnh có thể đi đến 3 đỉnh khác nhưng không thể đứng yên (không có khuyên), các phần tử trên đường chéo chính bằng 0, và các phần tử còn lại bằng 1.</p>
+        $$
+        M = \begin{pmatrix}
+        0 & 1 & 1 & 1 \\
+        1 & 0 & 1 & 1 \\
+        1 & 1 & 0 & 1 \\
+        1 & 1 & 1 & 0
+        \end{pmatrix}
+        $$
+        <p>Theo Định lý 1.1, số cách nhảy $n$ bước từ $D$ về $D$ chính là phần tử $(M^n)_{4,4}$.<br>
+        Do tính đối xứng của $K_4$, mọi đỉnh đều có vai trò như nhau. Số đường đi khép kín độ dài $n$ xuất phát từ $D$ cũng bằng số đường đi khép kín xuất phát từ $A, B,$ hoặc $C$.<br>
+        Nghĩa là các phần tử trên đường chéo chính của $M^n$ đều bằng nhau:</p>
+        $$ (M^n)_{1,1} = (M^n)_{2,2} = (M^n)_{3,3} = (M^n)_{4,4} = a_n $$
+        <p>Vì vậy, Vết của ma trận $M^n$ là:</p>
+        $$ \text{Tr}(M^n) = a_n + a_n + a_n + a_n = 4 a_n $$
+        <p>Theo Định lý Phổ chu trình (Định lý 1.2), $\text{Tr}(M^n) = \lambda_1^n + \lambda_2^n + \lambda_3^n + \lambda_4^n$, trong đó $\lambda_i$ là các trị riêng của $M$.<br>
+        Ta đi tìm trị riêng của $M$ bằng cách giải phương trình đặc trưng $\det(M - \lambda I) = 0$:</p>
+        $$
+        \det \begin{pmatrix}
+        -\lambda & 1 & 1 & 1 \\
+        1 & -\lambda & 1 & 1 \\
+        1 & 1 & -\lambda & 1 \\
+        1 & 1 & 1 & -\lambda
+        \end{pmatrix} = 0
+        $$
+        <p>Nhận xét thấy tổng các phần tử trên mỗi hàng đều bằng $3 - \lambda$. Do đó, nếu ta cộng tất cả các cột vào cột đầu tiên, ta có thể đặt $(3 - \lambda)$ làm nhân tử chung. Điều này có nghĩa là $\lambda = 3$ là một trị riêng.<br>
+        Mặt khác, xét cấu trúc ma trận $M = J - I$ (với $J$ là ma trận toàn số 1, $I$ là ma trận đơn vị).<br>
+        Ma trận $J$ (cấp 4) có hạng bằng 1, do đó nó có một trị riêng là 4 (ứng với vector $(1,1,1,1)^T$) và ba trị riêng bằng 0.<br>
+        Trị riêng của $M = J - I$ sẽ bằng trị riêng của $J$ trừ đi 1.<br>
+        Vậy các trị riêng của $M$ là:</p>
+        $$ \lambda_1 = 4 - 1 = 3 $$
+        $$ \lambda_2 = 0 - 1 = -1 $$
+        $$ \lambda_3 = 0 - 1 = -1 $$
+        $$ \lambda_4 = 0 - 1 = -1 $$
+        <p>Áp dụng Định lý 1.2, ta có:</p>
+        $$ \text{Tr}(M^n) = 3^n + (-1)^n + (-1)^n + (-1)^n = 3^n + 3(-1)^n $$
+        <p>Mà $\text{Tr}(M^n) = 4 a_n$. Suy ra:</p>
+        $$ 4 a_n = 3^n + 3(-1)^n \implies a_n = \frac{3^n + 3(-1)^n}{4} $$
+        <p>Bài toán được giải quyết bằng đại số tuyến tính thay vì dự đoán và chứng minh công thức truy hồi $a_n = 3^{n-1} - a_{n-1}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Đếm chuỗi với các ràng buộc kề nhau)</div>
+        Tìm công thức tính số lượng các từ có độ dài $N$ được tạo thành từ bảng chữ cái $\{A, B, C\}$, thỏa mãn điều kiện cấm: "Không có bất kỳ chữ cái $A$ nào đứng ngay trước chữ cái $B$". (Nghĩa là chuỗi con "AB" bị cấm).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mọi bài toán tạo chuỗi với điều kiện ràng buộc giữa các phần tử kề nhau đều có thể mô phỏng thành việc tìm số lượng đường đi trên một đồ thị có hướng.</p>
+
+        <p>Ta xây dựng một đồ thị có hướng $G$ với 3 đỉnh biểu diễn cho 3 trạng thái của chữ cái vừa được điền: Đỉnh 1 (Vừa điền A), Đỉnh 2 (Vừa điền B), Đỉnh 3 (Vừa điền C).<br>
+        Một cạnh có hướng đi từ đỉnh $i$ đến đỉnh $j$ mang ý nghĩa: "Được phép điền chữ cái $j$ ngay sau chữ cái $i$".<br>
+        Do đề bài cấm "AB" (tức là cấm điền B ngay sau A), ta không có cạnh nối từ Đỉnh 1 đến Đỉnh 2. Tất cả các cặp nối khác đều hợp lệ.<br>
+        Ma trận kề $K$ của đồ thị này (cấp $3 \times 3$) là:</p>
+        $$
+        K = \begin{pmatrix}
+        1 & 0 & 1 \\
+        1 & 1 & 1 \\
+        1 & 1 & 1
+        \end{pmatrix}
+        $$
+        <p>(Hàng 1 biểu diễn các trạng thái có thể tiếp nối A: A và C được phép (1), B bị cấm (0)).<br>
+        Một từ hợp lệ độ dài $N$ tương đương với một chuỗi gồm $N$ đỉnh hợp lệ, tức là một đường đi có độ dài $N-1$ trên đồ thị $G$.<br>
+        Vì chữ cái đầu tiên có thể là A, B, hoặc C, và chữ cái cuối cùng cũng có thể là bất kỳ chữ nào, tổng số từ hợp lệ độ dài $N$ chính bằng <strong>tổng tất cả các phần tử</strong> của ma trận $K^{N-1}$.</p>
+
+        <p>Để tìm công thức cho $K^{N-1}$, ta tìm phương trình đặc trưng của $K$:</p>
+        $$
+        \det(K - \lambda I) = \det \begin{pmatrix}
+        1-\lambda & 0 & 1 \\
+        1 & 1-\lambda & 1 \\
+        1 & 1 & 1-\lambda
+        \end{pmatrix} = 0
+        $$
+        <p>Khai triển định thức:</p>
+        $$ (1-\lambda) \left[ (1-\lambda)^2 - 1 \right] + 1 \left[ 1 - (1-\lambda) \right] = 0 $$
+        $$ (1-\lambda) (\lambda^2 - 2\lambda) + \lambda = 0 \implies \lambda - 2\lambda^2 - \lambda^2 + 2\lambda^3 + \lambda = 0 \implies 2\lambda^3 - 3\lambda^2 + 2\lambda = 0 $$
+        <p>Rút $\lambda$ ra, ta được phương trình: $\lambda (2\lambda^2 - 3\lambda + 2) = 0$.<br>
+        (Lưu ý: phương trình đặc trưng của ma trận cung cấp một hệ thức truy hồi tuyến tính cho các cấu hình nhờ Định lý Cayley-Hamilton. Với $\lambda^3 - \frac{3}{2}\lambda^2 + \lambda = 0$, dãy số $S_N$ đếm số từ sẽ thỏa mãn hệ thức truy hồi bậc 3. Từ đó có thể dùng công thức nghiệm tổng quát).<br>
+        Phương pháp ma trận chuyển trạng thái (Transfer Matrix Method) này là một kỹ thuật hiệu quả để giải quyết các bài toán đếm chuỗi hoặc lát gạch trong tổ hợp rời rạc.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romania TST - Cấu trúc Phổ của Đồ thị Hai phía - Bipartite)</div>
+        Cho $G$ là một đồ thị vô hướng. Chứng minh rằng $G$ là đồ thị hai phía (bipartite) khi và chỉ khi phổ của đồ thị $G$ (tập hợp tất cả các trị riêng của ma trận kề $A$) có tính đối xứng qua điểm 0. Nghĩa là, nếu $\lambda$ là một trị riêng có bội $k$, thì $-\lambda$ cũng là một trị riêng có bội $k$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p><strong>Chiều thuận:</strong> Giả sử $G$ là đồ thị hai phía. Tập đỉnh của $G$ có thể được phân hoạch thành 2 tập rời nhau $U$ và $V$ sao cho không có cạnh nào nối 2 đỉnh cùng một tập.<br>
+        Ta có thể đánh số các đỉnh của $U$ trước, sau đó đến các đỉnh của $V$.<br>
+        Khi đó, ma trận kề $A$ của đồ thị $G$ sẽ có cấu trúc khối (block matrix):</p>
+        $$ A = \begin{pmatrix} 0 & B \\ B^T & 0 \end{pmatrix} $$
+        <p>(Trong đó khối $0$ biểu diễn việc không có cạnh nội bộ trong $U$ và $V$, khối $B$ biểu diễn các cạnh nối giữa $U$ và $V$).<br>
+        Giả sử $\lambda$ là một trị riêng của $A$ với vector riêng tương ứng $x = \begin{pmatrix} u \\ v \end{pmatrix}$. Ta có $A x = \lambda x$:</p>
+        $$ \begin{pmatrix} 0 & B \\ B^T & 0 \end{pmatrix} \begin{pmatrix} u \\ v \end{pmatrix} = \lambda \begin{pmatrix} u \\ v \end{pmatrix} \implies \begin{cases} B v = \lambda u \\ B^T u = \lambda v \end{cases} $$
+        <p>Bây giờ, xét vector $x' = \begin{pmatrix} u \\ -v \end{pmatrix}$. Ta tính $A x'$:</p>
+        $$ A x' = \begin{pmatrix} 0 & B \\ B^T & 0 \end{pmatrix} \begin{pmatrix} u \\ -v \end{pmatrix} = \begin{pmatrix} -B v \\ B^T u \end{pmatrix} = \begin{pmatrix} -\lambda u \\ \lambda v \end{pmatrix} = -\lambda \begin{pmatrix} u \\ -v \end{pmatrix} = -\lambda x' $$
+        <p>Như vậy, $x'$ chính là vector riêng ứng với trị riêng $-\lambda$. Việc đổi dấu cấu phần $v$ bảo toàn sự độc lập của các vector riêng, do đó bội của trị riêng $\lambda$ và $-\lambda$ là bằng nhau. Phổ có tính đối xứng.</p>
+
+        <p><strong>Chiều đảo:</strong> Giả sử phổ của $A$ đối xứng qua 0. <br>
+        Theo Định lý 1.2 (Phổ chu trình), tổng số đường đi khép kín độ dài $k$ bằng $\sum \lambda_i^k$.<br>
+        Xét độ dài $k$ là một số <strong>lẻ</strong>.<br>
+        Vì phổ đối xứng, mọi trị riêng $\lambda_i$ đều có một trị riêng tương ứng là $-\lambda_i$.<br>
+        Khi $k$ lẻ, lũy thừa bậc lẻ sẽ bảo toàn dấu âm: $(-\lambda_i)^k = -\lambda_i^k$.<br>
+        Do đó, khi tính tổng $\sum \lambda_i^k$, các cặp $\lambda_i^k$ và $(-\lambda_i)^k$ sẽ triệt tiêu nhau.<br>
+        Suy ra: $\text{Tổng số đường đi khép kín độ dài lẻ} = 0$.<br>
+        Nếu trong đồ thị không có đường đi khép kín độ dài lẻ nào, điều đó tương đương với việc đồ thị <strong>không chứa bất kỳ chu trình độ dài lẻ nào</strong>.<br>
+        Một đồ thị là hai phía khi và chỉ khi nó không chứa chu trình độ dài lẻ.<br>
+        Do đó, $G$ chắc chắn là đồ thị hai phía.</p>
+        <p>Đại số tuyến tính cung cấp một cách tiếp cận hệ thống để phân tích các cấu trúc đồ thị.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

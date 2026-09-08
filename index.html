@@ -62,11 +62,6 @@
         }
         .stat b { display: block; font-size: 1.6rem; color: #ffd166; }
         .stat small { font-size: 0.82rem; color: #dfe7ff; }
-        .last-visit {
-            margin-top: 16px;
-            font-size: 0.85rem;
-            color: #c3cff0;
-        }
 
         /* ===== Toolbar ===== */
         .toolbar {
@@ -193,12 +188,9 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">50</b><small>Chuyên đề</small></div>
+            <div class="stat"><b id="countAll">52</b><small>Chuyên đề</small></div>
             <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
-            <div class="stat"><b id="countVisits">0</b><small>Lượt truy cập</small></div>
-            <div class="stat"><b id="countToday">0</b><small>Hôm nay</small></div>
         </div>
-        <div class="last-visit" id="lastVisit"></div>
     </header>
 
     <div class="toolbar">
@@ -219,9 +211,6 @@
 
     <footer>
         Blog tổng hợp các chuyên đề Toán học Olympic • Các bài viết thuộc thư mục OLYMPIC
-        <div style="margin-top:6px; font-size:0.8rem; opacity:0.75;">
-            Bộ đếm lượt truy cập lưu trên trình duyệt (localStorage) — mỗi lần mở trang tính 1 lượt.
-        </div>
     </footer>
 
     <script>
@@ -287,7 +276,9 @@
             { n:47, file:'index47.html', cat:'comb',  title:'Tổ hợp Rời rạc - Hệ tập hợp cực trị và Bổ đề Hoa hướng dương',                           desc:'Hệ tập hợp cực trị và bổ đề Hoa hướng dương (sunflower).' },
             { n:48, file:'index48.html', cat:'graph', title:'Đại số và Lý thuyết Đồ thị - Ma trận kề, Phổ đồ thị và Đếm đường đi',                     desc:'Ma trận kề, phổ đồ thị và kỹ thuật đếm đường đi.' },
             { n:49, file:'index49.html', cat:'graph', title:'Lý thuyết Đồ thị - Chu trình Euler, Định lý Ore và Cấu trúc De Bruijn',                   desc:'Chu trình Euler, định lý Ore và cấu trúc De Bruijn.' },
-            { n:50, file:'index50.html', cat:'graph', title:'Lý thuyết đồ thị - Tô màu đồ thị, đa thức sắc số và PIE',                               desc:'Tô màu đồ thị, đa thức sắc số và nguyên lý bù trừ (PIE).' }
+            { n:50, file:'index50.html', cat:'graph', title:'Lý thuyết đồ thị - Tô màu đồ thị, đa thức sắc số và PIE',                               desc:'Tô màu đồ thị, đa thức sắc số và nguyên lý bù trừ (PIE).' },
+            { n:51, file:'index51.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut',                             desc:'Mạng luồng và định lý đối ngẫu max-flow min-cut.' },
+            { n:52, file:'index52.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut (bản 2)',                     desc:'Bản 2 — mạng luồng và định lý đối ngẫu max-flow min-cut.' }
         ];
 
         // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
@@ -354,68 +345,6 @@
         render();
         document.getElementById('countAll').textContent = POSTS.length;
 
-        // ============================================================
-        //  BỘ ĐẾM LƯỢT TRUY CẬP
-        //  - Nếu APPS_SCRIPT_URL đã điền: đếm TOÀN CỤC qua Google Apps Script + Sheets
-        //  - Nếu để trống hoặc không gọi được: tự chuyển về đếm cục bộ (localStorage)
-        // ============================================================
-        // 👉 DÁN URL Web App (đã deploy) vào giữa hai dấu nháy bên dưới:
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxnn0U9ASBfx88A40vuKZ3Dd93GjgWTtXSijGTWeHveFdHFU7vtrgAgEXG-0pdR3Hp/exec';
-
-        (function () {
-            const KEY = 'olympic_blog_visits';
-            const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-            const elTotal = document.getElementById('countVisits');
-            const elToday = document.getElementById('countToday');
-            const elLast  = document.getElementById('lastVisit');
-
-            function show(data) {
-                if (elTotal) elTotal.textContent = Number(data.total || 0).toLocaleString('vi-VN');
-                if (elToday) elToday.textContent = Number(data.todayCount || 0).toLocaleString('vi-VN');
-                if (elLast && data.lastVisit) elLast.textContent = 'Lần truy cập gần nhất: ' + data.lastVisit;
-            }
-
-            // ---- Chế độ TOÀN CỤC: gọi Apps Script ----
-            async function countGlobal() {
-                if (!APPS_SCRIPT_URL) return false;
-                try {
-                    // Dùng POST để tăng lượt, kèm tham số ngày hiện tại
-                    const res = await fetch(APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'action=increment'
-                    });
-                    if (!res.ok) return false;
-                    const data = await res.json();
-                    if (data && data.ok) {
-                        show({ total: data.total, todayCount: data.todayCount, lastVisit: data.lastVisit });
-                        return true;
-                    }
-                    return false;
-                } catch (e) {
-                    return false; // không gọi được -> dùng localStorage
-                }
-            }
-
-            // ---- Chế độ CỤC BỘ (dự phòng) ----
-            function countLocal() {
-                let data = { total: 0, day: today, todayCount: 0, lastVisit: '' };
-                try {
-                    const saved = JSON.parse(localStorage.getItem(KEY));
-                    if (saved && typeof saved === 'object') data = Object.assign(data, saved);
-                } catch (e) { /* bỏ qua */ }
-
-                data.total = (data.total || 0) + 1;
-                if (data.day !== today) { data.day = today; data.todayCount = 1; }
-                else { data.todayCount = (data.todayCount || 0) + 1; }
-                data.lastVisit = new Date().toLocaleString('vi-VN');
-
-                try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* bỏ qua */ }
-                show(data);
-            }
-
-            countGlobal().then(ok => { if (!ok) countLocal(); });
-        })();
     </script>
 </body>
 </html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP RỜI RẠC <br> MẠNG LUỒNG VÀ ĐỐI NGẪU MAX-FLOW MIN-CUT</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đánh giá khả năng dịch chuyển tối đa của một hệ thống rời rạc và tìm ra "nút thắt cổ chai" của nó là hai bài toán quan trọng. Chuyên đề này hình thức hóa khái niệm Mạng Luồng và Lát cắt. Thông qua việc thiết lập đồ thị thặng dư, ta chứng minh Định lý Max-Flow Min-Cut (Luồng Cực đại - Lát cắt Cực tiểu). Các hệ quả trực tiếp của nó như Định lý Menger và Định lý Kőnig sẽ được sử dụng để giải quyết các bài toán cực trị tổ hợp trên lưới vuông và đồ thị hai phía.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Mạng Luồng (Network Flow) chủ yếu được giảng dạy ở bậc Đại học. Để học sinh THPT có thể áp dụng lý thuyết này vào việc giải các bài toán đếm hoặc đồ thị rời rạc, ta cần bổ sung Định lý Toàn vẹn (Integrality Theorem) và khái niệm Đồ thị Hai phía.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Đồ thị Hai phía - Bipartite Graph)</div>
+        Đồ thị hai phía là một đồ thị vô hướng $G = (V, E)$ trong đó tập đỉnh $V$ có thể được phân hoạch thành hai tập con rời nhau $U$ và $W$ ($U \cap W = \emptyset$) sao cho mọi cạnh $e \in E$ đều có một đầu mút thuộc $U$ và đầu mút còn lại thuộc $W$. Không có bất kỳ cạnh nào nối hai đỉnh cùng thuộc $U$ hoặc cùng thuộc $W$. Khái niệm này là cơ sở cho Bài toán 3.1 và 3.2.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Định lý Toàn vẹn - Integrality Theorem)</div>
+        Trong một mạng luồng, nếu dung lượng $c(u, v)$ của mọi cạnh đều là các số nguyên dương (hoặc bằng $0$), thì luôn tồn tại một luồng cực đại $f$ sao cho lượng luồng trên mọi cạnh $f(u, v)$ đều là các số nguyên.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta có thể chứng minh sự tồn tại của luồng nguyên thông qua thuật toán Ford-Fulkerson.</p>
+        <p>Bắt đầu với luồng $f(u, v) = 0$ trên mọi cạnh. Rõ ràng luồng khởi tạo này nhận các giá trị nguyên.<br>
+        Ở mỗi bước của quá trình tăng luồng, ta tìm một đường đi từ nguồn $s$ đến đích $t$ trên đồ thị thặng dư. Lượng luồng tăng thêm dọc theo đường đi này chính bằng dung lượng thặng dư nhỏ nhất trên các cạnh của đường đi đó.</p>
+        <p>Vì dung lượng ban đầu của tất cả các cạnh là số nguyên, và luồng hiện tại trên các cạnh cũng là số nguyên, nên dung lượng thặng dư (bằng dung lượng gốc trừ đi luồng hiện tại hoặc bằng luồng ngược) bắt buộc phải là số nguyên.<br>
+        Do đó, lượng luồng được tăng thêm ở mỗi bước luôn là một số nguyên $\ge 1$.<br>
+        Sau mỗi bước, luồng mới trên các cạnh vẫn là số nguyên.</p>
+        <p>Quá trình này làm tăng giá trị luồng lên ít nhất $1$ đơn vị mỗi bước. Vì luồng cực đại bị chặn trên bởi dung lượng của các lát cắt (hữu hạn), thuật toán chắc chắn sẽ dừng lại sau hữu hạn bước. Luồng đạt được tại bước cuối cùng là luồng cực đại, và vì nó được duy trì tính nguyên ở mọi bước, luồng cực đại này có giá trị nguyên trên toàn bộ các cạnh. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Mạng Luồng, Luồng và Lát cắt)</div>
+        Cho một đồ thị có hướng $G = (V, E)$. Ta chỉ định một đỉnh $s \in V$ làm <strong>Nguồn</strong> (Source) và một đỉnh $t \in V$ làm <strong>Đích</strong> (Sink). Mỗi cạnh $(u, v) \in E$ được gán một số thực không âm $c(u, v)$ gọi là <strong>Dung lượng</strong> (Capacity).
+        <ul>
+            <li> <strong>Luồng (Flow):</strong> Là một hàm $f: V \times V \to \mathbb{R}$ thỏa mãn hai điều kiện:<br>
+            1. <em>Giới hạn dung lượng:</em> $0 \le f(u, v) \le c(u, v)$ với mọi cặp đỉnh. (Nếu $(u,v) \notin E$, $c(u,v) = 0$).<br>
+            2. <em>Bảo toàn luồng:</em> Với mọi đỉnh $v \in V \setminus \{s, t\}$, tổng luồng đi vào $v$ bằng tổng luồng đi ra khỏi $v$:
+            $$ \sum_{u \in V} f(u, v) = \sum_{w \in V} f(v, w) $$
+            Giá trị của luồng, ký hiệu $|f|$, là tổng lượng luồng phát ra từ Nguồn trừ đi lượng quay lại: $|f| = \sum_{v \in V} f(s, v) - \sum_{v \in V} f(v, s)$.</li>
+            <li> <strong>Lát cắt (Cut):</strong> Một lát cắt $(S, T)$ là một phân hoạch tập đỉnh $V$ thành hai tập rời nhau $S$ và $T$ sao cho $s \in S$ và $t \in T$.<br>
+            <strong>Dung lượng của lát cắt</strong> là tổng dung lượng của các cạnh đi từ $S$ sang $T$: 
+            $$ c(S, T) = \sum_{u \in S, v \in T} c(u, v) $$</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bất đẳng thức Yếu - Weak Duality)</div>
+        Với một luồng $f$ bất kỳ và một lát cắt $(S, T)$ bất kỳ trên đồ thị, giá trị của luồng không bao giờ vượt quá dung lượng của lát cắt đó:
+        $$ |f| \le c(S, T) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Theo định nghĩa, $|f|$ là lượng luồng thuần túy rời khỏi $s$. Nhờ định luật bảo toàn luồng tại mọi đỉnh trong $S \setminus \{s\}$, ta có thể lấy tổng phương trình bảo toàn trên toàn bộ tập $S$:</p>
+        $$ |f| = \sum_{u \in S} \left( \sum_{v \in V} f(u, v) - \sum_{v \in V} f(v, u) \right) $$
+        <p>Ta tách tổng theo $v \in V$ thành hai phần: $v \in S$ và $v \in T$:</p>
+        $$ |f| = \sum_{u \in S} \left( \sum_{v \in S} f(u, v) + \sum_{v \in T} f(u, v) - \sum_{v \in S} f(v, u) - \sum_{v \in T} f(v, u) \right) $$
+        <p>Quan sát các số hạng nằm hoàn toàn trong $S$: $\sum_{u \in S} \sum_{v \in S} f(u, v)$ và $\sum_{u \in S} \sum_{v \in S} f(v, u)$. Hai tổng này quét qua toàn bộ các cặp cạnh nội bộ trong $S$, do đó chúng bằng nhau và tự triệt tiêu. Biểu thức rút gọn thành:</p>
+        $$ |f| = \sum_{u \in S} \sum_{v \in T} f(u, v) - \sum_{u \in S} \sum_{v \in T} f(v, u) $$
+        <p>(Ý nghĩa: Luồng đi từ $s$ đến $t$ chính bằng tổng lượng luồng vượt biên giới từ $S$ sang $T$ trừ đi lượng luồng chảy ngược từ $T$ về $S$).<br>
+        Bởi vì luồng luôn không âm ($f(v, u) \ge 0$), ta có:</p>
+        $$ |f| \le \sum_{u \in S} \sum_{v \in T} f(u, v) $$
+        <p>Lại có $f(u, v) \le c(u, v)$ (giới hạn dung lượng). Do đó:</p>
+        $$ |f| \le \sum_{u \in S} \sum_{v \in T} c(u, v) = c(S, T) $$
+        <p>Bất đẳng thức được chứng minh. Hệ quả: Giá trị của Luồng cực đại $\le$ Dung lượng của Lát cắt cực tiểu.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Max-Flow Min-Cut)</div>
+        Trong bất kỳ mạng luồng nào, giá trị của Luồng Cực Đại luôn luôn bằng chính xác dung lượng của Lát cắt Cực Tiểu:
+        $$ \max |f| = \min c(S, T) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng cách xây dựng một lát cắt đạt được giá trị của luồng lớn nhất.<br>
+        Cho $f$ là luồng có giá trị cực đại trên mạng. Ta xây dựng <strong>Đồ thị thặng dư (Residual Graph)</strong> $G_f = (V, E_f)$ như sau:<br>
+        Với mỗi cặp đỉnh $(u, v)$, dung lượng thặng dư là lượng không gian còn lại có thể bơm thêm luồng: $c_f(u, v) = c(u, v) - f(u, v)$. <br>
+        Đồng thời, ta cho phép "hủy bỏ" luồng đã đi bằng cách thêm cạnh ngược với dung lượng $c_f(v, u) = f(u, v)$.<br>
+        Tập $E_f$ chứa tất cả các cạnh có $c_f \gt 0$.</p>
+
+        <p>Một <strong>Đường đi tăng luồng (Augmenting Path)</strong> là một đường đi từ $s$ đến $t$ trong đồ thị thặng dư $G_f$.<br>
+        Nếu tồn tại một đường đi như vậy, ta có thể bơm thêm một lượng luồng $\Delta \gt 0$ dọc theo đường đi này (mà không vi phạm dung lượng trên đồ thị gốc), làm tăng giá trị $|f|$.<br>
+        Bởi vì $f$ đã giả định là luồng cực đại, <strong>không thể tồn tại</strong> đường đi tăng luồng trong $G_f$.</p>
+
+        <p>Ta định nghĩa tập $S^*$ là tập hợp tất cả các đỉnh <strong>có thể đến được</strong> từ $s$ trong đồ thị thặng dư $G_f$. Định nghĩa $T^* = V \setminus S^*$.<br>
+        Rõ ràng $s \in S^*$. Vì không có đường đi từ $s$ đến $t$ trong $G_f$, nên $t \notin S^*$, tức là $t \in T^*$.<br>
+        Vậy $(S^*, T^*)$ là một Lát cắt hợp lệ.</p>
+
+        <p>Bây giờ ta xét các cạnh bắc cầu từ $S^*$ sang $T^*$ trong đồ thị gốc $G$.<br>
+        Lấy $u \in S^*$ và $v \in T^*$. <br>
+        Vì $u$ đến được từ $s$ nhưng $v$ thì không, <strong>không tồn tại</strong> cạnh $(u, v)$ trong $G_f$. Kéo theo dung lượng thặng dư $c_f(u, v) = 0$.<br>
+        Mà $c_f(u, v) = c(u, v) - f(u, v) = 0 \implies f(u, v) = c(u, v)$. (Cạnh đã bị bão hòa hoàn toàn).<br>
+        Xét chiều ngược lại, vì $(v, u)$ cũng không thể tồn tại trong $G_f$, lượng $f(v,u)$ phải bằng 0. Vậy $f(v, u) = 0$. (Không có luồng chảy ngược từ $T^*$ về $S^*$).</p>
+
+        <p>Quay lại phương trình tính $|f|$ ở Định lý 1.1 đối với lát cắt $(S^*, T^*)$:</p>
+        $$ |f| = \sum_{u \in S^*} \sum_{v \in T^*} f(u, v) - \sum_{u \in S^*} \sum_{v \in T^*} f(v, u) $$
+        <p>Thay $f(u, v) = c(u, v)$ và $f(v, u) = 0$ vào phương trình:</p>
+        $$ |f| = \sum_{u \in S^*} \sum_{v \in T^*} c(u, v) - 0 = c(S^*, T^*) $$
+        <p>Ta đã tìm được một lát cắt có dung lượng bằng chính xác giá trị của luồng. Theo Bất đẳng thức yếu, đây là luồng cực đại và lát cắt cực tiểu. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Định lý Menger Dạng cạnh)</div>
+        Cho một đồ thị có hướng $G$, và hai đỉnh phân biệt $s, t$. Chứng minh rằng: Số lượng lớn nhất các đường đi từ $s$ đến $t$ mà <strong>không có hai đường đi nào đi qua cùng một cạnh</strong> (edge-disjoint paths) đúng bằng số lượng ít nhất các cạnh cần phải xóa bỏ khỏi đồ thị để ngắt hoàn toàn mọi đường đi từ $s$ đến $t$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đây là một bài toán Tổ hợp đồ thị quen thuộc. Việc chứng minh trực tiếp có thể phức tạp. Ta sẽ đưa nó về Định lý Max-Flow Min-Cut.</p>
+
+        <p>Thiết lập một mạng luồng trên đồ thị $G$:<br>
+        Gán cho <strong>mọi cạnh</strong> trong đồ thị một dung lượng $c(u, v) = 1$.</p>
+        
+        <p><strong>- Xét Bài toán Tìm Luồng Cực Đại:</strong><br>
+        Vì dung lượng của mọi cạnh là số nguyên (bằng 1), theo <em>Định lý Toàn vẹn (Định lý 0.1)</em>, tồn tại một luồng cực đại $f$ nhận các giá trị nguyên.<br>
+        Trên mạng có dung lượng 1, luồng nguyên $f(u, v)$ chỉ có thể nhận giá trị $0$ hoặc $1$.<br>
+        Một đơn vị luồng đi từ $s$ đến $t$ tương ứng với một đường đi đơn trên đồ thị.<br>
+        Vì giới hạn $f(u, v) \le 1$, mỗi cạnh chỉ có thể được sử dụng bởi tối đa <strong>một</strong> đường đi.<br>
+        Do đó, giá trị luồng cực đại $|f|$ chính xác bằng <strong>số lượng lớn nhất các đường đi từ $s$ đến $t$ không chung cạnh</strong>.</p>
+
+        <p><strong>- Xét Bài toán Tìm Lát cắt Cực Tiểu:</strong><br>
+        Một lát cắt $(S, T)$ chia tách $s$ và $t$. Dung lượng của lát cắt này là tổng dung lượng các cạnh đi từ $S$ sang $T$.<br>
+        Vì mỗi cạnh có dung lượng bằng 1, dung lượng của lát cắt chính là <strong>số lượng các cạnh</strong> vượt biên từ $S$ sang $T$.<br>
+        Nếu ta xóa tất cả các cạnh vượt biên này, sẽ không còn bất kỳ cạnh nào nối từ tập $S$ (chứa $s$) sang tập $T$ (chứa $t$). Tức là đồ thị hoàn toàn bị ngắt kết nối từ $s$ đến $t$.<br>
+        Mặt khác, mọi tập hợp các cạnh khi bị xóa làm ngắt kết nối $s$ và $t$ đều định nghĩa một lát cắt (tập các đỉnh đến được từ $s$ sau khi xóa chính là $S$).<br>
+        Do đó, dung lượng lát cắt cực tiểu $c(S, T)$ chính xác bằng <strong>số lượng ít nhất các cạnh cần xóa</strong>.</p>
+
+        <p>Theo Định lý Max-Flow Min-Cut (Định lý 1.2), Giá trị Luồng Cực Đại = Dung lượng Lát cắt Cực tiểu.<br>
+        Đẳng thức này trực tiếp kết luận: Số lượng lớn nhất các đường đi không chung cạnh bằng số lượng ít nhất các cạnh cần xóa.<br>
+        Bài toán được giải quyết thông qua đối ngẫu của luồng và lát cắt.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Australian Math Olympiad - Pháo và Lưới bị khuyết / Định lý Kőnig)</div>
+        Trên một bàn cờ kích thước $n \times m$, một số ô vuông bị đánh dấu là "Hỏng". Bạn có một số lượng quân Pháo. Một quân Pháo khi đặt trên bàn cờ có thể kiểm soát toàn bộ hàng và cột chứa nó.<br>
+        Bạn được phép đặt các quân Pháo lên các ô <strong>không bị hỏng</strong> sao cho không có 2 quân Pháo nào ăn nhau (không cùng hàng, không cùng cột).<br>
+        Ký hiệu $A$ là số lượng lớn nhất các quân Pháo có thể đặt thỏa mãn điều kiện. Ký hiệu $B$ là số lượng ít nhất các đường thẳng (bao gồm hàng và cột) cần chọn để <strong>che phủ toàn bộ</strong> các ô không bị hỏng trên bàn cờ.<br>
+        Chứng minh rằng $A = B$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mô hình hóa bàn cờ dưới dạng một <strong>Đồ thị hai phía (Bipartite Graph)</strong> $G = (U \cup V, E)$.</p>
+        <ul>
+            <li> Tập đỉnh $U = \{r_1, r_2, \dots, r_n\}$ đại diện cho $n$ hàng.</li>
+            <li> Tập đỉnh $V = \{c_1, c_2, \dots, c_m\}$ đại diện cho $m$ cột.</li>
+            <li> Một ô $(i, j)$ không bị hỏng tương ứng với một cạnh nối đỉnh $r_i \in U$ và đỉnh $c_j \in V$.</li>
+        </ul>
+
+        <ul>
+            <li> Việc đặt một quân Pháo vào ô $(i, j)$ hợp lệ (không có 2 quân nào ăn nhau) tương đương với việc chọn một tập hợp các cạnh trong đồ thị $G$ sao cho không có hai cạnh nào chung đỉnh. Đây chính là khái niệm <strong>Khớp (Matching)</strong>. Đại lượng $A$ chính là kích thước của Khớp cực đại.</li>
+            <li> Việc chọn một số hàng và cột để che phủ toàn bộ các ô không hỏng tương đương với việc chọn một tập hợp các đỉnh trong $U \cup V$ sao cho <strong>mọi cạnh</strong> trong đồ thị đều có ít nhất một đầu mút thuộc tập hợp đó. Đây chính là khái niệm <strong>Tập đỉnh bao phủ (Vertex Cover)</strong>. Đại lượng $B$ chính là kích thước của Tập đỉnh bao phủ cực tiểu.</li>
+        </ul>
+        <p>Ta cần chứng minh Kích thước Khớp cực đại = Kích thước Tập đỉnh bao phủ cực tiểu (Đây là nội dung của Định lý Kőnig).</p>
+
+        <p>Ta xây dựng mạng luồng để áp dụng Max-Flow Min-Cut.<br>
+        Thêm Nguồn $s$ và Đích $t$.</p>
+        <ul>
+            <li> Nối $s$ với mọi đỉnh $r_i \in U$ bằng một cạnh có dung lượng $1$.</li>
+            <li> Nối mọi đỉnh $c_j \in V$ với $t$ bằng một cạnh có dung lượng $1$.</li>
+            <li> Nếu có cạnh nối $r_i$ và $c_j$ trong đồ thị gốc, ta thiết lập một cạnh có hướng từ $r_i$ sang $c_j$ với dung lượng <strong>vô cùng lớn</strong> ($\infty$).</li>
+        </ul>
+
+        <p><strong>1. Luồng Cực Đại:</strong> Một đường đi từ $s$ đến $t$ có dạng $s \to r_i \to c_j \to t$. Vì dung lượng ở hai đầu là 1, một lượng luồng đi qua tương đương với việc chọn cạnh $(r_i, c_j)$ vào Khớp. Do dung lượng nút thắt là 1, mỗi đỉnh ở $U$ và $V$ chỉ tham gia vào tối đa 1 đường đi. Vậy Giá trị Luồng cực đại đúng bằng số cạnh của Khớp cực đại ($A$).</p>
+
+        <p><strong>2. Lát cắt Cực Tiểu:</strong> Một lát cắt $(S, T)$ chia tách $s$ và $t$. Dung lượng lát cắt là tổng dung lượng các cạnh đi từ $S$ sang $T$.<br>
+        Vì ta đang tìm lát cắt cực tiểu, ta không bao giờ cắt các cạnh có dung lượng $\infty$ nối từ $U$ sang $V$ (vì nếu cắt, dung lượng sẽ là $\infty$). Do đó, nếu $r_i \in S$, thì tất cả các đỉnh kề với nó ở $V$ cũng bắt buộc phải thuộc $S$.<br>
+        Những cạnh bị cắt chỉ có thể là:</p>
+        <ul>
+            <li> Cạnh nối từ $s$ đến $U$: Bị cắt nếu $r_i \in T$. Dung lượng là $1 \times |U \cap T|$.</li>
+            <li> Cạnh nối từ $V$ đến $t$: Bị cắt nếu $c_j \in S$. Dung lượng là $1 \times |V \cap S|$.</li>
+        </ul>
+        <p>Tập hợp các đỉnh $C = (U \cap T) \cup (V \cap S)$ chính là tập đỉnh che phủ mọi cạnh có dung lượng $\infty$. (Bởi vì nếu có cạnh $(r_i, c_j)$ không bị che phủ, tức là $r_i \notin (U \cap T) \implies r_i \in S$, và $c_j \notin (V \cap S) \implies c_j \in T$. Lúc đó cạnh $(r_i, c_j)$ là cạnh đi từ $S$ sang $T$, đóng góp $\infty$ vào dung lượng lát cắt).<br>
+        Dung lượng của lát cắt chính là tổng số đỉnh trong tập che phủ $C$. Do ta tìm lát cắt cực tiểu, đây chính là Tập đỉnh bao phủ cực tiểu ($B$).</p>
+
+        <p>Theo Max-Flow Min-Cut, Luồng cực đại = Lát cắt cực tiểu.<br>
+        Suy ra $A = B$. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (All-Russian Olympiad - Phân rã Đồ thị Chính quy / Định lý Kőnig mở rộng)</div>
+        Cho một đồ thị hai phía $G = (U \cup V, E)$. Biết rằng đồ thị này là $k$-chính quy ($k \ge 1$), tức là bậc của mọi đỉnh trong đồ thị đều bằng đúng $k$. <br>
+        Chứng minh rằng tập hợp các cạnh của đồ thị $G$ có thể được phân rã thành chính xác $k$ Khớp hoàn hảo (Perfect Matchings) rời nhau.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì đồ thị là hai phía và mọi đỉnh đều có bậc $k$, ta đếm tổng số cạnh của đồ thị bằng hai cách: $k \cdot |U| = |E| = k \cdot |V|$. Suy ra $|U| = |V|$.<br>
+        Ta sẽ chứng minh đồ thị này luôn chứa ít nhất một Khớp hoàn hảo. Sau khi chứa một khớp hoàn hảo, ta xóa các cạnh của khớp đó đi, đồ thị còn lại sẽ là $(k-1)$-chính quy. Lặp lại quá trình này $k$ lần, ta sẽ phân rã được toàn bộ đồ thị.</p>
+
+        <p>Để chứng minh sự tồn tại của một Khớp hoàn hảo, ta sử dụng <strong>Định lý Hall (Hall's Marriage Theorem)</strong>. <br>
+        (Ta có thể chứng minh Định lý Hall thông qua Định lý Kőnig ở bài toán trên: Khớp cực đại bằng Tập đỉnh bao phủ cực tiểu).<br>
+        Xét một tập con tùy ý $A \subseteq U$. Gọi $N(A)$ là tập hợp tất cả các lân cận của các đỉnh trong $A$ (các đỉnh thuộc $V$ có nối với ít nhất một đỉnh trong $A$).<br>
+        Định lý Hall khẳng định rằng Khớp hoàn hảo tồn tại khi và chỉ khi $|N(A)| \ge |A|$ với mọi $A \subseteq U$.</p>
+
+        <p>Ta đếm số lượng các cạnh có một đầu mút thuộc tập $A$.<br>
+        Bởi vì mỗi đỉnh trong $A$ có bậc $k$, tổng số cạnh xuất phát từ tập $A$ là chính xác $k \cdot |A|$.<br>
+        Tất cả các cạnh này bắt buộc phải đi đến các đỉnh nằm trong tập $N(A)$.<br>
+        Mặt khác, mỗi đỉnh trong $N(A)$ cũng có bậc $k$. Do đó, tổng số lượng cạnh <strong>tối đa</strong> có thể đi vào tập $N(A)$ từ toàn bộ đồ thị là $k \cdot |N(A)|$.<br>
+        Vì tập hợp các cạnh xuất phát từ $A$ chỉ là một phần (hoặc toàn bộ) của các cạnh đi vào $N(A)$, ta có bất đẳng thức:</p>
+        $$ k \cdot |A| \le \text{Tổng số cạnh đi vào } N(A) \le k \cdot |N(A)| $$
+        $$ k \cdot |A| \le k \cdot |N(A)| $$
+        <p>Chia cả hai vế cho $k$ (vì $k \ge 1$), ta thu được:</p>
+        $$ |A| \le |N(A)| $$
+        <p>Điều kiện Hall được thỏa mãn với mọi tập con $A \subseteq U$.<br>
+        Do đó, đồ thị $G$ chứa ít nhất một Khớp hoàn hảo.<br>
+        Ta xóa đi các cạnh của Khớp hoàn hảo này. Khi đó, bậc của mỗi đỉnh trong $U$ và $V$ đều bị giảm đi đúng 1 đơn vị. Đồ thị mới là một đồ thị hai phía $(k-1)$-chính quy.<br>
+        Bằng phép quy nạp toán học giảm bậc, ta phân rã đồ thị thành đúng $k$ khớp hoàn hảo. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

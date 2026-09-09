@@ -231,9 +231,10 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">67</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countAll">68</b><small>Bài viết</small></div>
             <div class="stat"><b id="countVmo">8</b><small>Luyện tập VMO</small></div>
             <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
+            <div class="stat"><b id="countOnline">0</b><small>Đang online</small></div>
             <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
         </div>
         <div class="last-visit" id="lastVisit"></div>
@@ -335,6 +336,7 @@
             { n:57, file:'index57.html', cat:'comb',  title:'Đại số Trừu tượng và Tổ hợp - Nhóm Hoán vị, Bổ đề Burnside và Định lý Pólya',            desc:'Nhóm hoán vị, bổ đề Burnside và định lý đếm Pólya.' },
             { n:58, file:'index58.html', cat:'comb',  title:'Toán rời rạc và Lý thuyết trò chơi - Phép cộng Nim và Định lý Sprague-Grundy',          desc:'Phép cộng Nim và định lý Sprague-Grundy trong lý thuyết trò chơi.' },
             { n:59, file:'index59.html', cat:'comb',  title:'Hình học Tổ hợp - Nguyên lý Phản xạ André và Cấu trúc Catalan',                          desc:'Nguyên lý phản xạ André và cấu trúc số Catalan.' },
+            { n:60, file:'index60.html', cat:'comb',  title:'Đại số Tổ hợp - Lưới nghiệm đơn vị và Tổng các hệ số cách đều',                          desc:'Kỹ thuật roots-of-unity filter để trích xuất tổng hệ số cách đều.' },
             { n:1,  file:'vmo1.html',    cat:'poly',  stars:3, title:'Đại số Đa thức & tính chất Số học — Cấu trúc chia hết của đa thức hệ số nguyên',  desc:'Định lý chia hết của đa thức hệ số nguyên và ứng dụng USAMO 1974.' },
             { n:2,  file:'vmo2.html',    cat:'nt',    stars:4, title:'Số học và Đại số — Phương trình Pell và Cấu trúc nghiệm Diophantine bậc hai',      desc:'Phương trình Pell và cấu trúc nghiệm Diophantine bậc hai.' },
             { n:3,  file:'vmo3.html',    cat:'fe',    stars:3, title:'Đại số và Phương trình hàm — Cauchy và các phép biến đổi đồng nhất',              desc:'Phương trình Cauchy và các phép biến đổi đồng nhất.' },
@@ -533,6 +535,40 @@
             }
 
             countGlobal().then(ok => { if (!ok) countLocal(); });
+        })();
+
+        // ============================================================
+        //  BỘ ĐẾM NGƯỜI ĐANG ONLINE
+        //  - Mỗi trình duyệt/mở trang tạo 1 phiên (sid) duy nhất
+        //  - Gửi "heartbeat" mỗi 15 giây để xác nhận còn online
+        //  - Apps Script tự xóa phiên nào quá 60 giây không "sống"
+        //    => con số hiển thị = người đang thực sự xem
+        // ============================================================
+        (function () {
+            const elOnline = document.getElementById('countOnline');
+            if (!elOnline) return;
+
+            let sid = sessionStorage.getItem('olympic_sid');
+            if (!sid) {
+                sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+                try { sessionStorage.setItem('olympic_sid', sid); } catch (e) { /* bỏ qua */ }
+            }
+
+            async function heartbeat() {
+                if (!APPS_SCRIPT_URL) return;
+                try {
+                    const res = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'action=heartbeat&sid=' + encodeURIComponent(sid)
+                    });
+                    const data = await res.json();
+                    if (data && data.ok) elOnline.textContent = Number(data.online || 0);
+                } catch (e) { /* tạm thời bỏ qua, lần sau thử lại */ }
+            }
+
+            heartbeat();
+            setInterval(heartbeat, 15000);
         })();
     </script>
 </body>

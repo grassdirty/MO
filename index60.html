@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Lưới nghiệm đơn vị và Tổng các hệ số cách đều</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> LƯỚI NGHIỆM ĐƠN VỊ VÀ TỔNG CÁC HỆ SỐ CÁCH ĐỀU</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đại số Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát tổng của các hệ số đa thức tại những vị trí cách đều nhau (ví dụ: các hệ số bậc chẵn, bậc lẻ, hoặc bậc chia hết cho 3) thường gặp khó khăn nếu chỉ sử dụng các phép thế số thực cơ bản. Chuyên đề này giới thiệu kỹ thuật Lưới nghiệm đơn vị (Roots of Unity Filter). Bằng cách khai thác tính chất của các số phức trên đường tròn lượng giác, ta thiết lập Bổ đề Triệt tiêu để cô lập và trích xuất tập hợp hệ số đồng dư, giúp giải quyết các bài toán đếm trạng thái thông qua các hệ thức lượng giác.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Kỹ thuật Lưới nghiệm đơn vị sử dụng công cụ Số phức, đặc biệt là dạng lượng giác của số phức và công thức De Moivre, vốn được giảng dạy kỹ ở bậc Đại học. Để học sinh THPT có thể áp dụng chứng minh và tính toán, dưới đây là các kiến thức nền tảng cần nắm:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Dạng lượng giác của Số phức và Công thức De Moivre)</div>
+        <ul>
+            <li><strong>Dạng lượng giác:</strong> Mọi số phức $z = a + bi$ ($a, b \in \mathbb{R}$) đều có thể viết dưới dạng $z = r(\cos \varphi + i \sin \varphi) = r e^{i\varphi}$, trong đó $r = \sqrt{a^2+b^2}$ là mô-đun của $z$, và $\varphi$ là góc lượng giác (argument) tạo bởi vector biểu diễn $z$ và trục thực.</li>
+            <li><strong>Công thức De Moivre:</strong> Khi tính lũy thừa bậc $n$ của một số phức ở dạng lượng giác, ta có:
+            $$ z^n = [r(\cos \varphi + i \sin \varphi)]^n = r^n (\cos(n\varphi) + i \sin(n\varphi)) = r^n e^{in\varphi} $$
+            Tính chất này cho phép ta dễ dàng tính toán lũy thừa bậc cao của số phức, là nền tảng để khảo sát căn bậc $m$ của đơn vị.</li>
+        </ul>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Căn bậc $m$ của Đơn vị)</div>
+        Trong trường số phức $\mathbb{C}$, một số phức $\omega$ được gọi là <strong>Căn bậc $m$ của đơn vị</strong> (với $m \in \mathbb{N}^*$) nếu nó thỏa mãn phương trình:
+        $$ \omega^m = 1 $$
+        Theo công thức De Moivre, có đúng $m$ căn bậc $m$ của đơn vị phân biệt, được biểu diễn dưới dạng lượng giác là:
+        $$ \omega_j = \cos\left(\frac{2j\pi}{m}\right) + i \sin\left(\frac{2j\pi}{m}\right) = e^{\frac{2j\pi i}{m}} \quad \text{với } j = 0, 1, \dots, m-1 $$
+        Trong đó, $\omega_1 = e^{\frac{2\pi i}{m}}$ được gọi là <strong>Căn nguyên thủy</strong>. Mọi căn bậc $m$ của đơn vị khác đều có thể biểu diễn thành một lũy thừa của căn nguyên thủy: $\omega_j = (\omega_1)^j$. Để ngắn gọn, ta thường ký hiệu $\omega_1$ đơn giản là $\omega$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Triệt tiêu - Tính trực giao của Căn đơn vị)</div>
+        Cho $\omega = e^{\frac{2\pi i}{m}}$ là căn nguyên thủy bậc $m$ của đơn vị. Với mọi số nguyên $k$, tổng các lũy thừa bậc $k$ của tất cả $m$ căn đơn vị mang lại kết quả như sau:
+        $$ \sum_{j=0}^{m-1} \omega^{j \cdot k} = 
+        \begin{cases} 
+        m & \text{nếu } k \equiv 0 \pmod m \\ 
+        0 & \text{nếu } k \not\equiv 0 \pmod m 
+        \end{cases} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Đặt $S = \sum_{j=0}^{m-1} (\omega^k)^j$. Dãy số trong tổng là một cấp số nhân với công bội là $q = \omega^k$. Ta xét hai trường hợp:</p>
+
+        <p><strong>Trường hợp 1:</strong> Nếu $k$ chia hết cho $m$ (tức là $k = c \cdot m$ với $c \in \mathbb{Z}$).<br>
+        Theo định nghĩa, $\omega^m = 1$. Do đó:</p>
+        $$ q = \omega^k = \omega^{cm} = (\omega^m)^c = 1^c = 1 $$
+        <p>Vì công bội $q = 1$, tất cả các số hạng trong tổng đều bằng $1$. Có tổng cộng $m$ số hạng, nên:</p>
+        $$ S = \sum_{j=0}^{m-1} 1 = m $$
+
+        <p><strong>Trường hợp 2:</strong> Nếu $k$ không chia hết cho $m$ ($k \not\equiv 0 \pmod m$).<br>
+        Khi đó $q = \omega^k \neq 1$ (vì các căn đơn vị chỉ lặp lại chu kỳ $1$ tại các bội số của $m$).<br>
+        Áp dụng công thức tính tổng cấp số nhân cho công bội $q \neq 1$:</p>
+        $$ S = \frac{1 - q^m}{1 - q} = \frac{1 - (\omega^k)^m}{1 - \omega^k} = \frac{1 - (\omega^m)^k}{1 - \omega^k} $$
+        <p>Vì $\omega^m = 1$, ta có $(\omega^m)^k = 1^k = 1$. Thay vào tử số:</p>
+        $$ S = \frac{1 - 1}{1 - \omega^k} = 0 $$
+        <p>Định lý được chứng minh. Tính chất triệt tiêu này được sử dụng để "lọc" các phần tử trong một chuỗi.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Lưới nghiệm đơn vị - Roots of Unity Filter)</div>
+        Cho một đa thức bất kỳ $P(x) = \sum_{k=0}^N a_k x^k$. Giả sử ta muốn tính tổng của các hệ số $a_k$ tại những vị trí $k$ chia cho $m$ dư $r$ (tức là $k \equiv r \pmod m$, với $0 \le r \lt m$). Ký hiệu tổng này là $S_r$. Khi đó:
+        $$ S_r = \sum_{k \equiv r \pmod m} a_k = \frac{1}{m} \sum_{j=0}^{m-1} \omega^{-jr} P(\omega^j) $$
+        Trong đó $\omega = e^{\frac{2\pi i}{m}}$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta biến đổi vế phải của phương trình. Xét tổng $\Sigma = \sum_{j=0}^{m-1} \omega^{-jr} P(\omega^j)$.<br>
+        Thay biểu thức khai triển của đa thức $P(x)$ vào tổng:</p>
+        $$ \Sigma = \sum_{j=0}^{m-1} \omega^{-jr} \left( \sum_{k=0}^N a_k (\omega^j)^k \right) $$
+        <p>Sử dụng tính chất phân phối và giao hoán của tổng hữu hạn, ta đổi thứ tự tính tổng (đưa tổng theo $k$ ra ngoài, tổng theo $j$ vào trong):</p>
+        $$ \Sigma = \sum_{k=0}^N a_k \left( \sum_{j=0}^{m-1} \omega^{-jr} \omega^{jk} \right) = \sum_{k=0}^N a_k \left( \sum_{j=0}^{m-1} \omega^{j(k-r)} \right) $$
+        <p>Bây giờ, ta quan sát tổng ở bên trong dấu ngoặc: $\sum_{j=0}^{m-1} \omega^{j(k-r)}$.<br>
+        Theo <strong>Bổ đề Triệt tiêu (Định lý 1.1)</strong>:</p>
+        <ul>
+            <li> Nếu $k - r \equiv 0 \pmod m$ (nghĩa là $k \equiv r \pmod m$), tổng bên trong bằng $m$.</li>
+            <li> Nếu $k - r \not\equiv 0 \pmod m$ (nghĩa là $k \not\equiv r \pmod m$), tổng bên trong bằng $0$.</li>
+        </ul>
+
+        <p>Do đó, trong tổng $\Sigma$, các hệ số $a_k$ với $k \not\equiv r \pmod m$ đều bị nhân với $0$. Những hệ số $a_k$ thỏa mãn $k \equiv r \pmod m$ sẽ được nhân với $m$. <br>
+        Ta thu được:</p>
+        $$ \Sigma = \sum_{k \equiv r \pmod m} a_k \cdot m = m \cdot S_r $$
+        <p>Chia cả hai vế cho $m$, ta có $S_r = \frac{1}{m} \Sigma$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Tổ hợp trạng thái đồng dư)</div>
+        Từ hai chữ số $\{1, 2\}$, người ta lập các dãy số có độ dài chính xác bằng $N$. Hỏi có tất cả bao nhiêu dãy số thỏa mãn điều kiện: Tổng các chữ số trong dãy là một số chia hết cho $3$?
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc đếm trực tiếp yêu cầu giải hệ phương trình Diophantine và cộng các hệ số nhị thức rời rạc thường phức tạp. Ta sẽ sử dụng Hàm sinh (Generating Functions) kết hợp Lưới nghiệm đơn vị.</p>
+
+        <p>Mỗi vị trí trong dãy số có 2 lựa chọn: chữ số 1 hoặc chữ số 2.<br>
+        Hàm sinh biểu diễn sự lựa chọn cho <strong>một</strong> vị trí là:</p>
+        $$ f(x) = x^1 + x^2 = x + x^2 $$
+        <p>Vì dãy số có $N$ vị trí độc lập, hàm sinh cho tổng các chữ số của toàn bộ dãy là:</p>
+        $$ P(x) = (f(x))^N = (x + x^2)^N $$
+        <p>Khi khai triển $P(x) = \sum_{k=N}^{2N} a_k x^k$, hệ số $a_k$ chính là số lượng các dãy số có độ dài $N$ mà tổng các chữ số bằng đúng $k$.<br>
+        Yêu cầu của bài toán là tổng các chữ số chia hết cho 3. Điều này tương đương với việc tìm tổng của các hệ số $a_k$ thỏa mãn $k \equiv 0 \pmod 3$.</p>
+
+        <p>Áp dụng <strong>Định lý Lưới nghiệm đơn vị (Định lý 1.2)</strong> với $m = 3$ và $r = 0$:</p>
+        $$ S_0 = \frac{1}{3} \sum_{j=0}^{2} \omega^{-0 \cdot j} P(\omega^j) = \frac{1}{3} \left( P(\omega^0) + P(\omega^1) + P(\omega^2) \right) $$
+        <p>Trong đó $\omega = e^{\frac{2\pi i}{3}}$ là căn bậc 3 của đơn vị. Nó thỏa mãn $\omega^3 = 1$ và $1 + \omega + \omega^2 = 0$.</p>
+
+        <p>Ta tính từng giá trị của $P(x)$ tại các nghiệm:</p>
+        <ol>
+            <li> <strong>Tại $j=0$:</strong> $\omega^0 = 1$.
+            $$ P(1) = (1 + 1^2)^N = 2^N $$</li>
+            <li> <strong>Tại $j=1$:</strong> $\omega^1 = \omega$.<br>
+            Sử dụng hằng đẳng thức $\omega + \omega^2 = -1$:
+            $$ P(\omega) = (\omega + \omega^2)^N = (-1)^N $$</li>
+            <li> <strong>Tại $j=2$:</strong> $\omega^2$.
+            $$ P(\omega^2) = (\omega^2 + \omega^4)^N $$
+            Vì $\omega^4 = \omega^3 \cdot \omega = 1 \cdot \omega = \omega$, ta có:
+            $$ P(\omega^2) = (\omega^2 + \omega)^N = (-1)^N $$</li>
+        </ol>
+
+        <p>Thay các giá trị này vào công thức của $S_0$:</p>
+        $$ S_0 = \frac{1}{3} \left( 2^N + (-1)^N + (-1)^N \right) = \frac{2^N + 2(-1)^N}{3} $$
+        <p>Vậy, số lượng các dãy số thỏa mãn là $\frac{2^N + 2(-1)^N}{3}$. Bài toán được giải quyết thông qua biểu thức giải tích đóng thay cho hệ thức truy hồi.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Cyprus National Olympiad - Rút gọn Tổng Tổ hợp Cắt khoảng)</div>
+        Cho $n$ là một số nguyên dương. Hãy tính giá trị của tổng tổ hợp sau:
+        $$ S = \binom{n}{0} + \binom{n}{3} + \binom{n}{6} + \dots = \sum_{k \ge 0} \binom{n}{3k} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $P(x) = (1+x)^n$. Khai triển nhị thức Newton của đa thức này là:</p>
+        $$ P(x) = \sum_{k=0}^n \binom{n}{k} x^k $$
+        <p>Ta cần tính tổng các hệ số tại các vị trí $k \equiv 0 \pmod 3$.<br>
+        Áp dụng Định lý Lưới nghiệm đơn vị với $m=3, r=0$, ta có:</p>
+        $$ S = \frac{1}{3} \left( P(1) + P(\omega) + P(\omega^2) \right) $$
+        <p>Với $\omega = \cos\left(\frac{2\pi}{3}\right) + i \sin\left(\frac{2\pi}{3}\right) = -\frac{1}{2} + i\frac{\sqrt{3}}{2}$.<br>
+        Ta tính các giá trị của $P$:</p>
+        <ol>
+            <li> $P(1) = (1+1)^n = 2^n$.</li>
+            <li> $P(\omega) = (1+\omega)^n$. <br>
+            Vì $1 + \omega + \omega^2 = 0 \implies 1+\omega = -\omega^2$.<br>
+            Do đó $P(\omega) = (-\omega^2)^n = (-1)^n \omega^{2n}$.</li>
+            <li> $P(\omega^2) = (1+\omega^2)^n$. <br>
+            Tương tự, $1+\omega^2 = -\omega$.<br>
+            Do đó $P(\omega^2) = (-\omega)^n = (-1)^n \omega^n$.</li>
+        </ol>
+
+        <p>Cộng hai giá trị phức lại với nhau:</p>
+        $$ P(\omega) + P(\omega^2) = (-1)^n (\omega^{2n} + \omega^n) $$
+        <p>Ta sử dụng công thức Euler:<br>
+        $\omega^n = \cos\left(\frac{2n\pi}{3}\right) + i \sin\left(\frac{2n\pi}{3}\right)$<br>
+        $\omega^{2n} = \cos\left(\frac{4n\pi}{3}\right) + i \sin\left(\frac{4n\pi}{3}\right) = \cos\left(\frac{2n\pi}{3}\right) - i \sin\left(\frac{2n\pi}{3}\right)$<br>
+        Cộng lại, phần ảo bị triệt tiêu:</p>
+        $$ \omega^n + \omega^{2n} = 2 \cos\left(\frac{2n\pi}{3}\right) $$
+        <p>Nhân thêm $(-1)^n = \cos(n\pi)$ (vì $\sin(n\pi) = 0$):</p>
+        $$ P(\omega) + P(\omega^2) = 2 \cos(n\pi) \cos\left(\frac{2n\pi}{3}\right) $$
+        <p>Áp dụng công thức biến đổi tích thành tổng: $\cos A \cos B = \frac{1}{2} [\cos(A-B) + \cos(A+B)]$.</p>
+        $$ 2 \cos(n\pi) \cos\left(\frac{2n\pi}{3}\right) = \cos\left(n\pi - \frac{2n\pi}{3}\right) + \cos\left(n\pi + \frac{2n\pi}{3}\right) = \cos\left(\frac{n\pi}{3}\right) + \cos\left(\frac{5n\pi}{3}\right) $$
+        <p>Vì $\cos\left(\frac{5n\pi}{3}\right) = \cos\left(2n\pi - \frac{n\pi}{3}\right) = \cos\left(\frac{n\pi}{3}\right)$.<br>
+        Suy ra $P(\omega) + P(\omega^2) = 2 \cos\left(\frac{n\pi}{3}\right)$.</p>
+
+        <p>Thay tất cả vào công thức Lưới nghiệm đơn vị:</p>
+        $$ S = \frac{1}{3} \left( 2^n + 2 \cos\left(\frac{n\pi}{3}\right) \right) $$
+        <p>Bài toán được chứng minh bằng giải tích phức.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Canadian Mathematical Olympiad (CMO) - Tổng Tổ hợp Module 4)</div>
+        Chứng minh rằng tổng của các hệ số nhị thức có dạng $\binom{n}{4k}$ (với $k$ là số nguyên không âm) luôn có thể biểu diễn dưới dạng:
+        $$ \sum_{k=0}^{\lfloor n/4 \rfloor} \binom{n}{4k} = 2^{n-2} + 2^{\frac{n}{2}-1} \cos\left(\frac{n\pi}{4}\right) $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét đa thức $P(x) = (1+x)^n = \sum_{k=0}^n \binom{n}{k} x^k$.<br>
+        Yêu cầu bài toán là lọc các hệ số $a_k$ thỏa mãn $k \equiv 0 \pmod 4$.<br>
+        Căn bậc 4 của đơn vị là các nghiệm của phương trình $\omega^4 = 1$. Có 4 nghiệm phân biệt là: $1, -1, i, -i$.<br>
+        Áp dụng Định lý Lưới nghiệm đơn vị với $m=4, r=0$:</p>
+        $$ S = \frac{1}{4} \left( P(1) + P(-1) + P(i) + P(-i) \right) $$
+
+        <p>Ta tính các thành phần:</p>
+        <ol>
+            <li> $P(1) = (1+1)^n = 2^n$.</li>
+            <li> $P(-1) = (1-1)^n = 0$ (với mọi $n \ge 1$).</li>
+            <li> Xét $P(i) = (1+i)^n$. <br>
+            Để tính lũy thừa của số phức, ta chuyển $1+i$ sang dạng lượng giác:<br>
+            Mô-đun của $1+i$ là $\sqrt{1^2 + 1^2} = \sqrt{2}$. Góc (Argument) là $\frac{\pi}{4}$.
+            $$ 1+i = \sqrt{2} \left( \cos\frac{\pi}{4} + i \sin\frac{\pi}{4} \right) = \sqrt{2} \cdot e^{\frac{i\pi}{4}} $$
+            Theo công thức De Moivre:
+            $$ P(i) = (1+i)^n = (\sqrt{2})^n e^{\frac{in\pi}{4}} = 2^{\frac{n}{2}} \left( \cos\frac{n\pi}{4} + i \sin\frac{n\pi}{4} \right) $$</li>
+            <li> Xét $P(-i) = (1-i)^n$.<br>
+            Tương tự, $1-i$ có mô-đun $\sqrt{2}$ và góc $-\frac{\pi}{4}$.
+            $$ P(-i) = 2^{\frac{n}{2}} \left( \cos\left(-\frac{n\pi}{4}\right) + i \sin\left(-\frac{n\pi}{4}\right) \right) = 2^{\frac{n}{2}} \left( \cos\frac{n\pi}{4} - i \sin\frac{n\pi}{4} \right) $$</li>
+        </ol>
+
+        <p>Cộng tất cả các giá trị lại:</p>
+        $$ P(1) + P(-1) + P(i) + P(-i) = 2^n + 0 + 2^{\frac{n}{2}} \left( 2 \cos\frac{n\pi}{4} \right) = 2^n + 2^{\frac{n}{2}+1} \cos\frac{n\pi}{4} $$
+        <p>Chia cho 4 (tức là nhân với $2^{-2}$):</p>
+        $$ S = \frac{1}{4} \left( 2^n + 2^{\frac{n}{2}+1} \cos\frac{n\pi}{4} \right) = 2^{n-2} + 2^{\frac{n}{2}-1} \cos\frac{n\pi}{4} $$
+        <p>Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (German Mathematical Olympiad (BWM) - Dãy số chia hết hoàn hảo)</div>
+        Người ta lập các dãy số có độ dài $n$ ($n \ge 1$) từ các chữ số thuộc tập $X = \{0, 1, 2\}$. Có bao nhiêu dãy số được tạo thành sao cho tổng tất cả các chữ số trong dãy chia hết cho 3?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi vị trí trong dãy có 3 lựa chọn là $0, 1, 2$. <br>
+        Hàm sinh biểu diễn cho một vị trí là:</p>
+        $$ f(x) = x^0 + x^1 + x^2 = 1 + x + x^2 $$
+        <p>Hàm sinh cho tổng của $n$ vị trí độc lập là đa thức:</p>
+        $$ P(x) = (f(x))^n = (1 + x + x^2)^n $$
+        <p>Ta cần tính tổng các hệ số tại các vị trí $k \equiv 0 \pmod 3$.<br>
+        Sử dụng Định lý Lưới nghiệm đơn vị với $m=3, r=0$ và $\omega = e^{\frac{2\pi i}{3}}$:</p>
+        $$ S = \frac{1}{3} \left( P(1) + P(\omega) + P(\omega^2) \right) $$
+
+        <p>Ta tính các giá trị của đa thức:</p>
+        <ol>
+            <li> <strong>Tại $x = 1$:</strong>
+            $$ P(1) = (1 + 1 + 1^2)^n = 3^n $$</li>
+            <li> <strong>Tại $x = \omega$:</strong><br>
+            Vì $\omega$ là nghiệm của phương trình $x^3 - 1 = 0 \implies (x-1)(x^2+x+1) = 0$.<br>
+            Do $\omega \neq 1$, nên biểu thức $1 + \omega + \omega^2$ bắt buộc phải bằng 0.
+            $$ P(\omega) = (1 + \omega + \omega^2)^n = 0^n = 0 $$</li>
+            <li> <strong>Tại $x = \omega^2$:</strong><br>
+            Tương tự, $\omega^2$ cũng là một nghiệm nguyên thủy khác 1 của đơn vị bậc 3. Do đó nó cũng thỏa mãn $1 + (\omega^2) + (\omega^2)^2 = 1 + \omega^2 + \omega^4 = 1 + \omega^2 + \omega = 0$.
+            $$ P(\omega^2) = 0^n = 0 $$</li>
+        </ol>
+
+        <p>Thay các giá trị này vào công thức $S$:</p>
+        $$ S = \frac{1}{3} \left( 3^n + 0 + 0 \right) = \frac{3^n}{3} = 3^{n-1} $$
+        <p>Kết quả là một số nguyên. Tổng số cấu hình (tất cả các dãy) là $3^n$. Kỹ thuật Lọc qua lưới nghiệm đơn vị cho thấy các dãy số có tổng chia hết cho 3 chiếm đúng $1/3$ tổng không gian trạng thái.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

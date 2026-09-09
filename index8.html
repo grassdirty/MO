@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chuyên đề: Đa thức Chebyshev và tính chất cực trị Minimax</title>
+    <title>Chuyên đề: Đại số - Đa thức bất khả quy và Tiêu chuẩn Eisenstein</title>
     
     <!-- Cấu hình MathJax -->
     <script>
@@ -117,253 +117,269 @@
 </head>
 <body>
 
-    <h1>CHUYÊN ĐỀ: ĐA THỨC TRONG TỔ HỢP <br> ĐA THỨC CHEBYSHEV VÀ TÍNH CHẤT CỰC TRỊ MINIMAX</h1>
-    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đa thức</div>
+    <h1>CHUYÊN ĐỀ: ĐA THỨC BẤT KHẢ QUY <br> VÀ TIÊU CHUẨN EISENSTEIN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đại số</div>
 
     <div class="abstract">
-        <strong>Tóm tắt:</strong> Khảo sát độ lớn của đa thức trên một khoảng giới hạn là nền tảng của Lý thuyết Xấp xỉ. Chuyên đề này giới thiệu Đa thức Chebyshev loại I, thiết lập biểu diễn lượng giác và dạng hiển đại số. Ứng dụng trọng tâm là việc chứng minh Định lý Minimax (đánh giá chuẩn supremum của đa thức đơn khởi), khảo sát tính giao hoán qua phép hợp đa thức, và giải quyết các phương trình hàm trên miền số thực.
+        <strong>Tóm tắt:</strong> Khảo sát tính bất khả quy của đa thức là một chủ đề quan trọng trong lý thuyết vành đa thức. Chuyên đề này hệ thống hóa các khái niệm cơ bản, Bổ đề Gauss và Tiêu chuẩn Eisenstein. Các bài toán tập trung vào phương pháp tịnh tiến biến, sử dụng tính phân tích duy nhất trên $\mathbb{Z}[x]$, xét modulo $p$, và đánh giá module của nghiệm phức để chứng minh một đa thức không thể phân tích thành các nhân tử có bậc nhỏ hơn.
     </div>
 
-    <h2>0. Kiến thức bổ trợ: Hệ thức truy hồi tuyến tính cấp 2</h2>
-    <p><i>Để hiểu được nguồn gốc của dạng hiển đại số của đa thức Chebyshev, học sinh cần nắm được cách giải hệ thức truy hồi tuyến tính. Đây là phần kiến thức thường được dạy chuyên sâu ở bậc Đại học hoặc chuyên Toán.</i></p>
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong chương trình THPT, học sinh thường xét đa thức với hệ số thực. Tuy nhiên, tính "bất khả quy" phụ thuộc rất lớn vào tập hợp chứa các hệ số. Dưới đây là các định nghĩa cơ bản về vành đa thức và nội dung của đa thức:</i></p>
 
     <div class="box definition">
-        <div class="box-title">Định nghĩa 0.1 (Hệ thức truy hồi tuyến tính thuần nhất cấp 2)</div>
-        Một dãy số $(u_n)$ được gọi là thỏa mãn hệ thức truy hồi tuyến tính thuần nhất cấp 2 nếu có các hằng số $a, b$ ($b \neq 0$) sao cho:
-        $$ u_{n+1} = a u_n + b u_{n-1} \quad \forall n \ge 1 $$
+        <div class="box-title">Khái niệm 0.1 (Vành đa thức và Đa thức đơn khởi)</div>
+        <ul>
+            <li><strong>Vành đa thức $\mathbb{Z}[x]$ và $\mathbb{Q}[x]$:</strong> $\mathbb{Z}[x]$ là tập hợp tất cả các đa thức có hệ số là số nguyên. $\mathbb{Q}[x]$ là tập hợp tất cả các đa thức có hệ số là số hữu tỉ. Khả năng phân tích một đa thức thành nhân tử trên $\mathbb{Z}[x]$ thường khó khăn hơn so với trên $\mathbb{Q}[x]$, nhưng Bổ đề Gauss chỉ ra mối liên hệ chặt chẽ giữa chúng.</li>
+            <li><strong>Đa thức đơn khởi (Monic Polynomial):</strong> Là đa thức có hệ số của bậc cao nhất bằng $1$. Ví dụ: $P(x) = x^3 - 2x + 1$.</li>
+        </ul>
     </div>
 
-    <div class="box theorem">
-        <div class="box-title">Định lý 0.1 (Phương trình đặc trưng)</div>
-        Cho dãy $(u_n)$ thỏa mãn $u_{n+1} = a u_n + b u_{n-1}$. Phương trình $\lambda^2 - a\lambda - b = 0$ được gọi là <strong>phương trình đặc trưng</strong> của dãy. <br>
-        Nếu phương trình này có hai nghiệm phân biệt $\lambda_1, \lambda_2$, thì công thức tổng quát của dãy số có dạng:
-        $$ u_n = c_1 \lambda_1^n + c_2 \lambda_2^n $$
-        trong đó $c_1, c_2$ là các hằng số được xác định bởi hai giá trị ban đầu $u_0, u_1$.
-    </div>
-    <div class="proof">
-        <div class="proof-title">Chứng minh.</div>
-        <p>Ta tìm các nghiệm của hệ thức dưới dạng $u_n = \lambda^n$ (với $\lambda \neq 0$). Thay vào hệ thức truy hồi, ta có:</p>
-        $$ \lambda^{n+1} = a \lambda^n + b \lambda^{n-1} \implies \lambda^{n-1} (\lambda^2 - a\lambda - b) = 0 $$
-        <p>Vì $\lambda \neq 0$, ta phải có $\lambda^2 - a\lambda - b = 0$. Giả sử phương trình này có hai nghiệm phân biệt $\lambda_1$ và $\lambda_2$. Khi đó, các dãy $(\lambda_1^n)$ và $(\lambda_2^n)$ đều thỏa mãn hệ thức truy hồi.</p>
-        <p>Do tính chất tuyến tính, mọi tổ hợp tuyến tính của hai nghiệm này cũng là nghiệm. Tức là $u_n = c_1 \lambda_1^n + c_2 \lambda_2^n$ thỏa mãn hệ thức với mọi hằng số $c_1, c_2$.</p>
-        <p>Với $u_0, u_1$ cho trước, ta có hệ phương trình:
-        $$ \begin{cases} c_1 + c_2 = u_0 \\ c_1 \lambda_1 + c_2 \lambda_2 = u_1 \end{cases} $$
-        Hệ này có định thức là $\lambda_2 - \lambda_1 \neq 0$, do đó luôn tồn tại duy nhất cặp nghiệm $(c_1, c_2)$. Định lý được chứng minh.</p>
-        <div class="qed">$\square$</div>
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.2 (Nội dung của Đa thức - Content)</div>
+        Cho đa thức $P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0 \in \mathbb{Z}[x]$. <strong>Nội dung</strong> của đa thức $P(x)$, ký hiệu là $c(P)$, được định nghĩa là ước chung lớn nhất của tất cả các hệ số của nó:
+        $$ c(P) = \gcd(a_n, a_{n-1}, \dots, a_1, a_0) $$
+        Một đa thức có nội dung bằng $1$ được gọi là đa thức <strong>nguyên thủy</strong> (primitive polynomial).
     </div>
 
     <h2>1. Kiến thức nền tảng</h2>
 
     <div class="box definition">
-        <div class="box-title">Định nghĩa 1.1 (Đa thức Chebyshev loại I)</div>
-        Dãy đa thức Chebyshev loại I, ký hiệu là $T_n(x)$, được định nghĩa bằng hệ thức truy hồi tuyến tính:
-        $$ T_0(x) = 1, \quad T_1(x) = x $$
-        $$ T_{n+1}(x) = 2x T_n(x) - T_{n-1}(x) \quad \forall n \ge 1 $$
-        Bằng quy nạp, ta thấy $T_n(x)$ là một đa thức bậc $n$ với hệ số nguyên. Với $n \ge 1$, hệ số cao nhất (leading coefficient) của $T_n(x)$ là $2^{n-1}$.
+        <div class="box-title">Định nghĩa 1.1 (Đa thức bất khả quy)</div>
+        Cho vành giao hoán $R$ (thường xét $R = \mathbb{Z}$ hoặc $R = \mathbb{Q}$). Một đa thức $P(x) \in R[x]$ có bậc $n \ge 1$ được gọi là <strong>bất khả quy</strong> trên $R[x]$ nếu $P(x)$ không thể biểu diễn dưới dạng tích của hai đa thức $A(x), B(x) \in R[x]$ sao cho $\deg(A) \ge 1$ và $\deg(B) \ge 1$.<br>
+        Ngược lại, nếu tồn tại phân tích như vậy, $P(x)$ được gọi là đa thức khả quy trên $R[x]$.
     </div>
 
     <div class="box theorem">
-        <div class="box-title">Định lý 1.1 (Biểu diễn Lượng giác và Dạng hiển)</div>
-        Với mọi số nguyên $n \ge 0$, đa thức $T_n(x)$ thỏa mãn đẳng thức lượng giác:
-        $$ T_n(\cos \theta) = \cos(n\theta) \quad \forall \theta \in \mathbb{R} $$
-        Hệ quả, trên miền $|x| \le 1$, ta có $T_n(x) = \cos(n \arccos x)$.<br>
-        Trên toàn bộ miền thực $\mathbb{R}$, đa thức có biểu diễn dạng hiển:
-        $$ T_n(x) = \frac{1}{2} \left[ (x + \sqrt{x^2 - 1})^n + (x - \sqrt{x^2 - 1})^n \right] $$
+        <div class="box-title">Định lý 1.1 (Bổ đề Gauss)</div>
+        Nếu một đa thức $P(x) \in \mathbb{Z}[x]$ là bất khả quy trên $\mathbb{Z}[x]$ thì nó cũng bất khả quy trên $\mathbb{Q}[x]$. <br>
+        Nói cách khác, nếu $P(x)$ có thể phân tích thành tích của hai đa thức có hệ số hữu tỉ (với bậc $\ge 1$), thì $P(x)$ cũng có thể phân tích thành tích của hai đa thức có hệ số nguyên với các bậc tương ứng.
     </div>
-    
+
     <div class="proof">
         <div class="proof-title">Chứng minh.</div>
-        <p><b>1. Chứng minh biểu diễn lượng giác:</b> Sử dụng phương pháp quy nạp theo $n$.</p>
-        <p>Với $n=0$: $T_0(\cos \theta) = 1 = \cos(0 \cdot \theta)$.<br>
-        Với $n=1$: $T_1(\cos \theta) = \cos \theta = \cos(1 \cdot \theta)$.</p>
-        <p>Giả sử định lý đúng đến $n$. Xét $n+1$:<br>
-        Theo công thức biến đổi tổng thành tích của hàm cosin:</p>
-        $$ \cos((n+1)\theta) + \cos((n-1)\theta) = 2 \cos \theta \cos(n\theta) $$
-        $$ \implies \cos((n+1)\theta) = 2 \cos \theta \cos(n\theta) - \cos((n-1)\theta) $$
-        <p>Theo giả thiết quy nạp, đẳng thức trên trở thành:</p>
-        $$ \cos((n+1)\theta) = 2x T_n(x) - T_{n-1}(x) = T_{n+1}(x) $$
-        <p>với $x = \cos \theta$. Do hai đa thức $T_n(x)$ và $\cos(n \arccos x)$ nhận cùng giá trị trên đoạn $[-1, 1]$ (chứa vô số điểm), chúng đồng nhất với nhau trên tập số thực.</p>
-        
-        <p><b>2. Chứng minh dạng hiển đại số:</b></p>
-        <p>Cố định $x$, ta coi $T_n(x)$ là một dãy số theo $n$. Theo hệ thức truy hồi $T_{n+1}(x) - 2x T_n(x) + T_{n-1}(x) = 0$, phương trình đặc trưng là:</p>
-        $$ \lambda^2 - 2x\lambda + 1 = 0 $$
-        <p>Giải phương trình này, ta có biệt thức $\Delta' = x^2 - 1$. Hai nghiệm của phương trình đặc trưng là $\lambda_1 = x + \sqrt{x^2 - 1}$ và $\lambda_2 = x - \sqrt{x^2 - 1}$.</p>
-        <p>Theo Định lý 0.1, công thức tổng quát của đa thức là:</p>
-        $$ T_n(x) = c_1 (x + \sqrt{x^2 - 1})^n + c_2 (x - \sqrt{x^2 - 1})^n $$
-        <p>Sử dụng các giá trị ban đầu $T_0(x) = 1$ và $T_1(x) = x$, ta thiết lập hệ phương trình:</p>
-        $$ \begin{cases} c_1 + c_2 = 1 \\ c_1 (x + \sqrt{x^2 - 1}) + c_2 (x - \sqrt{x^2 - 1}) = x \end{cases} $$
-        <p>Rút $c_2 = 1 - c_1$ thế vào phương trình thứ hai:</p>
-        $$ c_1 x + c_1 \sqrt{x^2 - 1} + x - c_1 x - \sqrt{x^2 - 1} + c_1 \sqrt{x^2 - 1} = x $$
-        $$ \implies 2 c_1 \sqrt{x^2 - 1} = \sqrt{x^2 - 1} \implies c_1 = \frac{1}{2} $$
-        <p>Suy ra $c_2 = 1 - \frac{1}{2} = \frac{1}{2}$. Thay $c_1, c_2$ vào công thức tổng quát, ta thu được biểu diễn dạng hiển của đa thức Chebyshev. Định lý được chứng minh.</p>
+        <p>Bổ đề Gauss dựa trên tính chất quan trọng sau: Với hai đa thức $A(x), B(x) \in \mathbb{Z}[x]$, ta luôn có $c(AB) = c(A)c(B)$.</p>
+        <p><em>Chứng minh bổ đề $c(AB) = c(A)c(B)$:</em> Giả sử $A(x)$ và $B(x)$ là các đa thức nguyên thủy ($c(A) = c(B) = 1$). Ta cần chứng minh $c(AB) = 1$. Giả sử ngược lại, tồn tại số nguyên tố $p$ chia hết $c(AB)$.<br>
+        Gọi $a_i$ là hệ số khác 0 đầu tiên của $A(x)$ không chia hết cho $p$, và $b_j$ là hệ số khác 0 đầu tiên của $B(x)$ không chia hết cho $p$.<br>
+        Xét hệ số của $x^{i+j}$ trong đa thức $AB$:<br>
+        $$ c_{i+j} = a_i b_j + \sum_{k \lt i} a_k b_{i+j-k} + \sum_{m \lt j} a_{i+j-m} b_m $$<br>
+        Theo cách chọn $i$ và $j$, các hệ số $a_k$ ($k \lt i$) và $b_m$ ($m \lt j$) đều chia hết cho $p$. Đồng thời, vì $p \mid c(AB)$ nên $p \mid c_{i+j}$. Do đó, bắt buộc $p \mid a_i b_j$. Vì $p$ là số nguyên tố, điều này kéo theo $p \mid a_i$ hoặc $p \mid b_j$, gây ra mâu thuẫn. Vậy $c(AB) = 1$.<br>
+        Rút các nhân tử chung ra ngoài, ta thu được đẳng thức tổng quát: $c(AB) = c(A)c(B)$.</p>
+
+        <p><strong>Quay lại chứng minh Định lý:</strong><br>
+        Giả sử $P(x) = A_1(x)B_1(x)$ với $A_1, B_1 \in \mathbb{Q}[x]$. Ta có thể nhân hai đa thức này với các số nguyên $a, b$ để khử mẫu số: $aA_1(x) = A(x) \in \mathbb{Z}[x]$ và $bB_1(x) = B(x) \in \mathbb{Z}[x]$.<br>
+        Khi đó $abP(x) = A(x)B(x)$. Lấy nội dung hai vế: $ab \cdot c(P) = c(A)c(B)$.<br>
+        Đặt $A(x) = c(A)A_0(x)$ và $B(x) = c(B)B_0(x)$, trong đó $A_0, B_0 \in \mathbb{Z}[x]$ có nội dung bằng 1.<br>
+        Thay vào phương trình: $abP(x) = c(A)c(B) A_0(x) B_0(x) = ab \cdot c(P) A_0(x) B_0(x)$.<br>
+        Chia hai vế cho $ab$, ta thu được $P(x) = c(P) A_0(x) B_0(x)$. Đây là một phân tích của $P(x)$ trên $\mathbb{Z}[x]$ với các bậc tương ứng. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tiêu chuẩn Eisenstein)</div>
+        Cho đa thức $P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0$ với các hệ số $a_i \in \mathbb{Z}$.<br>
+        Nếu tồn tại một số nguyên tố $p$ thỏa mãn đồng thời ba điều kiện sau:
+        <ol>
+            <li> $p \nmid a_n$ (Hệ số cao nhất không chia hết cho $p$).</li>
+            <li> $p \mid a_i$ với mọi $i = 0, 1, \dots, n-1$ (Các hệ số còn lại chia hết cho $p$).</li>
+            <li> $p^2 \nmid a_0$ (Hệ số tự do không chia hết cho $p^2$).</li>
+        </ol>
+        Thì đa thức $P(x)$ bất khả quy trên $\mathbb{Z}[x]$ (và do đó bất khả quy trên $\mathbb{Q}[x]$).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử phản chứng $P(x) = A(x)B(x)$ với $A(x) = \sum_{i=0}^k c_i x^i$ và $B(x) = \sum_{j=0}^m d_j x^j$, trong đó $k, m \ge 1$ và $k+m = n$.<br>
+        Hệ số tự do $a_0 = c_0 d_0$. Do $p \mid a_0$ nhưng $p^2 \nmid a_0$, đúng một trong hai số $c_0, d_0$ chia hết cho $p$. Giả sử $p \mid c_0$ và $p \nmid d_0$.<br>
+        Vì $p \nmid a_n = c_k d_m$, ta có $p \nmid c_k$. <br>
+        Do đó, tồn tại một chỉ số $r \le k \lt n$ nhỏ nhất sao cho $p \nmid c_r$.<br>
+        Hệ số $a_r$ của đa thức $P(x)$ được tính bởi:</p>
+        $$ a_r = c_r d_0 + c_{r-1} d_1 + c_{r-2} d_2 + \dots + c_0 d_r $$
+        <p>Theo giả thiết chọn $r$, các số $c_0, c_1, \dots, c_{r-1}$ đều chia hết cho $p$.<br>
+        Đồng thời, theo điều kiện của tiêu chuẩn Eisenstein, $p \mid a_r$ (do $r \lt n$).<br>
+        Từ phương trình trên, suy ra $p \mid c_r d_0$.<br>
+        Vì $p$ là số nguyên tố, điều này yêu cầu $p \mid c_r$ hoặc $p \mid d_0$. <br>
+        Tuy nhiên, ta đã có $p \nmid c_r$ và $p \nmid d_0$, gây ra mâu thuẫn.<br>
+        Giả thiết phản chứng là sai. Vậy $P(x)$ bất khả quy.</p>
         <div class="qed">$\square$</div>
     </div>
 
     <h2>2. Bài toán cốt lõi</h2>
 
     <div class="box problem">
-        <div class="box-title">Bài toán 2.1 (Định lý Cực đại - Cực tiểu (Minimax Theorem))</div>
-        Cho $P(x)$ là một đa thức đơn khởi (hệ số cao nhất bằng 1) có bậc $n \ge 1$. Chứng minh rằng giá trị lớn nhất của $|P(x)|$ trên đoạn $[-1, 1]$ không thể nhỏ hơn $\frac{1}{2^{n-1}}$. Tức là:
-        $$ \max_{x \in [-1, 1]} |P(x)| \ge \frac{1}{2^{n-1}} $$
+        <div class="box-title">Bài toán 2.1 (IMO 1993, Bài 1 - Khảo sát nghiệm phức)</div>
+        Cho $n \gt 1$ là một số nguyên. Chứng minh rằng đa thức $P(x) = x^n + 5x^{n-1} + 3$ không thể phân tích được thành tích của hai đa thức có hệ số nguyên và bậc lớn hơn hoặc bằng 1.
     </div>
 
     <div class="solution">
         <div class="solution-title">Lời giải.</div>
-        <p>Đa thức Chebyshev $T_n(x)$ có hệ số cao nhất là $2^{n-1}$. Ta định nghĩa đa thức Chebyshev đơn khởi tương ứng:</p>
-        $$ C_n(x) = \frac{1}{2^{n-1}} T_n(x) $$
-        <p>Đa thức $C_n(x)$ có bậc $n$ và hệ số cao nhất bằng 1.<br>
-        Vì $T_n(\cos \theta) = \cos(n\theta)$, giá trị của $T_n(x)$ dao động trong đoạn $[-1, 1]$ khi $x \in [-1, 1]$.<br>
-        Do đó, giá trị lớn nhất của $|C_n(x)|$ trên $[-1, 1]$ là $\frac{1}{2^{n-1}}$.</p>
-        
-        <p>Ta xác định các điểm cực trị của $C_n(x)$ trên đoạn $[-1, 1]$. Đa thức đạt cực trị khi $\cos(n\theta) = \pm 1$, tức là $n\theta = k\pi \implies \theta_k = \frac{k\pi}{n}$ với $k = 0, 1, \dots, n$.<br>
-        Tại các điểm $x_k = \cos \frac{k\pi}{n}$, ta có:</p>
-        $$ C_n(x_k) = \frac{1}{2^{n-1}} \cos(k\pi) = \frac{(-1)^k}{2^{n-1}} $$
-        <p>Có chính xác $n+1$ điểm $x_0 \gt x_1 \gt \dots \gt x_n$ trên đoạn $[-1, 1]$ mà tại đó $C_n(x)$ đan dấu và đạt trị tuyệt đối lớn nhất bằng $\frac{1}{2^{n-1}}$.</p>
+        <p>Giả sử phản chứng $P(x) = A(x)B(x)$, trong đó $A(x)$ và $B(x)$ là các đa thức hệ số nguyên có bậc $\ge 1$.<br>
+        Cả hai đa thức $A(x)$ và $B(x)$ đều có thể coi là đa thức đơn khởi (hệ số cao nhất bằng 1) hoặc cả hai có hệ số cao nhất là -1 (trong trường hợp đó ta đổi dấu cả hai). Giả sử chúng là đơn khởi.</p>
 
-        <p>Giả sử phản chứng tồn tại một đa thức đơn khởi $P(x)$ bậc $n$ sao cho:</p>
-        $$ \max_{x \in [-1, 1]} |P(x)| \lt \frac{1}{2^{n-1}} $$
-        <p>Xét đa thức hiệu: $H(x) = C_n(x) - P(x)$.<br>
-        Vì cả $C_n(x)$ và $P(x)$ đều là đa thức bậc $n$ đơn khởi, hệ số $x^n$ của chúng triệt tiêu nhau. Suy ra $\deg H(x) \le n-1$.<br>
-        Ta khảo sát dấu của $H(x)$ tại $n+1$ điểm $x_k$:</p>
-        $$ H(x_k) = C_n(x_k) - P(x_k) = \frac{(-1)^k}{2^{n-1}} - P(x_k) $$
-        <p>Theo giả thiết phản chứng, $|P(x_k)| \lt \frac{1}{2^{n-1}}$. Do đó, dấu của $H(x_k)$ bị quyết định bởi phần tử thứ nhất:</p>
-        <ul>
-            <li> Nếu $k$ chẵn, $C_n(x_k) = \frac{1}{2^{n-1}} \gt P(x_k) \implies H(x_k) \gt 0$.</li>
-            <li> Nếu $k$ lẻ, $C_n(x_k) = -\frac{1}{2^{n-1}} \lt P(x_k) \implies H(x_k) \lt 0$.</li>
-        </ul>
-        <p>Dãy giá trị $H(x_0), H(x_1), \dots, H(x_n)$ đan dấu liên tục $n$ lần.<br>
-        Theo Định lý giá trị trung gian (Bolzano-Cauchy), đa thức $H(x)$ phải có ít nhất một nghiệm thực trên mỗi khoảng $(x_{k+1}, x_k)$.<br>
-        Tổng cộng $H(x)$ có ít nhất $n$ nghiệm thực phân biệt.</p>
-        <p>Tuy nhiên, ta đã chứng minh $\deg H(x) \le n-1$. Một đa thức có bậc $\le n-1$ không thể có $n$ nghiệm phân biệt, trừ khi nó là đa thức không ($H(x) \equiv 0$).<br>
-        Nếu $H(x) \equiv 0$, thì $P(x) \equiv C_n(x)$, kéo theo $\max |P(x)| = \frac{1}{2^{n-1}}$, mâu thuẫn với giả thiết phản chứng.</p>
-        <p>Bất đẳng thức được chứng minh.</p>
+        <p>Xét phương trình modulo 3. Đa thức trở thành:</p>
+        $$ P(x) \equiv x^n + 5x^{n-1} \equiv x^{n-1}(x + 2) \equiv x^{n-1}(x - 1) \pmod 3 $$
+        <p>Theo định lý phân tích duy nhất trong $\mathbb{Z}_3[x]$, hai nhân tử $A(x)$ và $B(x)$ khi thu gọn modulo 3 phải có dạng:</p>
+        $$ A(x) \equiv x^k \pmod 3 \quad \text{và} \quad B(x) \equiv x^{n-1-k}(x - 1) \pmod 3 $$
+        <p>hoặc ngược lại. Không mất tính tổng quát, giả sử $A(x) \equiv x^k \pmod 3$ với $k \ge 1$.<br>
+        Điều này có nghĩa là tất cả các hệ số của $A(x)$, ngoại trừ hệ số của $x^k$, đều chia hết cho 3.<br>
+        Đặc biệt, hệ số tự do $A(0)$ phải chia hết cho 3, tức là $3 \mid A(0)$.</p>
+
+        <p>Mặt khác, hệ số tự do của $P(x)$ là $P(0) = 3$.<br>
+        Ta có $P(0) = A(0)B(0) = 3$. Do $A(0)$ và $B(0)$ là các số nguyên và $3 \mid A(0)$, ta bắt buộc phải có $A(0) \in \{3, -3\}$ và $B(0) \in \{1, -1\}$.<br>
+        Vì $B(0) \equiv \pm 1 \not\equiv 0 \pmod 3$, đa thức $B(x)$ không chia hết cho $x$ trong $\mathbb{Z}_3[x]$.<br>
+        Do đó, bậc của nhân tử $x$ trong $B(x) \pmod 3$ phải bằng 0. <br>
+        Từ phân tích $B(x) \equiv x^{n-1-k}(x - 1) \pmod 3$, ta suy ra $n - 1 - k = 0$, hay $k = n - 1$.<br>
+        Khi đó, $\deg A(x) \ge n - 1$. Vì $\deg A + \deg B = n$ và $\deg B \ge 1$, ta kết luận $\deg B = 1$.<br>
+        Do $B(x)$ là đa thức đơn khởi bậc 1 và có hệ số tự do là $\pm 1$, $B(x)$ chỉ có thể là $x + 1$ hoặc $x - 1$.<br>
+        Điều này dẫn đến $P(x)$ có nghiệm là $x = 1$ hoặc $x = -1$.</p>
+        
+        <p>Thử trực tiếp:<br>
+        $P(1) = 1^n + 5(1)^{n-1} + 3 = 9 \neq 0$.<br>
+        $P(-1) = (-1)^n + 5(-1)^{n-1} + 3 = \pm 1 \pm 5 + 3 \neq 0$ (vì các giá trị khả dĩ là $1+5+3=9, 1-5+3=-1, -1+5+3=7, -1-5+3=-3$, không có giá trị nào bằng 0).<br>
+        Do đó $P(x)$ không có nghiệm nguyên, mâu thuẫn với việc $B(x)$ là đa thức bậc 1 hệ số nguyên.</p>
+
+        <p>Ngoài ra, ta có thể đánh giá thông qua module nghiệm. Gọi $\alpha_1, \dots, \alpha_k$ là các nghiệm phức của $A(x)$.<br>
+        Tích các nghiệm $\prod_{i=1}^k |\alpha_i| = |A(0)| = 3$.<br>
+        Vì $P(\alpha_i) = 0$, ta có $\alpha_i^n + 5\alpha_i^{n-1} + 3 = 0 \implies \alpha_i^{n-1}(\alpha_i + 5) = -3$.<br>
+        Nếu $|\alpha_i| \le 1$, thì $|\alpha_i + 5| \ge 5 - |\alpha_i| \ge 4$.<br>
+        Khi đó $|-3| = |\alpha_i|^{n-1} |\alpha_i + 5| \ge |\alpha_i|^{n-1} \cdot 4$. Tuy nhiên, với $|\alpha_i| \le 1$, biểu thức bên trái là 3, mâu thuẫn với việc $|\alpha_i|^{n-1} \le 1$.<br>
+        Tóm lại, mọi nghiệm của $P(x)$ đều có module lớn hơn 1.<br>
+        Nhưng $B(0) = \pm 1$, nghĩa là tích các nghiệm của $B(x)$ bằng $\pm 1$, đòi hỏi $B(x)$ phải có ít nhất một nghiệm có module $\le 1$, tạo ra mâu thuẫn.<br>
+        Cả hai phương pháp đều đi đến kết luận $P(x)$ bất khả quy trên $\mathbb{Z}[x]$.</p>
         <div class="qed">$\blacksquare$</div>
     </div>
 
     <h2>3. Các bài toán áp dụng</h2>
 
     <div class="box problem">
-        <div class="box-title">Bài toán 3.1 (Olympiad Folklore - Phân tích nghiệm và Đẳng thức)</div>
-        Xác định tất cả các nghiệm của đa thức $T_n(x)$. Từ đó chứng minh đẳng thức:
-        $$ \prod_{k=1}^n \cos \left( \frac{(2k-1)\pi}{2n} \right) = \frac{1}{2^{n-1}} $$
+        <div class="box-title">Bài toán 3.1 (Đa thức chia đường tròn - Kỹ thuật Tịnh tiến biến)</div>
+        Cho $p$ là một số nguyên tố. Chứng minh rằng đa thức sau đây bất khả quy trên $\mathbb{Z}[x]$:
+        $$ \Phi_p(x) = x^{p-1} + x^{p-2} + \dots + x + 1 $$
     </div>
     <div class="solution">
         <div class="solution-title">Lời giải.</div>
-        <p>Xét phương trình $T_n(x) = 0$ trên đoạn $[-1, 1]$.<br>
-        Thay $x = \cos \theta$, phương trình trở thành $\cos(n\theta) = 0$.<br>
-        Nghiệm của phương trình lượng giác là $n\theta = \frac{\pi}{2} + k\pi \implies \theta_k = \frac{(2k+1)\pi}{2n}$.<br>
-        Để sinh ra các nghiệm $x_k = \cos \theta_k$ phân biệt, ta chọn $k = 0, 1, \dots, n-1$. Đổi chỉ số $m = k+1$, các nghiệm tương đương với:</p>
-        $$ x_m = \cos \left( \frac{(2m-1)\pi}{2n} \right) \quad \text{với } m = 1, 2, \dots, n $$
-        <p>Vì đa thức $T_n(x)$ có bậc $n$ và ta đã tìm được đúng $n$ nghiệm thực phân biệt trên $[-1, 1]$, đây là toàn bộ tập nghiệm của đa thức.<br>
-        Đa thức $T_n(x)$ có hệ số cao nhất là $2^{n-1}$. Áp dụng định lý phân tích nhân tử, ta có:</p>
-        $$ T_n(x) = 2^{n-1} \prod_{k=1}^n \left( x - \cos \frac{(2k-1)\pi}{2n} \right) $$
-        <p>Xét giá trị hệ số tự do của $T_n(x)$ bằng cách thay $x = 0$:</p>
-        $$ T_n(0) = \cos\left(n \frac{\pi}{2}\right) $$
-        <p>Mặt khác, thay $x=0$ vào dạng phân tích nhân tử:</p>
-        $$ T_n(0) = 2^{n-1} \prod_{k=1}^n \left( - \cos \frac{(2k-1)\pi}{2n} \right) = 2^{n-1} (-1)^n \prod_{k=1}^n \cos \frac{(2k-1)\pi}{2n} $$
-        <p>Cân bằng hai biểu thức, ta có tích các nghiệm là:</p>
-        $$ \prod_{k=1}^n \cos \frac{(2k-1)\pi}{2n} = \frac{(-1)^n \cos\left(n \frac{\pi}{2}\right)}{2^{n-1}} $$
-        <p><em>(Lưu ý: Để đẳng thức tích của đề bài $\prod = \frac{1}{2^{n-1}}$ xảy ra chặt chẽ, ta cần lấy trị tuyệt đối hoặc bổ sung điều kiện $n$ chẵn và hiệu chỉnh dấu cho $n$ lẻ, vì $\cos\left(n \frac{\pi}{2}\right) = 0$ khi $n$ lẻ. Trong nhiều tài liệu, dạng bài này được hỏi dưới dạng tính $\prod_{k=1}^n \sin(\dots)$ hoặc giới hạn ở tích bình phương để tránh bằng 0).</em></p>
+        <p>Đa thức $\Phi_p(x)$ có thể viết dưới dạng thu gọn: $\Phi_p(x) = \frac{x^p - 1}{x - 1}$.<br>
+        Các hệ số của $\Phi_p(x)$ đều bằng 1, do đó không thể áp dụng Tiêu chuẩn Eisenstein trực tiếp. Ta sử dụng phép tịnh tiến biến bằng cách đặt $x = y + 1$.<br>
+        Đa thức mới được định nghĩa là $G(y) = \Phi_p(y+1)$.<br>
+        Vì một đa thức phân tích được thành tích trên $\mathbb{Z}[x]$ khi và chỉ khi nó cũng phân tích được thông qua phép tịnh tiến $x = y+1$, tính bất khả quy được bảo toàn giữa $\Phi_p(x)$ và $G(y)$.<br>
+        Ta có:</p>
+        $$ G(y) = \frac{(y+1)^p - 1}{(y+1) - 1} = \frac{(y+1)^p - 1}{y} $$
+        <p>Khai triển nhị thức Newton cho $(y+1)^p$:</p>
+        $$ (y+1)^p = y^p + \binom{p}{1}y^{p-1} + \binom{p}{2}y^{p-2} + \dots + \binom{p}{p-1}y + 1 $$
+        <p>Trừ đi 1 và chia cho $y$, ta thu được:</p>
+        $$ G(y) = y^{p-1} + \binom{p}{1}y^{p-2} + \binom{p}{2}y^{p-3} + \dots + \binom{p}{p-1} $$
+        <p>Xét các hệ số của $G(y)$ để áp dụng Tiêu chuẩn Eisenstein:</p>
+        <ol>
+            <li>Hệ số cao nhất là $1$, không chia hết cho $p$.</li>
+            <li>Các hệ số còn lại có dạng $\binom{p}{k}$ với $1 \le k \le p-1$. Do $p$ là số nguyên tố, tử số của $\binom{p}{k}$ chứa thừa số $p$ nhưng mẫu số $k!(p-k)!$ không chứa thừa số $p$. Do đó $p \mid \binom{p}{k}$ với mọi $1 \le k \le p-1$.</li>
+            <li>Hệ số tự do của $G(y)$ là $\binom{p}{p-1} = p$. Rõ ràng $p \mid p$ nhưng $p^2 \nmid p$.</li>
+        </ol>
+        <p>Cả ba điều kiện của Tiêu chuẩn Eisenstein đều được thỏa mãn đối với số nguyên tố $p$.<br>
+        Vậy $G(y)$ bất khả quy trên $\mathbb{Z}[y]$, kéo theo $\Phi_p(x)$ bất khả quy trên $\mathbb{Z}[x]$.</p>
         <div class="qed">$\blacksquare$</div>
     </div>
 
     <div class="box problem">
-        <div class="box-title">Bài toán 3.2 (IMO Shortlist - Tính giao hoán đa thức)</div>
-        Chứng minh rằng đối với mọi số nguyên dương $m, n$, ta có:
-        $$ T_n(T_m(x)) = T_{mn}(x) $$
-        Từ đó, giải phương trình $4(4x^3 - 3x)^3 - 3(4x^3 - 3x) = \frac{1}{2}$ trên tập số thực.
+        <div class="box-title">Bài toán 3.2 (Định lý Arthur Schur)</div>
+        Cho $a_1, a_2, \dots, a_n$ là $n$ số nguyên phân biệt. Chứng minh rằng đa thức sau bất khả quy trên $\mathbb{Z}[x]$:
+        $$ P(x) = (x - a_1)(x - a_2)\dots(x - a_n) - 1 $$
     </div>
     <div class="solution">
         <div class="solution-title">Lời giải.</div>
-        <p>Trên đoạn $[-1, 1]$, đặt $x = \cos \theta$. Khi đó:</p>
-        $$ T_n(T_m(x)) = T_n(T_m(\cos \theta)) = T_n(\cos(m\theta)) = \cos(n(m\theta)) = \cos(nm\theta) $$
-        <p>Mặt khác, $T_{mn}(x) = T_{mn}(\cos \theta) = \cos(mn\theta)$.<br>
-        Vì hai đa thức $T_n(T_m(x))$ và $T_{mn}(x)$ bằng nhau tại vô số điểm trên đoạn $[-1, 1]$, chúng đồng nhất trên toàn bộ tập số thực $\mathbb{R}$.</p>
-        
-        <p>Áp dụng vào phương trình: Đặt $P(x) = 4x^3 - 3x$. Ta cần giải phương trình $4(P(x))^3 - 3P(x) = \frac{1}{2}$, tức là $P(P(x)) = \frac{1}{2}$.<br>
-        Sử dụng hệ thức truy hồi của đa thức Chebyshev, ta dễ dàng tính được $T_3(x) = 4x^3 - 3x$.<br>
-        Do đó, phương trình được viết lại thành:</p>
-        $$ T_3(T_3(x)) = \frac{1}{2} $$
-        <p>Theo tính chất giao hoán vừa chứng minh, ta có $T_3(T_3(x)) = T_9(x)$. Phương trình trở thành:</p>
-        $$ T_9(x) = \frac{1}{2} $$
-        <p>Với $x \in [-1, 1]$, đặt $x = \cos \theta$ ($\theta \in [0, \pi]$):</p>
-        $$ \cos(9\theta) = \frac{1}{2} \implies 9\theta = \pm \frac{\pi}{3} + 2k\pi $$
-        <p>Từ đó, $\theta = \frac{\pi}{27} + \frac{2k\pi}{9}$ hoặc $\theta = -\frac{\pi}{27} + \frac{2k\pi}{9}$. Cho $k$ các giá trị nguyên thích hợp để $\theta \in [0, \pi]$, ta sẽ thu được 9 nghiệm thực phân biệt $x_k = \cos \theta_k$ của phương trình bậc 9 này.</p>
+        <p>Giả sử phản chứng $P(x) = A(x)B(x)$, trong đó $A(x), B(x) \in \mathbb{Z}[x]$ và $\deg A \ge 1, \deg B \ge 1$.<br>
+        Thay $x = a_i$ vào phương trình, ta có:</p>
+        $$ P(a_i) = A(a_i)B(a_i) = -1 \quad \text{với mọi } i = 1, 2, \dots, n $$
+        <p>Vì $a_i$ là các số nguyên, $A(a_i)$ và $B(a_i)$ cũng là các số nguyên.<br>
+        Hai số nguyên có tích bằng $-1$ chỉ có thể là $1$ và $-1$.<br>
+        Do đó, $A(a_i)$ và $B(a_i)$ nhận hai giá trị trái dấu thuộc tập $\{1, -1\}$.<br>
+        Từ đó, tổng của chúng bằng không:</p>
+        $$ A(a_i) + B(a_i) = 0 \quad \text{với mọi } i = 1, 2, \dots, n $$
+        <p>Xét đa thức $H(x) = A(x) + B(x)$. Đa thức $H(x)$ có $n$ nghiệm phân biệt là $a_1, a_2, \dots, a_n$.<br>
+        Tuy nhiên, bậc của đa thức $P(x)$ là $n$. Do $P(x) = A(x)B(x)$ và cả $A, B$ đều có bậc $\ge 1$, bậc của $A(x)$ và $B(x)$ phải nhỏ hơn $n$.<br>
+        Suy ra $\deg H \le \max(\deg A, \deg B) \lt n$.<br>
+        Một đa thức có bậc nhỏ hơn $n$ nhưng lại có $n$ nghiệm phân biệt bắt buộc phải là đa thức không. Tức là $H(x) \equiv 0$, hay $A(x) = -B(x)$ với mọi $x$.<br>
+        Thay lại vào giả thiết ban đầu:</p>
+        $$ P(x) = - (A(x))^2 $$
+        <p>So sánh hệ số cao nhất của hai vế. Hệ số cao nhất của $P(x)$ là $1$. Hệ số cao nhất của $-(A(x))^2$ là $-c^2$ (với $c$ là hệ số cao nhất của $A(x)$).<br>
+        Ta được phương trình $-c^2 = 1 \implies c^2 = -1$. Điều này không thể xảy ra đối với số thực $c$ (và do đó không thể với số nguyên $c$).<br>
+        Giả thiết phản chứng sai. Đa thức $P(x)$ bất khả quy.</p>
         <div class="qed">$\blacksquare$</div>
     </div>
 
     <div class="box problem">
-        <div class="box-title">Bài toán 3.3 (VMO 1999 - Phương trình hàm đặc trưng)</div>
-        Tìm tất cả các đa thức $P(x)$ hệ số thực thỏa mãn phương trình:
-        $$ P\left(x + \frac{1}{x}\right) = x^n + \frac{1}{x^n} \quad \forall x \neq 0 $$
+        <div class="box-title">Bài toán 3.3 (Olympic Toán học Nga - Biến thể Đa thức bình phương)</div>
+        Cho $a_1, a_2, \dots, a_n$ là $n$ số nguyên phân biệt. Chứng minh rằng đa thức sau bất khả quy trên $\mathbb{Z}[x]$:
+        $$ P(x) = (x - a_1)^2(x - a_2)^2\dots(x - a_n)^2 + 1 $$
     </div>
     <div class="solution">
         <div class="solution-title">Lời giải.</div>
-        <p>Đặt $y = x + \frac{1}{x}$. Khi $x \gt 0$, theo bất đẳng thức AM-GM, $y \ge 2$. Khi $x \lt 0$, $y \le -2$. Tập giá trị của $y$ là $(-\infty, -2] \cup [2, +\infty)$.<br>
-        Ta tìm cách biểu diễn $x^n + \frac{1}{x^n}$ theo $y$.<br>
-        Đặt $S_n = x^n + \frac{1}{x^n}$. Ta thiết lập hệ thức truy hồi cho $S_n$:</p>
-        $$ S_n \cdot S_1 = \left( x^n + \frac{1}{x^n} \right) \left( x + \frac{1}{x} \right) = x^{n+1} + \frac{1}{x^{n+1}} + x^{n-1} + \frac{1}{x^{n-1}} = S_{n+1} + S_{n-1} $$
-        <p>Do đó $S_{n+1} = y S_n - S_{n-1}$.<br>
-        Hệ thức truy hồi này có dạng tương tự với hệ thức truy hồi của đa thức Chebyshev loại I: $T_{n+1}(u) = 2u T_n(u) - T_{n-1}(u)$.</p>
-        <p>Đặt $y = 2u$, hệ thức $S_n$ trở thành $S_{n+1} = 2u S_n - S_{n-1}$.<br>
-        Ta xét các giá trị ban đầu:<br>
-        $S_0 = 2 = 2T_0(u)$<br>
-        $S_1 = y = 2u = 2T_1(u)$</p>
-        <p>Bằng nguyên lý quy nạp toán học, ta có $S_n = 2T_n(u) = 2T_n\left(\frac{y}{2}\right)$ với mọi $n \ge 0$.</p>
-        <p>Phương trình đã cho trở thành $P(y) = 2T_n\left(\frac{y}{2}\right)$.<br>
-        Đẳng thức này đúng với mọi $y \in (-\infty, -2] \cup [2, +\infty)$ (một tập hợp chứa vô số điểm). Theo định lý đồng nhất đa thức, đẳng thức phải đúng trên toàn bộ trục thực $\mathbb{R}$.</p>
-        <p>Vậy đa thức duy nhất thỏa mãn là $P(x) = 2T_n\left(\frac{x}{2}\right)$.</p>
+        <p>Giả sử $P(x) = A(x)B(x)$ với $A(x), B(x) \in \mathbb{Z}[x]$ có bậc $\ge 1$.<br>
+        Dễ thấy $P(x) \ge 1 \gt 0$ với mọi số thực $x$. Do đó, $A(x)$ và $B(x)$ không có nghiệm thực. Kéo theo chúng giữ nguyên một dấu trên toàn bộ $\mathbb{R}$.<br>
+        Không mất tính tổng quát, giả sử $A(x) \gt 0$ và $B(x) \gt 0$ với mọi $x$.<br>
+        Thay $x = a_i$, ta có $P(a_i) = 1$. Suy ra $A(a_i)B(a_i) = 1$.<br>
+        Do $A(a_i)$ và $B(a_i)$ là các số nguyên dương, bắt buộc $A(a_i) = B(a_i) = 1$ với mọi $i = 1, 2, \dots, n$.<br>
+        Xét đa thức $H(x) = A(x) - 1$. $H(x)$ có $n$ nghiệm là $a_1, \dots, a_n$.<br>
+        Nên $H(x)$ chia hết cho $(x-a_1)\dots(x-a_n)$.<br>
+        Tương tự, $B(x) - 1$ cũng chia hết cho đa thức này.<br>
+        Bậc của $P(x)$ là $2n$. Giả sử $\deg A = k$ và $\deg B = m$ (với $k+m = 2n$).<br>
+        Vì $H(x)$ chia hết cho đa thức bậc $n$, ta phải có $\deg A \ge n$. Tương tự $\deg B \ge n$.<br>
+        Do $k+m = 2n$, bắt buộc $\deg A = \deg B = n$.<br>
+        Khi đó, $A(x) = 1 + c(x-a_1)\dots(x-a_n)$ và $B(x) = 1 + d(x-a_1)\dots(x-a_n)$ với $c, d \in \mathbb{Z}$.<br>
+        Do $A(x) \gt 0$ với mọi $x$, bậc $n$ của đa thức $A(x)$ bắt buộc phải là một số chẵn.<br>
+        Nhân hai đa thức $A$ và $B$:</p>
+        $$ A(x)B(x) = 1 + (c+d)(x-a_1)\dots(x-a_n) + cd (x-a_1)^2\dots(x-a_n)^2 $$
+        <p>Đồng nhất hệ số với $P(x) = 1 + (x-a_1)^2\dots(x-a_n)^2$, ta được:<br>
+        $cd = 1$ và $c+d = 0$.<br>
+        Hệ này suy ra $c = -d$ và $-c^2 = 1$, phương trình này vô nghiệm trên $\mathbb{Z}$.<br>
+        Vậy không tồn tại phân tích hợp lệ. $P(x)$ bất khả quy.</p>
         <div class="qed">$\blacksquare$</div>
     </div>
 
     <div class="box problem">
-        <div class="box-title">Bài toán 3.4 (Tính duy nhất của Đa thức Cực trị)</div>
-        Cho $P(x)$ là đa thức đơn khởi bậc $n$. Giả sử $\max_{x \in [-1, 1]} |P(x)| = \frac{1}{2^{n-1}}$. Chứng minh rằng $P(x) \equiv \frac{1}{2^{n-1}} T_n(x)$.
+        <div class="box-title">Bài toán 3.4 (Đa thức hệ số hữu hạn và Phép thu gọn Modulo)</div>
+        Chứng minh rằng đa thức $P(x) = x^4 + x + 1$ bất khả quy trên vành $\mathbb{Z}[x]$.
     </div>
     <div class="solution">
         <div class="solution-title">Lời giải.</div>
-        <p>Dựa trên chứng minh Định lý Minimax (Bài toán 2.1), ta xét đa thức hiệu $H(x) = C_n(x) - P(x)$ với $C_n(x) = \frac{1}{2^{n-1}} T_n(x)$.<br>
-        Tại $n+1$ điểm cực trị $x_k = \cos \frac{k\pi}{n}$ của $C_n(x)$, ta có $C_n(x_k) = \frac{(-1)^k}{2^{n-1}}$.<br>
-        Theo giả thiết $\max_{x \in [-1, 1]} |P(x)| = \frac{1}{2^{n-1}}$, ta có $-\frac{1}{2^{n-1}} \le P(x_k) \le \frac{1}{2^{n-1}}$.</p>
-        <p>Khảo sát dấu của $H(x_k)$:</p>
+        <p>Phương pháp xét đa thức trên trường hữu hạn $\mathbb{Z}_p$ là một cách tiếp cận để loại trừ khả năng khả quy. Chọn $p = 2$, ta khảo sát $P(x)$ trên $\mathbb{Z}_2[x]$.<br>
+        Giả sử $P(x)$ khả quy trên $\mathbb{Z}[x]$, thì khi lấy phần dư của các hệ số cho 2, đa thức thu được cũng phải khả quy trên $\mathbb{Z}_2[x]$.<br>
+        Trong $\mathbb{Z}_2[x]$, $P(x) = x^4 + x + 1$.<br>
+        Nếu $P(x)$ khả quy, nó phải có ít nhất một nhân tử bậc 1, hoặc là tích của hai đa thức bậc 2 bất khả quy.</p>
         <ul>
-            <li> Nếu $k$ chẵn, $C_n(x_k) = \frac{1}{2^{n-1}} \implies H(x_k) \ge 0$.</li>
-            <li> Nếu $k$ lẻ, $C_n(x_k) = -\frac{1}{2^{n-1}} \implies H(x_k) \le 0$.</li>
+            <li>Kiểm tra nghiệm (nhân tử bậc 1): $P(0) = 1 \neq 0$ và $P(1) = 1 + 1 + 1 = 3 \equiv 1 \neq 0 \pmod 2$. Vậy $P(x)$ không có nghiệm trên $\mathbb{Z}_2$, do đó không có nhân tử bậc 1.</li>
+            <li>Kiểm tra tích hai đa thức bậc 2: Đa thức bậc 2 duy nhất bất khả quy trên $\mathbb{Z}_2[x]$ là $x^2 + x + 1$ (vì $x^2, x^2+1, x^2+x$ đều có nghiệm).
+            Bất kỳ tích nào của hai đa thức bậc 2 không có nghiệm đều phải là bình phương của $x^2 + x + 1$.
+            Thử khai triển:
+            $$ (x^2 + x + 1)^2 = x^4 + x^2 + 1 \pmod 2 $$
+            Tuy nhiên, đa thức ban đầu là $x^4 + x + 1$. Rõ ràng $x^4 + x^2 + 1 \not\equiv x^4 + x + 1 \pmod 2$.
+            Vậy $P(x)$ không thể là tích của hai đa thức bậc 2.</li>
         </ul>
-        <p>Dãy giá trị $H(x_0), H(x_1), \dots, H(x_n)$ luân phiên không âm và không dương.<br>
-        Nếu $H(x_k) \neq 0$ với mọi $k$, $H(x)$ đổi dấu $n$ lần, do đó có $n$ nghiệm. Vì $\deg H \le n-1$, dẫn đến $H(x) \equiv 0$.</p>
-        <p>Nếu $H(x_k) = 0$ tại một điểm $x_k$ nằm bên trong khoảng $(-1, 1)$, tức là $P(x_k) = C_n(x_k) = \pm \frac{1}{2^{n-1}}$. <br>
-        Vì $P(x)$ đạt giá trị cực trị tuyệt đối tại điểm trong $x_k$, đạo hàm của nó tại đó bằng 0: $P'(x_k) = 0$. <br>
-        Đồng thời, do $x_k$ là điểm cực trị của $C_n(x)$, ta cũng có $C_n'(x_k) = 0$.<br>
-        Suy ra $H'(x_k) = C_n'(x_k) - P'(x_k) = 0$.<br>
-        Điều này có nghĩa là $x_k$ là nghiệm \textbf{kép} (hoặc bội cao hơn) của $H(x)$.</p>
-        <p>Mỗi lần đếm nghiệm, các nghiệm đổi dấu đóng góp 1, còn nghiệm kép đóng góp ít nhất 2 vào tổng số nghiệm. Trong bất kỳ tình huống phân phối nghiệm nào, tổng số nghiệm của $H(x)$ (tính cả nghiệm bội) trên đoạn $[-1, 1]$ luôn đạt ít nhất $n$.</p>
-        <p>Vì $\deg H \le n-1$, đa thức $H(x)$ có nhiều nghiệm hơn số bậc của nó, do đó nó phải là đa thức không.<br>
-        Suy ra $P(x) \equiv C_n(x) = \frac{1}{2^{n-1}} T_n(x)$. Bài toán được chứng minh.</p>
+        <p>Suy ra $P(x)$ bất khả quy trên $\mathbb{Z}_2[x]$. Kéo theo $P(x)$ bất khả quy trên $\mathbb{Z}[x]$.</p>
         <div class="qed">$\blacksquare$</div>
     </div>
 
     <div class="box problem">
-        <div class="box-title">Bài toán 3.5 (Phương trình Pell Đa thức)</div>
-        Đa thức Chebyshev loại II, ký hiệu $U_n(x)$, được định nghĩa bởi hệ thức lượng giác $U_n(\cos \theta) = \frac{\sin((n+1)\theta)}{\sin \theta}$. <br>
-        Chứng minh rằng hai họ đa thức $T_n(x)$ và $U_{n-1}(x)$ cấu thành nghiệm của phương trình Pell trên vành đa thức:
-        $$ T_n^2(x) - (x^2 - 1) U_{n-1}^2(x) = 1 $$
+        <div class="box-title">Bài toán 3.5 (Ứng dụng Eisenstein trên Đa thức Hệ số liên tiếp)</div>
+        Cho $p$ là một số nguyên tố lẻ. Chứng minh rằng đa thức sau đây bất khả quy trên $\mathbb{Z}[x]$:
+        $$ P(x) = x^{p-1} + 2x^{p-2} + 3x^{p-3} + \dots + (p-1)x + p $$
     </div>
     <div class="solution">
         <div class="solution-title">Lời giải.</div>
-        <p>Để chứng minh đẳng thức giữa hai đa thức, ta chỉ cần chứng minh nó đúng trên miền $x \in [-1, 1]$.<br>
-        Thay $x = \cos \theta$ (với $\theta \in [0, \pi]$). Theo định nghĩa, ta có:</p>
-        $$ T_n(x) = T_n(\cos \theta) = \cos(n\theta) $$
-        $$ U_{n-1}(x) = U_{n-1}(\cos \theta) = \frac{\sin(n\theta)}{\sin \theta} $$
-        <p>Thay các biểu thức này vào vế trái của phương trình:</p>
-        $$ \begin{aligned}
-        VT &= T_n^2(\cos \theta) - (\cos^2 \theta - 1) U_{n-1}^2(\cos \theta) \\
-        &= \cos^2(n\theta) - (-\sin^2 \theta) \frac{\sin^2(n\theta)}{\sin^2 \theta} \\
-        &= \cos^2(n\theta) + \sin^2(n\theta) \\
-        &= 1
-        \end{aligned} $$
-        <p>Do đẳng thức $T_n^2(x) - (x^2 - 1) U_{n-1}^2(x) = 1$ đúng với vô số giá trị $x \in [-1, 1]$, theo định lý đồng nhất đa thức, nó là một đồng nhất thức đúng trên toàn vành đa thức $\mathbb{R}[x]$.</p>
-        <p>Khẳng định được chứng minh.</p>
+        <p>Hệ số tự do của $P(x)$ là $p$, dẫn đến việc sử dụng Tiêu chuẩn Eisenstein. Ta nhân hai vế với $(x-1)$ để đưa đa thức về dạng gọn hơn:</p>
+        $$ (x-1)P(x) = x^p + x^{p-1} + \dots + x - p $$
+        <p>Tương tự Bài toán 3.1, ta tịnh tiến biến số $x = y + 1$:</p>
+        $$ y \cdot P(y+1) = (y+1)^p + (y+1)^{p-1} + \dots + (y+1) - p $$
+        <p>Đa thức bên phải có hệ số tự do là $1 + 1 + \dots + 1 - p = p - p = 0$.<br>
+        Chia cả hai vế cho $y$, ta thu được đa thức $G(y) = P(y+1)$.<br>
+        Hệ số tự do của $G(y)$ chính là hệ số của $y^1$ trong khai triển đa thức vế phải.<br>
+        Hệ số của $y^1$ trong $(y+1)^k$ là $k$.<br>
+        Vậy hệ số tự do của $G(y)$ bằng: $p + (p-1) + \dots + 1 = \frac{p(p+1)}{2}$.<br>
+        Vì $p$ là số nguyên tố lẻ, $\frac{p+1}{2}$ là một số nguyên không chia hết cho $p$.<br>
+        Do đó, hệ số tự do của $G(y)$ chia hết cho $p$ nhưng <strong>không chia hết</strong> cho $p^2$.</p>
+        <p>Các hệ số của bậc cao hơn (từ bậc 1 đến bậc $p-2$ của $G(y)$) là tổ hợp của các $\binom{k}{j}$, khi cộng dồn lại theo hằng đẳng thức tổng cột, chúng đều là các biểu thức chia hết cho $p$ (có thể chứng minh chi tiết bằng cách tính hệ số tổng quát là $\binom{p+1}{j+1}$ thông qua tính chất $\sum \binom{k}{j} = \binom{p+1}{j+1}$).<br>
+        Hệ số cao nhất của $G(y)$ là $1$, không chia hết cho $p$.<br>
+        Vậy $G(y)$ thỏa mãn Tiêu chuẩn Eisenstein với số nguyên tố $p$.<br>
+        Suy ra $G(y)$ bất khả quy trên $\mathbb{Z}[y]$. Kéo theo đa thức $P(x)$ bất khả quy trên $\mathbb{Z}[x]$.</p>
         <div class="qed">$\blacksquare$</div>
     </div>
 

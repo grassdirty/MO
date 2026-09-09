@@ -62,6 +62,7 @@
         }
         .stat b { display: block; font-size: 1.6rem; color: #ffd166; }
         .stat small { font-size: 0.82rem; color: #dfe7ff; }
+        .last-visit { margin-top: 14px; font-size: 0.85rem; color: #dfe7ff; text-align: center; }
 
         /* ===== Toolbar ===== */
         .toolbar {
@@ -190,7 +191,9 @@
         <div class="stats">
             <div class="stat"><b id="countAll">52</b><small>Chuyên đề</small></div>
             <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
+            <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
         </div>
+        <div class="last-visit" id="lastVisit"></div>
     </header>
 
     <div class="toolbar">
@@ -345,6 +348,71 @@
         render();
         document.getElementById('countAll').textContent = POSTS.length;
 
+        // ============================================================
+        //  BỘ ĐẾM LƯỢT TRUY CẬP TOÀN CỤC — Google Apps Script + Sheets
+        //  - Chỉ hiển thị TỔNG LƯƢT XEM (phần "hôm nay" đã bỏ)
+        //  - Hiển thị thông minh: K = hàng nghìn, M = hàng triệu
+        //    vd: 1250 → "1,25K"  •  143454 → "143,454K"  •  1234567 → "1,234567M"
+        //  - Nếu APPS_SCRIPT_URL không gọi được → tự chuyển về localStorage
+        // ============================================================
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJGtPbGk5qFf5IL0QOl9WBp3U7MSgs34kS5mCg1HH7vN1OrfAyK03gcV1UroM_1kNk/exec';
+
+        (function () {
+            const KEY = 'olympic_blog_visits';
+            const elTotal = document.getElementById('countVisits');
+            const elLast  = document.getElementById('lastVisit');
+
+            // Chuyển số → bìn diện thông minh (K / M), dấu phây decimal = ","
+            function smartNumber(n) {
+                n = Number(n) || 0;
+                if (n >= 1000000) return String(n / 1000000).replace('.', ',') + 'M';
+                if (n >= 1000)    return String(n / 1000).replace('.', ',') + 'K';
+                return String(n);
+            }
+
+            function show(data) {
+                if (elTotal) elTotal.textContent = smartNumber(data.total || 0);
+                if (elLast && data.lastVisit) elLast.textContent = 'Lần truy cập gần nhất: ' + data.lastVisit;
+            }
+
+            // ---- Chế mode TOÀN CỤC: gọi Apps Script ----
+            async function countGlobal() {
+                if (!APPS_SCRIPT_URL) return false;
+                try {
+                    const res = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'action=increment'
+                    });
+                    if (!res.ok) return false;
+                    const data = await res.json();
+                    if (data && data.ok) {
+                        show({ total: data.total, todayCount: data.todayCount, lastVisit: data.lastVisit });
+                        return true;
+                    }
+                    return false;
+                } catch (e) {
+                    return false; // không gọi được -> dùng localStorage
+                }
+            }
+
+            // ---- Chế mode CỤC BỘ (dự phòng) ----
+            function countLocal() {
+                let data = { total: 0, lastVisit: '' };
+                try {
+                    const saved = JSON.parse(localStorage.getItem(KEY));
+                    if (saved && typeof saved === 'object') data = Object.assign(data, saved);
+                } catch (e) { /* bỏ qua */ }
+
+                data.total = (data.total || 0) + 1;
+                data.lastVisit = new Date().toLocaleString('vi-VN');
+
+                try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* bỏ qua */ }
+                show(data);
+            }
+
+            countGlobal().then(ok => { if (!ok) countLocal(); });
+        })();
     </script>
 </body>
 </html>

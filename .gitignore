@@ -1,0 +1,7 @@
+# File tạm / không đồng bộ lên web
+Thumbs.db
+.DS_Store
+*.tmp
+post_result.txt
+post_ok.txt
+counter_version.html

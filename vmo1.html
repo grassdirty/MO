@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Đại Số Đa Thức</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình */
+            background: linear-gradient(rgba(10, 12, 28, 0.75), rgba(4, 6, 15, 0.85)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(15, 20, 35, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #ffd700;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+        h2 {
+            color: #64ffda;
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+            padding-bottom: 8px;
+            margin-top: 45px;
+            font-size: 1.7em;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 4px solid #8892b0;
+            color: #ccd6f6;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+        .box {
+            margin: 25px 0;
+            border-radius: 10px;
+            background: rgba(5, 8, 15, 0.6);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .box-header {
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1.15em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .box-body {
+            padding: 20px;
+            color: #f8faff;
+        }
+        
+        /* Định nghĩa */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(46, 204, 113, 0.25), rgba(46, 204, 113, 0.05));
+            color: #4ade80;
+            border-left: 5px solid #4ade80;
+        }
+        .def .box-body {
+            border-left: 5px solid #4ade80;
+        }
+        
+        /* Định lý */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(52, 152, 219, 0.25), rgba(52, 152, 219, 0.05));
+            color: #60a5fa;
+            border-left: 5px solid #60a5fa;
+        }
+        .thm .box-body {
+            border-left: 5px solid #60a5fa;
+        }
+        
+        /* Bài toán */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(231, 76, 60, 0.25), rgba(231, 76, 60, 0.05));
+            color: #f87171;
+            border-left: 5px solid #f87171;
+        }
+        .prob .box-body {
+            border-left: 5px solid #f87171;
+        }
+
+        .solution {
+            margin: 15px 0 35px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #facc15;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .solution-title {
+            color: #facc15;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1.5px;
+        }
+        .proof {
+            margin: 15px 0 25px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1.5px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #8892b0;
+        }
+        
+        /* Chỉnh MathJax cho mượt */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #e2e8f0; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ ĐA THỨC VÀ TÍNH CHẤT SỐ HỌC<br>CẤU TRÚC CHIA HẾT CỦA ĐA THỨC HỆ SỐ NGUYÊN</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Việc khảo sát nghiệm nguyên của một phương trình đa thức thường đòi hỏi những đánh giá khắt khe về mặt số học. Khi các hệ số của đa thức thuộc tập số nguyên, giá trị của đa thức tại các điểm nguyên không hoàn toàn ngẫu nhiên mà bị ràng buộc bởi một định lý chia hết cơ bản. Chuyên đề này tập trung phân tích định lý chia hết của đa thức hệ số nguyên, từ đó giải quyết các bài toán chứng minh sự tồn tại hoặc vô nghiệm của các hệ phương trình Diophantine đa thức trong các kỳ thi Olympic.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Đa thức hệ số nguyên</div>
+            <div class="box-body">
+                Một đa thức $P(x)$ được gọi là đa thức hệ số nguyên nếu nó có dạng:
+                $$ P(x) = c_n x^n + c_{n-1} x^{n-1} + \dots + c_1 x + c_0 $$
+                trong đó tất cả các hệ số $c_n, c_{n-1}, \dots, c_0$ đều là các số nguyên ($c_i \in \mathbb{Z}$). 
+                Tập hợp các đa thức hệ số nguyên được ký hiệu là $\mathbb{Z}[x]$.
+            </div>
+        </div>
+
+        <p>Tính chất cốt lõi của đa thức hệ số nguyên được phát biểu thông qua định lý sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Định lý về tính chia hết của đa thức hệ số nguyên</div>
+            <div class="box-body">
+                Cho $P(x) \in \mathbb{Z}[x]$. Với mọi số nguyên $a$ và $b$ phân biệt, ta luôn có:
+                $$ (a - b) \mid (P(a) - P(b)) $$
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xét đa thức $P(x) = \sum_{i=0}^n c_i x^i$ với $c_i \in \mathbb{Z}$. 
+            Ta tính hiệu giá trị của đa thức tại $a$ và $b$:
+            $$ P(a) - P(b) = \sum_{i=0}^n c_i a^i - \sum_{i=0}^n c_i b^i = \sum_{i=1}^n c_i (a^i - b^i) $$
+            Sử dụng hằng đẳng thức phân tích nhân tử cơ bản:
+            $$ a^i - b^i = (a - b)(a^{i-1} + a^{i-2}b + \dots + ab^{i-2} + b^{i-1}) $$
+            Rõ ràng $a - b$ là một ước của $a^i - b^i$ với mọi số nguyên dương $i$.
+            Vì $c_i$ là các số nguyên, mỗi số hạng $c_i (a^i - b^i)$ đều chia hết cho $a-b$. Do đó, tổng của chúng cũng chia hết cho $a-b$.
+            Ta có điều phải chứng minh: $(a - b) \mid (P(a) - P(b))$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán khởi động</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (USAMO 1974)</div>
+            <div class="box-body">
+                Cho $P(x) \in \mathbb{Z}[x]$ là một đa thức với hệ số nguyên. Gọi $a, b, c$ là ba số nguyên phân biệt. Chứng minh rằng không tồn tại đa thức $P(x)$ nào thỏa mãn đồng thời hệ phương trình:
+                $$ P(a) = b, \quad P(b) = c, \quad P(c) = a $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử phản chứng rằng tồn tại đa thức $P(x)$ thỏa mãn điều kiện bài toán.
+            Áp dụng Định lý 1 cho các cặp số $(a, b), (b, c), (c, a)$, ta lần lượt thu được các quan hệ chia hết:
+            \begin{align*}
+            a - b &\mid P(a) - P(b) \implies a - b \mid b - c \\
+            b - c &\mid P(b) - P(c) \implies b - c \mid c - a \\
+            c - a &\mid P(c) - P(a) \implies c - a \mid a - b
+            \end{align*}
+            Từ chuỗi chia hết $a - b \mid b - c \mid c - a \mid a - b$, ta suy ra giá trị tuyệt đối của các biểu thức này phải bằng nhau:
+            $$ |a - b| = |b - c| = |c - a| $$
+            Gọi giá trị tuyệt đối chung này là $k$ (với $k &gt; 0$ do $a, b, c$ phân biệt).
+            Khi đó, $a - b, b - c, c - a$ chỉ có thể nhận giá trị là $k$ hoặc $-k$.
+            Xét tổng của ba biểu thức:
+            $$ (a - b) + (b - c) + (c - a) = 0 $$
+            Tuy nhiên, tổng của ba đại lượng nhận giá trị $\pm k$ (với $k \neq 0$) chỉ có thể là $3k, k, -k$ hoặc $-3k$. Phương trình $\pm k \pm k \pm k = 0$ không thể có nghiệm khi $k \neq 0$.
+            Sự mâu thuẫn này chứng tỏ giả thiết phản chứng là sai. Không tồn tại đa thức $P(x)$ thỏa mãn yêu cầu bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (All-Russian Olympiad 1993)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$. Biết rằng phương trình $P(x) = 7$ có 4 nghiệm nguyên phân biệt. Chứng minh rằng phương trình $P(x) = 14$ không có nghiệm nguyên.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $x_1, x_2, x_3, x_4$ là 4 nghiệm nguyên phân biệt của phương trình $P(x) = 7$.
+            Theo định lý Bezout, đa thức $P(x) - 7$ chia hết cho tích $(x - x_1)(x - x_2)(x - x_3)(x - x_4)$.
+            Do đó, ta có thể viết $P(x)$ dưới dạng:
+            $$ P(x) = (x - x_1)(x - x_2)(x - x_3)(x - x_4)Q(x) + 7 $$
+            trong đó $Q(x)$ cũng là một đa thức với hệ số nguyên.
+            <br><br>
+            Giả sử phản chứng tồn tại số nguyên $n$ sao cho $P(n) = 14$. Thay $x = n$ vào phương trình trên:
+            $$ (n - x_1)(n - x_2)(n - x_3)(n - x_4)Q(n) + 7 = 14 $$
+            $$ (n - x_1)(n - x_2)(n - x_3)(n - x_4)Q(n) = 7 $$
+            Vì $x_i$ là các số nguyên phân biệt, các thừa số $(n - x_1), (n - x_2), (n - x_3), (n - x_4)$ là 4 số nguyên phân biệt.
+            Hơn nữa, tích của chúng là một ước của $7$. Do $7$ là số nguyên tố, tập hợp các ước số nguyên của $7$ chỉ là $\{1, -1, 7, -7\}$.
+            Để tạo ra tích bằng $7$ (hoặc một ước của 7) từ 4 số nguyên phân biệt, ta xét tích của 4 ước phân biệt nhỏ nhất về giá trị tuyệt đối:
+            $$ |(-1) \cdot 1 \cdot (-7) \cdot 7| = 49 &gt; 7 $$
+            Rõ ràng, tích của bất kỳ 4 số nguyên phân biệt nào cũng không thể là một ước của 7.
+            Điều này dẫn đến mâu thuẫn. Phương trình $P(x) = 14$ không có nghiệm nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Vietnam National Olympiad 1997)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$ sao cho phương trình $P(x) = 1$ có 4 nghiệm nguyên phân biệt. Chứng minh rằng phương trình $P(x) = -1$ không có nghiệm nguyên.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $x_1, x_2, x_3, x_4$ là 4 nghiệm nguyên phân biệt của phương trình $P(x) = 1$.
+            Ta có biểu diễn đa thức:
+            $$ P(x) = (x - x_1)(x - x_2)(x - x_3)(x - x_4)Q(x) + 1 $$
+            Giả sử tồn tại số nguyên $n$ sao cho $P(n) = -1$. Thay $x = n$ vào phương trình:
+            $$ (n - x_1)(n - x_2)(n - x_3)(n - x_4)Q(n) + 1 = -1 $$
+            $$ (n - x_1)(n - x_2)(n - x_3)(n - x_4)Q(n) = -2 $$
+            Tương tự bài toán trước, các thừa số $(n - x_i)$ là 4 số nguyên phân biệt. Chúng phải là các ước của $-2$.
+            Tập hợp các ước số nguyên của $-2$ là $\{1, -1, 2, -2\}$.
+            Nếu có 4 số nguyên phân biệt là ước của $-2$, chúng bắt buộc phải là chính xác 4 số $1, -1, 2, -2$.
+            Tích của 4 số này là:
+            $$ 1 \cdot (-1) \cdot 2 \cdot (-2) = 4 $$
+            Tuy nhiên, phương trình yêu cầu tích của chúng nhân với $Q(n)$ bằng $-2$.
+            Điều này kéo theo $4 \cdot Q(n) = -2$, suy ra $Q(n) = -\frac{1}{2}$.
+            Do $Q(x)$ là đa thức hệ số nguyên nên $Q(n)$ phải là một số nguyên. Việc $Q(n) = -1/2$ là mâu thuẫn.
+            Vậy phương trình $P(x) = -1$ không thể có nghiệm nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Canadian Mathematical Olympiad 1980)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$. Biết rằng phương trình $P(x) = x$ có không ít hơn 3 nghiệm nguyên phân biệt. Chứng minh rằng phương trình $P(P(x)) = x$ không có nghiệm nguyên nào khác với các nghiệm của phương trình $P(x) = x$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $A$ là tập hợp các nghiệm nguyên của phương trình $P(x) = x$. Giả thiết cho $|A| \ge 3$.
+            Giả sử tồn tại một số nguyên $d \notin A$ sao cho $P(P(d)) = d$.
+            Đặt $e = P(d)$. Vì $d \notin A$ nên $P(d) \neq d$, tức là $e \neq d$.
+            Mặt khác, $P(e) = P(P(d)) = d$.
+            Xét một nghiệm $a \in A$ bất kỳ, ta có $P(a) = a$.
+            Áp dụng Định lý 1 cho các cặp số $(d, a)$ và $(e, a)$:
+            \begin{align*}
+            d - a &\mid P(d) - P(a) \implies d - a \mid e - a \\
+            e - a &\mid P(e) - P(a) \implies e - a \mid d - a
+            \end{align*}
+            Hai số nguyên chia hết cho nhau nên chúng có giá trị tuyệt đối bằng nhau: $|d - a| = |e - a|$.
+            Vì $d \neq e$, ta bắt buộc phải có $d - a = -(e - a)$, hay $a = \frac{d + e}{2}$.
+            Điều này chứng tỏ nghiệm $a$ được xác định duy nhất bởi tổng $d + e$.
+            Do đó, tập $A$ chỉ có thể chứa tối đa 1 phần tử là $a = \frac{d + e}{2}$.
+            Điều này mâu thuẫn với giả thiết ban đầu là $|A| \ge 3$.
+            Giả thiết phản chứng sai. Mọi nghiệm nguyên của $P(P(x)) = x$ đều phải là nghiệm của $P(x) = x$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Austrian National Olympiad 2004)</div>
+            <div class="box-body">
+                Cho $P(x) \in \mathbb{Z}[x]$. Biết tồn tại 4 số nguyên phân biệt $a, b, c, d$ sao cho $P(a) = b, P(b) = c, P(c) = d, P(d) = a$. Chứng minh rằng một chu trình độ dài 4 như vậy là không thể tồn tại.<br>
+                <i>(Ghi chú: Yêu cầu bài toán tương đương với việc chứng minh $a=c, b=d$, tức chu trình suy biến thành độ dài 2).</i>
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Áp dụng Định lý 1 liên tiếp cho các cặp số liền kề trong chu trình:
+            \begin{align*}
+            a - b &\mid P(a) - P(b) = b - c \\
+            b - c &\mid P(b) - P(c) = c - d \\
+            c - d &\mid P(c) - P(d) = d - a \\
+            d - a &\mid P(d) - P(a) = a - b
+            \end{align*}
+            Từ chuỗi quan hệ trên, ta có $|a - b| = |b - c| = |c - d| = |d - a| = k$ (với $k &gt; 0$).
+            Đặt $x_1 = a - b, x_2 = b - c, x_3 = c - d, x_4 = d - a$. Ta có hệ:
+            $$ |x_1| = |x_2| = |x_3| = |x_4| = k \quad \text{và} \quad x_1 + x_2 + x_3 + x_4 = 0 $$
+            Để tổng 4 số có cùng giá trị tuyệt đối $k \neq 0$ bằng $0$, bắt buộc phải có hai số bằng $k$ và hai số bằng $-k$.
+            Nếu $x_1 = x_2$, ta có $a - b = b - c \implies a - c = 2(a - b) = \pm 2k$.
+            Tuy nhiên, $a - c = - (c - d + d - a) = - (x_3 + x_4)$.
+            Do $x_3, x_4 \in \{k, -k\}$ nên $|x_3 + x_4|$ chỉ có thể là $0$ hoặc $2k$.
+            Để duy trì tính nhất quán của chu trình mà không làm 4 biến bằng nhau, thứ tự các dấu bắt buộc phải luân phiên: $x_1 = k, x_2 = -k, x_3 = k, x_4 = -k$.
+            Khi đó:
+            $$ x_1 + x_2 = (a - b) + (b - c) = a - c = k - k = 0 \implies a = c $$
+            $$ x_2 + x_3 = (b - c) + (c - d) = b - d = -k + k = 0 \implies b = d $$
+            Kết quả $a = c$ và $b = d$ mâu thuẫn với giả thiết 4 số là phân biệt. Chu trình độ dài 4 không tồn tại đối với đa thức hệ số nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Japan Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Đa thức $P(x) \in \mathbb{Z}[x]$ thỏa mãn $P(1) = 2, P(2) = 3, P(3) = 4, P(4) = 5$. Chứng minh rằng không tồn tại số nguyên $k$ nào để $P(k) = 20$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $H(x) = P(x) - (x + 1)$.
+            Theo giả thiết, $H(1) = H(2) = H(3) = H(4) = 0$.
+            Do đó, $H(x)$ chia hết cho đa thức $(x-1)(x-2)(x-3)(x-4)$. Ta viết được:
+            $$ P(x) - (x + 1) = (x-1)(x-2)(x-3)(x-4)Q(x) $$
+            với $Q(x) \in \mathbb{Z}[x]$.
+            Giả sử tồn tại số nguyên $k$ sao cho $P(k) = 20$. Thay $x = k$ vào phương trình:
+            $$ 20 - (k + 1) = (k-1)(k-2)(k-3)(k-4)Q(k) $$
+            $$ 19 - k = (k-1)(k-2)(k-3)(k-4)Q(k) $$
+            Rõ ràng $k \notin \{1, 2, 3, 4\}$ vì nếu vậy vế phải bằng $0$, còn vế trái khác $0$.
+            Khi $k \notin \{1, 2, 3, 4\}$, tích của 4 số nguyên liên tiếp $(k-1)(k-2)(k-3)(k-4)$ luôn lớn hơn hoặc bằng $24$ (đạt được khi $k=0$ hoặc $k=5$).
+            Vì $Q(k)$ là số nguyên khác $0$, ta có:
+            $$ |19 - k| \ge |(k-1)(k-2)(k-3)(k-4)| \ge 24 $$
+            Ta xét hai trường hợp:
+            <ul>
+                <li style="margin-bottom: 10px;">Nếu $19 - k \ge 24 \implies k \le -5$. <br>
+                Khi đó $|(k-1)(k-2)(k-3)(k-4)| = (|-k|+1)(|-k|+2)(|-k|+3)(|-k|+4) \ge 6 \times 7 \times 8 \times 9 = 3024$.<br>
+                Vế trái là $19 - k \le 19 + |-k| = 19 + 5 = 24 &lt; 3024$. (Vô lý).</li>
+                <li>Nếu $19 - k \le -24 \implies k \ge 43$.<br>
+                Khi đó tích 4 số liên tiếp ít nhất là $42 \times 41 \times 40 \times 39 = 2686320$.<br>
+                Vế trái là $k - 19$, với $k \ge 43$, hiển nhiên $k - 19 &lt; 2686320$. (Vô lý).</li>
+            </ul>
+            Cả hai trường hợp đều dẫn đến mâu thuẫn. Không tồn tại số nguyên $k$ thỏa mãn.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Croatian National Olympiad 2008)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$. Biết tồn tại ba số nguyên phân biệt $a, b, c$ sao cho $P(a) = P(b) = P(c) = 1$. Chứng minh rằng phương trình $P(x) = 0$ không có nghiệm nguyên.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Bằng phân tích đa thức, ta có thể biểu diễn $P(x)$ dưới dạng:
+            $$ P(x) = (x-a)(x-b)(x-c)Q(x) + 1 $$
+            với $Q(x) \in \mathbb{Z}[x]$.
+            Giả sử tồn tại số nguyên $n$ sao cho $P(n) = 0$. Thay vào phương trình:
+            $$ (n-a)(n-b)(n-c)Q(n) + 1 = 0 \implies (n-a)(n-b)(n-c)Q(n) = -1 $$
+            Vì $a, b, c$ là ba số nguyên phân biệt, các đại lượng $n-a, n-b, n-c$ là ba số nguyên phân biệt.
+            Theo phương trình trên, ba số này phải là các ước số của $-1$.
+            Tập hợp các ước số nguyên của $-1$ chỉ có đúng hai phần tử: $\{1, -1\}$.
+            Theo nguyên lý Dirichlet, không thể chọn ra 3 số nguyên phân biệt từ một tập hợp chỉ có 2 phần tử.
+            Mâu thuẫn này chứng tỏ phương trình $P(x) = 0$ không có nghiệm nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Greek Mathematical Olympiad 2002)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$ có bậc $n \ge 5$. Biết rằng tồn tại $n$ số nguyên phân biệt $x_1, x_2, \dots, x_n$ sao cho $P(x_i) = p$ với $p$ là một số nguyên tố. Chứng minh rằng phương trình $P(x) = 2p$ không có nghiệm nguyên.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Vì $P(x)$ là đa thức bậc $n$ và có giá trị bằng $p$ tại $n$ điểm phân biệt, ta có thể viết:
+            $$ P(x) = a(x - x_1)(x - x_2)\dots(x - x_n) + p $$
+            với $a \in \mathbb{Z}$ và $a \neq 0$ (vì bậc là $n$, phần thương $Q(x)$ suy biến thành hằng số $a$).
+            Giả sử tồn tại số nguyên $k$ sao cho $P(k) = 2p$. Khi đó:
+            $$ a(k - x_1)(k - x_2)\dots(k - x_n) + p = 2p \implies a(k - x_1)(k - x_2)\dots(k - x_n) = p $$
+            Vì $x_i$ phân biệt, các số hạng $k - x_i$ là $n$ số nguyên phân biệt. Đồng thời chúng đều là ước của số nguyên tố $p$.
+            Tập hợp các ước của một số nguyên tố $p$ là $\{1, -1, p, -p\}$. Số lượng tối đa các ước phân biệt là 4.
+            Tuy nhiên, phương trình yêu cầu phải có $n$ ước phân biệt. Do $n \ge 5 &gt; 4$, điều này vi phạm nguyên lý tổ hợp cơ bản.
+            Không tồn tại giá trị $k$ nguyên nào thỏa mãn yêu cầu bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (China National High School Mathematics League 2014)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$ thỏa mãn $P(1) = 2014$ và $P(2014) = 1$. Chứng minh rằng phương trình $P(x) = x$ không có nghiệm nguyên.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại một số nguyên $n$ thỏa mãn $P(n) = n$.
+            Áp dụng Định lý 1 cho các cặp điểm $(n, 1)$ và $(2014, n)$:
+            \begin{align*}
+            n - 1 &\mid P(n) - P(1) = n - 2014 \\
+            2014 - n &\mid P(2014) - P(n) = 1 - n
+            \end{align*}
+            Từ quan hệ chia hết thứ nhất:
+            $$ n - 1 \mid (n - 1) - 2013 \implies n - 1 \mid 2013 $$
+            Từ quan hệ chia hết thứ hai:
+            $$ 2014 - n \mid (2014 - n) - 2013 \implies 2014 - n \mid 2013 $$
+            Đặt $d_1 = n - 1$ và $d_2 = 2014 - n$. Ta có hệ điều kiện:
+            $$ d_1 \mid 2013, \quad d_2 \mid 2013 \quad \text{và} \quad d_1 + d_2 = (n - 1) + (2014 - n) = 2013 $$
+            Do $2013$ là một số nguyên lẻ ($2013 = 3 \times 11 \times 61$), mọi ước số nguyên của nó đều bắt buộc phải là số lẻ.
+            Do đó, cả $d_1$ và $d_2$ đều là các số nguyên lẻ.
+            Theo tính chất của phép cộng, tổng của hai số lẻ phải là một số chẵn.
+            Tuy nhiên, ta lại có $d_1 + d_2 = 2013$ là một số lẻ.
+            Sự mâu thuẫn về tính chẵn lẻ này đánh sập giả thiết phản chứng. Phương trình $P(x) = x$ không thể có nghiệm nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

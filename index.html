@@ -93,7 +93,7 @@
             width: 20px; height: 20px;
             stroke: #8a94ad; fill: none; stroke-width: 2;
         }
-        .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filters { display: block; }
         .pill {
             cursor: pointer;
             border: 1.5px solid #ccd5e8;
@@ -108,6 +108,48 @@
         .pill:hover { border-color: #2a5db0; color: #2a5db0; transform: translateY(-1px); }
         .pill.active { background: #2a5db0; border-color: #2a5db0; color: #fff; }
         .result-count { margin: 6px 2px 0; font-size: 0.85rem; color: #7a86a5; }
+
+        /* ===== Bộ lọc 2 cấp: Nhóm (Bổ trợ / VMO) + Chủ đề ===== */
+        .filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-row + .filter-row { margin-top: 8px; }
+        .pill.group { border-width: 2px; }
+        .pill.group.bd { border-color: #2a5db0; color: #2a5db0; }
+        .pill.group.bd.active { background: #2a5db0; border-color: #2a5db0; color: #fff; }
+        .pill.group.vmo { border-color: #6d28d9; color: #6d28d9; }
+        .pill.group.vmo.active { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+        .pill .cnt {
+            display: inline-block;
+            background: rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 1px 8px;
+            margin-left: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .pill.group.active .cnt { background: rgba(255,255,255,0.3); }
+
+        /* ===== Thẻ nhóm + độ khó trên card ===== */
+        .card .group-badge {
+            display: inline-block;
+            align-self: flex-start;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border-radius: 6px;
+            padding: 3px 10px;
+            margin-bottom: 8px;
+        }
+        .card .group-badge.bd { background: #e8eefb; color: #2a5db0; }
+        .card .group-badge.vmo { background: #f3e8ff; color: #6d28d9; }
+        .card.vmo { border-left-color: #6d28d9; }
+        .card .stars { color: #f5b301; font-size: 1.05rem; letter-spacing: 2px; }
+        .card .difficulty {
+            display: flex; align-items: center; gap: 8px;
+            margin: 0 0 10px;
+        }
+        .card .diff-text { font-size: 0.78rem; font-weight: 600; color: #8b5cf6; }
+        .card .cat { margin-bottom: 6px; }
 
         /* ===== Cards ===== */
         main { max-width: 1200px; margin: 0 auto; padding: 30px 20px 60px; }
@@ -189,7 +231,8 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">52</b><small>Chuyên đề</small></div>
+            <div class="stat"><b id="countAll">53</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countVmo">1</b><small>Luyện tập VMO</small></div>
             <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
             <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
         </div>
@@ -202,7 +245,10 @@
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
                 <input type="text" id="search" placeholder="Tìm theo chuyên đề hoặc từ khóa...">
             </div>
-            <div class="filters" id="filters"></div>
+            <div class="filters" id="filters">
+                <div class="filter-row" id="groupRow"></div>
+                <div class="filter-row" id="catRow"></div>
+            </div>
             <div class="result-count" id="countText"></div>
         </div>
     </div>
@@ -281,7 +327,8 @@
             { n:49, file:'index49.html', cat:'graph', title:'Lý thuyết Đồ thị - Chu trình Euler, Định lý Ore và Cấu trúc De Bruijn',                   desc:'Chu trình Euler, định lý Ore và cấu trúc De Bruijn.' },
             { n:50, file:'index50.html', cat:'graph', title:'Lý thuyết đồ thị - Tô màu đồ thị, đa thức sắc số và PIE',                               desc:'Tô màu đồ thị, đa thức sắc số và nguyên lý bù trừ (PIE).' },
             { n:51, file:'index51.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut',                             desc:'Mạng luồng và định lý đối ngẫu max-flow min-cut.' },
-            { n:52, file:'index52.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut (bản 2)',                     desc:'Bản 2 — mạng luồng và định lý đối ngẫu max-flow min-cut.' }
+            { n:52, file:'index52.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut (bản 2)',                     desc:'Bản 2 — mạng luồng và định lý đối ngẫu max-flow min-cut.' },
+            { n:1,  file:'vmo1.html',    cat:'poly',  stars:3, title:'Đại số Đa thức & tính chất Số học — Cấu trúc chia hết của đa thức hệ số nguyên',  desc:'Định lý chia hết của đa thức hệ số nguyên và ứng dụng USAMO 1974.' }
         ];
 
         // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
@@ -291,20 +338,53 @@
         const countText   = document.getElementById('countText');
         const searchInput = document.getElementById('search');
 
-        let activeCat = 'all';
+        const groupRow = document.getElementById('groupRow');
+        const catRow   = document.getElementById('catRow');
 
-        // Tạo nút lọc danh mục
-        filtersEl.innerHTML =
-            '<button class="pill active" data-cat="all">Tất cả</button>' +
-            Object.keys(CATS).map(k =>
-                '<button class="pill" data-cat="' + k + '">' + CATS[k].label + '</button>'
-            ).join('');
+        let activeGroup = 'all';
+        let activeCat   = 'all';
+
+        // Nhóm bộ sưu tập: index*.html -> CHUYÊN ĐỀ BỔ TRỢ, vmo*.html -> LUYỆN TẬP VMO
+        const GROUPS = {
+            bd:  { label: 'CHUYÊN ĐỀ BỔ TRỢ' },
+            vmo: { label: 'LUYỆN TẬP VMO' }
+        };
+
+        // Tự nhận diện nhóm dựa trên tiền tố tên file
+        function groupOf(p) {
+            return (p.file || '').indexOf('vmo') === 0 ? 'vmo' : 'bd';
+        }
+
+        // Tạo nút lọc: cấp 1 = nhóm (kèm số lượng), cấp 2 = chủ đề
+        function buildFilters() {
+            groupRow.innerHTML =
+                '<button class="pill group active" data-group="all">Tất cả</button>' +
+                Object.keys(GROUPS).map(g => {
+                    const count = POSTS.filter(p => groupOf(p) === g).length;
+                    return '<button class="pill group ' + g + '" data-group="' + g + '">' +
+                        GROUPS[g].label + ' <span class="cnt">' + count + '</span></button>';
+                }).join('');
+
+            catRow.innerHTML =
+                '<button class="pill active" data-cat="all">Tất cả chủ đề</button>' +
+                Object.keys(CATS).map(k =>
+                    '<button class="pill" data-cat="' + k + '">' + CATS[k].label + '</button>'
+                ).join('');
+        }
 
         filtersEl.addEventListener('click', (e) => {
             const btn = e.target.closest('.pill');
             if (!btn) return;
-            activeCat = btn.dataset.cat;
-            document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p === btn));
+
+            if (btn.dataset.group) {
+                activeGroup = btn.dataset.group;
+                groupRow.querySelectorAll('.pill')
+                    .forEach(p => p.classList.toggle('active', p === btn));
+            } else if (btn.dataset.cat) {
+                activeCat = btn.dataset.cat;
+                catRow.querySelectorAll('.pill')
+                    .forEach(p => p.classList.toggle('active', p === btn));
+            }
             render();
         });
 
@@ -318,35 +398,62 @@
                     .replace(/đ/g, 'd');
         }
 
+        function starsHTML(n) {
+            n = Math.max(0, Math.min(5, Number(n) || 0));
+            return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(n);
+        }
+
         function cardHTML(p) {
             const c = CATS[p.cat];
-            return '<a class="card" style="--c:' + c.color + '" href="' + p.file + '">' +
+            const isVmo = groupOf(p) === 'vmo';
+            const color = isVmo ? '#6d28d9' : (c ? c.color : '#2a5db0');
+            const groupBadge = isVmo
+                ? '<span class="group-badge vmo">LUYỆN TẬP VMO</span>'
+                : '<span class="group-badge bd">CHUYÊN ĐỀ BỔ TRỢ</span>';
+            const difficulty = isVmo
+                ? '<span class="difficulty">' +
+                    '<span class="stars" title="Độ khó ' + p.stars + '/5">' + starsHTML(p.stars) + '</span>' +
+                    '<span class="diff-text">Độ khó ' + p.stars + '/5</span>' +
+                  '</span>'
+                : '';
+
+            return '<a class="card' + (isVmo ? ' vmo' : '') + '" style="--c:' + color + '" href="' + p.file + '">' +
                 '<span class="num">' + p.n + '</span>' +
-                '<span class="cat">' + c.label + '</span>' +
+                groupBadge +
+                (c ? '<span class="cat">' + c.label + '</span>' : '') +
+                difficulty +
                 '<h3>' + p.title + '</h3>' +
                 '<p>' + p.desc + '</p>' +
-                '<span class="read">Mở bài viết →</span>' +
+                '<span class="read">' + (isVmo ? 'Vào luyện tập →' : 'Mở bài viết →') + '</span>' +
                 '</a>';
         }
 
         function render() {
             const q = normalize(searchInput.value.trim()).replace(/\s+/g, ' ');
             const list = POSTS.filter(p => {
+                const okGroup = activeGroup === 'all' || groupOf(p) === activeGroup;
+                if (!okGroup) return false;
                 const okCat = activeCat === 'all' || p.cat === activeCat;
                 if (!okCat) return false;
                 if (!q) return true;
-                const hay = normalize(p.title + ' ' + p.desc + ' ' + CATS[p.cat].label);
+                const hay = normalize(p.title + ' ' + p.desc + ' ' +
+                    (CATS[p.cat] ? CATS[p.cat].label : '') + ' ' + GROUPS[groupOf(p)].label);
                 const num = String(p.n);
                 return hay.includes(q) || q === num || q.includes(num);
             });
 
             grid.innerHTML = list.map(cardHTML).join('');
             noResults.style.display = list.length ? 'none' : 'block';
-            countText.textContent = 'Hiển thị ' + list.length + ' / ' + POSTS.length + ' chuyên đề';
+            countText.textContent = 'Hiển thị ' + list.length + ' / ' + POSTS.length + ' bài';
         }
 
+        buildFilters();
         render();
+
+        // Cập nhật số liệu thống kê (tự đếm từ danh sách POSTS)
         document.getElementById('countAll').textContent = POSTS.length;
+        document.getElementById('countVmo').textContent = POSTS.filter(p => groupOf(p) === 'vmo').length;
+        document.getElementById('countCat').textContent = Object.keys(CATS).length;
 
         // ============================================================
         //  BỘ ĐẾM LƯỢT TRUY CẬP TOÀN CỤC — Google Apps Script + Sheets

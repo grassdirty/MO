@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Đại Số Tổ Hợp - Đa Thức Sinh & Bổ Đề Lọc</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh */
+            background: linear-gradient(to bottom, rgba(7, 11, 25, 0.85), rgba(15, 20, 45, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #c084fc;
+            border-bottom: 2px solid rgba(192, 132, 252, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #e2e8f0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f1f5f9;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f1f5f9; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP<br>PHƯƠNG PHÁP ĐA THỨC SINH VÀ BỘ LỌC CĂN BẬC N CỦA ĐƠN VỊ</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát số lượng các cấu hình tổ hợp thỏa mãn một điều kiện đồng dư là một bài toán mang tính chất giao thoa giữa Đại số và Rời rạc. Bằng việc mã hóa các cấu hình vào hệ số của một đa thức (được gọi là đa thức sinh), ta có thể sử dụng các căn bậc $n$ phức của đơn vị để trích xuất chính xác tổng các hệ số thỏa mãn điều kiện chu kỳ. Chuyên đề này tập trung phân tích Bổ đề lọc hệ số, thiết lập cơ sở lý thuyết chặt chẽ và ứng dụng vào các lớp bài toán đếm trong các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Đa thức sinh (Generating Function)</div>
+            <div class="box-body">
+                Cho một dãy số hữu hạn hoặc vô hạn $(a_k)_{k \ge 0}$. Đa thức sinh (hay chuỗi lũy thừa hình thức) tương ứng với dãy $(a_k)$ được định nghĩa là:
+                $$ f(x) = \sum_{k=0}^{\infty} a_k x^k $$
+                Trong bài toán đếm, $a_k$ thường là số lượng cấu hình có trọng số (hoặc kích thước) bằng $k$.
+            </div>
+        </div>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 2: Căn bậc $n$ của đơn vị</div>
+            <div class="box-body">
+                Một số phức $\varepsilon$ được gọi là căn bậc $n$ của đơn vị nếu $\varepsilon^n = 1$. <br>
+                Căn bậc $n$ nguyên thủy của đơn vị có dạng:
+                $$ \varepsilon = \cos\frac{2\pi}{n} + i\sin\frac{2\pi}{n} = e^{\frac{2\pi i}{n}} $$
+                Tập hợp tất cả các căn bậc $n$ của đơn vị là $\{1, \varepsilon, \varepsilon^2, \dots, \varepsilon^{n-1}\}$.
+            </div>
+        </div>
+
+        <p>Tính chất cốt lõi để sử dụng các số phức này trong tổ hợp được phát biểu qua Bổ đề lọc sau đây.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Bổ đề Lọc hệ số (Roots of Unity Filter)</div>
+            <div class="box-body">
+                Cho đa thức $f(x) = \sum_{k=0}^{m} a_k x^k$. Tổng các hệ số $a_k$ với chỉ số $k$ đồng dư với $r$ modulo $n$ ($0 \le r &lt; n$) được tính bằng công thức:
+                $$ S_r = \sum_{k \equiv r \pmod n} a_k = \frac{1}{n} \sum_{j=0}^{n-1} \varepsilon^{-jr} f(\varepsilon^j) $$
+                trong đó $\varepsilon = e^{\frac{2\pi i}{n}}$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Thay biểu thức $f(\varepsilon^j) = \sum_{k=0}^m a_k \varepsilon^{jk}$ vào vế phải của phương trình, ta có:
+            $$ \frac{1}{n} \sum_{j=0}^{n-1} \varepsilon^{-jr} \sum_{k=0}^m a_k \varepsilon^{jk} = \frac{1}{n} \sum_{k=0}^m a_k \left( \sum_{j=0}^{n-1} \varepsilon^{j(k-r)} \right) $$
+            Xét tổng phụ bên trong: $T = \sum_{j=0}^{n-1} (\varepsilon^{k-r})^j$. Đây là tổng của một cấp số nhân.
+            <ul>
+                <li>Nếu $k \equiv r \pmod n$, thì $k - r$ là bội của $n$. Suy ra $\varepsilon^{k-r} = 1$. Khi đó, tổng $T = \sum_{j=0}^{n-1} 1 = n$.</li>
+                <li>Nếu $k \not\equiv r \pmod n$, thì $\varepsilon^{k-r} \neq 1$. Áp dụng công thức tổng cấp số nhân:
+                $$ T = \frac{1 - (\varepsilon^{k-r})^n}{1 - \varepsilon^{k-r}} = \frac{1 - (\varepsilon^n)^{k-r}}{1 - \varepsilon^{k-r}} = \frac{1 - 1}{1 - \varepsilon^{k-r}} = 0 $$</li>
+            </ul>
+            Do đó, đại lượng $\frac{1}{n} \sum_{j=0}^{n-1} \varepsilon^{j(k-r)}$ đóng vai trò như một hàm chỉ thị (Indicator Function), bằng $1$ nếu $k \equiv r \pmod n$ và bằng $0$ nếu ngược lại.<br>
+            Kéo theo:
+            $$ \frac{1}{n} \sum_{k=0}^m a_k \left( \sum_{j=0}^{n-1} \varepsilon^{j(k-r)} \right) = \sum_{k \equiv r \pmod n} a_k $$
+            Khẳng định được chứng minh.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (China National High School Mathematics League (CMO) 2000)</div>
+            <div class="box-body">
+                Xác định số lượng các tập con của tập hợp $S = \{1, 2, \dots, 2000\}$ sao cho tổng các phần tử của tập con đó là một số chia hết cho 5. <br>
+                <em>(Quy ước tập rỗng có tổng các phần tử bằng 0, cũng chia hết cho 5).</em>
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Mỗi phần tử $k \in S$ có hai trạng thái: được chọn hoặc không được chọn vào tập con.<br>
+            Ta xây dựng đa thức sinh cho tổng các phần tử của tập con:
+            $$ f(x) = (1+x)(1+x^2)\dots(1+x^{2000}) = \prod_{k=1}^{2000} (1+x^k) $$
+            Hệ số $a_m$ của $x^m$ trong khai triển $f(x)$ chính là số lượng các tập con có tổng các phần tử bằng $m$.<br>
+            Yêu cầu bài toán là tính $S_0 = \sum_{m \equiv 0 \pmod 5} a_m$.<br>
+            Áp dụng Bổ đề Lọc (Định lý 1) với $n=5$ và $r=0$:
+            $$ S_0 = \frac{1}{5} \sum_{j=0}^4 f(\varepsilon^j) = \frac{1}{5} \left( f(1) + f(\varepsilon) + f(\varepsilon^2) + f(\varepsilon^3) + f(\varepsilon^4) \right) $$
+            với $\varepsilon = \cos\frac{2\pi}{5} + i\sin\frac{2\pi}{5}$.<br>
+            Tiến hành tính toán từng giá trị:<br>
+            <strong>1. Tại $x = 1$:</strong>
+            $$ f(1) = (1+1)^{2000} = 2^{2000} $$
+            <strong>2. Tại $x = \varepsilon^j$ với $j \in \{1, 2, 3, 4\}$:</strong><br>
+            Vì tập các số từ $1$ đến $2000$ có thể được chia thành $400$ nhóm, mỗi nhóm gồm $5$ số nguyên liên tiếp. Khi lấy số mũ cho $\varepsilon^j$, chu kỳ độ dài 5 được lặp lại.<br>
+            Tích của một chu kỳ (với $j \not\equiv 0 \pmod 5$) là:
+            $$ P = (1+\varepsilon^j)(1+\varepsilon^{2j})(1+\varepsilon^{3j})(1+\varepsilon^{4j})(1+\varepsilon^{5j}) $$
+            Vì $\{j, 2j, 3j, 4j, 5j\}$ theo modulo 5 là một hoán vị của $\{1, 2, 3, 4, 5\}$, ta có:
+            $$ P = (1+\varepsilon)(1+\varepsilon^2)(1+\varepsilon^3)(1+\varepsilon^4)(1+1) $$
+            Xét đa thức $x^5 - 1 = (x-1)(x^4 + x^3 + x^2 + x + 1)$. Các nghiệm của $x^4 + x^3 + x^2 + x + 1 = 0$ chính là $\varepsilon, \varepsilon^2, \varepsilon^3, \varepsilon^4$. Do đó:
+            $$ x^4 + x^3 + x^2 + x + 1 = (x-\varepsilon)(x-\varepsilon^2)(x-\varepsilon^3)(x-\varepsilon^4) $$
+            Thay $x = -1$ vào đồng nhất thức trên:
+            $$ (-1)^4 + (-1)^3 + (-1)^2 + (-1) + 1 = (-1-\varepsilon)(-1-\varepsilon^2)(-1-\varepsilon^3)(-1-\varepsilon^4) $$
+            $$ 1 = (1+\varepsilon)(1+\varepsilon^2)(1+\varepsilon^3)(1+\varepsilon^4) $$
+            Do đó, $P = 1 \times (1+1) = 2$.<br>
+            Toàn bộ tích từ $1$ đến $2000$ bao gồm 400 chu kỳ như vậy, suy ra:
+            $$ f(\varepsilon^j) = P^{400} = 2^{400} \quad \forall j \in \{1, 2, 3, 4\} $$
+            Thay các kết quả vào biểu thức của $S_0$:
+            $$ S_0 = \frac{1}{5} \left( 2^{2000} + 4 \cdot 2^{400} \right) $$
+            Đây chính là số lượng tập con thỏa mãn yêu cầu bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Bulgarian National Olympiad 2005)</div>
+            <div class="box-body">
+                Tìm số lượng các từ có độ dài $n$ được tạo thành từ bảng chữ cái $\{A, B, C\}$ sao cho số lần xuất hiện của ký tự $A$ là một bội số của 3.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $k$ là số lần xuất hiện của ký tự $A$. Ta có $0 \le k \le n$ và $k \equiv 0 \pmod 3$.<br>
+            Với mỗi giá trị $k$, số cách chọn vị trí cho chữ $A$ là $\binom{n}{k}$. <br>
+            Các vị trí còn lại ($n-k$ vị trí) được điền bởi $B$ hoặc $C$, có $2^{n-k}$ cách.<br>
+            Đa thức sinh biểu diễn số cách cấu tạo chuỗi là:
+            $$ f(x) = \sum_{k=0}^n \binom{n}{k} x^k 2^{n-k} = (x + 2)^n $$
+            Ta cần tính $S_0 = \sum_{k \equiv 0 \pmod 3} \binom{n}{k} 2^{n-k}$. Áp dụng Bổ đề Lọc với $n=3$, $\varepsilon = \frac{-1 + i\sqrt{3}}{2}$:
+            $$ S_0 = \frac{1}{3} \left( f(1) + f(\varepsilon) + f(\varepsilon^2) \right) $$
+            Ta có: $f(1) = 3^n$.<br>
+            Tính $f(\varepsilon) = (\varepsilon + 2)^n$. <br>
+            Biểu diễn dạng lượng giác của $\varepsilon + 2 = \frac{3}{2} + i\frac{\sqrt{3}}{2} = \sqrt{3} \left( \frac{\sqrt{3}}{2} + i\frac{1}{2} \right) = \sqrt{3} \left( \cos\frac{\pi}{6} + i\sin\frac{\pi}{6} \right)$.<br>
+            Do đó:
+            $$ f(\varepsilon) = 3^{\frac{n}{2}} \left( \cos\frac{n\pi}{6} + i\sin\frac{n\pi}{6} \right) $$
+            Tính $f(\varepsilon^2)$: Vì $\varepsilon^2$ là liên hợp phức của $\varepsilon$, $f(\varepsilon^2)$ là liên hợp phức của $f(\varepsilon)$:
+            $$ f(\varepsilon^2) = 3^{\frac{n}{2}} \left( \cos\frac{n\pi}{6} - i\sin\frac{n\pi}{6} \right) $$
+            Cộng các kết quả lại:
+            $$ S_0 = \frac{1}{3} \left( 3^n + 2 \cdot 3^{\frac{n}{2}} \cos\frac{n\pi}{6} \right) = 3^{n-1} + 2 \cdot 3^{\frac{n}{2}-1} \cos\frac{n\pi}{6} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (United States of America Mathematical Olympiad (USAMO))</div>
+            <div class="box-body">
+                Tính tổng tổ hợp sau dưới dạng dạng rút gọn:
+                $$ S = \binom{n}{0} + \binom{n}{4} + \binom{n}{8} + \dots $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức sinh $f(x) = (1+x)^n = \sum_{k=0}^n \binom{n}{k} x^k$.<br>
+            Yêu cầu bài toán là tính $S_0 = \sum_{k \equiv 0 \pmod 4} a_k$.<br>
+            Các căn bậc 4 của đơn vị là $\{1, -1, i, -i\}$. Áp dụng Bổ đề Lọc:
+            $$ S_0 = \frac{1}{4} \left( f(1) + f(-1) + f(i) + f(-i) \right) $$
+            Ta có:
+            <ul>
+                <li>$f(1) = 2^n$.</li>
+                <li>$f(-1) = 0^n = 0$.</li>
+                <li>$f(i) = (1+i)^n = \left( \sqrt{2} \left( \cos\frac{\pi}{4} + i\sin\frac{\pi}{4} \right) \right)^n = 2^{\frac{n}{2}} \left( \cos\frac{n\pi}{4} + i\sin\frac{n\pi}{4} \right)$.</li>
+                <li>$f(-i) = (1-i)^n = 2^{\frac{n}{2}} \left( \cos\frac{n\pi}{4} - i\sin\frac{n\pi}{4} \right)$.</li>
+            </ul>
+            Tổng hợp lại:
+            $$ S_0 = \frac{1}{4} \left( 2^n + 2 \cdot 2^{\frac{n}{2}} \cos\frac{n\pi}{4} \right) = 2^{n-2} + 2^{\frac{n}{2}-1} \cos\frac{n\pi}{4} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Greek Mathematical Olympiad)</div>
+            <div class="box-body">
+                Cho tập hợp $A = \{1, 2, \dots, n\}$. Đếm số tập con của $A$ có lực lượng (số phần tử) chia cho 3 dư 1.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Số lượng tập con có kích thước $k$ của $A$ là $\binom{n}{k}$.<br>
+            Bài toán quy về việc tính $S_1 = \sum_{k \equiv 1 \pmod 3} \binom{n}{k}$.<br>
+            Sử dụng đa thức sinh $f(x) = (1+x)^n$ và căn bậc 3 của đơn vị $\varepsilon = \cos\frac{2\pi}{3} + i\sin\frac{2\pi}{3}$.<br>
+            Theo Định lý 1 với $r=1$:
+            $$ S_1 = \frac{1}{3} \left( f(1) + \varepsilon^{-1} f(\varepsilon) + \varepsilon^{-2} f(\varepsilon^2) \right) $$
+            Biến đổi $1+\varepsilon = -\varepsilon^2$ và $1+\varepsilon^2 = -\varepsilon$:
+            <ul>
+                <li>$f(\varepsilon) = (-\varepsilon^2)^n = (-1)^n \varepsilon^{2n}$.</li>
+                <li>$f(\varepsilon^2) = (-\varepsilon)^n = (-1)^n \varepsilon^n$.</li>
+            </ul>
+            Thay vào biểu thức $S_1$:
+            $$ S_1 = \frac{1}{3} \left( 2^n + \varepsilon^{-1} (-1)^n \varepsilon^{2n} + \varepsilon^{-2} (-1)^n \varepsilon^n \right) = \frac{1}{3} \left( 2^n + (-1)^n (\varepsilon^{2n-1} + \varepsilon^{n-2}) \right) $$
+            Chú ý rằng $\varepsilon^{-2} = \varepsilon$, do đó $\varepsilon^{n-2} = \varepsilon^{n+1}$.<br>
+            Biểu thức $\varepsilon^{2n-1} + \varepsilon^{n+1}$ sẽ nhận các giá trị nguyên tùy thuộc vào $n \pmod 3$.<br>
+            Bằng phép tính góc lượng giác, đại lượng này có thể được viết gọn thành $2 \cos\frac{(n-2)\pi}{3}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Austrian National Olympiad)</div>
+            <div class="box-body">
+                Xác định số cách tung một xúc xắc 6 mặt cân đối $n$ lần sao cho tổng số chấm xuất hiện chia hết cho 5.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đa thức sinh biểu thị kết quả của $n$ lần tung xúc xắc là:
+            $$ f(x) = (x + x^2 + x^3 + x^4 + x^5 + x^6)^n $$
+            Yêu cầu bài toán là tính $S_0$ tương ứng với hệ số của các số mũ chia hết cho 5.<br>
+            Áp dụng căn bậc 5 của đơn vị $\varepsilon$, với $\varepsilon^5 = 1$:
+            $$ S_0 = \frac{1}{5} \sum_{j=0}^4 f(\varepsilon^j) $$
+            <ul>
+                <li>Khi $j=0$: $f(1) = 6^n$.</li>
+                <li>Khi $j \in \{1, 2, 3, 4\}$, do tính chất nghiệm đa thức $x^4+x^3+x^2+x+1=0$, ta có $\varepsilon^j + \dots + \varepsilon^{5j} = 0$.</li>
+            </ul>
+            Giá trị của hàm tại $\varepsilon^j$:
+            $$ f(\varepsilon^j) = (\varepsilon^j + \dots + \varepsilon^{5j} + \varepsilon^{6j})^n = (0 + \varepsilon^{6j})^n = \varepsilon^{6nj} = \varepsilon^{nj} $$
+            Do đó, tổng cần tính là:
+            $$ S_0 = \frac{1}{5} \left( 6^n + \sum_{j=1}^4 \varepsilon^{nj} \right) $$
+            <ul>
+                <li>Nếu $n$ chia hết cho 5: $\varepsilon^{nj} = 1$ với mọi $j$. Tổng $\sum_{j=1}^4 \varepsilon^{nj} = 4$.<br>
+                Khi đó $S_0 = \frac{1}{5} (6^n + 4)$.</li>
+                <li>Nếu $n$ không chia hết cho 5: Tập hợp $\{\varepsilon^n, \varepsilon^{2n}, \varepsilon^{3n}, \varepsilon^{4n}\}$ là hoán vị của $\{\varepsilon, \varepsilon^2, \varepsilon^3, \varepsilon^4\}$.<br>
+                Tổng của chúng là $-1$. Khi đó $S_0 = \frac{1}{5} (6^n - 1)$.</li>
+            </ul>
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Latvian Mathematical Olympiad)</div>
+            <div class="box-body">
+                Có bao nhiêu số nguyên dương gồm $n$ chữ số, chỉ được tạo bởi các chữ số $\{1, 2, 3\}$, sao cho tổng các chữ số của nó chia hết cho 2?
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Mỗi chữ số được chọn từ tập $\{1, 2, 3\}$. Đa thức sinh cho tổng các chữ số là:
+            $$ f(x) = (x + x^2 + x^3)^n $$
+            Bài toán yêu cầu tính tổng các hệ số với số mũ chia hết cho 2. Sử dụng căn bậc 2 của đơn vị là $\{1, -1\}$:
+            $$ S_0 = \frac{1}{2} \left( f(1) + f(-1) \right) $$
+            Tính toán giá trị tại các mốc:
+            <ul>
+                <li>$f(1) = (1 + 1 + 1)^n = 3^n$.</li>
+                <li>$f(-1) = (-1 + 1 - 1)^n = (-1)^n$.</li>
+            </ul>
+            Kết quả:
+            $$ S_0 = \frac{1}{2} \left( 3^n + (-1)^n \right) $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (German Mathematical Olympiad (BWM))</div>
+            <div class="box-body">
+                Xét đa thức $P(x) = (x^2 - x + 1)^n = \sum_{k=0}^{2n} a_k x^k$. Tính tổng các hệ số $a_0 + a_3 + a_6 + \dots$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta tính $S_0 = \sum_{k \equiv 0 \pmod 3} a_k = \frac{1}{3} (P(1) + P(\varepsilon) + P(\varepsilon^2))$ với $\varepsilon = \frac{-1+i\sqrt{3}}{2}$.
+            <ul>
+                <li>$P(1) = (1 - 1 + 1)^n = 1$.</li>
+                <li>Tại $x = \varepsilon$, ta biết $\varepsilon^2 + \varepsilon + 1 = 0 \implies \varepsilon^2 + 1 = -\varepsilon$.<br>
+                Do đó, $\varepsilon^2 - \varepsilon + 1 = -2\varepsilon$.<br>
+                Suy ra $P(\varepsilon) = (-2\varepsilon)^n = (-2)^n \varepsilon^n$.</li>
+                <li>Tại $x = \varepsilon^2$, tương tự $\varepsilon^4 + \varepsilon^2 + 1 = 0 \implies \varepsilon - \varepsilon^2 + 1 = -2\varepsilon^2$.<br>
+                Suy ra $P(\varepsilon^2) = (-2\varepsilon^2)^n = (-2)^n \varepsilon^{2n}$.</li>
+            </ul>
+            Tổng các hệ số cần tìm:
+            $$ S_0 = \frac{1}{3} \left[ 1 + (-2)^n (\varepsilon^n + \varepsilon^{2n}) \right] $$
+            <ul>
+                <li>Nếu $n \equiv 0 \pmod 3$: $\varepsilon^n + \varepsilon^{2n} = 2 \implies S_0 = \frac{1 + 2(-2)^n}{3}$.</li>
+                <li>Nếu $n \not\equiv 0 \pmod 3$: $\varepsilon^n + \varepsilon^{2n} = -1 \implies S_0 = \frac{1 - (-2)^n}{3}$.</li>
+            </ul>
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Taiwan Mathematical Olympiad (TMO))</div>
+            <div class="box-body">
+                Cho số nguyên dương $n$. Tính giá trị của biểu thức $S = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n}{2k} 3^k$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Nhận xét rằng $3^k = (\sqrt{3})^{2k}$. Tổng cần tính trở thành:
+            $$ S = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n}{2k} (\sqrt{3})^{2k} $$
+            Xét đa thức sinh $f(x) = (1+x)^n = \sum_{m=0}^n \binom{n}{m} x^m$.<br>
+            Bài toán yêu cầu tính tổng các hạng tử có bậc chẵn tại $x = \sqrt{3}$. Áp dụng Bổ đề Lọc hệ số với $n=2$:
+            $$ \sum_{k=0}^{\lfloor n/2 \rfloor} a_{2k} x^{2k} = \frac{1}{2} \left( f(x) + f(-x) \right) $$
+            Thay $x = \sqrt{3}$ vào biểu thức:
+            $$ S = \frac{1}{2} \left( (1+\sqrt{3})^n + (1-\sqrt{3})^n \right) $$
+            Kết quả này là một số nguyên theo khai triển nhị thức Newton.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Romanian National Olympiad)</div>
+            <div class="box-body">
+                Xác định số cách tô màu $n$ ô vuông xếp thành một hàng ngang bằng 3 màu Xanh, Đỏ, Vàng sao cho số lượng ô được tô màu Xanh chia cho 4 dư 2.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $k$ là số ô được tô màu Xanh ($k \equiv 2 \pmod 4$).<br>
+            Có $\binom{n}{k}$ cách chọn vị trí cho các ô màu Xanh. <br>
+            Với mỗi vị trí còn lại, có 2 cách chọn màu (Đỏ hoặc Vàng).<br>
+            Tổng số cách tô màu là hệ số của $x^k$ trong đa thức sinh:
+            $$ f(x) = \sum_{k=0}^n \binom{n}{k} x^k 2^{n-k} = (x+2)^n $$
+            Áp dụng Bổ đề Lọc với modulo $4$ và phần dư $r=2$. Các căn bậc 4 là $\{1, -1, i, -i\}$.
+            $$ S_2 = \frac{1}{4} \left( 1^{-2}f(1) + i^{-2}f(i) + (-1)^{-2}f(-1) + (-i)^{-2}f(-i) \right) $$
+            Vì $i^{-2} = -1$ và $(-i)^{-2} = -1$:
+            $$ S_2 = \frac{1}{4} \left( f(1) - f(i) + f(-1) - f(-i) \right) $$
+            Ta có: $f(1) = 3^n$ và $f(-1) = 1^n = 1$.<br>
+            Giá trị tại $x = i$: $f(i) = (i+2)^n$. Viết dưới dạng lượng giác với $\theta = \arctan(1/2)$:
+            $$ (2+i)^n = (\sqrt{5})^n (\cos n\theta + i\sin n\theta) $$
+            Tương tự $f(-i) = (\sqrt{5})^n (\cos n\theta - i\sin n\theta)$.<br>
+            Khi đó, $f(i) + f(-i) = 2(\sqrt{5})^n \cos n\theta$.<br>
+            Tổng số cách tô màu là:
+            $$ S_2 = \frac{1}{4} \left[ 3^n + 1 - 2(\sqrt{5})^n \cos\left(n \arctan\frac{1}{2}\right) \right] $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

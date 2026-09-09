@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Trừu tượng và Tổ hợp - Nhóm Hoán vị, Bổ đề Burnside và Định lý Pólya</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TRỪU TƯỢNG VÀ TỔ HỢP <br> NHÓM HOÁN VỊ, BỔ ĐỀ BURNSIDE VÀ ĐỊNH LÝ PÓLYA</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đếm số lượng cách tô màu một khối Rubik, một vòng cổ hay một đa giác khi ta coi các trạng thái thu được qua phép xoay hoặc phép lật là giống hệt nhau là một bài toán tổ hợp khó nếu liệt kê trực tiếp. Chuyên đề này hình thức hóa sự đối xứng thông qua khái niệm "Nhóm Hoán Vị". Bằng cách chứng minh Định lý Quỹ đạo - Ổn định và Bổ đề Burnside, chúng ta thiết lập công cụ đại số: Đếm số lượng cấu hình phân biệt thông qua trung bình cộng số điểm bất động của các phép biến hình.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Nhóm (Group Theory) là một phần của Đại số Trừu tượng ở bậc Đại học. Để học sinh THPT có thể áp dụng các định lý bên dưới vào bài toán tổ hợp, ta cần làm quen với các khái niệm cơ sở sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Cấu trúc Nhóm - Group)</div>
+        Một <strong>Nhóm</strong> $(G, \circ)$ là một tập hợp $G$ trang bị một phép toán hai ngôi $\circ$ thỏa mãn các tính chất:
+        <ul>
+            <li><strong>Tính đóng:</strong> Với mọi $a, b \in G$, thì $a \circ b \in G$.</li>
+            <li><strong>Tính kết hợp:</strong> $(a \circ b) \circ c = a \circ (b \circ c)$.</li>
+            <li><strong>Phần tử đơn vị:</strong> Tồn tại phần tử $e \in G$ sao cho $a \circ e = e \circ a = a$ với mọi $a \in G$.</li>
+            <li><strong>Phần tử nghịch đảo:</strong> Với mọi $a \in G$, tồn tại $a^{-1} \in G$ sao cho $a \circ a^{-1} = a^{-1} \circ a = e$.</li>
+        </ul>
+        Trong tổ hợp, ta thường xét <strong>Nhóm hoán vị</strong>, trong đó các phần tử của nhóm là các phép biến hình (như phép xoay, phép lật), và phép toán $\circ$ là phép hợp thành ánh xạ (thực hiện phép biến hình này rồi đến phép biến hình khác).
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Nhóm Hoán vị và Tác động Nhóm)</div>
+        Cho một tập hợp hữu hạn $X$ (ví dụ: tập các đỉnh của đa giác, tập các ô của lưới).
+        <ul>
+            <li> <strong>Phép hoán vị:</strong> Là một song ánh (ánh xạ 1-1 và lên) từ tập $X$ vào chính nó.</li>
+            <li> <strong>Nhóm hoán vị (Permutation Group) $G$:</strong> Là một tập hợp gồm các phép hoán vị trên $X$, thỏa mãn:
+            <ol>
+                <li>Chứa phép đồng nhất $id$ ($id(x) = x$ với mọi $x$).</li>
+                <li>Kín đối với phép hợp thành: Nếu $f, g \in G$ thì ánh xạ hợp thành $f \circ g$ cũng thuộc $G$.</li>
+                <li>Chứa phần tử nghịch đảo: Mọi phép $g \in G$ đều có ánh xạ ngược $g^{-1} \in G$.</li>
+            </ol>
+            </li>
+            <li> <strong>Quỹ đạo (Orbit) của $x$:</strong> Ký hiệu $Orb(x)$ (hoặc $G \cdot x$), là tập hợp tất cả các điểm mà $x$ có thể biến thành thông qua các phép hoán vị trong $G$. $Orb(x) = \{g(x) \mid g \in G\}$. Hai điểm thuộc cùng một quỹ đạo được coi là tương đương với nhau qua đối xứng.</li>
+            <li> <strong>Tập ổn định (Stabilizer) của $x$:</strong> Ký hiệu $Stab(x)$, là tập hợp tất cả các phép hoán vị trong $G$ giữ nguyên vị trí của $x$. $Stab(x) = \{g \in G \mid g(x) = x\}$.</li>
+            <li> <strong>Tập bất động (Fixed Points) của $g$:</strong> Ký hiệu $Fix(g)$ (hoặc $X^g$), là tập hợp tất cả các điểm trong $X$ bị giữ nguyên bởi một phép hoán vị cụ thể $g$. $Fix(g) = \{x \in X \mid g(x) = x\}$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Quỹ đạo - Ổn định / Orbit-Stabilizer Theorem)</div>
+        Với mọi nhóm hoán vị $G$ tác động lên tập hợp $X$ và với mọi phần tử $x \in X$, kích thước của Nhóm $G$ luôn bằng tích giữa kích thước Quỹ đạo của $x$ và kích thước Tập ổn định của $x$:
+        $$ |G| = |Orb(x)| \times |Stab(x)| $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét một phần tử $y$ bất kỳ nằm trong Quỹ đạo $Orb(x)$. Theo định nghĩa, tồn tại ít nhất một phép hoán vị trong $G$ biến $x$ thành $y$. Hãy cố định một phép hoán vị như vậy, gọi là $h$ (tức là $h(x) = y$).<br>
+        Ta đếm xem có bao nhiêu phép hoán vị $g \in G$ cũng thỏa mãn $g(x) = y$.</p>
+
+        <p>Giả sử $g(x) = y$. Vì $h(x) = y$, ta có $g(x) = h(x)$.<br>
+        Áp dụng phép hoán vị nghịch đảo $h^{-1}$ vào cả hai vế:</p>
+        $$ h^{-1}(g(x)) = h^{-1}(h(x)) \implies (h^{-1} \circ g)(x) = id(x) = x $$
+        <p>Điều này có nghĩa là phép hoán vị hợp thành $(h^{-1} \circ g)$ giữ nguyên vị trí của $x$. Theo định nghĩa, $(h^{-1} \circ g)$ phải thuộc về Tập ổn định $Stab(x)$.<br>
+        Gọi $s$ là một phần tử thuộc $Stab(x)$ (tức là $s(x) = x$). Ta có:</p>
+        $$ h^{-1} \circ g = s \implies g = h \circ s $$
+        <p>Ngược lại, nếu ta chọn bất kỳ phép $s \in Stab(x)$ nào, thì phép $g = h \circ s$ sẽ luôn biến $x$ thành $y$, vì $g(x) = h(s(x)) = h(x) = y$.<br>
+        Do đó, có một song ánh giữa các phần tử của $Stab(x)$ và các phép hoán vị $g$ biến $x$ thành $y$.<br>
+        Kết luận: Với mỗi phần tử $y \in Orb(x)$, có chính xác $|Stab(x)|$ phép hoán vị trong $G$ biến $x$ thành $y$.</p>
+
+        <p>Mọi phép hoán vị trong $G$ đều biến $x$ thành một phần tử nào đó trong $Orb(x)$. Ta phân hoạch tập $G$ theo kết quả của phép chiếu lên $x$.<br>
+        Số lượng phần tử của $G$ bằng số lượng kết quả có thể có ($|Orb(x)|$) nhân với số lượng phép hoán vị sinh ra cùng một kết quả ($|Stab(x)|$).<br>
+        Vậy $|G| = |Orb(x)| \times |Stab(x)|$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Bổ đề Burnside - Burnside's Lemma)</div>
+        Số lượng các Quỹ đạo phân biệt (tức là số lượng các trạng thái tương đương nhau, không phân biệt đối xứng) bằng trung bình cộng số lượng các điểm bất động của tất cả các phép hoán vị trong $G$:
+        $$ |Orbits| = \frac{1}{|G|} \sum_{g \in G} |Fix(g)| $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng kỹ thuật Đếm bằng hai cách (Double Counting).<br>
+        Xét tập hợp tất cả các cặp $(g, x)$ thỏa mãn $g(x) = x$ (phép $g$ giữ nguyên điểm $x$). Gọi tập hợp này là $S$.<br>
+        Ta đếm số phần tử của $S$ theo hai hướng:</p>
+
+        <p><strong>Hướng 1: Đếm theo phép hoán vị $g$.</strong><br>
+        Cố định một phép $g \in G$. Số lượng các điểm $x \in X$ thỏa mãn $g(x) = x$ chính là kích thước của tập $Fix(g)$.<br>
+        Lấy tổng trên tất cả các phép $g$, ta có:</p>
+        $$ |S| = \sum_{g \in G} |Fix(g)| $$
+
+        <p><strong>Hướng 2: Đếm theo điểm $x$.</strong><br>
+        Cố định một điểm $x \in X$. Số lượng các phép hoán vị $g \in G$ thỏa mãn $g(x) = x$ chính là kích thước của Tập ổn định $Stab(x)$.<br>
+        Lấy tổng trên tất cả các điểm $x$, ta có:</p>
+        $$ |S| = \sum_{x \in X} |Stab(x)| $$
+
+        <p>Đồng nhất hai kết quả của $|S|$, ta thu được:</p>
+        $$ \sum_{g \in G} |Fix(g)| = \sum_{x \in X} |Stab(x)| $$
+        <p>Theo Định lý Quỹ đạo - Ổn định (Định lý 1.1), ta thay $|Stab(x)| = \frac{|G|}{|Orb(x)|}$ vào vế phải:</p>
+        $$ \sum_{g \in G} |Fix(g)| = \sum_{x \in X} \frac{|G|}{|Orb(x)|} = |G| \sum_{x \in X} \frac{1}{|Orb(x)|} $$
+        <p>Bây giờ, ta nhóm các phần tử $x$ thuộc cùng một Quỹ đạo lại với nhau. Giả sử tập $X$ được chia thành $k$ Quỹ đạo phân biệt $O_1, O_2, \dots, O_k$.<br>
+        Xét một Quỹ đạo $O_i$ bất kỳ. Tổng các phân số $\frac{1}{|Orb(x)|}$ đối với tất cả các $x \in O_i$ sẽ bằng:</p>
+        $$ \sum_{x \in O_i} \frac{1}{|O_i|} = |O_i| \times \frac{1}{|O_i|} = 1 $$
+        <p>Nghĩa là mỗi Quỹ đạo phân biệt đóng góp chính xác $1$ đơn vị vào tổng. Do có $k$ Quỹ đạo, toàn bộ tổng $\sum_{x \in X} \frac{1}{|Orb(x)|}$ bằng chính $k$ (số lượng Quỹ đạo $|Orbits|$).<br>
+        Thay vào phương trình:</p>
+        $$ \sum_{g \in G} |Fix(g)| = |G| \times |Orbits| $$
+        <p>Chia hai vế cho $|G|$, ta thu được Bổ đề Burnside. Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Đếm Vòng cổ và Định lý Nhỏ Fermat)</div>
+        Có $p$ hạt cờ (với $p$ là một số nguyên tố). Bạn có $k$ màu khác nhau. Bạn xâu $p$ hạt này thành một chiếc vòng cổ hình tròn. Hai chiếc vòng cổ được coi là giống nhau nếu ta có thể xoay chiếc này để tạo ra chiếc kia. <br>
+        Tính số lượng các chiếc vòng cổ phân biệt có thể tạo ra. Từ kết quả tổ hợp này, hãy chứng minh Định lý Nhỏ Fermat: $k^p \equiv k \pmod p$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $X$ là tập hợp tất cả các cách tô màu $p$ hạt nằm trên một hàng ngang. Vì có $p$ hạt và $k$ màu, tổng số cách tô màu là $|X| = k^p$.<br>
+        Nhóm đối xứng $G$ tác động lên chiếc vòng cổ bao gồm các <strong>phép xoay</strong> (Rotation). Có đúng $p$ phép xoay tương ứng với việc dịch chuyển vòng cổ đi $0, 1, 2, \dots, p-1$ vị trí. Nhóm này là Nhóm Cyclic $\mathbb{Z}_p$, kích thước $|G| = p$.<br>
+        Số lượng vòng cổ phân biệt chính là số lượng Quỹ đạo của tác động nhóm này. Áp dụng Bổ đề Burnside:</p>
+        $$ |Orbits| = \frac{1}{p} \sum_{i=0}^{p-1} |Fix(g_i)| $$
+        <p>Ta tính số lượng điểm bất động $|Fix(g_i)|$ cho từng phép xoay $g_i$ (phép dịch chuyển vòng tròn đi $i$ hạt).</p>
+        <ul>
+            <li> <strong>Trường hợp 1 ($i = 0$):</strong> Phép $g_0$ là phép đồng nhất (không xoay). Nó giữ nguyên toàn bộ mọi cách tô màu. <br>
+            Do đó $|Fix(g_0)| = |X| = k^p$.</li>
+            <li> <strong>Trường hợp 2 ($1 \le i \le p-1$):</strong> Phép $g_i$ là phép xoay đi $i$ hạt. Một cách tô màu $x$ là bất động qua $g_i$ nếu hạt thứ $j$ và hạt thứ $(j+i) \pmod p$ có cùng màu với mọi $j$.<br>
+            Vì $p$ là số nguyên tố và $1 \le i \le p-1$, $\gcd(i, p) = 1$. Việc dịch chuyển liên tục các bước độ dài $i$ sẽ quét qua toàn bộ $p$ hạt trên vòng cổ trước khi quay lại điểm ban đầu. <br>
+            Nghĩa là để bất động qua $g_i$, tất cả $p$ hạt phải có <strong>cùng một màu</strong>.<br>
+            Có $k$ màu để chọn. Do đó, $|Fix(g_i)| = k$ với mọi $i \in \{1, 2, \dots, p-1\}$.</li>
+        </ul>
+
+        <p>Thay vào công thức Burnside:</p>
+        $$ \text{Số vòng cổ} = \frac{1}{p} \left( k^p + \sum_{i=1}^{p-1} k \right) = \frac{k^p + (p-1)k}{p} $$
+        <p>Biến đổi đại số:</p>
+        $$ \text{Số vòng cổ} = \frac{k^p - k + p \cdot k}{p} = \frac{k^p - k}{p} + k $$
+        <p>Vì "Số vòng cổ" đếm một cấu trúc rời rạc thực tế, nó phải là một số nguyên.<br>
+        Kéo theo phân số $\frac{k^p - k}{p}$ phải là một số nguyên.<br>
+        Điều này tương đương với $k^p - k$ chia hết cho $p$, hay $k^p \equiv k \pmod p$.<br>
+        Định lý Nhỏ Fermat trong Số học đã được chứng minh bằng phương pháp đếm tổ hợp.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Tô màu Lưới vuông)</div>
+        Có bao nhiêu cách tô màu các ô vuông của một bảng lưới $N \times N$ bằng $C$ màu khác nhau? Hai cách tô màu được coi là giống nhau nếu chúng có thể thu được từ nhau thông qua phép xoay bảng lưới $90^\circ, 180^\circ$ hoặc $270^\circ$ trong mặt phẳng. (Tính riêng cho trường hợp $N$ chẵn).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tập hợp $X$ là tất cả các cách tô màu bảng lưới cố định. Số ô là $N^2$. Tổng số cấu hình là $|X| = C^{N^2}$.<br>
+        Nhóm các phép đối xứng $G$ là nhóm xoay $\mathbb{Z}_4 = \{R_0, R_{90}, R_{180}, R_{270}\}$. Kích thước $|G| = 4$.<br>
+        Ta tìm số điểm bất động của từng phép biến hình đối với trường hợp $N = 2m$ (bảng chẵn).</p>
+        <ol>
+            <li> <strong>Phép $R_0$ (Đồng nhất):</strong> Mọi cấu hình đều bất động.
+            $$ |Fix(R_0)| = C^{(2m)^2} = C^{4m^2} $$</li>
+            <li> <strong>Phép $R_{180}$ (Xoay tâm $180^\circ$):</strong> Để một cấu hình không đổi khi xoay $180^\circ$, các ô đối xứng qua tâm của bảng phải có cùng màu. Ô ở tọa độ $(i, j)$ phải cùng màu với ô $(2m+1-i, 2m+1-j)$.<br>
+            Bảng được chia thành các cặp ô, mỗi cặp gồm 2 ô. Do có $4m^2$ ô, ta có $2m^2$ cặp độc lập.<br>
+            Mỗi cặp được chọn 1 màu tùy ý. Do đó:
+            $$ |Fix(R_{180})| = C^{2m^2} $$</li>
+            <li> <strong>Phép $R_{90}$ và $R_{270}$ (Xoay $90^\circ$ và $270^\circ$):</strong> Để cấu hình không đổi khi xoay $90^\circ$, bốn ô tọa độ $(i, j), (j, 2m+1-i), (2m+1-i, 2m+1-j), (2m+1-j, i)$ phải có cùng một màu.<br>
+            Mỗi chu kỳ xoay $90^\circ$ liên kết 4 ô lại thành một nhóm. Do không có ô nào nằm chính giữa tâm bảng (vì $N$ chẵn), không có nhóm nào bị suy biến.<br>
+            Có tổng cộng $4m^2 / 4 = m^2$ nhóm độc lập.<br>
+            Mỗi nhóm được chọn 1 màu tùy ý. Số lượng điểm bất động của $R_{90}$ và $R_{270}$ bằng nhau:
+            $$ |Fix(R_{90})| = |Fix(R_{270})| = C^{m^2} $$</li>
+        </ol>
+
+        <p>Áp dụng Bổ đề Burnside, số lượng các cấu hình bảng phân biệt là:</p>
+        $$ S = \frac{1}{4} \left( C^{4m^2} + C^{2m^2} + 2 \cdot C^{m^2} \right) $$
+        <p>Bài toán được giải quyết thông qua Bổ đề Burnside.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Austria National Olympiad (ÖMO) - Đa diện và Màu sắc)</div>
+        Có bao nhiêu cách phân biệt để tô màu 4 đỉnh của một khối tứ diện đều (regular tetrahedron) bằng $k$ màu khác nhau? Hai cách tô màu được coi là giống nhau nếu ta có thể xoay khối tứ diện trong không gian 3 chiều để chúng trùng khít lên nhau.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tập hợp $X$ gồm các cách tô màu 4 đỉnh cố định. $|X| = k^4$.<br>
+        Nhóm đối xứng quay trong không gian của khối tứ diện đều là Nhóm Giao hoán Bậc 4 (Alternating Group $A_4$). Kích thước $|G| = 12$.<br>
+        Nhóm $G$ bao gồm các phép xoay sau, được phân loại theo trục xoay:</p>
+        <ol>
+            <li> <strong>Phép đồng nhất (1 phép):</strong> Giữ nguyên mọi đỉnh. 
+            $$ |Fix(id)| = k^4 $$</li>
+            <li> <strong>Phép xoay quanh trục đi qua một đỉnh và tâm mặt đối diện (8 phép):</strong> Có 4 đỉnh, mỗi đỉnh cung cấp một trục. Phép xoay $120^\circ$ và $240^\circ$ giữ cố định đỉnh đó và hoán vị vòng quanh 3 đỉnh còn lại. (4 trục $\times$ 2 phép = 8 phép).<br>
+            Để cấu hình bất động, đỉnh cố định chọn 1 màu. Ba đỉnh bị hoán vị vòng quanh phải có cùng 1 màu (độc lập với đỉnh cố định).<br>
+            Có 2 nhóm lựa chọn màu tự do.
+            $$ |Fix(\text{xoay đỉnh})| = k^2 $$</li>
+            <li> <strong>Phép xoay quanh trục đi qua trung điểm của hai cạnh đối diện (3 phép):</strong> Khối tứ diện có 3 cặp cạnh đối. Xoay $180^\circ$ quanh trục này sẽ tráo đổi 2 đỉnh của cạnh này cho nhau, và tráo đổi 2 đỉnh của cạnh kia cho nhau.<br>
+            Để bất động, hai đỉnh của mỗi cạnh đối phải có cùng màu. Ta có 2 cặp đỉnh, nên có 2 nhóm lựa chọn màu.
+            $$ |Fix(\text{xoay cạnh})| = k^2 $$</li>
+        </ol>
+
+        <p>Áp dụng Bổ đề Burnside, tổng tất cả các cách tô màu phân biệt là:</p>
+        $$ S = \frac{1}{12} \left( 1 \cdot k^4 + 8 \cdot k^2 + 3 \cdot k^2 \right) = \frac{k^4 + 11k^2}{12} $$
+        <p>Công thức này giúp tính toán số cách tô màu mà không cần liệt kê thủ công.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Taiwan Mathematical Olympiad (TMO) - Vòng Tay Lục Giác)</div>
+        Bạn có $n$ hạt màu Trắng, Đỏ và Xanh ($k=3$). Bạn muốn xâu 6 hạt này thành một chiếc Vòng Tay (Bracelet) hình lục giác đều. Khác với Vòng Cổ (Necklace) chỉ cho phép xoay, Vòng Tay cho phép bạn <strong>lật úp</strong> chiếc vòng (Reflection) trong không gian 3 chiều. Hãy tính số lượng Vòng Tay phân biệt.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tập $X$ là tập các cách tô màu 6 đỉnh cố định, $|X| = 3^6 = 729$.<br>
+        Nhóm đối xứng của Lục giác đều (cho phép cả xoay và lật) là Nhóm Nhị diện $D_6$. Kích thước $|G| = 2n = 12$.<br>
+        Nhóm $G$ gồm 6 phép xoay và 6 phép lật.</p>
+
+        <p><strong>A. Các phép xoay (6 phép):</strong> Giống bài toán Vòng Cổ.</p>
+        <ul>
+            <li> $g_0$ (xoay $0^\circ$): Cố định 6 điểm độc lập. $|Fix| = 3^6 = 729$.</li>
+            <li> $g_1, g_5$ (xoay $\pm 60^\circ$): 1 chu trình 6 điểm. $|Fix| = 3^1 = 3$. (2 phép).</li>
+            <li> $g_2, g_4$ (xoay $\pm 120^\circ$): 2 chu trình, mỗi chu trình 3 điểm. $|Fix| = 3^2 = 9$. (2 phép).</li>
+            <li> $g_3$ (xoay $180^\circ$): 3 chu trình, mỗi chu trình 2 điểm. $|Fix| = 3^3 = 27$. (1 phép).</li>
+        </ul>
+
+        <p><strong>B. Các phép lật (6 phép):</strong> Phân thành hai loại trục đối xứng.</p>
+        <ul>
+            <li> <strong>Loại 1: Trục đi qua 2 đỉnh đối diện (3 trục).</strong> Xoay quanh trục này (lật) giữ cố định 2 đỉnh nằm trên trục, và hoán vị 2 cặp đỉnh còn lại đối xứng qua trục.<br>
+            Tổng cộng có 1 (đỉnh) + 1 (đỉnh) + 2 (cặp) = 4 chu trình phụ thuộc màu.<br>
+            Với mỗi phép lật loại 1: $|Fix| = 3^4 = 81$. (Có 3 phép $\rightarrow 3 \times 81 = 243$).</li>
+            <li> <strong>Loại 2: Trục đi qua trung điểm của 2 cạnh đối diện (3 trục).</strong> Phép lật này không giữ cố định đỉnh nào. Cả 6 đỉnh được ghép thành 3 cặp đối xứng qua trục.<br>
+            Tổng cộng có 3 chu trình phụ thuộc màu.<br>
+            Với mỗi phép lật loại 2: $|Fix| = 3^3 = 27$. (Có 3 phép $\rightarrow 3 \times 27 = 81$).</li>
+        </ul>
+
+        <p>Áp dụng Bổ đề Burnside, tính trung bình cộng của tất cả 12 phép biến hình:</p>
+        $$ \text{Số vòng tay} = \frac{1}{12} \left[ \underbrace{(729 + 2 \times 3 + 2 \times 9 + 27)}_{\text{Tổng xoay}} + \underbrace{(3 \times 81 + 3 \times 27)}_{\text{Tổng lật}} \right] $$
+        $$ \text{Số vòng tay} = \frac{1}{12} \left[ 729 + 6 + 18 + 27 + 243 + 81 \right] = \frac{1104}{12} = 92 $$
+        <p>Có 92 chiếc vòng tay phân biệt. Bổ đề Burnside giúp xử lý các phép đối xứng phức tạp của nhóm nhị diện một cách hệ thống.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

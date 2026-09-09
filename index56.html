@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tối ưu Tổ hợp - Lý thuyết Matroid và Nguyên lý Tham lam</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỐI ƯU TỔ HỢP <br> LÝ THUYẾT MATROID VÀ NGUYÊN LÝ THAM LAM</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> "Làm thế nào để biết một sự lựa chọn tối ưu cục bộ sẽ dẫn đến một kết quả tối ưu toàn cục?" Đây là câu hỏi cơ bản trong lý thuyết tổ hợp. Chuyên đề này hình thức hóa cấu trúc các tập hợp độc lập bằng khái niệm <strong>Matroid</strong> — một sự trừu tượng hóa từ tính độc lập tuyến tính trong không gian vector và tính phi chu trình của lý thuyết đồ thị. Thông qua Định lý Rado, chúng ta sẽ chứng minh cơ sở toán học của nguyên lý Tham lam (Greedy), cung cấp công cụ giải quyết các bài toán cực trị tổ hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Khái niệm Matroid có tính trừu tượng cao, thuộc chương trình bậc Đại học. Để học sinh THPT có thể hình dung được cấu trúc này và áp dụng vào các Bài toán 3.1, 3.2, ta cần liên hệ với hai mô hình trực quan dưới đây:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Mô hình tạo nên Matroid)</div>
+        <ul>
+            <li><strong>Độc lập tuyến tính trong Đại số:</strong> Cho một tập các vector trong không gian. Một tập con các vector được gọi là "độc lập" nếu không có vector nào biểu diễn được dưới dạng tổng của các vector còn lại. Mọi Cơ sở (tập độc lập lớn nhất) của không gian vector đều có cùng số lượng phần tử (đó là số chiều).</li>
+            <li><strong>Tính phi chu trình trong Đồ thị:</strong> Trong một đồ thị vô hướng, một tập hợp các cạnh được gọi là "độc lập" nếu chúng không tạo thành bất kỳ chu trình nào (chúng tạo thành một Rừng). Tập hợp độc lập lớn nhất chứa các cạnh này chính là một Cây khung (Spanning Tree). Trong một đồ thị liên thông $n$ đỉnh, mọi cây khung đều có đúng $n-1$ cạnh.</li>
+        </ul>
+        Matroid chính là cấu trúc toán học được sinh ra để mô tả điểm chung của hai ví dụ trên.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hệ Độc lập và Matroid)</div>
+        Cho $E$ là một tập hợp hữu hạn (tập nền). Ký hiệu $2^E$ là họ tất cả các tập con của $E$. Một họ các tập con $\mathcal{I} \subseteq 2^E$ được gọi là một <strong>Hệ độc lập</strong> nếu nó thỏa mãn hai tiên đề đầu tiên, và được gọi là một <strong>Matroid</strong> $\mathcal{M} = (E, \mathcal{I})$ nếu nó thỏa mãn cả ba tiên đề sau:
+        <ol>
+            <li> <strong>Tiên đề Rỗng:</strong> Tập rỗng là một tập độc lập ($\emptyset \in \mathcal{I}$).</li>
+            <li> <strong>Tính Di truyền (Hereditary Property):</strong> Mọi tập con của một tập độc lập đều là tập độc lập. (Nếu $A \in \mathcal{I}$ và $B \subseteq A$, thì $B \in \mathcal{I}$).</li>
+            <li> <strong>Tính Trao đổi (Exchange Property):</strong> Nếu $A$ và $B$ là hai tập độc lập ($A, B \in \mathcal{I}$) và kích thước của $A$ nhỏ hơn kích thước của $B$ ($|A| \lt |B|$), thì tồn tại một phần tử $x \in B \setminus A$ sao cho tập $A \cup \{x\}$ vẫn là một tập độc lập (thuộc $\mathcal{I}$).</li>
+        </ol>
+        Các tập hợp thuộc $\mathcal{I}$ được gọi là các <strong>tập độc lập</strong>. Một tập độc lập cực đại (không thể thêm phần tử nào nữa mà vẫn giữ tính độc lập) được gọi là một <strong>Cơ sở (Basis)</strong> của Matroid.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Kích thước Cơ sở)</div>
+        Trong mọi Matroid $\mathcal{M} = (E, \mathcal{I})$, tất cả các Cơ sở (các tập độc lập cực đại) đều có chung một kích thước (số lượng phần tử bằng nhau). Kích thước này được gọi là <strong>Hạng (Rank)</strong> của Matroid.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp phản chứng. <br>
+        Giả sử tồn tại hai Cơ sở $B_1$ và $B_2$ của Matroid có kích thước khác nhau. Không mất tính tổng quát, giả sử $|B_2| \gt |B_1|$.<br>
+        Vì cả $B_1$ và $B_2$ đều là các Cơ sở, theo định nghĩa, chúng là các tập độc lập ($B_1 \in \mathcal{I}$ và $B_2 \in \mathcal{I}$).<br>
+        Vì $|B_1| \lt |B_2|$, theo <strong>Tính Trao đổi (Tiên đề 3)</strong> của Matroid, phải tồn tại một phần tử $x \in B_2 \setminus B_1$ sao cho tập hợp mới $B_1 \cup \{x\}$ vẫn là một tập độc lập thuộc $\mathcal{I}$.</p>
+        
+        <p>Tuy nhiên, $B_1 \cup \{x\}$ là một tập hợp chứa thực sự $B_1$ (vì $x \notin B_1$) và vẫn giữ được tính độc lập. <br>
+        Điều này mâu thuẫn với định nghĩa $B_1$ là một Cơ sở (tập độc lập <strong>cực đại</strong> - không thể thêm bất kỳ phần tử nào khác mà vẫn độc lập).</p>
+        
+        <p>Sự mâu thuẫn này chỉ ra giả thiết $|B_2| \gt |B_1|$ là sai. Do đó, $|B_1| = |B_2|$.<br>
+        Định lý được chứng minh. (Đây là sự tổng quát hóa của phát biểu: Mọi cơ sở của một không gian vector đều có cùng số chiều).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Rado / Thuật toán Tham lam)</div>
+        Cho một Matroid $\mathcal{M} = (E, \mathcal{I})$ và một hàm trọng số $w: E \to \mathbb{R}^+$ gán cho mỗi phần tử một giá trị dương. Trọng số của một tập hợp $A$ được định nghĩa là $w(A) = \sum_{x \in A} w(x)$.<br>
+        Một thuật toán Tham lam (Greedy) được định nghĩa như sau:
+        <ol>
+            <li>Sắp xếp tất cả các phần tử của $E$ theo trọng số giảm dần: $w(e_1) \ge w(e_2) \ge \dots \ge w(e_n)$.</li>
+            <li>Khởi tạo tập kết quả $G = \emptyset$. Duyệt tuần tự qua các phần tử $e_i$. Nếu $G \cup \{e_i\}$ vẫn là một tập độc lập ($\in \mathcal{I}$), ta thêm $e_i$ vào $G$. Nếu không, bỏ qua $e_i$.</li>
+        </ol>
+        Khi đó, tập $G$ sinh ra <strong>luôn là một Cơ sở có trọng số lớn nhất</strong> trong tất cả các tập độc lập của $\mathcal{M}$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Gọi $G = \{g_1, g_2, \dots, g_r\}$ là tập hợp các phần tử được chọn bởi thuật toán Tham lam, được đánh số theo thứ tự chúng được chọn (do đó $w(g_1) \ge w(g_2) \ge \dots \ge w(g_r)$). Vì $w$ nhận giá trị dương, thuật toán sẽ chọn các phần tử cho đến khi không thể chọn được nữa, nên $G$ là một Cơ sở có kích thước $r$.<br>
+        Gọi $O = \{o_1, o_2, \dots, o_r\}$ là một Cơ sở tối ưu (có trọng số lớn nhất), cũng được sắp xếp theo thứ tự trọng số giảm dần: $w(o_1) \ge w(o_2) \ge \dots \ge w(o_r)$.</p>
+
+        <p>Ta sẽ chứng minh bằng quy nạp (hoặc phân tích từng thành phần) rằng với mọi chỉ số $k \in \{1, 2, \dots, r\}$, ta có:</p>
+        $$ w(g_k) \ge w(o_k) $$
+        <p>Giả sử phản chứng rằng tồn tại một chỉ số $k$ sao cho $w(g_k) \lt w(o_k)$. Gọi $k$ là chỉ số <strong>nhỏ nhất</strong> xảy ra điều này.<br>
+        Xét hai tập hợp sau:</p>
+        <ul>
+            <li> Tập $A = \{g_1, g_2, \dots, g_{k-1}\}$. Đây là tập các phần tử mà thuật toán Tham lam đã chọn tính đến ngay trước bước $k$. Hiển nhiên $A \in \mathcal{I}$ và $|A| = k-1$.</li>
+            <li> Tập $B = \{o_1, o_2, \dots, o_k\}$. Tập này là tập con của một tập độc lập $O$, nên theo <strong>Tính Di truyền</strong>, $B \in \mathcal{I}$. Kích thước của $B$ là $|B| = k$.</li>
+        </ul>
+
+        <p>Vì $|A| \lt |B|$, áp dụng <strong>Tính Trao đổi</strong>, tồn tại một phần tử $o_j \in B \setminus A$ sao cho $A \cup \{o_j\}$ vẫn là một tập độc lập.<br>
+        Vì $o_j \in B$, nó là một trong $k$ phần tử đứng đầu của $O$. Do $O$ được sắp xếp giảm dần, trọng số của $o_j$ thỏa mãn:</p>
+        $$ w(o_j) \ge w(o_k) $$
+        <p>Kết hợp với giả thiết phản chứng $w(o_k) \gt w(g_k)$, ta có:</p>
+        $$ w(o_j) \gt w(g_k) $$
+        
+        <p>Điều này dẫn đến một mâu thuẫn với cách thức hoạt động của thuật toán Tham lam:<br>
+        Tại thời điểm thuật toán đang xem xét tập $A = \{g_1, \dots, g_{k-1}\}$, nó sẽ duyệt các phần tử tiếp theo theo thứ tự trọng số từ lớn đến bé. <br>
+        Vì $w(o_j) \gt w(g_k)$, thuật toán phải xét phần tử $o_j$ <strong>trước</strong> khi nó xét đến phần tử $g_k$.<br>
+        Hơn nữa, ta đã chứng minh $A \cup \{o_j\}$ là một tập độc lập hợp lệ. <br>
+        Nghĩa là, thuật toán Tham lam đã phải chọn $o_j$ (hoặc một phần tử nào đó có trọng số $\ge w(o_j)$) để đưa vào vị trí thứ $k$. Thuật toán không thể chọn $g_k$ làm phần tử thứ $k$ khi mà $o_j$ đang sẵn sàng và hợp lệ.</p>
+
+        <p>Sự mâu thuẫn này chứng tỏ không tồn tại chỉ số $k$ nào mà $w(g_k) \lt w(o_k)$.<br>
+        Vậy $w(g_k) \ge w(o_k)$ với mọi $k=1, 2, \dots, r$.<br>
+        Lấy tổng tất cả các phần tử:</p>
+        $$ w(G) = \sum_{k=1}^r w(g_k) \ge \sum_{k=1}^r w(o_k) = w(O) $$
+        <p>Vì $O$ là cơ sở có trọng số cực đại, $w(G)$ không thể lớn hơn ngặt $w(O)$. Do đó $w(G) = w(O)$.<br>
+        Tập $G$ do thuật toán sinh ra là một Cơ sở tối ưu. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Matroid Lịch trình - Cấu trúc Tối ưu hóa Thời gian)</div>
+        Một xưởng sản xuất nhận được $N$ đơn hàng. Mỗi đơn hàng $i$ yêu cầu đúng $1$ ngày để hoàn thành, có một thời hạn chót là $d_i$ (phải hoàn thành vào ngày $d_i$ hoặc trước đó), và mang lại một lợi nhuận là $p_i \gt 0$. Xưởng chỉ có thể thực hiện 1 đơn hàng mỗi ngày. <br>
+        Chứng minh rằng cấu trúc của các tập hợp đơn hàng "khả thi" (có thể sắp xếp để tất cả đều hoàn thành trước thời hạn) tạo thành một Matroid. Từ đó, chứng tỏ rằng việc ưu tiên chọn các đơn hàng có lợi nhuận $p_i$ từ cao xuống thấp sẽ mang lại tổng lợi nhuận lớn nhất.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta định nghĩa tập nền $E$ là tập hợp $N$ đơn hàng. Một tập hợp con các đơn hàng $A \subseteq E$ được gọi là một "Tập độc lập" (khả thi) nếu các đơn hàng trong $A$ có thể được sắp xếp vào các ngày khác nhau sao cho không có đơn hàng nào trễ hạn.<br>
+        Để chứng minh điều này tạo thành một Matroid, ta kiểm tra 3 tiên đề:</p>
+        <ol>
+            <li><strong>Tiên đề Rỗng:</strong> Tập rỗng không chứa đơn hàng nào, không có đơn hàng nào bị trễ. $\emptyset \in \mathcal{I}$.</li>
+            <li><strong>Tính Di truyền:</strong> Nếu một tập đơn hàng $A$ có thể được xếp lịch hợp lệ, thì việc xóa bỏ một số đơn hàng trong $A$ (chỉ thực hiện tập con $B \subseteq A$) vẫn đảm bảo hợp lệ. Rõ ràng $B \in \mathcal{I}$.</li>
+            <li><strong>Tính Trao đổi:</strong> Giả sử $I$ và $J$ là hai tập đơn hàng độc lập, với $|J| \gt |I|$. Ta cần chứng minh tồn tại một đơn hàng $x \in J \setminus I$ sao cho $I \cup \{x\}$ vẫn độc lập.</li>
+        </ol>
+
+        <p><em>Chứng minh Tính Trao đổi:</em> <br>
+        Theo Định lý Hôn nhân Hall, một tập hợp đơn hàng $A$ là độc lập khi và chỉ khi với mọi thời điểm $t \ge 1$, số lượng đơn hàng trong $A$ có thời hạn chót $d_i \le t$ không bao giờ vượt quá $t$. Ký hiệu số lượng này là $N_A(t)$. Điều kiện là $N_A(t) \le t, \forall t$.</p>
+
+        <p>Giả sử phản chứng rằng Tính Trao đổi không thỏa mãn. Tức là với mọi đơn hàng $x \in J \setminus I$, tập $I \cup \{x\}$ đều không độc lập.<br>
+        Vì $I$ vốn đã độc lập ($N_I(t) \le t, \forall t$), sự vi phạm khi thêm $x$ chỉ xảy ra nếu tồn tại một thời điểm $t_x \ge d_x$ sao cho $I$ đã đạt ngưỡng "kín lịch" tại $t_x$. Tức là:</p>
+        $$ N_I(t_x) = t_x $$
+        <p>(Có đúng $t_x$ đơn hàng trong $I$ có thời hạn $\le t_x$, không còn chỗ trống nào từ ngày $1$ đến $t_x$).<br>
+        Gọi $T$ là giá trị lớn nhất trong số tất cả các $t_x$ ứng với mọi $x \in J \setminus I$.<br>
+        Xét khoảng thời gian từ $1$ đến $T$.<br>
+        Trong tập $I$, số lượng đơn hàng có thời hạn $\le T$ là $N_I(T) = T$. Nghĩa là tập $I$ đã lấp đầy $T$ ngày đầu tiên bằng các đơn hàng của riêng nó.</p>
+        
+        <p>Xét tập $J$. Các đơn hàng trong $J$ có thời hạn $\le T$ bao gồm:</p>
+        <ul>
+            <li>Các đơn hàng thuộc $I \cap J$ có thời hạn $\le T$.</li>
+            <li>Các đơn hàng thuộc $J \setminus I$. Theo định nghĩa của $T$, mọi $x \in J \setminus I$ đều có $d_x \le t_x \le T$. Toàn bộ các đơn hàng trong $J \setminus I$ đều có thời hạn $\le T$.</li>
+        </ul>
+        <p>Tổng số đơn hàng trong $J$ có thời hạn $\le T$ là:</p>
+        $$ N_J(T) = N_{I \cap J}(T) + |J \setminus I| $$
+        <p>Vì $|J| \gt |I|$ nên $|J \setminus I| \gt |I \setminus J|$. Thay vào:</p>
+        $$ N_J(T) \gt N_{I \cap J}(T) + |I \setminus J| = N_I(T) $$
+        <p>Mà $N_I(T) = T$. Suy ra $N_J(T) \gt T$.<br>
+        Điều này có nghĩa là trong tập $J$, có nhiều hơn $T$ đơn hàng có thời hạn $\le T$. Theo điều kiện Hall, tập $J$ <strong>không thể</strong> là một tập hợp khả thi (độc lập).<br>
+        Đây là một mâu thuẫn với giả thiết ban đầu $J$ là tập độc lập.<br>
+        Sự mâu thuẫn chứng tỏ giả thiết phản chứng sai. Tồn tại một đơn hàng $x \in J \setminus I$ để $I \cup \{x\}$ độc lập.</p>
+
+        <p>Vì cấu trúc các lịch trình khả thi tạo thành một Matroid, theo <strong>Định lý Rado (Định lý 1.2)</strong>, việc sắp xếp các đơn hàng theo lợi nhuận $p_i$ giảm dần và dùng chiến lược Tham lam luôn mang lại tập hợp khả thi có tổng lợi nhuận lớn nhất.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Cyprus National Olympiad - Độc lập tuyến tính rời rạc trên Trường Hữu hạn)</div>
+        Cho $V$ là một không gian vector $n$ chiều trên trường hữu hạn $\mathbb{Z}_2$. Cho một tập hợp hữu hạn $S$ gồm các vector thuộc $V$, mỗi vector $v \in S$ được gán một trọng số nguyên dương $c(v)$. Bạn cần chọn ra một tập con $A \subseteq S$ sao cho tổng các vector trong bất kỳ tập con khác rỗng nào của $A$ đều khác vector $\mathbf{0}$ (tức là $A$ là một hệ độc lập tuyến tính trên $\mathbb{Z}_2$). <br>
+        Chứng minh rằng thuật toán chọn tuần tự các vector theo trọng số giảm dần (chỉ chọn nếu vector mới không tạo thành tổ hợp tuyến tính bằng $\mathbf{0}$ với các vector đã chọn) sẽ mang lại tập $A$ có tổng trọng số lớn nhất.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Điều kiện "tổng các vector trong bất kỳ tập con khác rỗng nào của $A$ đều khác $\mathbf{0}$" trên trường $\mathbb{Z}_2$ chính là định nghĩa của <strong>Sự độc lập tuyến tính</strong> (Linear Independence).<br>
+        Do hệ số trên $\mathbb{Z}_2$ chỉ có thể là 0 hoặc 1, một tổ hợp tuyến tính bằng $\mathbf{0}$ là tổng trực tiếp của một số vector bằng $\mathbf{0}$.</p>
+
+        <p>Bài toán này quy về việc chứng minh họ các tập hợp các vector độc lập tuyến tính $\mathcal{I}$ trong một không gian vector tạo thành một <strong>Matroid</strong> (Linear Matroid hoặc Vector Matroid).<br>
+        Ta kiểm tra 3 tiên đề của Matroid đối với họ $\mathcal{I}$:</p>
+        <ol>
+            <li><strong>Tiên đề Rỗng:</strong> Tập $\emptyset$ hiển nhiên độc lập tuyến tính (không có tổ hợp tuyến tính nào bằng 0).</li>
+            <li><strong>Tính Di truyền:</strong> Mọi tập con của một hệ vector độc lập tuyến tính vẫn là một hệ độc lập tuyến tính.</li>
+            <li><strong>Tính Trao đổi:</strong> Cho hai hệ vector độc lập tuyến tính $A$ và $B$ với $|A| \lt |B|$. Ký hiệu $\text{span}(A)$ và $\text{span}(B)$ là không gian sinh bởi $A$ và $B$.<br>
+            Số chiều của không gian sinh bởi một hệ độc lập đúng bằng số lượng vector của hệ đó.<br>
+            Do đó $\dim(\text{span}(A)) = |A|$ và $\dim(\text{span}(B)) = |B|$.<br>
+            Vì $|B| \gt |A|$, không gian $\text{span}(B)$ có số chiều lớn hơn $\text{span}(A)$. Do đó, $\text{span}(B)$ không thể là không gian con của $\text{span}(A)$.<br>
+            Nghĩa là phải tồn tại một vector $v \in B$ sao cho $v \notin \text{span}(A)$.<br>
+            Vì $v \notin \text{span}(A)$, vector $v$ không thể biểu diễn dưới dạng tổ hợp tuyến tính của các vector trong $A$.<br>
+            Khi ta thêm $v$ vào $A$, hệ mới $A \cup \{v\}$ vẫn giữ nguyên tính độc lập tuyến tính. <br>
+            Hơn nữa, vì $v \notin \text{span}(A)$ nhưng mọi vector của $A$ đều thuộc $\text{span}(A)$, rõ ràng $v \notin A$, tức là $v \in B \setminus A$.<br>
+            Tính Trao đổi được thỏa mãn.</li>
+        </ol>
+
+        <p>Vì cấu trúc độc lập tuyến tính tạo thành một Matroid, theo <strong>Định lý Rado (Định lý 1.2)</strong>, thuật toán Tham lam (Greedy) dựa trên trọng số giảm dần đảm bảo tìm được cơ sở có tổng trọng số cực đại.<br>
+        Việc chứng minh thuật toán tối ưu đã được chuyển thành việc kiểm tra các tiên đề không gian vector.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Estonian Mathematical Olympiad / Colombian National Olympiad - Trọng số của Rừng)</div>
+        Cho một đồ thị vô hướng $G = (V, E)$ liên thông, mỗi cạnh được gán một trọng số (chi phí) $w(e) \gt 0$. Một "Rừng" (Forest) là một tập hợp các cạnh không chứa bất kỳ chu trình nào. <br>
+        Chứng minh rằng thuật toán xây dựng Cây khung nhỏ nhất bằng cách luôn chọn cạnh có trọng số nhỏ nhất không tạo thành chu trình (Thuật toán Kruskal) luôn mang lại kết quả tối ưu.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vấn đề "Tìm Cây khung có tổng chi phí nhỏ nhất" tương đương với việc "Loại bỏ các cạnh để phần giữ lại là một Cây khung, sao cho các cạnh bị giữ lại có tổng chi phí nhỏ nhất".<br>
+        Để khớp với mô hình trọng số cực đại của Matroid, ta xét một hàm trọng số mới $W(e) = M - w(e)$ với $M$ là một số rất lớn. Việc tìm tập hợp độc lập (không có chu trình) cực đại có tổng $W(e)$ lớn nhất chính là việc tìm Cây khung có tổng $w(e)$ nhỏ nhất.</p>
+
+        <p>Ta cần chứng minh họ các tập hợp cạnh không chứa chu trình $\mathcal{I}$ tạo thành một Matroid (được gọi là <strong>Graphic Matroid</strong> hay <strong>Cycle Matroid</strong>).</p>
+        <ol>
+            <li><strong>Tiên đề Rỗng:</strong> Tập $\emptyset$ không có cạnh, hiển nhiên không có chu trình.</li>
+            <li><strong>Tính Di truyền:</strong> Nếu một tập hợp cạnh không chứa chu trình, việc xóa bớt cạnh không thể tạo ra chu trình.</li>
+            <li><strong>Tính Trao đổi:</strong> Cho hai tập hợp cạnh không chứa chu trình $A$ và $B$ với $|A| \lt |B|$.<br>
+            Cả $A$ và $B$ đều là các "Rừng". Một Rừng tạo bởi $k$ cạnh trên tập đỉnh $V$ sẽ chia đồ thị thành đúng $|V| - k$ thành phần liên thông (mỗi cạnh của rừng nối hai thành phần liên thông lại thành một, làm giảm số lượng thành phần đi 1).<br>
+            - Số lượng thành phần liên thông của đồ thị sinh bởi tập cạnh $A$ là: $C_A = |V| - |A|$.<br>
+            - Số lượng thành phần liên thông của đồ thị sinh bởi tập cạnh $B$ là: $C_B = |V| - |B|$.<br>
+            Vì $|A| \lt |B|$, ta có $C_A \gt C_B$. Nghĩa là tập $A$ chia đồ thị thành nhiều thành phần liên thông hơn tập $B$.<br>
+            Theo Nguyên lý Dirichlet, phải tồn tại ít nhất một cạnh $e \in B$ có hai đầu mút nằm ở <strong>hai thành phần liên thông khác nhau</strong> của $A$. (Bởi vì nếu mọi cạnh của $B$ đều chỉ nối các đỉnh bên trong cùng một thành phần liên thông của $A$, thì $B$ không thể kết nối các đỉnh thành số lượng thành phần ít hơn $A$).<br>
+            Vì cạnh $e \in B$ nối hai thành phần liên thông khác nhau của $A$, việc thêm cạnh $e$ vào $A$ sẽ không tạo ra bất kỳ chu trình nào.<br>
+            Hơn nữa, vì hai đầu mút của $e$ nằm ở hai thành phần khác nhau của $A$, bản thân cạnh $e$ không thể thuộc $A$. Tức là $e \in B \setminus A$.<br>
+            Do đó, $A \cup \{e\}$ vẫn không có chu trình (vẫn thuộc $\mathcal{I}$). Tính Trao đổi được thỏa mãn.</li>
+        </ol>
+
+        <p>Vì cấu trúc "không chu trình" của đồ thị tạo thành một Matroid, theo <strong>Định lý Rado (Định lý 1.2)</strong>, thuật toán Tham lam (Kruskal) lựa chọn tuần tự các cạnh theo trọng số tốt nhất mà không vi phạm tính "không chu trình" sẽ tìm được Rừng (và cũng là Cây khung) có trọng số tối ưu.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

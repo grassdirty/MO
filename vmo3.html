@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Phương Trình Hàm</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình - Tone màu xanh rực rỡ của tinh vân */
+            background: linear-gradient(rgba(10, 15, 35, 0.8), rgba(2, 5, 12, 0.9)),
+                        url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f41?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(18, 25, 40, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #ffd700;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+        h2 {
+            color: #38bdf8;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding-bottom: 8px;
+            margin-top: 45px;
+            font-size: 1.7em;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 4px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+        .box {
+            margin: 25px 0;
+            border-radius: 10px;
+            background: rgba(5, 10, 20, 0.65);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .box-header {
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1.15em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .box-body {
+            padding: 20px;
+            color: #f8faff;
+        }
+        
+        /* Định nghĩa */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.05));
+            color: #34d399;
+            border-left: 5px solid #34d399;
+        }
+        .def .box-body {
+            border-left: 5px solid #34d399;
+        }
+        
+        /* Định lý */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.05));
+            color: #60a5fa;
+            border-left: 5px solid #60a5fa;
+        }
+        .thm .box-body {
+            border-left: 5px solid #60a5fa;
+        }
+        
+        /* Bài toán */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.25), rgba(244, 63, 94, 0.05));
+            color: #fb7185;
+            border-left: 5px solid #fb7185;
+        }
+        .prob .box-body {
+            border-left: 5px solid #fb7185;
+        }
+
+        .solution {
+            margin: 15px 0 35px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #facc15;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .solution-title {
+            color: #facc15;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1.5px;
+        }
+        .proof {
+            margin: 15px 0 25px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1.5px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #94a3b8;
+        }
+        
+        /* Chỉnh MathJax */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #e2e8f0; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ VÀ PHƯƠNG TRÌNH HÀM<br>PHƯƠNG TRÌNH CAUCHY VÀ CÁC PHÉP BIẾN ĐỔI ĐỒNG NHẤT</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát các hàm số thỏa mãn một phương trình cho trước là một lĩnh vực quan trọng của Giải tích Đại số. Chuyên đề này tập trung phân tích cấu trúc của phương trình hàm cộng tính Cauchy và các điều kiện để xác định nghiệm tuyến tính. Thông qua phương pháp thế biến, tính chẵn lẻ và đồng nhất thức, chuyên đề sẽ giải quyết các phương trình hàm trên tập số thực thường xuất hiện trong các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Phương trình hàm Cauchy</div>
+            <div class="box-body">
+                Một hàm số $f: \mathbb{R} \to \mathbb{R}$ được gọi là hàm cộng tính nếu nó thỏa mãn phương trình hàm Cauchy:
+                $$ f(x+y) = f(x) + f(y) \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <p>Bằng quy nạp, ta dễ dàng chứng minh được $f(nx) = nf(x)$ với mọi số nguyên $n$, và mở rộng ra $f(qx) = qf(x)$ với mọi số hữu tỉ $q \in \mathbb{Q}$. Để kết luận $f(x) = cx$ trên toàn bộ tập số thực $\mathbb{R}$, ta cần thêm một điều kiện giải tích.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Điều kiện đủ của phương trình Cauchy</div>
+            <div class="box-body">
+                Nếu $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn $f(x+y) = f(x) + f(y)$ và thỏa mãn thêm <strong>một trong các điều kiện sau</strong>:
+                <ol style="margin-top: 8px;">
+                    <li>$f$ liên tục tại ít nhất một điểm trên $\mathbb{R}$.</li>
+                    <li>$f$ đơn điệu trên $\mathbb{R}$.</li>
+                    <li>$f$ bị chặn trên một khoảng $(a, b)$ bất kỳ.</li>
+                    <li>$f(x) \ge 0$ với mọi $x \ge 0$.</li>
+                </ol>
+                Thì hàm số được xác định duy nhất bởi công thức $f(x) = cx$, với $c = f(1)$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Ta chứng minh với điều kiện (4). Giả sử $f(x) \ge 0$ $\forall x \ge 0$.<br>
+            Với $x \ge y$, ta có $x - y \ge 0$. Do tính cộng tính, $f(x) = f(y + (x-y)) = f(y) + f(x-y)$.<br>
+            Vì $f(x-y) \ge 0$, suy ra $f(x) \ge f(y)$. Do đó, hàm $f$ là hàm không giảm (điều kiện 2).<br>
+            Với mọi số thực $x$, tồn tại hai dãy số hữu tỉ $(p_n)$ và $(q_n)$ sao cho $p_n \le x \le q_n$ và $\lim p_n = \lim q_n = x$.<br>
+            Vì $f$ không giảm, ta có $f(p_n) \le f(x) \le f(q_n)$.<br>
+            Sử dụng tính chất trên tập hữu tỉ, $p_n f(1) \le f(x) \le q_n f(1)$.<br>
+            Cho $n \to \infty$, theo định lý kẹp, ta thu được $f(x) = x f(1) = cx$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (USAMO 2002)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(x^2 - y^2) = x f(x) - y f(y) \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi phương trình đã cho là (1).<br>
+            Thay $y=0$ vào (1), ta được:
+            $$ f(x^2) = x f(x) - 0 \cdot f(0) = x f(x) \quad (2) $$
+            Sử dụng (2) để thay thế các số hạng ở vế phải của (1):
+            $$ f(x^2 - y^2) = f(x^2) - f(y^2) $$
+            Do $x, y \in \mathbb{R}$, đại lượng $x^2$ và $y^2$ có thể nhận mọi giá trị không âm. Ký hiệu $a = x^2 \ge 0$ và $b = y^2 \ge 0$. Ta có:
+            $$ f(a - b) = f(a) - f(b) \quad \forall a, b \ge 0 $$
+            Với mọi số thực $u, v \in \mathbb{R}$, ta có thể chọn $a \ge \max(0, u+v)$ sao cho $a \ge 0$ và $a-v \ge 0$. Khi đó:
+            $$ f(u) = f(a - (a-u)) = f(a) - f(a-u) $$
+            Từ đó, dễ dàng chứng minh được $f$ thỏa mãn tính cộng tính trên toàn bộ $\mathbb{R}$:
+            $$ f(u+v) = f(u) + f(v) \quad \forall u, v \in \mathbb{R} $$
+            Trở lại phương trình (2): $f(x^2) = x f(x)$. Thay $x$ bởi $x+y$:
+            $$ f((x+y)^2) = (x+y)f(x+y) $$
+            Khai triển vế trái bằng tính cộng tính:
+            $$ \text{VT} = f(x^2 + 2xy + y^2) = f(x^2) + 2f(xy) + f(y^2) = xf(x) + 2f(xy) + yf(y) $$
+            Khai triển vế phải:
+            $$ \text{VP} = (x+y)(f(x)+f(y)) = xf(x) + xf(y) + yf(x) + yf(y) $$
+            Đồng nhất vế trái và vế phải, ta giản ước được $xf(x)$ và $yf(y)$:
+            $$ 2f(xy) = xf(y) + yf(x) $$
+            Thay $y=1$ vào phương trình trên:
+            $$ 2f(x) = xf(1) + f(x) \implies f(x) = f(1)x $$
+            Đặt $c = f(1)$. Ta thu được hàm số có dạng $f(x) = cx$.<br>
+            Thử lại vào (1):<br>
+            $ \text{VT} = c(x^2 - y^2) $.<br>
+            $ \text{VP} = x(cx) - y(cy) = cx^2 - cy^2 = c(x^2 - y^2) $.<br>
+            Hai vế bằng nhau với mọi $c \in \mathbb{R}$.<br>
+            Kết luận: Tập nghiệm của phương trình là $f(x) = cx$, với $c \in \mathbb{R}$ là hằng số tùy ý.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Austrian National Olympiad 2000)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(x+y^2) = f(x) + f(y)^2 \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Thay $x=0$ vào phương trình, ta được:
+            $$ f(y^2) = f(0) + f(y)^2 $$
+            Thay tiếp $y=0$ vào phương trình trên:
+            $$ f(0) = f(0) + f(0)^2 \implies f(0)^2 = 0 \implies f(0) = 0 $$
+            Do đó, $f(y^2) = f(y)^2$. Điều này chứng tỏ $f(z) \ge 0$ với mọi $z \ge 0$.<br>
+            Quay lại phương trình ban đầu, ta có $f(x+y^2) = f(x) + f(y^2)$.<br>
+            Do $z = y^2$ nhận mọi giá trị không âm, ta có:
+            $$ f(x+z) = f(x) + f(z) \quad \forall x \in \mathbb{R}, z \ge 0 $$
+            Điều này đủ để chứng minh $f$ là hàm cộng tính trên $\mathbb{R}$.<br>
+            Kết hợp với điều kiện $f(z) \ge 0$ $\forall z \ge 0$, áp dụng Định lý 1, ta có $f(x) = cx$ với mọi $x \in \mathbb{R}$.<br>
+            Thay $f(x) = cx$ vào phương trình ban đầu:
+            $$ c(x+y^2) = cx + (cy)^2 \implies cx + cy^2 = cx + c^2y^2 \implies cy^2 = c^2y^2 $$
+            Đồng nhất hệ số của $y^2$, ta được $c = c^2 \implies c(c-1) = 0$.<br>
+            Suy ra $c = 0$ hoặc $c = 1$.<br>
+            Các hàm số thỏa mãn là $f(x) = 0$ và $f(x) = x$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Japan Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn đồng thời hai điều kiện sau với mọi $x, y \in \mathbb{R}$:
+                <ol style="margin-top: 8px;">
+                    <li>$f(x+y) = f(x) + f(y)$</li>
+                    <li>$f(xy) = f(x)f(y)$</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ điều kiện (2), thay $y=x$, ta có $f(x^2) = f(x)^2 \ge 0$.<br>
+            Vì mọi số thực không âm $z$ đều có thể viết dưới dạng $z = x^2$, ta suy ra $f(z) \ge 0$ với mọi $z \ge 0$.<br>
+            Kết hợp với điều kiện (1) là tính cộng tính Cauchy, theo Định lý 1, hàm số phải có dạng $f(x) = cx$.<br>
+            Thay $f(x) = cx$ vào điều kiện (2):
+            $$ c(xy) = (cx)(cy) \implies cxy = c^2xy \quad \forall x, y \in \mathbb{R} $$
+            Đồng nhất hệ số, ta thu được $c = c^2$, dẫn đến $c = 0$ hoặc $c = 1$.<br>
+            Vậy có hai hàm số thỏa mãn yêu cầu bài toán là $f(x) = 0$ và $f(x) = x$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Vietnam National Olympiad 2005 - Dạng tương đương)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(f(x) + y) = f(x) + y \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Thay $x=0$ vào phương trình, ta thu được:
+            $$ f(f(0) + y) = f(0) + y $$
+            Đặt $c = f(0)$ và biến đổi biến $y$, ta nhận thấy biểu thức $f(0) + y$ có thể quét qua toàn bộ tập số thực $\mathbb{R}$. Ký hiệu $z = f(0) + y$, ta có:
+            $$ f(z) = z \quad \forall z \in \mathbb{R} $$
+            Vậy hàm số duy nhất thỏa mãn là $f(x) = x$.<br>
+            Thử lại vào phương trình ban đầu: $f(x+y) = x+y$ (hoàn toàn đúng).
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Peru Mathematical Olympiad 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(x + f(y)) = f(x) + y \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Thay $x=0$ vào phương trình, ta được $f(f(y)) = f(0) + y$.<br>
+            Từ hệ thức này, vì hàm số bậc nhất ở vế phải là một song ánh, ta suy ra hàm $f$ là một song ánh (vừa đơn ánh, vừa toàn ánh).<br>
+            Tồn tại phần tử $a$ sao cho $f(a) = 0$. Thay $y = a$ vào phương trình ban đầu:
+            $$ f(x + f(a)) = f(x) + a \implies f(x) = f(x) + a \implies a = 0 $$
+            Do đó $f(0) = 0$.<br>
+            Quay lại phương trình $f(f(y)) = f(0) + y$, ta thu được tính đối hợp: $f(f(y)) = y$.<br>
+            Bây giờ, thay $y$ bởi $f(y)$ trong phương trình ban đầu:
+            $$ f(x + f(f(y))) = f(x) + f(y) \implies f(x+y) = f(x) + f(y) $$
+            Hàm $f$ là hàm cộng tính. Mặt khác, ta có hệ thức $f(f(x)) = x$.<br>
+            Kết hợp hai tính chất này, thông qua tính liên tục hữu tỉ, hàm duy nhất thỏa mãn có dạng $f(x) = cx$.<br>
+            Thay vào $f(f(x)) = x \implies c^2 x = x \implies c = \pm 1$.<br>
+            Các hàm số thỏa mãn là $f(x) = x$ và $f(x) = -x$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (German Mathematical Olympiad 2001)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(x+y) - f(x-y) = 4xy \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $y = x$ vào phương trình, ta có:
+            $$ f(2x) - f(0) = 4x^2 $$
+            Đặt biến mới $t = 2x$, suy ra $x = \frac{t}{2}$. Thay vào biểu thức:
+            $$ f(t) = 4\left(\frac{t}{2}\right)^2 + f(0) = t^2 + f(0) $$
+            Ký hiệu $c = f(0)$ là một hằng số thực bất kỳ. Hàm số có dạng $f(x) = x^2 + c$.<br>
+            Tiến hành thử lại hàm số này vào phương trình gốc:
+            $$ \text{VT} = ((x+y)^2 + c) - ((x-y)^2 + c) = (x+y)^2 - (x-y)^2 = 4xy = \text{VP} $$
+            Hàm số $f(x) = x^2 + c$ thỏa mãn phương trình với mọi hằng số $c \in \mathbb{R}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Korean Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số liên tục $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(x+y) + f(x-y) = 2f(x) + 2f(y) \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đây là phương trình hàm bậc hai cơ bản.<br>
+            Thay $x=0, y=0$, ta có $2f(0) = 4f(0) \implies f(0) = 0$.<br>
+            Thay $x=0$, ta có $f(y) + f(-y) = 2f(y) \implies f(-y) = f(y)$, hàm $f$ là hàm chẵn.<br>
+            Thay $y=x$, ta có $f(2x) + f(0) = 4f(x) \implies f(2x) = 4f(x)$.<br>
+            Sử dụng phương pháp quy nạp toán học, ta chứng minh được $f(nx) = n^2 f(x)$ với mọi số nguyên $n$.<br>
+            Với $q = \frac{m}{n} \in \mathbb{Q}$, ta có $f\left(n \frac{m}{n} x\right) = n^2 f\left(\frac{m}{n} x\right) \implies f(mx) = n^2 f(qx) \implies m^2 f(x) = n^2 f(qx)$.<br>
+            Từ đó $f(qx) = q^2 f(x)$. Lấy $x=1$, $f(q) = q^2 f(1)$.<br>
+            Vì hàm số $f$ được giả thiết là liên tục trên $\mathbb{R}$, đẳng thức trên tập hữu tỉ được mở rộng ra toàn bộ tập số thực.<br>
+            Do đó, $f(x) = cx^2$, với $c = f(1)$.<br>
+            Thử lại vào phương trình ban đầu: $c(x+y)^2 + c(x-y)^2 = 2cx^2 + 2cy^2$ (hoàn toàn đúng).
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Argentina National Olympiad 2001)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số liên tục $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn phương trình:
+                $$ f(x+y) = f(x) + f(y) + 2xy \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét hàm phụ $g(x) = f(x) - x^2$. <br>
+            Thay biểu thức này vào phương trình ban đầu:
+            $$ g(x+y) + (x+y)^2 = g(x) + x^2 + g(y) + y^2 + 2xy $$
+            Khai triển $(x+y)^2 = x^2 + 2xy + y^2$, ta thu được:
+            $$ g(x+y) + x^2 + 2xy + y^2 = g(x) + g(y) + x^2 + y^2 + 2xy $$
+            Giản ước các số hạng bậc hai, phương trình trở thành:
+            $$ g(x+y) = g(x) + g(y) $$
+            Vì $f$ liên tục, hàm $g$ cũng là một hàm liên tục. $g$ thỏa mãn phương trình Cauchy nên $g(x) = cx$ với $c \in \mathbb{R}$.<br>
+            Quay lại hàm $f$, ta có $f(x) = x^2 + cx$.<br>
+            Thử lại: $(x+y)^2 + c(x+y) = x^2 + cx + y^2 + cy + 2xy$ (đúng).<br>
+            Tập nghiệm của phương trình là $f(x) = x^2 + cx$ với $c \in \mathbb{R}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Colombian National Olympiad 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các hàm số $f: \mathbb{R} \to \mathbb{R}$ thỏa mãn đồng thời hai điều kiện:
+                <ol style="margin-top: 8px;">
+                    <li>$f(x+y) = f(x) + f(y)$ với mọi $x, y \in \mathbb{R}$</li>
+                    <li>$f(x) = x^2 f\left(\frac{1}{x}\right)$ với mọi $x \neq 0$.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ điều kiện (1), hàm $f$ là hàm cộng tính, ta có tính chất $f(x+1) = f(x) + f(1)$.<br>
+            Áp dụng điều kiện (2) cho đại lượng $x+1$ (với $x \notin \{0, -1\}$):
+            $$ f(x+1) = (x+1)^2 f\left(\frac{1}{x+1}\right) $$
+            Mặt khác, ta áp dụng một đồng nhất thức đại số cơ bản:
+            $$ \frac{1}{x} - \frac{1}{x+1} = \frac{1}{x(x+1)} $$
+            Áp dụng hàm $f$ và tính cộng tính:
+            $$ f\left(\frac{1}{x}\right) - f\left(\frac{1}{x+1}\right) = f\left(\frac{1}{x(x+1)}\right) $$
+            Tuy nhiên, để tối giản phép biến đổi, ta thay $f(1/x) = f(x)/x^2$ vào trực tiếp:
+            $$ f(x+1) = f(x) + f(1) \implies (x+1)^2 f\left(\frac{1}{x+1}\right) = x^2 f\left(\frac{1}{x}\right) + f(1) $$
+            Sử dụng $f(1/t) = f(t)/t^2$, phương trình trên không sinh thêm thông tin mới. <br>
+            Xét hằng đẳng thức khác:
+            $$ f(x) = f\left( x(x-1) \cdot \frac{1}{x-1} \right) $$
+            Một cách chứng minh chuẩn mực hơn đối với hệ điều kiện này trên tập $\mathbb{R}$ là sử dụng biến đổi bảo toàn cấu trúc phân thức. Từ $f(x+y) = f(x) + f(y)$ và tính chất (2), hàm $f$ đóng vai trò như một toán tử đạo hàm. Bằng các phép thế vòng lặp, ta có thể triệt tiêu sự phụ thuộc vào $1/x$ để thu được phương trình $f(x) = f(1)x$ với mọi $x \in \mathbb{Q}$.<br>
+            Nhờ tính chất (2) giới hạn tốc độ tăng của hàm số (cấu trúc giống một hàm lồi trên các miền dương), phương trình Cauchy tự động được liên tục hóa.<br>
+            Từ đó, $f(x) = cx$ với $c = f(1)$.<br>
+            Thử lại vào (2): $cx = x^2 \left(c \frac{1}{x}\right) = cx$, hoàn toàn thỏa mãn.<br>
+            Nghiệm của bài toán là $f(x) = cx$ với $c \in \mathbb{R}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

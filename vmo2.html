@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Phương Trình Pell</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình - tone màu huyền ảo tím/xanh đậm */
+            background: linear-gradient(rgba(18, 12, 35, 0.8), rgba(5, 5, 15, 0.9)),
+                        url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(25, 20, 45, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #ffd700;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+        h2 {
+            color: #a78bfa;
+            border-bottom: 2px solid rgba(167, 139, 250, 0.3);
+            padding-bottom: 8px;
+            margin-top: 45px;
+            font-size: 1.7em;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 4px solid #8892b0;
+            color: #ccd6f6;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+        .box {
+            margin: 25px 0;
+            border-radius: 10px;
+            background: rgba(10, 15, 30, 0.6);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .box-header {
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1.15em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        .box-body {
+            padding: 20px;
+            color: #f8faff;
+        }
+        
+        /* Định nghĩa */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(46, 204, 113, 0.25), rgba(46, 204, 113, 0.05));
+            color: #4ade80;
+            border-left: 5px solid #4ade80;
+        }
+        .def .box-body {
+            border-left: 5px solid #4ade80;
+        }
+        
+        /* Định lý */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(52, 152, 219, 0.25), rgba(52, 152, 219, 0.05));
+            color: #60a5fa;
+            border-left: 5px solid #60a5fa;
+        }
+        .thm .box-body {
+            border-left: 5px solid #60a5fa;
+        }
+        
+        /* Bài toán */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(251, 113, 133, 0.25), rgba(251, 113, 133, 0.05));
+            color: #fb7185;
+            border-left: 5px solid #fb7185;
+        }
+        .prob .box-body {
+            border-left: 5px solid #fb7185;
+        }
+
+        .solution {
+            margin: 15px 0 35px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #facc15;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .solution-title {
+            color: #facc15;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1.5px;
+        }
+        .proof {
+            margin: 15px 0 25px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1.5px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #8892b0;
+        }
+        
+        /* Chỉnh MathJax */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #e2e8f0; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ<br>PHƯƠNG TRÌNH PELL VÀ CẤU TRÚC NGHIỆM DIOPHANTINE BẬC HAI</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát nghiệm nguyên của các phương trình bậc hai hai ẩn là một lĩnh vực trọng tâm của Lý thuyết Số. Trong đó, phương trình Pell đóng vai trò là cấu trúc cơ sở để giải quyết các lớp phương trình Diophantine có dạng $x^2 - dy^2 = N$. Chuyên đề này phân tích sự tồn tại và phương pháp sinh nghiệm của phương trình Pell thông qua cấu trúc chuỗi truy hồi tuyến tính, đồng thời ứng dụng lý thuyết thặng dư bậc hai để chứng minh tính vô nghiệm của một số lớp phương trình liên quan.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Phương trình Pell</div>
+            <div class="box-body">
+                Phương trình Pell là phương trình Diophantine có dạng:
+                $$ x^2 - dy^2 = 1 $$
+                trong đó $d$ là một số nguyên dương và không phải là một số chính phương. Các nghiệm $(x, y)$ cần tìm thuộc tập số nguyên $\mathbb{Z}$.<br>
+                Nghiệm $(x_1, y_1)$ với $x_1 &gt; 0, y_1 &gt; 0$ sao cho $x_1 + y_1\sqrt{d}$ đạt giá trị nhỏ nhất được gọi là <strong>nghiệm cơ sở</strong>.
+            </div>
+        </div>
+
+        <p>Tính chất cốt lõi của phương trình Pell được phát biểu thông qua định lý sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Cấu trúc tập nghiệm của phương trình Pell</div>
+            <div class="box-body">
+                Giả sử phương trình $x^2 - dy^2 = 1$ có nghiệm cơ sở là $(x_1, y_1)$. Khi đó, phương trình có vô số nghiệm nguyên dương. Tập hợp tất cả các nghiệm nguyên dương $(x_n, y_n)$ của phương trình được sinh ra bởi hệ thức:
+                $$ x_n + y_n\sqrt{d} = (x_1 + y_1\sqrt{d})^n \quad \text{với } n \in \mathbb{Z}^+ $$
+                Từ đó, hai dãy số $(x_n)$ và $(y_n)$ tuân theo công thức truy hồi tuyến tính:
+                \begin{align*}
+                x_{n+1} &= x_1 x_n + d y_1 y_n \\
+                y_{n+1} &= y_1 x_n + x_1 y_n
+                \end{align*}
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xét khai triển $(x_1 + y_1\sqrt{d})^n = x_n + y_n\sqrt{d}$. Bằng cách lấy liên hợp đại số, ta có $(x_1 - y_1\sqrt{d})^n = x_n - y_n\sqrt{d}$.
+            Nhân vế theo vế hai phương trình trên:
+            $$ x_n^2 - d y_n^2 = (x_n + y_n\sqrt{d})(x_n - y_n\sqrt{d}) = (x_1^2 - d y_1^2)^n $$
+            Do $(x_1, y_1)$ là nghiệm của phương trình, $x_1^2 - d y_1^2 = 1$. Suy ra $x_n^2 - d y_n^2 = 1^n = 1$.
+            Do đó, $(x_n, y_n)$ luôn là một nghiệm của phương trình với mọi số nguyên dương $n$. Việc chứng minh đây là tất cả các nghiệm được thực hiện thông qua thuật toán chia khoảng trên trục thực, đảm bảo không có nghiệm nào lọt vào giữa khoảng $(x_k+y_k\sqrt{d}, x_{k+1}+y_{k+1}\sqrt{d})$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (USAMO 1986)</div>
+            <div class="box-body">
+                Tìm số nguyên dương $n &gt; 1$ nhỏ nhất sao cho căn bậc hai trung bình phương của $n$ số nguyên dương đầu tiên là một số nguyên. Nói cách khác, tìm $n &gt; 1$ nhỏ nhất để đại lượng sau là một số chính phương:
+                $$ \frac{1^2 + 2^2 + \dots + n^2}{n} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Công thức tính tổng bình phương $n$ số nguyên dương đầu tiên là:
+            $$ \sum_{i=1}^n i^2 = \frac{n(n+1)(2n+1)}{6} $$
+            Giả thiết yêu cầu trung bình cộng của tổng này là một số chính phương. Đặt đại lượng đó là $k^2$ ($k \in \mathbb{Z}^+$):
+            $$ \frac{n(n+1)(2n+1)}{6n} = k^2 \implies \frac{(n+1)(2n+1)}{6} = k^2 $$
+            Biến đổi tương đương phương trình:
+            $$ 2n^2 + 3n + 1 = 6k^2 $$
+            Nhân cả hai vế với 8 để hoàn thành bình phương cho biến $n$:
+            $$ 16n^2 + 24n + 8 = 48k^2 \implies (4n+3)^2 - 1 = 48k^2 $$
+            Đặt $X = 4n+3$ và $Y = k$, ta thu được phương trình dạng Pell:
+            $$ X^2 - 48Y^2 = 1 $$
+            Ta tiến hành tìm nghiệm cơ sở $(X_1, Y_1)$ cho phương trình này bằng cách thử tuần tự các giá trị của $Y$:<br>
+            Với $Y = 1 \implies 48Y^2 = 48 \implies X^2 = 49 \implies X = 7$.<br>
+            Nghiệm cơ sở là $(X_1, Y_1) = (7, 1)$.<br>
+            Các nghiệm tiếp theo được sinh ra từ công thức $(X_m + Y_m\sqrt{48}) = (7 + \sqrt{48})^m$.
+
+            <ul>
+                <li>Xét nghiệm thứ nhất $m=1$: $X_1 = 7$. <br>
+                Khi đó $4n+3 = 7 \implies 4n = 4 \implies n = 1$. Giá trị này không thỏa mãn điều kiện $n &gt; 1$.</li>
+                
+                <li style="margin-top: 10px;">Xét nghiệm thứ hai $m=2$:<br>
+                $$ X_2 + Y_2\sqrt{48} = (7 + \sqrt{48})^2 = 49 + 48 + 14\sqrt{48} = 97 + 14\sqrt{48} $$
+                Ta có $X_2 = 97$. Giải phương trình $4n+3 = 97 \implies 4n = 94$.<br>
+                Phương trình này không có nghiệm nguyên cho $n$.</li>
+                
+                <li style="margin-top: 10px;">Xét nghiệm thứ ba $m=3$:<br>
+                Sử dụng công thức truy hồi hoặc khai triển trực tiếp:<br>
+                $$ X_3 = X_1 X_2 + 48 Y_1 Y_2 = 7 \times 97 + 48 \times 1 \times 14 = 679 + 672 = 1351 $$
+                Ta có $X_3 = 1351$. Giải phương trình:<br>
+                $$ 4n+3 = 1351 \implies 4n = 1348 \implies n = 337 $$</li>
+            </ul>
+            Vì giá trị $n=337$ là một số nguyên dương lớn hơn 1 và được sinh ra từ chuỗi nghiệm tăng ngặt, đây chính là số nguyên dương $n$ nhỏ nhất thỏa mãn yêu cầu bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Greek Mathematical Olympiad 1996)</div>
+            <div class="box-body">
+                Chứng minh rằng tồn tại vô số số nguyên dương $n$ sao cho tổng của $n$ số nguyên dương đầu tiên là một số chính phương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Tổng của $n$ số nguyên dương đầu tiên là $\frac{n(n+1)}{2}$. Giả sử đại lượng này bằng $k^2$ ($k \in \mathbb{Z}^+$):
+            $$ \frac{n(n+1)}{2} = k^2 \implies n^2 + n = 2k^2 $$
+            Nhân cả hai vế với 4 và hoàn thành bình phương:
+            $$ 4n^2 + 4n = 8k^2 \implies (2n+1)^2 - 1 = 8k^2 $$
+            Đặt $X = 2n+1$ và $Y = k$, phương trình trở thành $X^2 - 8Y^2 = 1$.<br>
+            Nghiệm cơ sở của phương trình là $(X_1, Y_1) = (3, 1)$.<br>
+            Theo Định lý 2, phương trình $X^2 - 8Y^2 = 1$ có vô số nghiệm nguyên dương được sinh bởi hệ thức $(X_m + Y_m\sqrt{8}) = (3 + \sqrt{8})^m$.<br>
+            Với mỗi nghiệm $X_m$, vì $X_m^2 = 8Y_m^2 + 1$ là một số lẻ, suy ra $X_m$ luôn là một số lẻ.<br>
+            Do đó, phương trình $2n+1 = X_m$ luôn cho ra nghiệm nguyên dương $n = \frac{X_m - 1}{2}$.<br>
+            Việc tồn tại vô số nghiệm $X_m$ dẫn đến sự tồn tại vô số giá trị $n$ thỏa mãn. Bài toán được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (British Mathematical Olympiad (BMO) 1993)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ sao cho $n^2 + (n+1)^2$ là một số chính phương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Yêu cầu bài toán tương đương với việc tìm nghiệm của phương trình Diophantine:
+            $$ n^2 + (n+1)^2 = m^2 \implies 2n^2 + 2n + 1 = m^2 $$
+            Nhân hai vế với 2:
+            $$ 4n^2 + 4n + 2 = 2m^2 \implies (2n+1)^2 + 1 = 2m^2 $$
+            Đặt $X = 2n+1$ và $Y = m$, ta thu được phương trình Pell âm:
+            $$ X^2 - 2Y^2 = -1 $$
+            Nghiệm cơ sở của phương trình này là $(X_1, Y_1) = (1, 1)$.<br>
+            Các nghiệm của phương trình dạng $X^2 - dY^2 = -1$ được sinh ra từ các lũy thừa bậc lẻ của nghiệm cơ sở. Công thức sinh nghiệm là:
+            $$ X_k + Y_k\sqrt{2} = (1 + \sqrt{2})^{2k-1} \quad \text{với } k \in \mathbb{Z}^+ $$
+            Do $X_k^2 = 2Y_k^2 - 1$, $X_k$ luôn là số lẻ. Khi đó $n = \frac{X_k - 1}{2}$ luôn là một số nguyên dương (hoặc bằng 0 khi $k=1$).
+            <ul>
+                <li>Với $k=1$: $X_1 = 1 \implies n=0$ (Loại do $n \ge 1$).</li>
+                <li>Với $k=2$: $(1+\sqrt{2})^3 = 7 + 5\sqrt{2} \implies X_2 = 7 \implies n=3$.</li>
+                <li>Với $k=3$: $(1+\sqrt{2})^5 = 41 + 29\sqrt{2} \implies X_3 = 41 \implies n=20$.</li>
+            </ul>
+            Vậy tập hợp các số $n$ được xác định bởi công thức $n_k = \frac{X_k - 1}{2}$, với $X_k$ lấy từ khai triển nhị thức $(1+\sqrt{2})^{2k-1}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (All-Russian Olympiad 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng phương trình $x^2 - 3y^2 = -1$ không có bất kỳ nghiệm nguyên nào.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét phương trình trên tập số dư theo modulo 3. <br>
+            Với mọi số nguyên $x$, bình phương của nó chia 3 chỉ có thể dư 0 hoặc 1. Tức là:
+            $$ x^2 \equiv 0 \pmod 3 \quad \text{hoặc} \quad x^2 \equiv 1 \pmod 3 $$
+            Theo giả thiết phương trình, ta có:
+            $$ x^2 = 3y^2 - 1 \implies x^2 \equiv -1 \equiv 2 \pmod 3 $$
+            Như đã phân tích, không có bất kỳ số chính phương nào đồng dư với 2 theo modulo 3. Sự mâu thuẫn này chứng tỏ phương trình ban đầu không thể có nghiệm trên tập số nguyên. Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Italian Mathematical Olympiad 1996)</div>
+            <div class="box-body">
+                Chứng minh rằng nếu $n$ là một số nguyên sao cho $2n+1$ và $3n+1$ đều là các số chính phương, thì $n$ phải chia hết cho 40.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $2n+1 = x^2$ và $3n+1 = y^2$ với $x, y \in \mathbb{Z}$.<br>
+            Ta chứng minh $n$ chia hết cho 5 và 8.
+
+            <p><strong>Xét modulo 5:</strong> Số chính phương modulo 5 thuộc tập $\{0, 1, 4\}$.</p>
+            <ul>
+                <li>Nếu $n \equiv 1 \pmod 5 \implies x^2 \equiv 3 \pmod 5$ (Vô lý).</li>
+                <li>Nếu $n \equiv 2 \pmod 5 \implies x^2 \equiv 0 \implies x \equiv 0 \pmod 5 \implies 2n+1 \equiv 0 \implies n \equiv 2 \pmod 5$. Tuy nhiên, khi đó $y^2 = 3(2)+1 = 7 \equiv 2 \pmod 5$ (Vô lý).</li>
+                <li>Nếu $n \equiv 3 \pmod 5 \implies y^2 = 10 \equiv 0 \pmod 5$, nhưng $x^2 = 7 \equiv 2 \pmod 5$ (Vô lý).</li>
+                <li>Nếu $n \equiv 4 \pmod 5 \implies y^2 = 13 \equiv 3 \pmod 5$ (Vô lý).</li>
+            </ul>
+            Bắt buộc $n \equiv 0 \pmod 5$, tức là $n \vdots 5$.
+
+            <p><strong>Xét modulo 8:</strong> Số chính phương modulo 8 thuộc tập $\{0, 1, 4\}$.</p>
+            Từ $2n+1 = x^2$, ta có $x$ là số lẻ. Bình phương của mọi số lẻ chia 8 luôn dư 1. Do đó $x^2 \equiv 1 \pmod 8$.<br>
+            Suy ra $2n+1 \equiv 1 \pmod 8 \implies 2n \equiv 0 \pmod 8 \implies n \equiv 0 \pmod 4$.<br>
+            Do $n \vdots 4$, $n$ chỉ có thể đồng dư với 0 hoặc 4 theo modulo 8.<br>
+            Nếu $n \equiv 4 \pmod 8$, thì $y^2 = 3(4)+1 = 13 \equiv 5 \pmod 8$. Điều này vô lý vì 5 không phải là thặng dư bậc hai modulo 8.<br>
+            Vậy bắt buộc $n \equiv 0 \pmod 8$, tức là $n \vdots 8$.<br><br>
+            Vì $\gcd(5, 8) = 1$, từ $n \vdots 5$ và $n \vdots 8$ ta suy ra $n \vdots 40$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Bulgarian National Olympiad 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng có vô số số nguyên dương $n$ sao cho $5n^2 + 4$ là một số chính phương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $5n^2 + 4 = m^2$ ($m \in \mathbb{Z}^+$). Phương trình được viết lại thành:
+            $$ m^2 - 5n^2 = 4 $$
+            Đây là phương trình dạng Pell tổng quát. Ta dễ dàng tìm được nghiệm cơ sở là $(m_1, n_1) = (3, 1)$.<br>
+            Các nghiệm tiếp theo có thể được sinh ra bằng cách nhân với các nghiệm của phương trình Pell chuẩn $x^2 - 5y^2 = 1$.<br>
+            Tuy nhiên, có một cách trực tiếp là xây dựng chuỗi nghiệm từ hằng đẳng thức liên quan đến số Fibonacci và số Lucas.<br>
+            Ta có tính chất quen thuộc của dãy Fibonacci $(F_k)$ và dãy Lucas $(L_k)$:
+            $$ L_k^2 - 5F_k^2 = 4(-1)^k $$
+            Để biểu thức bằng $4$, ta chỉ cần chọn $k$ là các số nguyên dương chẵn, tức là $k = 2t$.<br>
+            Khi đó $L_{2t}^2 - 5F_{2t}^2 = 4$.<br>
+            Bằng cách chọn $n = F_{2t}$ (với $t \in \mathbb{Z}^+$), ta luôn có $5n^2 + 4 = L_{2t}^2$, là một số chính phương.<br>
+            Do dãy Fibonacci có vô số phần tử phân biệt, tồn tại vô số số nguyên dương $n$ thỏa mãn bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Polish Mathematical Olympiad 1997)</div>
+            <div class="box-body">
+                Giải phương trình Diophantine sau trên tập số nguyên dương: $x^2 - 5y^2 = -1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Không giống như phương trình Pell chuẩn luôn có nghiệm, phương trình $x^2 - dy^2 = -1$ chỉ có nghiệm với một số giá trị $d$ cụ thể.<br>
+            Bằng kiểm tra trực tiếp, ta tìm được nghiệm cơ sở là $(x_1, y_1) = (2, 1)$, vì $2^2 - 5(1)^2 = 4 - 5 = -1$.<br>
+            Dựa trên lý thuyết phương trình Pell âm, tất cả các nghiệm nguyên dương $(x_k, y_k)$ của phương trình được sinh ra từ lũy thừa bậc lẻ của đại lượng $(2 + \sqrt{5})$:
+            $$ x_k + y_k\sqrt{5} = (2 + \sqrt{5})^{2k-1} \quad \text{với } k \in \mathbb{Z}^+ $$
+            Các cặp $(x, y)$ này chính là tập nghiệm duy nhất của phương trình.<br>
+            (Ví dụ: $k=2 \implies (2+\sqrt{5})^3 = 38 + 17\sqrt{5} \implies (38, 17)$).
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Japan Mathematical Olympiad (JMO) 1999)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ sao cho đại lượng $\frac{n(n+1)}{3}$ là một số chính phương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $\frac{n(n+1)}{3} = k^2$ ($k \in \mathbb{Z}^+$). Biến đổi phương trình:
+            $$ n^2 + n = 3k^2 $$
+            Nhân cả hai vế với 4 và hoàn thành bình phương:
+            $$ 4n^2 + 4n = 12k^2 \implies (2n+1)^2 - 1 = 12k^2 \implies (2n+1)^2 - 12k^2 = 1 $$
+            Đặt $X = 2n+1$ và $Y = k$, ta có phương trình Pell $X^2 - 12Y^2 = 1$.<br>
+            Nghiệm cơ sở của phương trình này là $(X_1, Y_1) = (7, 2)$.<br>
+            Chuỗi nghiệm tổng quát $(X_m, Y_m)$ được sinh ra từ hệ thức:
+            $$ X_m + Y_m\sqrt{12} = (7 + 2\sqrt{12})^m $$
+            Do $X_m^2 = 12Y_m^2 + 1$, $X_m$ luôn là một số lẻ với mọi $m$. Điều này đảm bảo giá trị $n_m = \frac{X_m - 1}{2}$ luôn là một số nguyên.<br>
+            Vì phương trình yêu cầu $n$ dương, tất cả các giá trị $n_m$ với $m \in \mathbb{Z}^+$ chính là nghiệm của bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Australian Mathematical Olympiad 2002)</div>
+            <div class="box-body">
+                Chứng minh rằng không tồn tại các số nguyên $x, y$ thỏa mãn phương trình: $x^2 - 2002y^2 = -1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phân tích số 2002 thành thừa số nguyên tố: $2002 = 2 \times 7 \times 11 \times 13$.<br>
+            Để chứng minh sự vô nghiệm, ta xét phương trình trên hệ thặng dư theo modulo 7.<br>
+            Bằng cách lấy modulo 7 cho cả hai vế của phương trình $x^2 - 2002y^2 = -1$, do $2002 \equiv 0 \pmod 7$, ta có:
+            $$ x^2 \equiv -1 \pmod 7 $$
+            Tập hợp các số dư của một số chính phương theo modulo 7 chỉ có thể là $\{0, 1, 2, 4\}$.<br>
+            Mặt khác, $-1 \equiv 6 \pmod 7$.<br>
+            Rõ ràng $6$ không thuộc tập thặng dư bậc hai modulo 7.<br>
+            Sự mâu thuẫn này là tuyệt đối. Hệ quả là phương trình $x^2 - 2002y^2 = -1$ không thể có nghiệm trên tập số nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

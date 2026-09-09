@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Lý thuyết Đồ thị - Cấu trúc Cây, Đỉnh Trọng tâm và Kỹ thuật Phân rã</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: LÝ THUYẾT ĐỒ THỊ <br> CẤU TRÚC CÂY, ĐỈNH TRỌNG TÂM VÀ KỸ THUẬT PHÂN RÃ</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát sự phân bố khoảng cách và cấu trúc phân nhánh của một đồ thị Cây là một bài toán trung tâm của Toán Rời rạc. Chuyên đề này phân định rõ hai khái niệm "điểm chính giữa" của đồ thị: Trọng tâm (Centroid - tối thiểu hóa tổng khoảng cách) và Tâm (Center - tối thiểu hóa khoảng cách lớn nhất). Thông qua Định lý Jordan, chúng ta thiết lập cơ sở toán học cho kỹ thuật Phân rã Cây (Tree Decomposition), một công cụ biến các bài toán đếm đường đi thành các hệ thức đệ quy tường minh.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Kỹ thuật "Phân rã trọng tâm" (Centroid Decomposition) là một khái niệm chuyên sâu trong khoa học máy tính và toán tổ hợp bậc Đại học. Để học sinh THPT có thể áp dụng vào việc đếm đường đi (Bài toán 2.1) và hiểu rõ cấu trúc (Bài toán 3.3), ta cần tìm hiểu định nghĩa và tính chất cơ bản của Cây phân rã.</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Cây Phân rã Trọng tâm)</div>
+        Cho một cây $T$ có $n$ đỉnh. Ta xây dựng một <strong>Cây phân rã</strong> $CD(T)$ bằng các bước sau:
+        <ol>
+            <li>Tìm một trọng tâm $c$ của cây $T$ hiện tại và đặt $c$ làm gốc của $CD(T)$.</li>
+            <li>Xóa đỉnh $c$ khỏi $T$. Cây $T$ sẽ vỡ thành các nhánh nhỏ $T_1, T_2, \dots, T_k$.</li>
+            <li>Tiếp tục lặp lại quá trình trên cho mỗi nhánh $T_i$: Tìm trọng tâm $c_i$ của $T_i$, đặt $c_i$ làm con của $c$ trong $CD(T)$, rồi lại phân rã $T_i$.</li>
+        </ol>
+        Quá trình dừng lại khi các nhánh chỉ còn 1 đỉnh.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Chiều cao của Cây Phân rã)</div>
+        Chiều cao của Cây Phân rã Trọng tâm $CD(T)$ không vượt quá $\lfloor \log_2 n \rfloor + 1$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Theo định nghĩa của Trọng tâm (được trình bày ở phần sau), khi ta xóa trọng tâm $c$ khỏi cây $T$ có $n$ đỉnh, kích thước của mỗi nhánh $T_i$ được tạo ra đều không vượt quá $\lfloor \frac{n}{2} \rfloor$.<br>
+        Do đó, ở mỗi tầng của Cây Phân rã $CD(T)$, kích thước của thành phần liên thông bị giảm đi ít nhất một nửa.<br>
+        Sau $k$ bước phân rã, kích thước của thành phần liên thông lớn nhất còn lại là $\le \frac{n}{2^k}$.<br>
+        Quá trình phân rã kết thúc khi kích thước nhánh nhỏ hơn hoặc bằng 1, tức là $\frac{n}{2^k} \le 1 \implies 2^k \ge n \implies k \ge \log_2 n$.<br>
+        Vì vậy, số tầng tối đa (chiều cao) của Cây Phân rã là $\lfloor \log_2 n \rfloor + 1$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Trọng tâm và Tâm của Cây)</div>
+        Cho đồ thị Cây $T = (V, E)$ có $n$ đỉnh. Khoảng cách giữa hai đỉnh $u$ và $v$, ký hiệu $d(u,v)$, là số lượng cạnh trên đường đi đơn nối chúng.
+        <ul>
+            <li> <strong>Nhánh (Branch):</strong> Nếu xóa một đỉnh $v$ khỏi cây $T$, đồ thị sẽ bị phân rã thành các thành phần liên thông $T_1, T_2, \dots, T_k$. Mỗi thành phần này được gọi là một nhánh xuất phát từ $v$.</li>
+            <li> <strong>Trọng tâm (Centroid):</strong> Đỉnh $c \in V$ được gọi là Trọng tâm của cây nếu kích thước của <strong>mọi nhánh</strong> xuất phát từ $c$ đều không vượt quá một nửa tổng số đỉnh của cây. Tức là $|T_i| \le \lfloor n/2 \rfloor$ với mọi $i$.</li>
+            <li> <strong>Tâm (Center):</strong> Đỉnh $r \in V$ được gọi là Tâm của cây nếu khoảng cách từ $r$ đến đỉnh xa nó nhất là nhỏ nhất có thể. Tức là $\max_{v \in V} d(r, v)$ đạt giá trị cực tiểu. Đại lượng cực tiểu này được gọi là bán kính của cây.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Jordan - Sự tồn tại của Trọng tâm)</div>
+        Mọi đồ thị Cây $T$ gồm $n$ đỉnh đều có đúng $1$ hoặc $2$ Đỉnh Trọng tâm. Trong trường hợp có $2$ trọng tâm, hai đỉnh đó phải kề nhau (được nối bởi một cạnh).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sử dụng phương pháp Cực hạn. Với mỗi đỉnh $v \in V$, gọi $f(v)$ là kích thước của nhánh <strong>lớn nhất</strong> sinh ra khi xóa $v$. <br>
+        Vì số lượng đỉnh là hữu hạn, hàm $f(v)$ phải đạt giá trị nhỏ nhất tại một hoặc một số đỉnh. <br>
+        Gọi $c$ là đỉnh có $f(c)$ nhỏ nhất. Ta sẽ chứng minh $f(c) \le n/2$, từ đó suy ra $c$ là một Trọng tâm.</p>
+
+        <p>Giả sử phản chứng rằng $f(c) \gt n/2$. <br>
+        Điều này có nghĩa là khi xóa $c$, tồn tại một nhánh $T_1$ có kích thước lớn hơn $n/2$. <br>
+        Gọi $u$ là đỉnh kề với $c$ và nằm bên trong nhánh $T_1$.<br>
+        Bây giờ, ta tính $f(u)$ (xét các nhánh khi xóa $u$).<br>
+        Khi xóa $u$, các nhánh tạo thành bao gồm:</p>
+        <ol>
+            <li> Nhánh chứa đỉnh $c$: Nhánh này bao gồm toàn bộ cây $T$ ngoại trừ nhánh $T_1$. Do đó, kích thước của nhánh này là $n - |T_1|$. Vì $|T_1| \gt n/2$, nhánh này có kích thước $\lt n/2$.</li>
+            <li> Các nhánh khác nằm trong $T_1$: Kích thước của mỗi nhánh này nhỏ hơn $|T_1|$ (vì chúng là tập con thực sự của $T_1 \setminus \{u\}$).</li>
+        </ol>
+        <p>Vậy, tất cả các nhánh sinh ra khi xóa $u$ đều có kích thước nhỏ hơn $|T_1| = f(c)$.<br>
+        Do đó, $f(u) \lt f(c)$.<br>
+        Điều này mâu thuẫn với giả thiết $c$ là đỉnh làm cho $f(v)$ đạt giá trị nhỏ nhất.<br>
+        Sự mâu thuẫn chứng tỏ $f(c) \le n/2$. Vậy cây luôn có ít nhất một Trọng tâm.</p>
+
+        <p>Tiếp theo, giả sử có 2 trọng tâm $c_1$ và $c_2$. Nếu chúng không kề nhau, đường đi giữa chúng có ít nhất 1 đỉnh trung gian. Khi xóa $c_1$, nhánh chứa $c_2$ phải có kích thước $\le n/2$. Khi xóa $c_2$, nhánh chứa $c_1$ phải có kích thước $\le n/2$. Nhưng hai nhánh này rời nhau và tổng kích thước của chúng cộng lại đã bằng $n$, bỏ sót các đỉnh trung gian. Điều này vô lý. Vậy nếu có 2 trọng tâm, chúng phải kề nhau. (Khi đó $n$ bắt buộc phải là số chẵn, và khi cắt cạnh nối hai trọng tâm, cây chia thành 2 nửa có kích thước đúng bằng $n/2$).</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Phương pháp Đếm đường đi qua Trọng tâm)</div>
+        Cho một cây $T$ có $n$ đỉnh. Chứng minh rằng số lượng các cặp đỉnh $(u, v)$ có khoảng cách đúng bằng một hằng số $K$ cho trước có thể được tính toán bằng cách chọn một đỉnh trọng tâm $c$, đếm số lượng các cặp đi qua $c$, và áp dụng hệ thức quy nạp cho các nhánh. Xây dựng công thức đóng cho số cặp đi qua $c$ bằng Nguyên lý Bao hàm - Loại trừ.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc đếm trực tiếp mọi cặp đỉnh tốn chi phí tỷ lệ với $\binom{n}{2}$. Việc sử dụng Trọng tâm $c$ cho phép ta phân tách bài toán thành các bài toán con trên những nhánh rời nhau có kích thước $\le n/2$.</p>
+
+        <p>Cho $c$ là trọng tâm của cây. Bất kỳ cặp đỉnh $(u, v)$ nào trên cây cũng thuộc về một trong hai loại:</p>
+        <ol>
+            <li>Đường đi giữa $u$ và $v$ <strong>đi qua</strong> $c$.</li>
+            <li>Đường đi giữa $u$ và $v$ <strong>không đi qua</strong> $c$. (Nghĩa là $u$ và $v$ cùng nằm trọn vẹn trong một nhánh $T_i$ nào đó xuất phát từ $c$).</li>
+        </ol>
+
+        <p>Gọi $\text{Count}(T, K)$ là số lượng cặp đỉnh có khoảng cách $K$ trên toàn bộ cây $T$. Ta có hệ thức:</p>
+        $$ \text{Count}(T, K) = P_{cross}(c, K) + \sum_{T_i \in \text{Nhánh}(c)} \text{Count}(T_i, K) $$
+        <p>Trong đó $P_{cross}(c, K)$ là số lượng cặp $(u,v)$ sao cho đường đi nối chúng đi qua $c$ và có tổng chiều dài $K$.</p>
+
+        <p><strong>Xây dựng công thức cho $P_{cross}(c, K)$ :</strong><br>
+        Đối với mọi đỉnh $x$ trong cây, ta tính khoảng cách từ $x$ đến $c$, gọi là $d(x, c)$.<br>
+        Để đường đi giữa $u$ và $v$ (đi qua $c$) có độ dài $K$, ta phải có:</p>
+        $$ d(u, c) + d(v, c) = K $$
+        <p>Và $u$ và $v$ <strong>không được nằm trong cùng một nhánh</strong> xuất phát từ $c$ (vì nếu cùng nhánh, đường đi ngắn nhất giữa chúng sẽ không đi qua $c$).</p>
+
+        <p>Ta đếm bằng Nguyên lý Bao hàm - Loại trừ (PIE):<br>
+        Gọi $D_{total}(x)$ là số lượng các đỉnh trong toàn bộ cây có khoảng cách đến $c$ đúng bằng $x$.<br>
+        Số lượng tất cả các cặp đỉnh $(u,v)$ thỏa mãn $d(u,c) + d(v,c) = K$ (kể cả những cặp không hợp lệ do nằm cùng một nhánh) là:</p>
+        $$ S_{total} = \sum_{x+y=K} D_{total}(x) \cdot D_{total}(y) $$
+        <p>(Lưu ý: Cần điều chỉnh hệ số $\frac{1}{2}$ ở kết quả cuối cùng để tránh đếm lặp cặp $(u,v)$ và $(v,u)$, ngoại trừ trường hợp $x=y$).</p>
+
+        <p>Bây giờ ta trừ đi các cặp không hợp lệ. Một cặp không hợp lệ khi cả hai đỉnh đều thuộc về cùng một nhánh $T_i$.<br>
+        Với mỗi nhánh $T_i$, định nghĩa $D_{T_i}(x)$ là số lượng các đỉnh <strong>thuộc nhánh $T_i$</strong> có khoảng cách đến $c$ đúng bằng $x$.<br>
+        Số lượng cặp nằm trọn trong nhánh $T_i$ là:</p>
+        $$ S_{error}(T_i) = \sum_{x+y=K} D_{T_i}(x) \cdot D_{T_i}(y) $$
+
+        <p>Vậy, công thức cho số lượng cặp hợp lệ đi qua trọng tâm là:</p>
+        $$ P_{cross}(c, K) = \frac{1}{2} \left[ S_{total} - \sum_{T_i} S_{error}(T_i) \right] $$
+        <p>Hệ thức này thể hiện bản chất của kỹ thuật Phân rã trọng tâm. Nhờ việc mỗi lần cắt tại trọng tâm, kích thước của mọi nhánh $T_i$ luôn $\le n/2$, chiều sâu của hệ thức đệ quy này không vượt quá $\log_2 n$, cung cấp một phương pháp để khảo sát khoảng cách trên đồ thị dạng cây.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Lithuanian Mathematical Olympiad - Tính chất Cực trị của Trọng tâm)</div>
+        Cho một cây $T$ có $n$ đỉnh. Với mỗi đỉnh $v$, gọi $D(v)$ là tổng khoảng cách từ đỉnh $v$ đến tất cả $n-1$ đỉnh còn lại của cây. Chứng minh rằng hàm số $D(v)$ đạt giá trị nhỏ nhất khi và chỉ khi $v$ là đỉnh Trọng tâm của cây.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sẽ phân tích sự thay đổi của hàm $D(v)$ khi ta di chuyển từ một đỉnh sang một đỉnh kề với nó.<br>
+        Giả sử $u$ và $v$ là hai đỉnh kề nhau. Nếu ta cắt bỏ cạnh $uv$, cây $T$ sẽ chia thành hai thành phần liên thông:</p>
+        <ul>
+            <li>Gọi $T_u$ là nhánh chứa đỉnh $u$.</li>
+            <li>Gọi $T_v$ là nhánh chứa đỉnh $v$.</li>
+        </ul>
+        <p>Kích thước của chúng thỏa mãn $|T_u| + |T_v| = n$.</p>
+
+        <p>Bây giờ, ta so sánh tổng khoảng cách $D(u)$ và $D(v)$.<br>
+        Mọi đỉnh $x \in T_u$ đều nằm gần $u$ hơn là gần $v$ đúng 1 đơn vị cạnh. Tức là $d(x, v) = d(x, u) + 1$.<br>
+        Ngược lại, mọi đỉnh $y \in T_v$ đều nằm gần $v$ hơn là gần $u$ đúng 1 đơn vị cạnh. Tức là $d(y, u) = d(y, v) + 1$.<br>
+        Ta có:</p>
+        $$ D(u) = \sum_{x \in T_u} d(x, u) + \sum_{y \in T_v} d(y, u) $$
+        $$ D(u) = \sum_{x \in T_u} (d(x, v) - 1) + \sum_{y \in T_v} (d(y, v) + 1) $$
+        $$ D(u) = \left[ \sum_{x \in T_u} d(x, v) + \sum_{y \in T_v} d(y, v) \right] - |T_u| + |T_v| $$
+        <p>Nhận thấy phần trong ngoặc vuông chính là định nghĩa của $D(v)$. Do đó:</p>
+        $$ D(u) - D(v) = |T_v| - |T_u| $$
+        <p>Thay $|T_v| = n - |T_u|$, ta thu được sự thay đổi tổng khoảng cách:</p>
+        $$ D(u) - D(v) = n - 2|T_u| $$
+
+        <p><strong>Chiều thuận:</strong> Nếu $v$ là Trọng tâm. Theo Định lý 1.1, kích thước của mọi nhánh xuất phát từ $v$ đều $\le n/2$. Do đó, đối với bất kỳ đỉnh $u$ nào kề với $v$, nhánh $T_u$ có kích thước $|T_u| \le n/2$.<br>
+        Suy ra: $n - 2|T_u| \ge 0 \implies D(u) \ge D(v)$.<br>
+        Vì việc di chuyển ra xa khỏi $v$ luôn làm hàm $D$ tăng (hoặc giữ nguyên nếu $|T_u| = n/2$), và cây không có chu trình, đỉnh $v$ phải là đỉnh đạt cực tiểu của hàm $D$.</p>
+
+        <p><strong>Chiều đảo:</strong> Giả sử $v$ đạt cực tiểu tổng khoảng cách. Nghĩa là $D(u) \ge D(v)$ với mọi đỉnh $u$ kề với $v$.<br>
+        Kéo theo $n - 2|T_u| \ge 0 \implies |T_u| \le n/2$.<br>
+        Vì điều này đúng với mọi nhánh $T_u$ xuất phát từ $v$, theo đúng định nghĩa, $v$ là Trọng tâm của cây. Định lý được chứng minh, thể hiện mối liên hệ giữa cực trị khoảng cách và cấu trúc của cây.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (All-Russian Olympiad - Giao điểm của các Đường đi Dài nhất)</div>
+        Chứng minh rằng trên bất kỳ một đồ thị Cây nào, tất cả các đường đi dài nhất (đường kính của cây) đều phải đi qua chung một đỉnh. (Đỉnh đó chính là Tâm của cây).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tâm của cây (Center) có thể được xác định bằng một quá trình "cắt tỉa lá".<br>
+        Ta chứng minh bằng quy nạp theo số lượng đỉnh của cây.</p>
+
+        <p>Nếu đồ thị có $1$ hoặc $2$ đỉnh, định lý đúng.<br>
+        Giả sử định lý đúng cho mọi cây có ít hơn $n$ đỉnh. Xét cây $T$ có $n$ đỉnh.<br>
+        Gọi $L$ là tập hợp tất cả các <strong>lá</strong> (đỉnh có bậc 1) của cây $T$. <br>
+        Ta thực hiện thao tác cắt tỉa: Xóa toàn bộ tập $L$ và các cạnh kề với chúng khỏi $T$. Đồ thị còn lại gọi là $T'$.<br>
+        Rõ ràng $T'$ vẫn là một đồ thị liên thông và không có chu trình, do đó $T'$ vẫn là một cây.</p>
+
+        <p>Một tính chất quan trọng của mọi đường đi dài nhất trên cây là: <strong>Hai đầu mút của bất kỳ đường đi dài nhất nào đều phải là các Lá.</strong> (Vì nếu không phải là lá, ta luôn có thể kéo dài đường đi đó ra thêm).<br>
+        Giả sử chiều dài của các đường đi dài nhất trên $T$ là $D$. (Nếu $D=0$ hoặc $1$, hiển nhiên có đỉnh chung).<br>
+        Mọi đường đi dài nhất $P$ trên $T$ đều nối hai lá thuộc $L$. Khi ta cắt bỏ toàn bộ tập lá $L$, đường đi $P$ sẽ bị mất đi 2 đỉnh ở 2 đầu mút. Phần còn lại của nó, gọi là $P'$, sẽ nằm hoàn toàn trong $T'$ và có chiều dài là $D - 2$.<br>
+        Rõ ràng $P'$ phải là một trong những đường đi dài nhất trên $T'$ (nếu $T'$ có đường đi dài $\gt D-2$, khi gắn lá trở lại, $T$ sẽ có đường đi dài $\gt D$, vô lý).</p>
+
+        <p>Như vậy, thao tác cắt tỉa lá thiết lập một sự ánh xạ về cấu trúc: tập hợp các đường đi dài nhất trên $T$ được thu nhỏ thành tập hợp các đường đi dài nhất trên $T'$.<br>
+        Cây $T'$ có số lượng đỉnh nhỏ hơn $n$. Theo giả thiết quy nạp, tất cả các đường đi dài nhất trên $T'$ đều <strong>giao nhau tại ít nhất một đỉnh chung</strong>.<br>
+        Vì các đường đi trên $T$ chứa hoàn toàn các đường đi tương ứng trên $T'$, đỉnh chung này cũng bắt buộc phải nằm trên mọi đường đi dài nhất của cây $T$ ban đầu.<br>
+        Định lý được chứng minh. Quá trình cắt tỉa lặp đi lặp lại này sẽ luôn kết thúc tại $1$ đỉnh duy nhất hoặc $2$ đỉnh kề nhau. Đó chính là Tâm (Center) của cây.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Taiwan Mathematical Olympiad (TMO) - Đánh giá Đỉnh Phân rã)</div>
+        Có thể gán cho mỗi đỉnh $v$ của một cây $n$ đỉnh ($n \ge 1$) một số nguyên dương $f(v) \le \lfloor \log_2 n \rfloor + 1$ sao cho: Với mọi đường đi đơn giữa hai đỉnh phân biệt $x$ và $y$ bất kỳ, phần tử lớn nhất trên đường đi đó xuất hiện đúng $1$ lần?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán này yêu cầu xây dựng <strong>Cây Phân rã Trọng tâm (Centroid Tree)</strong>. Cấu trúc "duy nhất một đỉnh có trọng số lớn nhất" chính là việc bảo đảm hai đỉnh trong cùng một nhánh luôn kết nối qua cha chung của chúng ở mức đệ quy cao hơn.</p>
+
+        <p>Ta sẽ chứng minh bằng phương pháp Xây dựng Đệ quy kết hợp Định lý Jordan (Định lý 1.1).<br>
+        <em>Bước cơ sở ($n=1$):</em> Cây có 1 đỉnh. Gán giá trị $1 \le \lfloor \log_2 1 \rfloor + 1 = 1$. Điều kiện thỏa mãn.</p>
+
+        <p><em>Bước quy nạp:</em> Giả sử mệnh đề đúng cho mọi cây có số đỉnh nhỏ hơn $n$. Xét cây $T$ có $n$ đỉnh.<br>
+        Theo Định lý Jordan, tồn tại một đỉnh Trọng tâm $c$ của cây $T$. <br>
+        Ta gán cho Trọng tâm $c$ mức giá trị cao nhất cho phép:</p>
+        $$ f(c) = \lfloor \log_2 n \rfloor + 1 $$
+        <p>Bây giờ, ta xóa đỉnh $c$ khỏi cây. Đồ thị $T$ phân rã thành các nhánh rời nhau $T_1, T_2, \dots, T_k$.<br>
+        Theo định nghĩa Trọng tâm, kích thước của mọi nhánh đều thỏa mãn $|T_i| \le \lfloor n/2 \rfloor$.<br>
+        Kéo theo, hàm số logarit của kích thước nhánh thỏa mãn:</p>
+        $$ \lfloor \log_2 |T_i| \rfloor + 1 \le \lfloor \log_2 \lfloor n/2 \rfloor \rfloor + 1 = \lfloor \log_2 n - 1 \rfloor + 1 = \lfloor \log_2 n \rfloor $$
+        <p>Bất đẳng thức này cho thấy giới hạn trần cho việc gán nhãn trong các cây con $T_i$ luôn <strong>nhỏ hơn ngặt</strong> so với giá trị $f(c)$ đã gán cho trọng tâm.<br>
+        Theo giả thiết quy nạp, ta có thể áp dụng thuật toán này để gán nhãn hợp lệ cho toàn bộ các đỉnh trong từng nhánh $T_i$. Vì giới hạn của chúng là $\le \lfloor \log_2 n \rfloor$, sẽ không có đỉnh nào trong bất kỳ $T_i$ nào nhận giá trị bằng $f(c)$. $f(c)$ là giá trị lớn nhất tuyệt đối trong toàn bộ cây $T$.</p>
+
+        <p><strong>Kiểm tra tính hợp lệ của đường đi:</strong><br>
+        Lấy hai đỉnh $x, y$ phân biệt bất kỳ trên cây $T$.</p>
+        <ul>
+            <li> <strong>Trường hợp 1:</strong> $x$ và $y$ thuộc về <strong>hai nhánh khác nhau</strong> (ví dụ $x \in T_1$ và $y \in T_2$).<br>
+            Khi đó, đường đi duy nhất giữa $x$ và $y$ trên cây $T$ phải đi xuyên qua đỉnh $c$. <br>
+            Vì $f(c)$ lớn hơn mọi giá trị được gán cho các đỉnh trong các nhánh, $f(c)$ là giá trị lớn nhất trên đường đi này. Và do $c$ là đỉnh duy nhất trên đường đi nằm ngoài các nhánh, $f(c)$ xuất hiện <strong>đúng 1 lần</strong>.</li>
+            <li> <strong>Trường hợp 2:</strong> $x$ và $y$ thuộc về <strong>cùng một nhánh</strong> $T_i$.<br>
+            Khi đó, đường đi giữa $x$ và $y$ nằm hoàn toàn bên trong cây con $T_i$. Theo giả thiết quy nạp, việc gán nhãn bên trong $T_i$ đã đảm bảo tính chất "phần tử lớn nhất xuất hiện duy nhất" cho mọi đường đi nội bộ.</li>
+        </ul>
+
+        <p>Thuật toán đệ quy gán nhãn này thỏa mãn mọi yêu cầu của đề bài. Bài toán được giải quyết, và minh họa cách Phân rã Trọng tâm chẻ nhỏ không gian đồ thị thành cây có chiều cao giới hạn $\mathcal{O}(\log n)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

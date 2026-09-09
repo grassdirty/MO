@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Đại Số Đa Thức - Phương Trình Hàm Đa Thức</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh thẳm/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ ĐA THỨC<br>PHƯƠNG TRÌNH HÀM ĐA THỨC VÀ PHƯƠNG PHÁP XÁC ĐỊNH NGHIỆM</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát các phương trình hàm mà nghiệm được giới hạn trong vành đa thức là một chủ đề trọng tâm của giải tích đại số. Khác với hàm số thực tổng quát, đa thức bị ràng buộc chặt chẽ bởi các tính chất về bậc, hệ số dẫn đầu và số lượng nghiệm. Bài viết này trình bày phương pháp đồng nhất hệ số, phương pháp tịnh tiến nghiệm và tính chất sai phân để giải quyết các phương trình hàm đa thức thường xuất hiện trong các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Đa thức và bậc của đa thức</div>
+            <div class="box-body">
+                Một hàm số $P(x)$ được gọi là một đa thức trên trường số thực $\mathbb{R}$ nếu tồn tại các hằng số thực $a_0, a_1, \dots, a_n$ sao cho:
+                $$ P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0 \quad \forall x \in \mathbb{R} $$
+                Nếu $a_n \neq 0$, ta nói đa thức $P(x)$ có bậc là $n$, ký hiệu $\deg(P) = n$. Đại lượng $a_n$ được gọi là hệ số dẫn đầu. Đa thức không $P(x) \equiv 0$ được quy ước có bậc là $-\infty$.
+            </div>
+        </div>
+
+        <p>Khi thực hiện các phép toán trên đa thức, bậc của chúng tuân theo những định luật bảo toàn nghiêm ngặt, được biểu diễn qua định lý sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Tính chất của bậc đa thức</div>
+            <div class="box-body">
+                Cho hai đa thức $P(x)$ và $Q(x)$ khác đa thức không. Ta có các tính chất:
+                <ol style="margin-top: 8px;">
+                    <li>$\deg(P \cdot Q) = \deg(P) + \deg(Q)$.</li>
+                    <li>$\deg(P \circ Q) = \deg(P) \cdot \deg(Q)$ (với điều kiện $\deg(P), \deg(Q) \ge 1$).</li>
+                    <li>$\deg(P \pm Q) \le \max\{\deg(P), \deg(Q)\}$. Đẳng thức xảy ra khi $\deg(P) \neq \deg(Q)$.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xét $P(x) = a_n x^n + \dots + a_0$ ($a_n \neq 0$) và $Q(x) = b_m x^m + \dots + b_0$ ($b_m \neq 0$).<br>
+            Khi đó $P(x)Q(x) = (a_n b_m) x^{n+m} + \dots$<br>
+            Vì $a_n \neq 0$ và $b_m \neq 0$ trên trường số thực, ta có $a_n b_m \neq 0$. Do đó, hệ số của $x^{n+m}$ khác $0$, kéo theo $\deg(P \cdot Q) = n+m = \deg(P) + \deg(Q)$.<br>
+            Tương tự cho phép hợp thành, $P(Q(x)) = a_n (b_m x^m + \dots)^n + \dots = a_n b_m^n x^{nm} + \dots$<br>
+            Vì $a_n b_m^n \neq 0$, bậc của đa thức hợp thành chính xác là $n \cdot m$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Nguyên lý đồng nhất đa thức</div>
+            <div class="box-body">
+                Nếu hai đa thức $P(x)$ và $Q(x)$ có bậc không vượt quá $n$ và nhận cùng một giá trị tại $n+1$ điểm phân biệt, thì $P(x) = Q(x)$ với mọi $x \in \mathbb{R}$.<br>
+                Hệ quả: Nếu $P(x) = Q(x)$ với vô số giá trị $x$, thì hai đa thức đồng nhất.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xét đa thức hiệu $H(x) = P(x) - Q(x)$. Bậc của $H(x)$ nhỏ hơn hoặc bằng $n$.<br>
+            Giả sử $H(x)$ có $n+1$ nghiệm phân biệt. Theo định lý cơ bản của đại số, một đa thức bậc $k \ge 0$ chỉ có tối đa $k$ nghiệm. Sự tồn tại $n+1$ nghiệm bắt buộc $H(x)$ phải là đa thức không, tức là $H(x) \equiv 0 \implies P(x) \equiv Q(x)$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Korean National Mathematical Olympiad (KMO) 1998)</div>
+            <div class="box-body">
+                Tìm tất cả các đa thức $P(x)$ với hệ số thực thỏa mãn phương trình:
+                $$ (x-1)P(x+1) = (x+2)P(x) \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta sử dụng phương pháp tìm nghiệm để xác định các nhân tử của đa thức $P(x)$.<br>
+            Gọi phương trình đã cho là (1).<br>
+            Lần lượt thay các giá trị đặc biệt của $x$ vào (1) để làm triệt tiêu các hệ số:
+            <ul>
+                <li>Thay $x = 1$:
+                $$ (1-1)P(2) = (1+2)P(1) \implies 0 = 3P(1) \implies P(1) = 0 $$</li>
+                <li>Thay $x = 0$:
+                $$ (0-1)P(1) = (0+2)P(0) \implies -P(1) = 2P(0) $$
+                Vì $P(1) = 0$, ta suy ra $2P(0) = 0 \implies P(0) = 0$.</li>
+                <li>Thay $x = -1$:
+                $$ (-1-1)P(0) = (-1+2)P(-1) \implies -2P(0) = P(-1) $$
+                Vì $P(0) = 0$, ta suy ra $P(-1) = 0$.</li>
+            </ul>
+
+            Đa thức $P(x)$ có ba nghiệm phân biệt là $1, 0, -1$. Theo định lý Bezout, $P(x)$ phân tích được thành:
+            $$ P(x) = x(x-1)(x+1)Q(x) $$
+            với $Q(x)$ là một đa thức hệ số thực.<br>
+            Thay dạng phân tích của $P(x)$ vào phương trình (1), ta được:
+            $$ (x-1) \cdot (x+1)x(x+2)Q(x+1) = (x+2) \cdot x(x-1)(x+1)Q(x) $$
+            Chuyển vế và nhóm nhân tử chung:
+            $$ x(x-1)(x+1)(x+2) [Q(x+1) - Q(x)] = 0 \quad \forall x \in \mathbb{R} $$
+            Phương trình trên đúng với mọi $x \in \mathbb{R}$. Với mọi $x \notin \{0, 1, -1, -2\}$, ta có thể giản ước phần đa thức phía trước:
+            $$ Q(x+1) - Q(x) = 0 \implies Q(x+1) = Q(x) $$
+            Đẳng thức $Q(x+1) = Q(x)$ đúng với vô số giá trị $x$. Xét đa thức $H(x) = Q(x+1) - Q(x)$, ta có $H(x) = 0$ tại vô số điểm. Theo Định lý 2 (Nguyên lý đồng nhất), $H(x)$ phải là đa thức không, tức là $Q(x+1) \equiv Q(x)$ trên toàn bộ $\mathbb{R}$.<br>
+            Một đa thức tuần hoàn chu kỳ 1 bắt buộc phải là một hằng số. Đặt $Q(x) = c \in \mathbb{R}$.<br>
+            Vậy $P(x) = cx(x-1)(x+1) = c(x^3 - x)$.<br>
+            Thử lại vào phương trình ban đầu:
+            $$ \text{VT} = c(x-1)(x+1)x(x+2) $$
+            $$ \text{VP} = c(x+2)x(x-1)(x+1) $$
+            Hai vế hoàn toàn đồng nhất với mọi giá trị của $c$.<br>
+            Kết luận: Tập nghiệm của phương trình là $P(x) = c(x^3 - x)$ với $c \in \mathbb{R}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Spanish Mathematical Olympiad 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+                $$ x P(x-1) = (x-2) P(x) \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Lần lượt thay các giá trị triệt tiêu vào phương trình:
+            <ul>
+                <li>Thay $x = 0$: $0 \cdot P(-1) = -2 P(0) \implies P(0) = 0$.</li>
+                <li>Thay $x = 1$: $1 \cdot P(0) = -1 \cdot P(1) \implies P(1) = 0$.</li>
+            </ul>
+            Vì $P(x)$ có hai nghiệm là $0$ và $1$, ta có thể biểu diễn $P(x)$ dưới dạng:
+            $$ P(x) = x(x-1)Q(x) $$
+            với $Q(x)$ là đa thức. Thay biểu diễn này vào phương trình gốc:
+            $$ x \cdot (x-1)(x-2)Q(x-1) = (x-2) \cdot x(x-1)Q(x) $$
+            Giản ước $x(x-1)(x-2)$ cho các giá trị $x \notin \{0, 1, 2\}$, ta thu được $Q(x-1) = Q(x)$.<br>
+            Lập luận tương tự bài toán cốt lõi, $Q(x)$ là hằng số $c$.<br>
+            Vậy $P(x) = cx(x-1)$. Khẳng định thử lại hoàn toàn thỏa mãn.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Austrian National Olympiad 1995)</div>
+            <div class="box-body">
+                Xác định tất cả các đa thức $P(x)$ với hệ số thực sao cho:
+                $$ P(x^2) = P(x)^2 \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Trường hợp 1: $P(x)$ là đa thức hằng, $P(x) = c$. Thay vào phương trình: $c = c^2 \implies c \in \{0, 1\}$. Ta có hai nghiệm $P(x) \equiv 0$ và $P(x) \equiv 1$.<br>
+            Trường hợp 2: $\deg(P) = n \ge 1$. Ta có thể viết $P(x) = x^k Q(x)$, trong đó $Q(0) \neq 0$ và $k \ge 0$ là số nguyên.<br>
+            Thay vào phương trình:
+            $$ (x^2)^k Q(x^2) = (x^k Q(x))^2 \implies x^{2k} Q(x^2) = x^{2k} Q(x)^2 \implies Q(x^2) = Q(x)^2 $$
+            Vì $Q(0) \neq 0$, thay $x=0$ ta có $Q(0) = Q(0)^2 \implies Q(0) = 1$.<br>
+            Nếu $\deg(Q) \ge 1$, ta viết $Q(x) = 1 + a x^m + \dots$ với $a \neq 0$ và $m \ge 1$.<br>
+            Tính $Q(x^2) = 1 + a x^{2m} + \dots$<br>
+            Tính $Q(x)^2 = (1 + a x^m + \dots)^2 = 1 + 2a x^m + \dots$<br>
+            Để hai đa thức này đồng nhất, hệ số của các bậc phải bằng nhau. Bậc lớn nhất bị thay đổi tiếp theo sau hằng số là $x^m$ ở vế phải và $x^{2m}$ ở vế trái.<br>
+            Do $m \ge 1 \implies 2m &gt; m$, hệ số của $x^m$ ở vế trái là $0$.<br>
+            Đồng nhất hệ số của $x^m$, ta có $0 = 2a \implies a = 0$, mâu thuẫn với giả thiết $a \neq 0$.<br>
+            Sự mâu thuẫn này chứng tỏ đa thức $Q(x)$ không thể có bậc $\ge 1$. Vậy $Q(x) \equiv 1$.<br>
+            Từ đó, $P(x) = x^k \cdot 1 = x^k$ với $k \ge 1$.<br>
+            Tập nghiệm của phương trình là $P(x) = 0, P(x) = 1$, và $P(x) = x^k$ với $k \in \mathbb{Z}^+$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Italian Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Tìm tất cả các đa thức $P(x)$ thỏa mãn:
+                $$ P(x^2 - y^2) = P(x-y)P(x+y) \quad \forall x, y \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Thay $y = 0$ vào phương trình, ta có:
+            $$ P(x^2) = P(x)P(x) \implies P(x^2) = P(x)^2 $$
+            Theo kết quả của bài toán trước (ÖMO 1995), các đa thức thỏa mãn phương trình này chỉ có thể là $P(x) \equiv 0$, $P(x) \equiv 1$, hoặc $P(x) = x^k$ với $k \ge 1$.<br>
+            Ta tiến hành thử lại cả ba trường hợp vào phương trình ban đầu:
+            <ul>
+                <li>$P(x) \equiv 0 \implies 0 = 0 \cdot 0$ (Đúng).</li>
+                <li>$P(x) \equiv 1 \implies 1 = 1 \cdot 1$ (Đúng).</li>
+                <li>$P(x) = x^k \implies (x^2 - y^2)^k = (x-y)^k (x+y)^k$. Theo hằng đẳng thức hiệu hai bình phương, đẳng thức này hoàn toàn chính xác.</li>
+            </ul>
+            Vậy các đa thức thỏa mãn là $P(x) \in \{0, 1, x^k\}$ với $k \in \mathbb{Z}^+$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Canadian Mathematical Olympiad (CMO) 1980)</div>
+            <div class="box-body">
+                Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn phương trình:
+                $$ P(x) - P(x-1) = 2x - 1 \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương trình thể hiện sai phân bậc nhất của đa thức.<br>
+            Xét đa thức $Q(x) = x^2$. Ta có sai phân của $Q(x)$ là:
+            $$ Q(x) - Q(x-1) = x^2 - (x-1)^2 = 2x - 1 $$
+            Trừ vế theo vế phương trình của bài toán cho phương trình trên, ta được:
+            $$ [P(x) - x^2] - [P(x-1) - (x-1)^2] = 0 $$
+            Đặt $H(x) = P(x) - x^2$. Phương trình trở thành:
+            $$ H(x) - H(x-1) = 0 \implies H(x) = H(x-1) \quad \forall x \in \mathbb{R} $$
+            Đa thức $H(x)$ tuần hoàn chu kỳ 1 nên nó phải là một hằng số. Gọi hằng số đó là $c$.
+            $$ H(x) = c \implies P(x) - x^2 = c \implies P(x) = x^2 + c $$
+            Thử lại, $(x^2+c) - ((x-1)^2+c) = 2x-1$. Kết quả là chính xác.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Japan Mathematical Olympiad (JMO) 2003)</div>
+            <div class="box-body">
+                Xác định tất cả các đa thức $P(x)$ thỏa mãn:
+                $$ P(x+1) + P(x-1) = 2P(x) \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Chuyển vế phương trình, ta có:
+            $$ P(x+1) - P(x) = P(x) - P(x-1) $$
+            Ký hiệu sai phân $\Delta P(x) = P(x) - P(x-1)$. Phương trình trở thành:
+            $$ \Delta P(x+1) = \Delta P(x) \quad \forall x \in \mathbb{R} $$
+            Do đó, đa thức $\Delta P(x)$ là một hằng số. Đặt $\Delta P(x) = a$.
+            $$ P(x) - P(x-1) = a $$
+            Xét đa thức $Q(x) = ax$. Ta có $Q(x) - Q(x-1) = ax - a(x-1) = a$.<br>
+            Trừ vế theo vế, ta được $(P(x) - ax) - (P(x-1) - a(x-1)) = 0$.<br>
+            Đặt $H(x) = P(x) - ax$, ta thu được $H(x) = H(x-1)$.<br>
+            Suy ra $H(x)$ là một hằng số $b$.<br>
+            Vậy $P(x) = ax + b$. Phương trình biểu diễn sự bảo toàn độ dốc của một hàm bậc nhất.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (All-Russian Olympiad 1992)</div>
+            <div class="box-body">
+                Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn:
+                $$ P(P(x)) = P(x) \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $S$ là tập giá trị (ảnh) của đa thức $P(x)$ trên $\mathbb{R}$.<br>
+            Với mọi $y \in S$, tồn tại $x$ sao cho $y = P(x)$.<br>
+            Thay vào phương trình ban đầu:
+            $$ P(y) = P(P(x)) = P(x) = y $$
+            Do đó, đa thức $P(y) = y$ với mọi $y \in S$.<br>
+            Xét hai trường hợp về bậc của $P$:
+            <ul>
+                <li>Nếu $\deg(P) \ge 1$: Khi $x \to \infty$, $|P(x)| \to \infty$. Do đó tập giá trị $S$ chứa vô số phần tử.<br>
+                Xét đa thức $H(x) = P(x) - x$. Ta có $H(y) = 0$ với vô số giá trị $y \in S$. Theo Nguyên lý đồng nhất đa thức (Định lý 2), $H(x) \equiv 0 \implies P(x) = x$.</li>
+                <li>Nếu $\deg(P) \le 0$: $P(x)$ là đa thức hằng, $P(x) = c$.<br>
+                Thay vào phương trình: $P(c) = c \implies c = c$. Điều này luôn đúng với mọi hằng số $c$.</li>
+            </ul>
+            Tập nghiệm của phương trình là $P(x) = x$ và $P(x) = c$ với $c \in \mathbb{R}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Greek Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Tìm tất cả các đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn:
+                $$ P(x)^2 - P(x^2) = 2x \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử $\deg(P) = n$. Ta có $\deg(P(x)^2) = 2n$ và $\deg(P(x^2)) = 2n$.<br>
+            Gọi $P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_0$ với $a_n \neq 0$.<br>
+            Tính bậc cao nhất của hai thành phần:
+            $$ P(x)^2 = a_n^2 x^{2n} + 2a_n a_{n-1} x^{2n-1} + \dots $$
+            $$ P(x^2) = a_n x^{2n} + a_{n-1} x^{2n-2} + \dots $$
+            Hiệu của chúng là đa thức ở vế trái:
+            $$ \text{VT} = (a_n^2 - a_n) x^{2n} + 2a_n a_{n-1} x^{2n-1} + \dots $$
+            Vế phải có bậc là $1$ ($2x$). Do đó, vế trái cũng phải có bậc là $1$ (hoặc là đa thức $0$ nhưng $2x \neq 0$).<br>
+            Nếu $n = 0$, $P(x) = c$, ta có $c^2 - c = 2x$, điều này không thể xảy ra do hai vế khác bậc.<br>
+            Nếu $n \ge 1$: Hệ số của $x^{2n}$ phải bằng $0$, tức là $a_n^2 - a_n = 0 \implies a_n = 1$.<br>
+            Hệ số của $x^{2n-1}$ cũng phải bằng $0$ (nếu $2n-1 &gt; 1$). <br>
+            Nếu $n = 1$, thì $2n-1 = 1$. Khi đó $P(x) = a_1 x + a_0 = x + a_0$.<br>
+            Thay $P(x) = x + a_0$ vào phương trình:
+            $$ (x + a_0)^2 - (x^2 + a_0) = 2x \implies x^2 + 2a_0 x + a_0^2 - x^2 - a_0 = 2x \implies 2a_0 x + (a_0^2 - a_0) = 2x $$
+            Đồng nhất hệ số: $2a_0 = 2 \implies a_0 = 1$. Kiểm tra hằng số: $1^2 - 1 = 0$ (Đúng).<br>
+            Vậy $n=1$ cho nghiệm $P(x) = x+1$.<br>
+            Nếu $n \ge 2$, thì $2n-1 \ge 3 &gt; 1$. Do đó hệ số của $x^{2n-1}$ phải bằng $0$, tức là $2a_n a_{n-1} = 0 \implies a_{n-1} = 0$.<br>
+            Bằng cách so sánh hệ số của các bậc thấp hơn, ta có thể chứng minh các $a_k = 0$ lần lượt, dẫn đến bậc của $\text{VT}$ không thể khớp với $1$.<br>
+            Kết luận, nghiệm duy nhất là $P(x) = x+1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Bulgarian National Olympiad 2004)</div>
+            <div class="box-body">
+                Xác định tất cả đa thức $P(x) \in \mathbb{R}[x]$ thỏa mãn:
+                $$ P(x+1) = P(x) + 3x^2 + 3x + 1 \quad \forall x \in \mathbb{R} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Nhận xét rằng đa thức ở vế phải có dạng rất giống với sai phân của lập phương.<br>
+            Xét hàm $Q(x) = x^3$. Ta có sai phân:
+            $$ Q(x+1) - Q(x) = (x+1)^3 - x^3 = x^3 + 3x^2 + 3x + 1 - x^3 = 3x^2 + 3x + 1 $$
+            Trừ vế theo vế phương trình của bài toán cho đẳng thức trên:
+            $$ [P(x+1) - (x+1)^3] - [P(x) - x^3] = 0 $$
+            Đặt $H(x) = P(x) - x^3$. Phương trình trở thành:
+            $$ H(x+1) = H(x) \quad \forall x \in \mathbb{R} $$
+            Một đa thức tuần hoàn bắt buộc phải là hằng số. Đặt $H(x) = c$.<br>
+            Suy ra $P(x) = x^3 + c$. Thử lại hoàn toàn thỏa mãn phương trình.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

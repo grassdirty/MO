@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Toán rời rạc và Lý thuyết trò chơi - Phép cộng Nim và Định lý Sprague-Grundy</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TOÁN RỜI RẠC VÀ LÝ THUYẾT TRÒ CHƠI <br> PHÉP CỘNG NIM VÀ ĐỊNH LÝ SPRAGUE-GRUNDY</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các trạng thái thắng/thua trong một trò chơi đối kháng thường gặp khó khăn nếu chỉ duyệt qua toàn bộ cây trò chơi. Chuyên đề này giới thiệu Hàm Sprague-Grundy. Bằng việc định nghĩa phép "Cộng Nim" dựa trên hệ nhị phân và hàm "mex", chúng ta có thể phân rã một trò chơi thành các thành phần độc lập. Định lý Bouton và Định lý Sprague-Grundy cung cấp công cụ toán học để phân tích các trò chơi vô tư hữu hạn.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Lý thuyết Trò chơi Tổ hợp sử dụng một số phép toán đặc trưng trên hệ nhị phân. Để áp dụng tốt Định lý Sprague-Grundy, học sinh cần làm quen với hai khái niệm sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Phép XOR và Hàm mex)</div>
+        <ul>
+            <li><strong>Phép cộng Nim (XOR):</strong> Ký hiệu là $\oplus$. Để tính $a \oplus b$, ta viết $a$ và $b$ dưới dạng nhị phân, sau đó cộng từng cột tương ứng theo quy tắc không nhớ: $0 \oplus 0 = 0$, $1 \oplus 1 = 0$, $1 \oplus 0 = 1$, $0 \oplus 1 = 1$.<br>
+            Ví dụ: $3 \oplus 5 = (011)_2 \oplus (101)_2 = (110)_2 = 6$. Tính chất: $a \oplus a = 0$.</li>
+            <li><strong>Hàm mex (Minimum Excluded):</strong> Hàm $\operatorname{mex}$ của một tập hợp các số nguyên không âm là số nguyên không âm <strong>nhỏ nhất</strong> không nằm trong tập hợp đó.<br>
+            Ví dụ: $\operatorname{mex}(\{0, 1, 3\}) = 2$; $\operatorname{mex}(\{1, 2\}) = 0$; $\operatorname{mex}(\emptyset) = 0$.</li>
+        </ul>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Trò chơi Vô tư, Trạng thái P-N và Phép cộng Nim)</div>
+        <ul>
+            <li> <strong>Trò chơi Vô tư (Impartial Game):</strong> Là trò chơi có 2 người chơi luân phiên, thông tin hoàn hảo (không có yếu tố may rủi), và tập hợp các nước đi hợp lệ tại một trạng thái giống nhau bất kể ai đang đến lượt. Trò chơi kết thúc khi một người không thể thực hiện nước đi hợp lệ nào nữa, và người đó bị xử thua (Luật chơi chuẩn - Normal Play).</li>
+            <li> <strong>Trạng thái P (Previous player winning):</strong> Là trạng thái mà người vừa đi nước trước đó có chiến lược tất thắng. Nghĩa là người đang đến lượt đối mặt với trạng thái này sẽ thua. (Trạng thái kết thúc luôn là trạng thái P).</li>
+            <li> <strong>Trạng thái N (Next player winning):</strong> Là trạng thái mà người chuẩn bị đi có chiến lược tất thắng.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Bouton - Giải pháp cho Trò chơi Nim)</div>
+        Trong trò chơi Nim với $k$ đống sỏi có số lượng lần lượt là $x_1, x_2, \dots, x_k$ (mỗi lượt người chơi được chọn 1 đống và bốc đi một số sỏi $\gt 0$ tùy ý từ đống đó). <br>
+        Trạng thái $(x_1, \dots, x_k)$ là một Trạng thái Thua (Trạng thái P) khi và chỉ khi:
+        $$ x_1 \oplus x_2 \oplus \dots \oplus x_k = 0 $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ký hiệu tổng Nim của trạng thái là $S = x_1 \oplus x_2 \oplus \dots \oplus x_k$. Ta cần chứng minh 3 tính chất định hình hệ trạng thái P-N:</p>
+        <ol>
+            <li> <strong>Trạng thái kết thúc có $S = 0$:</strong> Trạng thái kết thúc là khi không còn sỏi nào, tức là $(0, 0, \dots, 0)$. Rõ ràng $0 \oplus 0 \oplus \dots \oplus 0 = 0$.</li>
+            <li> <strong>Từ một trạng thái $S = 0$, mọi nước đi hợp lệ đều dẫn đến trạng thái $S' \neq 0$:</strong> <br>
+            Giả sử ta bốc sỏi từ đống thứ $i$, số sỏi giảm từ $x_i$ xuống $x_i'$ (với $x_i' \lt x_i$).<br>
+            Tổng Nim mới là $S' = x_1 \oplus \dots \oplus x_i' \oplus \dots \oplus x_k$.<br>
+            Nếu $S' = 0$, do $S = 0$, ta có $S \oplus S' = 0 \oplus 0 = 0$.<br>
+            Tuy nhiên, $S \oplus S' = x_i \oplus x_i'$ (vì các đống khác không đổi, cộng Nim với chính nó bằng 0).<br>
+            Điều này dẫn đến $x_i \oplus x_i' = 0 \implies x_i = x_i'$, mâu thuẫn với việc $x_i' \lt x_i$. <br>
+            Do đó, $S' \neq 0$.</li>
+            <li> <strong>Từ một trạng thái $S \neq 0$, luôn tồn tại ít nhất một nước đi để đưa về trạng thái $S' = 0$:</strong><br>
+            Giả sử $S \neq 0$. Gọi $d$ là vị trí bit $1$ cao nhất (ngoài cùng bên trái) trong biểu diễn nhị phân của $S$.<br>
+            Vì bit thứ $d$ của tổng Nim $S$ là $1$, phải có ít nhất một đống sỏi $x_i$ mà biểu diễn nhị phân của nó có bit thứ $d$ là $1$.<br>
+            Ta chọn đống $x_i$ này. Đặt số sỏi mới là $x_i' = x_i \oplus S$.<br>
+            Ta kiểm tra xem $x_i'$ có hợp lệ không (tức là $x_i' \lt x_i$). So sánh $x_i$ và $x_i'$ từ bit cao nhất xuống: các bit cao hơn $d$ của $S$ đều là $0$, nên $x_i$ và $x_i'$ giống hệt nhau ở các bit này. Tại bit thứ $d$, $x_i$ có bit $1$ còn $S$ có bit $1$, do đó $x_i'$ sẽ có bit $0$. Vì bit $d$ của $x_i$ lớn hơn $x_i'$, ta có $x_i' \lt x_i$. Nước đi này hợp lệ.<br>
+            Khi thực hiện nước đi này, tổng Nim mới sẽ là:
+            $$ S' = S \oplus x_i \oplus x_i' = S \oplus x_i \oplus (x_i \oplus S) = (S \oplus S) \oplus (x_i \oplus x_i) = 0 \oplus 0 = 0 $$
+            Vậy từ trạng thái $S \neq 0$, ta luôn có cách chủ động đẩy trạng thái về $S = 0$.</li>
+        </ol>
+        <p>Ba tính chất trên tạo thành một cấu trúc chiến lược: Người khởi đầu tại $S \neq 0$ luôn đưa được về $0$, đối thủ không còn cách nào khác ngoài việc đưa từ $0$ thành $\neq 0$. Vòng lặp kết thúc khi người nhận $S=0$ không còn sỏi để bốc. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Sprague-Grundy)</div>
+        Đối với bất kỳ trò chơi vô tư nào, ta định nghĩa hàm Sprague-Grundy (Hàm G) của một trạng thái $x$ là:
+        $$ G(x) = \operatorname{mex}(\{ G(y) \mid y \text{ là trạng thái có thể đi đến từ } x \}) $$
+        (Quy ước trạng thái kết thúc không có nước đi nào thì $\operatorname{mex}(\emptyset) = 0$).<br>
+        Nếu một trò chơi được tạo thành từ nhiều trò chơi độc lập $A_1, A_2, \dots, A_k$ (mỗi lượt người chơi chọn đúng 1 trò chơi và đi một nước hợp lệ trong đó), thì giá trị $G$ của hệ thống là:
+        $$ G(A_1 + A_2 + \dots + A_k) = G(A_1) \oplus G(A_2) \oplus \dots \oplus G(A_k) $$
+        Và trạng thái là Trạng thái Thua (P) khi và chỉ khi Tổng Nim này bằng $0$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Định lý này khẳng định mọi trò chơi vô tư đều tương đương với một đống sỏi Nim có kích thước $G(x)$.<br>
+        Để chứng minh, ta xét tổng của hai trò chơi độc lập $A$ và $B$. Ta cần chứng minh:</p>
+        $$ G(A + B) = G(A) \oplus G(B) $$
+        <p>Gọi $a = G(A)$ và $b = G(B)$. Cần chứng minh $G(A+B) = a \oplus b$.<br>
+        Theo định nghĩa của hàm $\operatorname{mex}$, ta cần chứng minh 2 điều:</p>
+        <ol>
+            <li>Từ trạng thái $(A, B)$, ta KHÔNG THỂ đi đến một trạng thái có giá trị $G$ bằng $a \oplus b$.</li>
+            <li>Từ trạng thái $(A, B)$, với mọi số nguyên không âm $k \lt a \oplus b$, ta LUÔN CÓ THỂ đi đến một trạng thái có giá trị $G$ bằng $k$.</li>
+        </ol>
+
+        <p><strong>Điều 1:</strong> Một nước đi trong $A+B$ là thay đổi $A$ thành $A'$ hoặc thay đổi $B$ thành $B'$.<br>
+        Giả sử ta đổi $A$ thành $A'$. Ta cần chứng minh $G(A') \oplus b \neq a \oplus b$.<br>
+        Điều này tương đương với $G(A') \neq a$. Theo định nghĩa của $\operatorname{mex}$, vì $A'$ là một trạng thái đến được từ $A$, giá trị $G(A')$ phải khác $G(A) = a$. Do đó $G(A') \oplus b \neq a \oplus b$. Lập luận tương tự nếu ta đi trong $B$. Vậy Điều 1 được thỏa mãn.</p>
+
+        <p><strong>Điều 2:</strong> Cần tìm nước đi đến trạng thái có tổng bằng $k$ (với $k \lt a \oplus b$).<br>
+        Xét số $d = (a \oplus b) \oplus k$. Vì $k \lt a \oplus b$, trong biểu diễn nhị phân, bit 1 cao nhất của $a \oplus b$ bị thay đổi thành 0 trong $k$, nên bit 1 cao nhất của $d$ chính là bit 1 cao nhất của $a \oplus b$.<br>
+        Tại bit 1 cao nhất của $a \oplus b$, một trong hai số $a$ hoặc $b$ phải có bit 1. Giả sử đó là $a$.<br>
+        Khi đó, $a \oplus d \lt a$.<br>
+        Nhưng $a = G(A) = \operatorname{mex}(\dots)$. Theo định nghĩa của $\operatorname{mex}$, do $a \oplus d \lt a$, phải tồn tại một nước đi hợp lệ từ $A$ đến một trạng thái $A'$ sao cho $G(A') = a \oplus d$.<br>
+        Nếu ta đi nước này, tổng $G$ của hệ thống mới sẽ là:</p>
+        $$ G(A') \oplus G(B) = (a \oplus d) \oplus b = (a \oplus b) \oplus d = (a \oplus b) \oplus (a \oplus b) \oplus k = k $$
+        <p>Ta đã chỉ ra cách để đạt được mọi giá trị $k \lt a \oplus b$. Vậy Điều 2 được thỏa mãn.<br>
+        Mối liên hệ của hàm $\operatorname{mex}$ và Phép cộng Nim cho thấy cấu trúc trò chơi phân rã theo phép XOR.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Trò chơi Trừ Ước Số)</div>
+        Cho một số nguyên dương $N$. Hai người chơi luân phiên thực hiện nước đi. Mỗi nước đi, người chơi được phép chọn một <strong>ước số thực sự</strong> $d$ của $N$ (nghĩa là $d \mid N$ và $d \lt N$) và trừ nó đi khỏi $N$, số nguyên mới sẽ trở thành trạng thái cho người tiếp theo. Trò chơi kết thúc khi một người nhận được số $N = 1$ (không có ước số thực sự nào), người đó thua cuộc. <br>
+        Bằng cách xây dựng hàm Sprague-Grundy, hãy xác định điều kiện để người đi trước giành chiến thắng.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trò chơi này phụ thuộc vào tính chẵn lẻ của các ước số của $N$. Ta sẽ chứng minh rằng hàm Sprague-Grundy của trò chơi này tại trạng thái $N$ chỉ phụ thuộc vào <strong>số mũ của 2</strong> trong phân tích thừa số nguyên tố của $N$.<br>
+        Ký hiệu $\nu_2(N)$ là số mũ của 2 lớn nhất sao cho $2^{\nu_2(N)} \mid N$.<br>
+        Ta sẽ chứng minh bằng quy nạp mạnh rằng:</p>
+        $$ G(N) = \nu_2(N) $$
+
+        <p><strong>Khởi tạo:</strong> $N = 1$. Số 1 không có ước số thực sự. Không có nước đi nào. Do đó $G(1) = 0$. Rõ ràng $\nu_2(1) = 0$. Khẳng định đúng.</p>
+
+        <p><strong>Trường hợp 1: $N$ là số lẻ ($\nu_2(N) = 0$).</strong><br>
+        Mọi ước số $d$ của một số lẻ $N$ phải là một số lẻ.<br>
+        Khi đó, $N - d$ sẽ là hiệu của hai số lẻ, do đó $N - d$ là một <strong>số chẵn</strong>.<br>
+        Nghĩa là, từ một số lẻ, mọi nước đi đều dẫn đến một số chẵn.<br>
+        Theo giả thiết quy nạp, nếu số mới là chẵn thì $G(N-d) = \nu_2(N-d) \ge 1$.<br>
+        Vì mọi trạng thái tiếp theo đều có $G \ge 1$, giá trị nhỏ nhất không xuất hiện ($\operatorname{mex}$) là $0$.<br>
+        Vậy $G(N) = \operatorname{mex}(\{ G(N-d) \}) = 0 = \nu_2(N)$.</p>
+
+        <p><strong>Trường hợp 2: $N$ là số chẵn ($\nu_2(N) = k \ge 1$).</strong><br>
+        Ta có $N = 2^k \cdot m$ với $m$ là số lẻ.<br>
+        Ta cần chứng minh 2 điều để khẳng định $G(N) = k$:</p>
+        <ol>
+            <li>Không thể đi đến bất kỳ trạng thái nào có $\nu_2 = k$.</li>
+            <li>Luôn có thể đi đến các trạng thái có $\nu_2 = j$ với mọi $j \in \{0, 1, \dots, k-1\}$.</li>
+        </ol>
+
+        <p><em>Chứng minh 1:</em> Để đến được trạng thái $N' = N - d$ có $\nu_2(N') = k$, ta phải có $N - d = 2^k \cdot m'$ (với $m'$ lẻ).<br>
+        Khi đó $d = N - 2^k m' = 2^k m - 2^k m' = 2^k(m - m')$.<br>
+        Vì $d$ phải là ước của $N$ ($d \mid 2^k m$), mà $d$ chứa thừa số $2^k$, phần lẻ của $d$ (là $m-m'$) phải là ước của $m$.<br>
+        Do $m$ là số lẻ, ước của nó cũng phải lẻ. Suy ra $m - m'$ là số lẻ.<br>
+        Nhưng $m$ và $m'$ đều là các số lẻ, nên hiệu $m - m'$ <strong>phải là số chẵn</strong>. Sự mâu thuẫn này chứng tỏ không tồn tại ước số $d$ nào như vậy. Ta không thể đến được $\nu_2 = k$.</p>
+
+        <p><em>Chứng minh 2:</em> Xét một giá trị $j \lt k$. Ta muốn tìm $d$ sao cho $\nu_2(N-d) = j$.<br>
+        Ta chọn $d = 2^j \cdot m$. <br>
+        Vì $j \lt k$, hiển nhiên $2^j \cdot m$ là một ước số thực sự của $N = 2^k \cdot m$.<br>
+        Trạng thái mới là $N' = N - d = 2^k m - 2^j m = 2^j m (2^{k-j} - 1)$.<br>
+        Vì $k \gt j$, đại lượng $2^{k-j} - 1$ là một số lẻ. $m$ cũng là số lẻ.<br>
+        Do đó phần lẻ của $N'$ là một số lẻ, và $N'$ chia hết cho chính xác $2^j$.<br>
+        Tức là $\nu_2(N') = j$. Ta đã tìm được nước đi hợp lệ.</p>
+
+        <p>Tổng hợp lại, từ trạng thái có $\nu_2 = k$, ta có thể đi đến mọi $\nu_2 \in \{0, 1, \dots, k-1\}$, và không thể đi đến $\nu_2 = k$.<br>
+        Theo định nghĩa hàm $\operatorname{mex}$, $G(N) = k = \nu_2(N)$.<br>
+        <strong>Kết luận:</strong> Trạng thái thắng (N-position) là trạng thái có $G(N) \neq 0$, tức là $N$ là <strong>số chẵn</strong>. Người đi trước sẽ luôn chiến thắng nếu được cấp một số chẵn, và sẽ thua nếu khởi đầu bằng số lẻ.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Trò chơi Nim Bậc thang / Staircase Nim)</div>
+        Trên một cầu thang có $N$ bậc, mỗi bậc được đặt một số lượng đồng xu. Một nước đi hợp lệ là chọn một bậc thang $i$ ($1 \le i \le N$) có ít nhất 1 đồng xu, và di chuyển một số lượng đồng xu bất kỳ (từ 1 đến toàn bộ) <strong>xuống bậc thang ngay bên dưới nó</strong> ($i-1$). Bậc 0 được coi là hố rỗng, đồng xu rơi vào đó sẽ biến mất. Trò chơi kết thúc khi không còn đồng xu nào trên cầu thang.<br>
+        Xác định điều kiện thắng thua của trò chơi này dựa trên số lượng đồng xu ở từng bậc.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc di chuyển đồng xu khiến tổng số đồng xu không đổi (trừ khi rơi vào hố), do đó cấu trúc này không giống Nim thông thường. Ta sẽ phân rã trò chơi này thành các hệ thống độc lập.</p>
+
+        <p>Hãy chia các bậc thang thành hai loại: <strong>Bậc Lẻ</strong> ($1, 3, 5, \dots$) và <strong>Bậc Chẵn</strong> ($2, 4, 6, \dots$).<br>
+        Nhận xét:</p>
+        <ul>
+            <li>Khi ta chuyển sỏi từ Bậc Lẻ xuống Bậc Chẵn (hoặc rơi vào hố ở bậc 0): Tương đương với việc <strong>bốc sỏi biến mất</strong> khỏi hệ thống các bậc lẻ.</li>
+            <li>Khi đối thủ chuyển sỏi từ Bậc Chẵn xuống Bậc Lẻ: Lượng sỏi ở bậc lẻ tăng lên. Tuy nhiên, ngay trong lượt tiếp theo, ta có thể "sao chép" (mirror) nước đi của đối thủ bằng cách lấy chính xác lượng sỏi đó từ Bậc Lẻ vừa nhận, đẩy tiếp xuống Bậc Chẵn ngay dưới nó! <br>
+            Việc "sao chép" này khôi phục lại cấu hình số lượng sỏi trên các Bậc Lẻ như trước khi đối thủ đi.</li>
+        </ul>
+
+        <p>Như vậy, các Bậc Chẵn đóng vai trò trung gian. Bất cứ biến động nào từ Bậc Chẵn đẩy xuống Bậc Lẻ đều có thể bị vô hiệu hóa. <br>
+        Trò chơi này tương đương với một trò chơi Nim tiêu chuẩn, trong đó các "đống sỏi" chính là các <strong>Bậc thang Lẻ</strong>.<br>
+        Gọi $x_1, x_3, x_5, \dots$ là số lượng đồng xu ở các bậc lẻ.<br>
+        Theo Định lý Bouton (Định lý 1.1), trạng thái này là Trạng thái Thua (P-position) khi và chỉ khi Tổng Nim của các bậc lẻ bằng 0:</p>
+        $$ x_1 \oplus x_3 \oplus x_5 \oplus \dots = 0 $$
+        <p>Kỹ thuật loại bỏ trạng thái trung gian giúp đưa mô hình về trò chơi Nim chuẩn.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (British Mathematical Olympiad (BMO) - Trò chơi Lật Đồng Xu)</div>
+        Có $N$ đồng xu đặt trên một hàng ngang, mỗi đồng xu đang ngửa (Heads) hoặc sấp (Tails). Một nước đi bao gồm hai bước:
+        <ol>
+            <li>Chọn một đồng xu <strong>đang Ngửa</strong>, và lật nó thành Sấp.</li>
+            <li>Tùy chọn (có thể bỏ qua): Chọn <strong>bất kỳ một</strong> đồng xu nào nằm ở bên trái đồng xu vừa lật, và lật nó sang mặt đối diện (Ngửa thành Sấp, Sấp thành Ngửa).</li>
+        </ol>
+        Người nào không thể lật (tức là tất cả đồng xu đều Sấp) sẽ thua. Phân tích hàm Sprague-Grundy của hệ thống này.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trò chơi này cho phép ta "lật ngược" trạng thái của một đồng xu bên trái (biến Sấp thành Ngửa), nghĩa là ta có thể tạo ra thêm các đồng xu Ngửa. Mặc dù có vẻ trò chơi có thể kéo dài vô tận, nhưng vì đồng xu bên trái luôn có chỉ số nhỏ hơn, trò chơi luôn hữu hạn.</p>
+
+        <p>Ta sẽ sử dụng <strong>Định lý Sprague-Grundy</strong> (Định lý 1.2) để coi mỗi đồng xu là một trò chơi độc lập.<br>
+        Đánh số các đồng xu từ $1$ đến $N$ từ trái sang phải.<br>
+        Một cấu hình của trò chơi được xác định bởi tập hợp các vị trí của các đồng xu <strong>Ngửa</strong>.<br>
+        Theo tính chất độc lập, giá trị $G$ của toàn bộ bảng bằng Tổng Nim của các giá trị $G$ của từng đồng xu Ngửa.<br>
+        Cần tìm hàm $G(x)$ cho một đồng xu Ngửa ở vị trí $x$.</p>
+        <ul>
+            <li>Khi $x=1$ (đồng xu ngoài cùng bên trái). Ta lật nó thành Sấp. Không có đồng xu nào bên trái để lật thêm. Nước đi duy nhất dẫn đến trạng thái $0$. <br>
+            $G(1) = \operatorname{mex}(\{0\}) = 1$.</li>
+            <li>Xét một đồng xu Ngửa ở vị trí $x$. Các nước đi có thể là:<br>
+            + Lật nó thành Sấp (bỏ qua bước 2). Hệ thống mất đồng xu ở $x$. Nghĩa là chuyển từ trạng thái $G(x)$ về $0$.<br>
+            + Lật nó thành Sấp, đồng thời lật một đồng xu Sấp ở vị trí $y \lt x$ thành Ngửa. Hệ thống mất đồng xu ở $x$, thêm đồng xu ở $y$. Giá trị $G$ chuyển thành $G(y)$.<br>
+            + Lật nó thành Sấp, đồng thời lật một đồng xu Ngửa ở vị trí $y \lt x$ thành Sấp. Hệ thống mất cả hai đồng xu ở $x$ và $y$. Theo tổng Nim, điều này cũng tương đương với việc xóa $G(x)$ và xóa $G(y)$.</li>
+        </ul>
+
+        <p>Tóm lại, từ một đồng xu ở vị trí $x$, ta có thể thay thế nó bằng trạng thái rỗng ($0$), hoặc bằng một trạng thái có giá trị $G(y)$ với mọi $y \lt x$.<br>
+        Theo định nghĩa $\operatorname{mex}$:</p>
+        $$ G(x) = \operatorname{mex}( \{0\} \cup \{ G(y) \mid 1 \le y \lt x \} ) $$
+        <p>Bằng quy nạp, ta thấy ngay $G(1)=1, G(2)=2, G(3)=3 \dots \implies G(x) = x$.<br>
+        Như vậy, một đồng xu Ngửa ở vị trí $x$ tương đương với một đống sỏi Nim có $x$ viên sỏi. Hành động lật đồng xu $x$ và tạo thêm đồng xu $y$ tương ứng với việc bốc sỏi từ đống $x$ để giảm xuống còn $y$ viên sỏi.<br>
+        Trạng thái là Thua khi và chỉ khi tổng Nim của các vị trí có đồng xu Ngửa bằng 0. <br>
+        Tính chất của Bổ đề SG giúp liên kết thao tác lật đồng xu với trò chơi Nim cơ bản.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 ((China) National High School Mathematics League - Trò chơi Moore's Nim$_k$)</div>
+        Mở rộng trò chơi Nim kinh điển: Có $n$ đống sỏi. Trong mỗi lượt, một người chơi được phép chọn từ $1$ đến $k$ đống sỏi (với $1 \le k \lt n$), và lấy đi một số lượng sỏi tùy ý từ các đống đã chọn (số sỏi lấy từ các đống không cần bằng nhau, nhưng mỗi đống được chọn phải lấy ít nhất 1 viên).<br>
+        Chứng minh rằng cấu hình là Trạng thái Thua (P) khi và chỉ khi: Nếu ta biểu diễn số lượng sỏi của tất cả các đống dưới dạng nhị phân, thì tại mỗi hàng (mỗi vị trí bit), <strong>tổng các chữ số 1 của tất cả các đống phải là một bội số của $(k+1)$</strong>.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trò chơi Nim cơ bản là trường hợp đặc biệt khi $k=1$. Tổng các bit chia hết cho $1+1=2$ chính là Phép cộng Nim (XOR).<br>
+        Định lý này do E.H. Moore đề xuất. Ta chứng minh cấu hình cân bằng (tổng các bit $\equiv 0 \pmod{k+1}$) thỏa mãn định nghĩa trạng thái P.<br>
+        Gọi biểu diễn nhị phân của đống thứ $j$ là $x_{j, m} \dots x_{j, 1} x_{j, 0}$. Cấu hình cân bằng nghĩa là:</p>
+        $$ S_i = \sum_{j=1}^n x_{j, i} \equiv 0 \pmod{k+1} \quad \text{với mọi bit } i $$
+
+        <p><strong>1. Từ cấu hình cân bằng, mọi nước đi đều dẫn đến cấu hình mất cân bằng:</strong><br>
+        Một nước đi làm thay đổi ít nhất 1 đống và tối đa $k$ đống.<br>
+        Xét bit cao nhất bị thay đổi trong số tất cả các đống được chọn. <br>
+        Vì có tối đa $k$ đống bị thay đổi, tại cột bit cao nhất này, số lượng chữ số bị thay đổi nằm trong khoảng từ $1$ đến $k$.<br>
+        Do số lượng thay đổi không thể là bội của $k+1$, tổng $S_i$ tại cột này không thể tiếp tục chia hết cho $k+1$. Cấu hình bị phá vỡ.</p>
+
+        <p><strong>2. Từ cấu hình mất cân bằng, luôn có cách đưa về cấu hình cân bằng:</strong><br>
+        Cấu hình mất cân bằng có ít nhất một cột $i$ mà $S_i \not\equiv 0 \pmod{k+1}$.<br>
+        Ta sẽ duyệt từ bit cao nhất $m$ xuống bit $0$ để "sửa" các cột này.<br>
+        Tại mỗi cột $i$, gọi số dư là $R_i = S_i \bmod (k+1)$. Để đưa cột $i$ về cân bằng, ta cần thay đổi chính xác $R_i$ chữ số 1 thành 0 (hoặc đổi 0 thành 1).<br>
+        Vì $R_i \le k$, ta chỉ cần điều chỉnh trên tối đa $k$ đống sỏi. Quá trình chọn lựa đảm bảo ta luôn có thể ưu tiên chọn những đống sỏi đã bị "chỉnh bit 1 thành 0" ở các hàng cao hơn để tiếp tục chỉnh sửa ở các hàng thấp hơn (vì khi đã giảm bit cao, giá trị số của đống sỏi đã nhỏ đi đủ nhiều để ta lật các bit thấp mà vẫn đảm bảo số sỏi lấy ra $\gt 0$).<br>
+        Số đống sỏi cần tác động ở bất kỳ cột nào cũng không vượt quá $k$. Nước đi này hợp lệ và khôi phục sự cân bằng cho đối thủ.</p>
+        <p>Bài toán được giải quyết thông qua việc cân bằng hệ modulo.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

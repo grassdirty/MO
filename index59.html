@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Hình học Tổ hợp - Nguyên lý Phản xạ André và Cấu trúc Catalan</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: HÌNH HỌC TỔ HỢP <br> NGUYÊN LÝ PHẢN XẠ ANDRÉ VÀ CẤU TRÚC CATALAN</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp Song ánh</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát số lượng đường đi trên lưới điểm nguyên tuân theo các ràng buộc không gian là cốt lõi của phép đếm Catalan. Chuyên đề này hình thức hóa kỹ thuật đếm bằng song ánh thông qua Nguyên lý Phản xạ André (André's Reflection Principle). Bằng cách thiết lập các ánh xạ bảo toàn tính chất, chúng ta chuyển đổi các bài toán đếm (như dãy ngoặc hợp lệ, đường đi giới hạn, hoặc đa giác chia tam giác) thành các công thức hệ số nhị thức. Bổ đề Gessel-Viennot cho đường đi không giao nhau sẽ được ứng dụng để giải quyết các hệ thống di chuyển đa luồng.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Bổ đề Gessel-Viennot (Bài toán 3.3) là một kết quả thuộc Đại số Tổ hợp ở bậc Đại học. Để có thể biểu diễn kết quả của bài toán dưới dạng ma trận, ta cần làm quen với khái niệm Định thức cấp 2:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Định thức của Ma trận vuông cấp 2)</div>
+        Cho ma trận vuông cấp 2 $A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$. Định thức của $A$, ký hiệu là $\det(A)$, được định nghĩa là:
+        $$ \det(A) = ad - bc $$
+        Trong tổ hợp, định thức thường được dùng để đếm số lượng các cấu hình không giao nhau. Tích đường chéo chính ($ad$) đại diện cho tổng số cách ghép cặp trực tiếp, trong khi tích đường chéo phụ ($bc$) đại diện cho số cách ghép cặp chéo (tương ứng với các cấu hình bị giao cắt cần loại trừ).
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Đường đi trên Lưới và Cấu trúc Catalan)</div>
+        <ul>
+            <li> <strong>Đường đi trên lưới (Lattice Path):</strong> Là một đường đi trên mặt phẳng tọa độ $\mathbb{Z}^2$, chỉ gồm hai loại bước đi: Bước lên trên $U(0, 1)$ và Bước sang phải $R(1, 0)$. Số lượng đường đi từ gốc $(0,0)$ đến điểm $(m, n)$ luôn bằng $\binom{m+n}{n}$.</li>
+            <li> <strong>Đường đi Dyck (Dyck Path):</strong> Là một đường đi trên lưới từ $(0,0)$ đến $(n, n)$ sao cho đường đi này <strong>không bao giờ vượt qua</strong> đường chéo chính $y = x$. Nghĩa là tại mọi điểm $(x, y)$ trên đường đi, ta luôn có $x \ge y$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Nguyên lý Phản xạ André - André's Reflection Principle)</div>
+        Cho đường thẳng $\Delta: y = x + k$ (với $k \gt 0$). Xét hai điểm nguyên $A$ và $B$ nằm hoàn toàn ở "phía dưới" của đường thẳng $\Delta$.<br>
+        Số lượng các đường đi trên lưới từ $A$ đến $B$ mà <strong>có chạm hoặc cắt qua</strong> đường thẳng $\Delta$ đúng bằng số lượng <strong>tất cả</strong> các đường đi trên lưới từ điểm $A'$ đến $B$, trong đó $A'$ là điểm đối xứng của $A$ qua đường thẳng $\Delta$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta sẽ thiết lập một <strong>song ánh (bijection)</strong> giữa hai tập hợp:</p>
+        <ul>
+            <li>Tập $\mathcal{S}_1$: Các đường đi từ $A$ đến $B$ có chạm vào $\Delta$.</li>
+            <li>Tập $\mathcal{S}_2$: Tất cả các đường đi từ $A'$ đến $B$.</li>
+        </ul>
+
+        <p><strong>Xây dựng ánh xạ $f: \mathcal{S}_1 \to \mathcal{S}_2$:</strong><br>
+        Lấy một đường đi $P \in \mathcal{S}_1$. Vì $P$ xuất phát từ $A$ (dưới $\Delta$) và chạm vào $\Delta$, gọi $M$ là <strong>điểm đầu tiên</strong> trên đường đi $P$ tiếp xúc với $\Delta$.<br>
+        Đường đi $P$ được chia thành hai phần: phần $P_{AM}$ (từ $A$ đến $M$) và phần $P_{MB}$ (từ $M$ đến $B$).<br>
+        Ta lấy đối xứng phần đường đi $P_{AM}$ qua đường thẳng $\Delta$ (bước sang phải biến thành bước đi lên, và bước đi lên biến thành bước sang phải). Phần đối xứng này sẽ trở thành một đường đi hợp lệ $P'_{A'M}$ xuất phát từ $A'$ và kết thúc tại $M$.<br>
+        Ghép $P'_{A'M}$ với phần đuôi $P_{MB}$ giữ nguyên, ta thu được một đường đi mới $P'$ nối từ $A'$ đến $B$. Rõ ràng $P' \in \mathcal{S}_2$.</p>
+
+        <p><strong>Xây dựng ánh xạ ngược $f^{-1}: \mathcal{S}_2 \to \mathcal{S}_1$:</strong><br>
+        Lấy một đường đi $P' \in \mathcal{S}_2$ xuất phát từ $A'$ (nằm phía trên $\Delta$) và kết thúc tại $B$ (nằm phía dưới $\Delta$). Theo tính chất đồ thị lưới, đường đi $P'$ phải cắt qua $\Delta$ tại ít nhất một điểm.<br>
+        Gọi $M$ là <strong>điểm cắt đầu tiên</strong>. Ta giữ nguyên phần từ $M$ đến $B$, và lật đối xứng phần từ $A'$ đến $M$ qua $\Delta$. Phần bị lật sẽ quay trở về xuất phát tại $A$. <br>
+        Ta thu lại được một đường đi từ $A$ đến $B$ chạm $\Delta$ tại $M$, chính là tập $\mathcal{S}_1$.</p>
+
+        <p>Vì các quá trình lật này là duy nhất và là nghịch đảo của nhau, đây là một song ánh. Số lượng đường đi của hai tập hợp bằng nhau. Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Công thức Số Catalan)</div>
+        Số lượng các đường đi Dyck từ $(0,0)$ đến $(n, n)$ (không vượt qua $y = x$) chính là số Catalan thứ $n$, ký hiệu là $C_n$, được tính bởi công thức:
+        $$ C_n = \frac{1}{n+1} \binom{2n}{n} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Một đường đi từ $(0,0)$ đến $(n, n)$ vi phạm tính chất Dyck khi và chỉ khi nó cắt qua đường chéo $y = x$. Điều này tương đương với việc nó chạm vào đường thẳng $\Delta: y = x + 1$.<br>
+        Tổng số đường đi bất kỳ từ $(0,0)$ đến $(n,n)$ là $\binom{n+n}{n} = \binom{2n}{n}$.<br>
+        Ta đếm số "đường đi vi phạm" (các đường chạm $\Delta: y = x+1$).<br>
+        Áp dụng Nguyên lý Phản xạ André (Định lý 1.1) với $A(0,0)$ và $B(n,n)$. <br>
+        Điểm đối xứng của $A(0,0)$ qua đường $y = x + 1$ là $A'(-1, 1)$.<br>
+        Theo định lý, số đường đi vi phạm bằng tổng số đường đi từ $A'(-1, 1)$ đến $B(n,n)$.<br>
+        Số bước sang phải cần thiết: $n - (-1) = n+1$.<br>
+        Số bước đi lên cần thiết: $n - 1$.<br>
+        Tổng số bước là $(n+1) + (n-1) = 2n$.<br>
+        Số đường đi từ $A'$ đến $B$ là $\binom{2n}{n-1}$.<br>
+        Vậy số đường đi Dyck hợp lệ là tổng số đường trừ đi số đường vi phạm:</p>
+        $$ C_n = \binom{2n}{n} - \binom{2n}{n-1} = \frac{(2n)!}{n!n!} - \frac{(2n)!}{(n+1)!(n-1)!} = \frac{(2n)!}{n!(n-1)!} \left( \frac{1}{n} - \frac{1}{n+1} \right) = \frac{1}{n+1} \binom{2n}{n} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Đường đi trong Hành lang hẹp)</div>
+        Đếm số lượng đường đi trên lưới từ gốc $O(0,0)$ đến điểm $M(n,n)$ sao cho đường đi này luôn nằm bên trong "hành lang" giới hạn bởi hai đường thẳng $L_1: y = x + 2$ (bên trên) và $L_2: y = x - 2$ (bên dưới).
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta có thể xây dựng công thức hệ số bằng <strong>Nguyên lý Bao hàm - Loại trừ (PIE)</strong> kết hợp <strong>Phản xạ liên tiếp</strong>.</p>
+
+        <p>Tổng số đường đi từ $(0,0)$ đến $(n,n)$ là $\binom{2n}{n}$.<br>
+        Gọi $A_1$ là tập các đường đi chạm vào $L_1$.<br>
+        Gọi $A_2$ là tập các đường đi chạm vào $L_2$.<br>
+        Ta cần tính số đường đi không chạm cả hai đường:</p>
+        $$ |(A_1 \cup A_2)^c| = \binom{2n}{n} - (|A_1| + |A_2|) + (|A_1 \cap A_2|) $$
+
+        <p><strong>1. Đánh giá $|A_1|$ và $|A_2|$:</strong><br>
+        Áp dụng Định lý 1.1, số đường đi chạm $L_1$ bằng số đường đi từ điểm phản xạ của $(0,0)$ qua $L_1: y=x+2$ (là điểm $P_1(-2, 2)$) đến $(n,n)$. Số lượng là $\binom{2n}{n-2}$. Tương tự, $|A_2| = \binom{2n}{n-2}$.</p>
+
+        <p><strong>2. Đánh giá $|A_1 \cap A_2|$ (Các đường chạm CẢ $L_1$ VÀ $L_2$):</strong><br>
+        Một đường đi có thể chạm $L_1$ trước rồi mới chạm $L_2$, hoặc chạm $L_2$ trước rồi mới chạm $L_1$. Ta chia nhỏ:<br>
+        $A_{12}$: Chạm $L_1$ rồi chạm $L_2$.<br>
+        $A_{21}$: Chạm $L_2$ rồi chạm $L_1$.<br>
+        Có những đường chạm $L_1 \to L_2 \to L_1$ (thuộc cả $A_{12}$ và $A_{21}$). Ta tiếp tục dùng Bao hàm - Loại trừ cho chuỗi giao cắt.<br>
+        Quy tắc lật liên tiếp sinh ra một chuỗi các điểm phản xạ (dừng lại khi tọa độ vượt qua $n$):</p>
+        <ul>
+            <li> Gọi điểm $P_{12}$ là phản xạ của $P_1(-2,2)$ qua $L_2: y=x-2$. Tọa độ $P_{12}$ là $(-4, 4)$. Số đường đi từ $P_{12}$ đến $(n,n)$ tương ứng với các đường chạm $L_1$ rồi chạm $L_2$. Kích thước là $\binom{2n}{n-4}$.</li>
+            <li> Gọi điểm $P_{21}$ là phản xạ của $P_2(2,-2)$ qua $L_1: y=x+2$. Tọa độ $P_{21}$ là $(-4, 4)$. Kích thước là $\binom{2n}{n-4}$.</li>
+        </ul>
+
+        <p>Phương pháp lặp lại phép phản xạ này tạo ra một tổng vô hạn đan dấu (hữu hạn trong thực tế), giúp giải quyết các bài toán đếm đường đi có giới hạn hai phía:</p>
+        $$ \text{Số đường đi} = \sum_{k \in \mathbb{Z}} (-1)^k \binom{2n}{n - 2k} $$
+        <p>Với $n=3$, chuỗi này là $\binom{6}{3} - 2\binom{6}{1} + 2\binom{6}{-1} = 20 - 2 \cdot 6 + 0 = 8$.<br>
+        Bài toán được giải quyết thông qua kỹ thuật phản xạ lặp.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Australian Math Olympiad - Quầy Bán Vé)</div>
+        Tại một quầy bán vé nhà hát, giá vé là 50 đô la. Có $2N$ người xếp hàng mua vé. Trong đó, $N$ người chỉ có tờ 50 đô la, và $N$ người chỉ có tờ 100 đô la. Ban đầu quầy vé không có tiền lẻ. Hỏi có bao nhiêu cách xếp hàng sao cho quầy vé không bao giờ bị rơi vào tình trạng thiếu tiền thối cho khách?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trạng thái của quầy vé phụ thuộc vào số lượng tờ 50 đô la nhận được và số lượng tờ 100 đô la nhận được tại mọi thời điểm.<br>
+        Ta biểu diễn bài toán trên hệ trục tọa độ $Oxy$:</p>
+        <ul>
+            <li>Mỗi người mang tờ 50 đô la tương đương với một bước đi sang phải $R(1, 0)$. (Quầy thu được 1 tờ 50 để dành thối).</li>
+            <li>Mỗi người mang tờ 100 đô la tương đương với một bước đi lên trên $U(0, 1)$. (Quầy phải trả lại 1 tờ 50).</li>
+        </ul>
+
+        <p>Tổng số người là $2N$, tương ứng với $N$ bước sang phải và $N$ bước lên trên. Mọi cách xếp hàng đều tương ứng với một đường đi trên lưới từ điểm $(0,0)$ đến điểm $(N, N)$.<br>
+        Điều kiện "không bao giờ thiếu tiền thối" có nghĩa là tại bất kỳ thời điểm nào, số lượng khách trả tờ 100 đã phục vụ không bao giờ được vượt quá số lượng khách trả tờ 50 đã phục vụ.<br>
+        Về mặt tọa độ đồ thị, điều này tương đương với: $y \le x$ tại mọi điểm trên đường đi.<br>
+        Đường đi không được phép vượt qua đường chéo $y = x$.<br>
+        Đây chính là định nghĩa của <strong>Đường đi Dyck</strong>.</p>
+
+        <p>Theo Công thức Số Catalan (Định lý 1.2), số lượng các đường đi Dyck từ $(0,0)$ đến $(N, N)$ chính là số Catalan thứ $N$:</p>
+        $$ C_N = \frac{1}{N+1} \binom{2N}{N} $$
+        <p>Vậy có đúng $C_N$ cách sắp xếp những người trong hàng. Bài toán được giải quyết thông qua việc thiết lập song ánh với đường đi Dyck.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 ((China) National High School Mathematics League - Số Dây Cung Không Cắt Nhau)</div>
+        Trên một đường tròn có đánh dấu $2n$ điểm phân biệt. Người ta muốn nối $n$ cặp điểm với nhau bằng $n$ đoạn thẳng (dây cung) sao cho mỗi điểm thuộc đúng một dây cung. Đếm số lượng các cách nối sao cho <strong>không có bất kỳ hai dây cung nào cắt nhau</strong> bên trong đường tròn.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sẽ thiết lập một song ánh để chuyển về cấu trúc <strong>Đường đi Dyck</strong>.<br>
+        Đánh số $2n$ điểm trên đường tròn từ $1$ đến $2n$ theo chiều kim đồng hồ.<br>
+        Chọn một điểm bất kỳ làm mốc (ví dụ điểm 1) và duyệt qua các điểm theo thứ tự kim đồng hồ.<br>
+        Để các dây cung không cắt nhau, ta nối dây cung giống như việc mở và đóng dấu ngoặc đơn <code>()</code> trong một biểu thức toán học.<br>
+        Mỗi dây cung sẽ nối một điểm "Mở" với một điểm "Đóng".<br>
+        Khi ta đi vòng quanh đường tròn:</p>
+        <ul>
+            <li> Nếu ta gặp điểm đầu tiên của một dây cung, ta quy ước nó là dấu Mở <code>(</code>. (Tương đương bước đi sang phải trên lưới tọa độ).</li>
+            <li> Nếu ta gặp điểm thứ hai của một dây cung đó, ta quy ước nó là dấu Đóng <code>)</code>. (Tương đương bước đi lên trên trên lưới).</li>
+        </ul>
+
+        <p>Điều kiện để hai dây cung không cắt nhau là gì? Giả sử dây cung $A$ nối $(a_1, a_2)$ và $B$ nối $(b_1, b_2)$. Chúng sẽ cắt nhau nếu vị trí của chúng đan xen: $a_1 \lt b_1 \lt a_2 \lt b_2$.<br>
+        Dưới ngôn ngữ dấu ngoặc, cấu trúc đan xen này nghĩa là dấu Đóng của $A$ xuất hiện trước dấu Đóng của $B$, trong khi $B$ mở sau $A$. Điều này làm cho chuỗi dấu ngoặc vi phạm cấu trúc lồng nhau hợp lệ.<br>
+        Cấu hình các dây cung không cắt nhau tương đương với một <strong>dãy ngoặc đúng</strong> (Valid Bracket Sequence) có độ dài $2n$.<br>
+        Một dãy ngoặc đúng có tính chất: Từ trái sang phải, số lượng dấu Đóng không bao giờ vượt quá số lượng dấu Mở.<br>
+        Điều này tương đương với đường đi trên lưới không bao giờ vượt qua đường $y=x$.<br>
+        Do đó, số lượng cách nối dây cung không cắt nhau chính là số Catalan $C_n = \frac{1}{n+1} \binom{2n}{n}$. </p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (All-Russian Olympiad - Bổ đề Gessel-Viennot cho Hai đường đi / LGV Lemma)</div>
+        Trên một lưới tọa độ điểm nguyên, có hai điểm xuất phát $A_1(0, 1)$ và $A_2(0, 3)$, cùng hai điểm đích $B_1(n, 1)$ và $B_2(n, 3)$. <br>
+        Tìm một công thức tính số lượng các cách chọn ra hai đường đi trên lưới: Đường $P_1$ (từ $A_1 \to B_1$) và Đường $P_2$ (từ $A_2 \to B_2$) sao cho hai đường đi này <strong>không có bất kỳ điểm chung nào</strong> (Non-intersecting lattice paths).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $W(X \to Y)$ là tổng số cách đi từ điểm $X$ đến điểm $Y$ trên lưới. <br>
+        Theo Định nghĩa 1.1, $W(X \to Y) = \binom{\Delta x + \Delta y}{\Delta x}$.<br>
+        Tổng số cách chọn một cặp đường đi bất kỳ (có giao nhau hoặc không) từ bộ nguồn đến bộ đích là:</p>
+        $$ \text{Total} = W(A_1 \to B_1) \times W(A_2 \to B_2) $$
+        <p>Ta cần loại bỏ các cặp đường đi $(P_1, P_2)$ có chứa điểm giao nhau. Gọi tập các cặp đường đi bị giao nhau là $\mathcal{X}$.<br>
+        Ta sẽ xây dựng một <strong>song ánh hoán đổi phần đuôi (Tail-swapping bijection)</strong> để đếm tập $\mathcal{X}$.</p>
+
+        <p>Lấy một cặp $(P_1, P_2) \in \mathcal{X}$. Vì chúng giao nhau, hãy tìm <strong>điểm giao nhau đầu tiên</strong>, gọi là $M$.<br>
+        Tại điểm $M$ này, ta "cắt" hai đường đi và tráo đổi phần đuôi của chúng cho nhau:</p>
+        <ul>
+            <li>Lấy phần đường đi của $P_1$ từ $A_1$ đến $M$, ghép với phần đường đi của $P_2$ từ $M$ đến $B_2$. Ta thu được một đường đi mới $P_1'$ nối từ $A_1$ đến $B_2$.</li>
+            <li>Lấy phần đường đi của $P_2$ từ $A_2$ đến $M$, ghép với phần đường đi của $P_1$ từ $M$ đến $B_1$. Ta thu được một đường đi mới $P_2'$ nối từ $A_2$ đến $B_1$.</li>
+        </ul>
+        <p>Cặp $(P_1', P_2')$ là một cặp đường đi nối từ bộ nguồn $(A_1, A_2)$ đến bộ đích bị hoán vị $(B_2, B_1)$. Và chúng có giao nhau tại $M$.</p>
+
+        <p>Mặt khác, nếu ta lấy BẤT KỲ một cặp đường đi $(Q_1, Q_2)$ nào nối từ $A_1 \to B_2$ và $A_2 \to B_1$. Vì vị trí của các điểm là $A_1$ nằm dưới $A_2$ nhưng $B_2$ nằm trên $B_1$, đường $Q_1$ chắc chắn phải cắt ngang qua đường $Q_2$. <br>
+        Nghĩa là, mọi cặp đường đi từ bộ nguồn đến bộ đích chéo này đều có điểm giao nhau.<br>
+        Bằng cách lặp lại song ánh lật phần đuôi tại điểm giao cắt đầu tiên, ta biến cặp $(Q_1, Q_2)$ quay trở lại thành một cặp đường đi giao nhau từ $A_1 \to B_1$ và $A_2 \to B_2$.<br>
+        Vậy, số lượng các cặp đường đi giao nhau chính bằng tổng số cặp đường đi nối chéo:</p>
+        $$ |\mathcal{X}| = W(A_1 \to B_2) \times W(A_2 \to B_1) $$
+
+        <p>Số lượng các cặp đường đi <strong>không giao nhau</strong> sẽ là tổng số đường trừ đi số đường giao nhau:</p>
+        $$ \text{Valid} = W(A_1 \to B_1) W(A_2 \to B_2) - W(A_1 \to B_2) W(A_2 \to B_1) $$
+        <p>Biểu thức này chính là <strong>Định thức (Determinant)</strong> của ma trận đường đi (như đã giới thiệu ở Khái niệm 0.1):</p>
+        $$
+        \text{Valid} = \det \begin{pmatrix} W(A_1 \to B_1) & W(A_1 \to B_2) \\ W(A_2 \to B_1) & W(A_2 \to B_2) \end{pmatrix}
+        $$
+        <p>Thay công thức Tổ hợp vào, ta thu được đáp số cụ thể. Đây là nội dung cơ bản của Bổ đề Lindström–Gessel–Viennot (LGV Lemma) cho hai đường đi.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

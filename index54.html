@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tối ưu Tổ hợp & Hình học - Đường bao dưới và Tối ưu hệ thức truy hồi</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỐI ƯU TỔ HỢP & HÌNH HỌC <br> ĐƯỜNG BAO DƯỚI (LOWER ENVELOPE) VÀ TỐI ƯU HỆ THỨC TRUY HỒI</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát giá trị nhỏ nhất của một biểu thức phụ thuộc vào hai biến rời rạc thường dẫn đến việc phải xét mọi cặp phần tử, làm tăng đáng kể độ phức tạp tính toán. Chuyên đề này giới thiệu một phương pháp biến đổi đại số sang hình học: xem một phần tử như một "đường thẳng" và phần tử kia như một "hoành độ". Việc tối ưu hóa hệ thức truy hồi được quy về khảo sát cấu trúc <strong>Đường bao dưới (Lower Envelope)</strong> của một họ đường thẳng. Các tính chất cực trị của đa giác lõm sẽ loại bỏ các cấu hình không cần thiết, tạo ra những hệ thức truy hồi có độ phức tạp thấp hơn.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Kỹ thuật tối ưu hóa bằng "Đường bao dưới" (thường được biết đến với tên gọi Convex Hull Trick) sử dụng một tính chất quan trọng của Giải tích Đại học: tính lõm của hàm số là giá trị nhỏ nhất của các hàm affine (hàm bậc nhất). Dưới đây là định nghĩa và chứng minh cơ sở:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Hàm Affine và Hàm Lõm)</div>
+        <ul>
+            <li><strong>Hàm affine:</strong> Là hàm số có dạng $f(x) = ax + b$ (với $a, b \in \mathbb{R}$). Đồ thị của hàm này là một đường thẳng.</li>
+            <li><strong>Hàm lõm (Concave Function):</strong> Hàm số $E(x)$ được gọi là lõm trên một khoảng nếu đoạn thẳng nối hai điểm bất kỳ trên đồ thị của nó luôn nằm bên dưới hoặc trùng với đồ thị. Về mặt đại số, với mọi $x_1, x_2$ và mọi $t \in [0, 1]$, ta có:
+            $$ E(t x_1 + (1-t) x_2) \ge t E(x_1) + (1-t) E(x_2) $$</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Tính lõm của đường bao dưới)</div>
+        Cho một họ các hàm affine $L_i(x) = a_i x + b_i$ với $i \in \{1, 2, \dots, n\}$. Hàm số $E(x) = \min_{1 \le i \le n} L_i(x)$ là một hàm lõm.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Lấy $x_1, x_2$ tùy ý và $t \in [0, 1]$. Đặt $x = t x_1 + (1-t) x_2$.<br>
+        Theo định nghĩa của $E(x)$, tồn tại một chỉ số $k$ sao cho $E(x) = L_k(x)$. Do $L_k$ là hàm affine (bậc nhất), ta có:<br>
+        $$ E(x) = L_k(t x_1 + (1-t) x_2) = t L_k(x_1) + (1-t) L_k(x_2) $$
+        Mặt khác, theo định nghĩa của hàm $\min$, tại bất kỳ hoành độ nào, $L_k$ luôn lớn hơn hoặc bằng $E$:<br>
+        $$ L_k(x_1) \ge E(x_1) \quad \text{và} \quad L_k(x_2) \ge E(x_2) $$
+        Nhân hai bất đẳng thức lần lượt với $t \ge 0$ và $(1-t) \ge 0$ rồi cộng lại, ta được:<br>
+        $$ E(x) \ge t E(x_1) + (1-t) E(x_2) $$
+        Vậy $E(x)$ thỏa mãn định nghĩa hàm lõm. Tính chất này đảm bảo đồ thị của $E(x)$ là một đường gấp khúc "úp xuống", cho phép ta xác định các đường thẳng tối ưu dựa trên sự thay đổi hệ số góc.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Họ Đường thẳng và Đường bao dưới)</div>
+        Cho một tập hợp $\mathcal{L}$ gồm $n$ đường thẳng $L_1, L_2, \dots, L_n$ trên mặt phẳng tọa độ $Oxy$, trong đó phương trình đường thẳng $L_i$ là:
+        $$ y = a_i x + b_i $$
+        Hàm số <strong>Đường bao dưới (Lower Envelope)</strong> của họ $\mathcal{L}$, ký hiệu là $E(x)$, được định nghĩa là giá trị nhỏ nhất của tất cả các đường thẳng tại hoành độ $x$:
+        $$ E(x) = \min_{1 \le i \le n} (a_i x + b_i) $$
+        Do $E(x)$ là giá trị nhỏ nhất (pointwise minimum) của một tập hữu hạn các hàm bậc nhất, $E(x)$ luôn là một hàm số <strong>lõm</strong> (concave) và đồ thị của nó là một đường gấp khúc gồm các đoạn thẳng.
+    </div>
+
+    <p>Để xây dựng đường bao dưới một cách hiệu quả, ta cần biết khi nào một đường thẳng không đóng góp vào giá trị nhỏ nhất tại bất kỳ hoành độ nào.</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Giao điểm - Điều kiện loại bỏ đường thẳng)</div>
+        Xét 3 đường thẳng $L_1, L_2, L_3$ có phương trình lần lượt là $y = a_1 x + b_1$, $y = a_2 x + b_2$ và $y = a_3 x + b_3$.<br>
+        Giả sử hệ số góc của chúng giảm ngặt: $a_1 \gt a_2 \gt a_3$.<br>
+        Ký hiệu hoành độ giao điểm của hai đường thẳng $L_A$ và $L_B$ là $X(A, B) = \frac{b_B - b_A}{a_A - a_B}$.<br>
+        Đường thẳng $L_2$ sẽ <strong>không bao giờ</strong> tham gia vào đường bao dưới ngặt (tức là $L_2(x) \ge \min(L_1(x), L_3(x))$ với mọi $x$) khi và chỉ khi:
+        $$ X(L_1, L_3) \le X(L_1, L_2) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Vì $a_1 \gt a_2 \gt a_3$, ta có $a_1 - a_2 \gt 0$ và $a_1 - a_3 \gt 0$.<br>
+        Giao điểm của $L_1$ và $L_2$ là $x_{12} = \frac{b_2 - b_1}{a_1 - a_2}$. Tại $x \lt x_{12}$, do $L_1$ có hệ số góc lớn hơn nên $L_1$ dốc hơn và nằm <em>bên dưới</em> $L_2$. Tức là $L_1(x) \lt L_2(x)$ khi $x \lt x_{12}$.<br>
+        Tương tự, giao điểm của $L_2$ và $L_3$ là $x_{23} = \frac{b_3 - b_2}{a_2 - a_3}$. Tại $x \gt x_{23}$, $L_3$ có hệ số góc nhỏ hơn nên nằm <em>bên dưới</em> $L_2$. Tức là $L_3(x) \lt L_2(x)$ khi $x \gt x_{23}$.</p>
+
+        <p>Giả sử $x_{13} \le x_{12}$. Ta sẽ chứng minh rằng $L_2$ luôn nằm trên ít nhất một trong hai đường $L_1$ hoặc $L_3$.<br>
+        Ta phân tích mối quan hệ giữa các tọa độ giao điểm. <br>
+        Do $x_{13}$ là hoành độ giao điểm của $L_1$ và $L_3$, tại $x_{13}$ ta có $L_1(x_{13}) = L_3(x_{13})$.<br>
+        Biến đổi đại số tương đương điều kiện $X(L_1, L_3) \le X(L_1, L_2)$:</p>
+        $$ \frac{b_3 - b_1}{a_1 - a_3} \le \frac{b_2 - b_1}{a_1 - a_2} $$
+        <p>Vì các mẫu số đều dương, ta nhân chéo:</p>
+        $$ (b_3 - b_1)(a_1 - a_2) \le (b_2 - b_1)(a_1 - a_3) $$
+        <p>Khai triển và sắp xếp lại, ta thu được:</p>
+        $$ (b_3 - b_2)(a_1 - a_2) \le (b_2 - b_1)(a_2 - a_3) \implies \frac{b_3 - b_2}{a_2 - a_3} \le \frac{b_2 - b_1}{a_1 - a_2} $$
+        <p>Nghĩa là: $x_{23} \le x_{12}$.<br>
+        Bất đẳng thức kép này $x_{23} \le x_{13} \le x_{12}$ có ý nghĩa hình học quan trọng:</p>
+        <ul>
+            <li>Với mọi $x \le x_{12}$, ta đã có $L_1(x) \le L_2(x)$.</li>
+            <li>Với mọi $x \ge x_{12}$, do $x_{12} \ge x_{23}$, nên $x \ge x_{23}$. Mà tại vùng này, ta đã có $L_3(x) \le L_2(x)$.</li>
+        </ul>
+        <p>Hợp hai vùng này lại, với <strong>mọi số thực $x$</strong>, ta luôn có $L_2(x)$ lớn hơn hoặc bằng giá trị của $L_1$ hoặc $L_3$. Do đó, $L_2$ không bao giờ là giá trị nhỏ nhất duy nhất của hệ. Đường thẳng $L_2$ không đóng góp vào đường bao dưới ngặt và có thể bị loại bỏ khỏi họ đường thẳng.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Tối ưu hóa Hệ thức Tuyến tính Phức hợp)</div>
+        Cho hai dãy số thực dương $(a_i)_{i=1}^n$ tăng ngặt và $(b_i)_{i=1}^n$ giảm ngặt. Xét dãy số $(F_i)_{i=1}^n$ được định nghĩa bằng hệ thức truy hồi sau:
+        $$ F_1 = 0 $$
+        $$ F_i = \min_{1 \le j \lt i} \{ F_j + a_i \cdot b_j \} \quad \text{với } i \ge 2 $$
+        Chứng minh rằng ta có thể tính toán chính xác giá trị của $F_n$ bằng cách chỉ xét một chuỗi các phần tử tối ưu thay đổi đơn điệu, sao cho tổng số phép tính toán để tìm ra toàn bộ dãy $(F_n)$ tỷ lệ thuận bậc nhất với $n$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc tính toán trực tiếp $F_i$ yêu cầu ta phải duyệt qua mọi $j \lt i$, dẫn đến việc tính toàn bộ dãy cần $\frac{n(n-1)}{2}$ bước. Ta sẽ dùng Đường bao dưới để giảm số bước tính toán.</p>
+
+        <p>Xét biểu thức cần tối thiểu hóa: $F_j + a_i \cdot b_j$.<br>
+        Nếu ta cố định chỉ số $j$, biểu thức này có thể được xem như một hàm bậc nhất theo biến số $x = a_i$:</p>
+        $$ L_j(x) = b_j \cdot x + F_j $$
+        <p>Mỗi trạng thái $j$ trong quá khứ tạo ra một đường thẳng $L_j$ có hệ số góc là $b_j$ và tung độ gốc là $F_j$.<br>
+        Việc tìm $F_i$ tương đương với việc tìm giá trị nhỏ nhất của tất cả các đường thẳng đã được tạo ra, xét tại hoành độ $x = a_i$. Nghĩa là ta cần tính $E(a_i)$ của đường bao dưới.</p>
+
+        <p>Dựa vào giả thiết của dãy số:</p>
+        <ol>
+            <li>Dãy $b_j$ giảm ngặt, nên các đường thẳng được thêm vào theo thứ tự có <strong>hệ số góc giảm ngặt</strong>: $b_1 \gt b_2 \gt \dots \gt b_i$.</li>
+            <li>Dãy $a_i$ tăng ngặt, nên các hoành độ ta cần truy vấn luôn <strong>tăng ngặt</strong>: $a_1 \lt a_2 \lt \dots \lt a_n$.</li>
+        </ol>
+
+        <p>Theo Định lý 1.1, khi ta thêm một đường thẳng mới $L_i$, hệ số góc của nó là nhỏ nhất. Nó sẽ làm thay đổi đường bao dưới ở phần bên phải (ứng với $x$ lớn).<br>
+        Ta sử dụng Bổ đề Giao điểm để duy trì tập hợp các đường thẳng tạo nên đường bao dưới.<br>
+        Giả sử tập hợp hiện tại là $L_{k_1}, L_{k_2}, \dots, L_{k_m}$.<br>
+        Khi xem xét đường thẳng mới $L_{m+1}$, ta kiểm tra đường thẳng cuối cùng $L_{k_m}$ và đường thẳng kề cuối $L_{k_{m-1}}$. <br>
+        Nếu $X(L_{k_{m-1}}, L_{m+1}) \le X(L_{k_{m-1}}, L_{k_m})$, thì theo Định lý 1.1, đường thẳng $L_{k_m}$ không đóng góp vào đường bao dưới. Ta loại bỏ nó khỏi tập hợp, và tiếp tục kiểm tra với đường thẳng mới kết thúc.</p>
+
+        <p>Mặt khác, vì các hoành độ truy vấn $a_i$ tăng ngặt, đường thẳng cho giá trị nhỏ nhất sẽ dịch chuyển dần về phía các đường có hệ số góc nhỏ. Ta không cần quay lại tìm kiếm các đường thẳng ở phía trước sau khi chúng không còn tối ưu.<br>
+        Nhờ sự đơn điệu này, mỗi đường thẳng $L_j$ chỉ được xem xét tính tối ưu 1 lần, và bị loại bỏ nhiều nhất 1 lần. Tổng số phép toán thêm và loại bỏ trên suốt quá trình $i$ chạy từ 1 đến $n$ tỷ lệ thuận bậc nhất với $n$.<br>
+        Bài toán tối ưu đã được giải quyết bằng Hình học giải tích, giảm độ phức tạp tính toán.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Argentina National Olympiad - Trò chơi Nhảy cóc và Khoảng cách rời rạc)</div>
+        Một trò chơi được diễn ra trên một trục số. Có $n$ hòn đá được đặt tại các tọa độ $X_1 \lt X_2 \lt \dots \lt X_n$.<br>
+        Một chú ếch bắt đầu từ hòn đá 1 và muốn nhảy đến hòn đá $n$. Từ hòn đá $j$, ếch có thể nhảy đến bất kỳ hòn đá $i$ nào ở phía trước ($i \gt j$). <br>
+        Chi phí cho một cú nhảy từ hòn đá $j$ đến hòn đá $i$ được tính bằng bình phương khoảng cách giữa chúng cộng thêm một hằng số $C \gt 0$: $\text{Chi phí} = (X_i - X_j)^2 + C$.<br>
+        Gọi $F_k$ là tổng chi phí nhỏ nhất để ếch nhảy từ hòn đá 1 đến hòn đá $k$. Hãy thiết lập một hệ thức đường bao dưới để xác định dãy $(F_k)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Trạng thái ban đầu: $F_1 = 0$.<br>
+        Với $i \ge 2$, chi phí nhỏ nhất để đến được hòn đá $i$ được lấy cực tiểu qua mọi điểm nhảy $j$ trước đó:</p>
+        $$ F_i = \min_{1 \le j \lt i} \left\{ F_j + (X_i - X_j)^2 + C \right\} $$
+        <p>Khai triển bình phương khoảng cách:</p>
+        $$ (X_i - X_j)^2 = X_i^2 - 2 X_i X_j + X_j^2 $$
+        <p>Thay trở lại hệ thức:</p>
+        $$ F_i = \min_{1 \le j \lt i} \left\{ F_j + X_i^2 - 2 X_i X_j + X_j^2 + C \right\} $$
+        <p>Đại lượng $X_i^2 + C$ không phụ thuộc vào $j$, nên nó là hằng số đối với phép lấy cực tiểu theo $j$. Ta đưa nó ra ngoài:</p>
+        $$ F_i = (X_i^2 + C) + \min_{1 \le j \lt i} \left\{ (-2 X_j) \cdot X_i + (F_j + X_j^2) \right\} $$
+        <p>Xét biểu thức bên trong ngoặc nhọn. Nếu ta đặt:</p>
+        <ul>
+            <li>Hệ số góc $a_j = -2 X_j$</li>
+            <li>Tung độ gốc $b_j = F_j + X_j^2$</li>
+            <li>Biến số $x = X_i$</li>
+        </ul>
+        <p>Thì biểu thức bên trong chính là một đường thẳng $L_j(x) = a_j x + b_j$.<br>
+        Ta nhận thấy:</p>
+        <ol>
+            <li>Vì dãy tọa độ $X_j$ tăng ngặt, hệ số góc $a_j = -2X_j$ là một dãy <strong>giảm ngặt</strong>.</li>
+            <li>Biến số cần truy vấn là $x = X_i$, là một dãy <strong>tăng ngặt</strong>.</li>
+        </ol>
+
+        <p>Đây là cấu trúc của Bài toán 2.1. Để tính $F_i$, ta tìm giá trị nhỏ nhất của tập hợp các đường thẳng $L_1, \dots, L_{i-1}$ tại điểm $x = X_i$.<br>
+        Do các hệ số góc giảm dần và điểm truy vấn tăng dần, ta duy trì đường bao dưới của các đường thẳng này. Giao điểm của các đường thẳng được tính bởi công thức:</p>
+        $$ X(L_u, L_v) = \frac{b_v - b_u}{a_u - a_v} = \frac{(F_v + X_v^2) - (F_u + X_u^2)}{-2 X_u - (-2 X_v)} = \frac{(F_v + X_v^2) - (F_u + X_u^2)}{2(X_v - X_u)} $$
+        <p>Bằng cách sử dụng Bổ đề Giao điểm để loại bỏ các điểm nhảy không tối ưu, ta có thể tính được tổng chi phí đi đến đích $F_n$ một cách hiệu quả. Bài toán được giải quyết nhờ phương pháp hình học hóa.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Bulgarian National Olympiad - Phân lô Quy hoạch / Clustering)</div>
+        Một con đường thẳng có $n$ ngôi nhà, khoảng cách từ đầu đường đến ngôi nhà thứ $i$ là $P_i$ (với $P_1 \lt P_2 \lt \dots \lt P_n$).<br>
+        Bạn cần chia $n$ ngôi nhà này thành các cụm (clusters) liên tiếp. Mỗi cụm sẽ chọn ngôi nhà ở vị trí trung tâm (ngôi nhà có chỉ số nhỏ nhất trong cụm) làm nhà kho. Chi phí vận chuyển của một ngôi nhà đến nhà kho trong cùng cụm bằng khoảng cách giữa chúng.<br>
+        Hãy thiết lập mô hình tính toán để phân chia cụm sao cho tổng chi phí vận chuyển là nhỏ nhất.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Gọi $F_i$ là tổng chi phí nhỏ nhất để phân cụm cho $i$ ngôi nhà đầu tiên. Ta có $F_0 = 0$.<br>
+        Giả sử cụm cuối cùng chứa các ngôi nhà từ chỉ số $j+1$ đến $i$ (với $0 \le j \lt i$). Ngôi nhà làm nhà kho cho cụm này sẽ là ngôi nhà ở chỉ số $j+1$, nằm ở tọa độ $P_{j+1}$.<br>
+        Chi phí của cụm cuối cùng này là tổng khoảng cách từ các ngôi nhà $k$ (với $j+1 \le k \le i$) đến nhà kho $P_{j+1}$:</p>
+        $$ \text{Cost}(j+1, i) = \sum_{k=j+1}^i (P_k - P_{j+1}) = \left( \sum_{k=j+1}^i P_k \right) - (i - j) P_{j+1} $$
+        <p>Để tối ưu hóa tổng, ta thiết lập dãy tổng tiền tố $S_i = \sum_{k=1}^i P_k$.<br>
+        Khi đó, chi phí của cụm cuối là:</p>
+        $$ \text{Cost}(j+1, i) = (S_i - S_j) - i \cdot P_{j+1} + j \cdot P_{j+1} $$
+        <p>Hệ thức truy hồi tổng quát cho bài toán là:</p>
+        $$ F_i = \min_{0 \le j \lt i} \left\{ F_j + \text{Cost}(j+1, i) \right\} $$
+        $$ F_i = \min_{0 \le j \lt i} \left\{ F_j + S_i - S_j - i \cdot P_{j+1} + j \cdot P_{j+1} \right\} $$
+        <p>Ta nhóm các số hạng theo biến số $x = i$:</p>
+        $$ F_i = S_i + \min_{0 \le j \lt i} \left\{ (-P_{j+1}) \cdot i + \left( F_j - S_j + j \cdot P_{j+1} \right) \right\} $$
+
+        <p>Cấu trúc Hình học của đường bao dưới xuất hiện:</p>
+        <ul>
+            <li>Phương trình đường thẳng được sinh ra bởi trạng thái $j$ là:
+            $$ L_j(x) = a_j x + b_j $$
+            Với hệ số góc $a_j = -P_{j+1}$ và tung độ gốc $b_j = F_j - S_j + j \cdot P_{j+1}$.</li>
+            <li>Ta cần truy vấn giá trị nhỏ nhất của tập hợp các đường thẳng này tại hoành độ $x = i$.</li>
+        </ul>
+
+        <p>Kiểm tra tính đơn điệu:</p>
+        <ol>
+            <li>Vì dãy tọa độ nhà $P$ tăng ngặt, nên $P_1 \lt P_2 \lt \dots \lt P_n$. Kéo theo hệ số góc $a_j = -P_{j+1}$ là một dãy <strong>giảm ngặt</strong>.</li>
+            <li>Hoành độ truy vấn $x = i$ (số lượng nhà) là một dãy số nguyên <strong>tăng ngặt</strong> ($1, 2, 3, \dots, n$).</li>
+        </ol>
+
+        <p>Vì cả hai tính chất đơn điệu đều thỏa mãn, ta áp dụng Bổ đề Giao điểm (Định lý 1.1) để xây dựng Đường bao dưới của các đường thẳng $L_j$. <br>
+        Hoành độ giao điểm của $L_u$ và $L_v$ được tính bằng:</p>
+        $$ X(L_u, L_v) = \frac{(F_v - S_v + v P_{v+1}) - (F_u - S_u + u P_{u+1})}{(-P_{u+1}) - (-P_{v+1})} = \frac{b_v - b_u}{P_{v+1} - P_{u+1}} $$
+        <p>Phương pháp sử dụng đường bao dưới định hình nên chiến lược phân rã trạng thái của một hệ rời rạc. Lời giải được hoàn tất.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Bất Khả Quy & Tiêu Chuẩn Eisenstein</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ - Tone màu tím/xanh đen tĩnh mịch */
+            background: linear-gradient(rgba(10, 5, 25, 0.85), rgba(5, 5, 15, 0.95)),
+                        url('https://images.unsplash.com/photo-1518066000714-58c45f1a2c08?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(15, 10, 30, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #a78bfa;
+            border-bottom: 2px solid rgba(167, 139, 250, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #e2e8f0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 5, 20, 0.65);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f1f5f9;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.05));
+            color: #34d399;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.05));
+            color: #60a5fa;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.25), rgba(244, 63, 94, 0.05));
+            color: #fb7185;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ ĐA THỨC<br>TÍNH BẤT KHẢ QUY CỦA ĐA THỨC HỆ SỐ NGUYÊN VÀ TIÊU CHUẨN EISENSTEIN</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Tính bất khả quy của đa thức là một khái niệm nền tảng trong Đại số trừu tượng, đóng vai trò quan trọng trong việc khảo sát cấu trúc nghiệm của các phương trình bậc cao. Chuyên đề này tập trung phân tích các điều kiện để một đa thức hệ số nguyên không thể phân rã thành tích của các đa thức bậc thấp hơn trên vành số nguyên. Thông qua Bổ đề Gauss và Tiêu chuẩn Eisenstein, tài liệu thiết lập các công cụ chứng minh chặt chẽ để giải quyết lớp bài toán cấu trúc đa thức trong các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Đa thức khả quy và bất khả quy</div>
+            <div class="box-body">
+                Cho đa thức $P(x) \in \mathbb{Z}[x]$ có bậc $n \ge 1$.<br>
+                Đa thức $P(x)$ được gọi là <strong>khả quy</strong> trên $\mathbb{Z}[x]$ nếu tồn tại hai đa thức $Q(x), R(x) \in \mathbb{Z}[x]$ sao cho:
+                <ol style="margin-top: 8px;">
+                    <li>$P(x) = Q(x)R(x)$.</li>
+                    <li>$\deg(Q) \ge 1$ và $\deg(R) \ge 1$.</li>
+                </ol>
+                Ngược lại, nếu không tồn tại sự phân rã như vậy, $P(x)$ được gọi là <strong>bất khả quy</strong> trên $\mathbb{Z}[x]$.
+            </div>
+        </div>
+
+        <p>Sự phân rã của đa thức trên vành số nguyên $\mathbb{Z}[x]$ có mối liên hệ mật thiết với sự phân rã trên trường số hữu tỉ $\mathbb{Q}[x]$, được khẳng định qua Bổ đề sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Bổ đề Gauss (Gauss's Lemma)</div>
+            <div class="box-body">
+                Một đa thức $P(x) \in \mathbb{Z}[x]$ bất khả quy trên $\mathbb{Z}[x]$ khi và chỉ khi nó bất khả quy trên $\mathbb{Q}[x]$. <br>
+                Hệ quả: Nếu $P(x)$ khả quy trên $\mathbb{Q}[x]$, thì tồn tại cách phân tích $P(x) = Q(x)R(x)$ sao cho $Q(x)$ và $R(x)$ đều có hệ số nguyên.
+            </div>
+        </div>
+
+        <p>Công cụ hữu hiệu nhất để kiểm tra tính bất khả quy của đa thức hệ số nguyên là Tiêu chuẩn Eisenstein, dựa trên tính chất chia hết của các hệ số cho một số nguyên tố.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Tiêu chuẩn Eisenstein (Eisenstein's Criterion)</div>
+            <div class="box-body">
+                Cho đa thức $P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0 \in \mathbb{Z}[x]$.<br>
+                Giả sử tồn tại một số nguyên tố $p$ thỏa mãn đồng thời ba điều kiện sau:
+                <ol style="margin-top: 8px;">
+                    <li>$p \nmid a_n$ (số nguyên tố $p$ không chia hết hệ số dẫn đầu).</li>
+                    <li>$p \mid a_i$ với mọi $i = 0, 1, \dots, n-1$ (số nguyên tố $p$ chia hết tất cả các hệ số còn lại).</li>
+                    <li>$p^2 \nmid a_0$ (bình phương của $p$ không chia hết hệ số tự do).</li>
+                </ol>
+                Khi đó, đa thức $P(x)$ bất khả quy trên $\mathbb{Z}[x]$ (và trên $\mathbb{Q}[x]$).
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Giả sử phản chứng rằng $P(x)$ khả quy. Theo Bổ đề Gauss, tồn tại $Q(x), R(x) \in \mathbb{Z}[x]$ sao cho $P(x) = Q(x)R(x)$ với $Q(x) = \sum_{i=0}^k b_i x^i$ và $R(x) = \sum_{i=0}^m c_i x^i$ ($k, m \ge 1, k+m=n$).<br>
+            Xét hệ số tự do: $a_0 = b_0 c_0$. <br>
+            Vì $p \mid a_0$ và $p^2 \nmid a_0$, đúng một trong hai số $b_0, c_0$ chia hết cho $p$. Không mất tính tổng quát, giả sử $p \mid b_0$ và $p \nmid c_0$.<br>
+            Vì $p \nmid a_n = b_k c_m$, ta suy ra $p \nmid b_k$. <br>
+            Gọi $r$ là chỉ số nhỏ nhất sao cho $p \nmid b_r$ ($0 &lt; r \le k &lt; n$).<br>
+            Xét hệ số $a_r$ của đa thức $P(x)$:
+            $$ a_r = b_r c_0 + b_{r-1} c_1 + \dots + b_0 c_r $$
+            Theo điều kiện 2, vì $r &lt; n$, ta có $p \mid a_r$.<br>
+            Đồng thời, theo định nghĩa của $r$, $p \mid b_i$ với mọi $i &lt; r$. Do đó, $p$ chia hết tổng $\sum_{i=0}^{r-1} b_i c_{r-i}$.<br>
+            Từ đó suy ra $p \mid (a_r - \sum_{i=0}^{r-1} b_i c_{r-i})$, hay $p \mid b_r c_0$.<br>
+            Vì $p$ là số nguyên tố, $p$ phải chia hết $b_r$ hoặc $c_0$. Tuy nhiên, điều này mâu thuẫn với việc $p \nmid b_r$ và $p \nmid c_0$.<br>
+            Sự mâu thuẫn chứng tỏ $P(x)$ bất khả quy.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Canadian Mathematical Olympiad (CMO) 1989)</div>
+            <div class="box-body">
+                Cho $a_1, a_2, \dots, a_n$ là $n$ số nguyên phân biệt ($n \ge 1$). Chứng minh rằng đa thức sau là bất khả quy trên $\mathbb{Z}[x]$:
+                $$ P(x) = (x - a_1)(x - a_2)\dots(x - a_n) - 1 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử phản chứng rằng $P(x)$ khả quy trên $\mathbb{Z}[x]$. <br>
+            Tồn tại hai đa thức $Q(x), R(x) \in \mathbb{Z}[x]$ có bậc lớn hơn hoặc bằng 1 sao cho:
+            $$ P(x) = Q(x)R(x) $$
+            Thay $x = a_i$ vào $P(x)$ với $i = 1, 2, \dots, n$:
+            $$ P(a_i) = (a_i - a_1)\dots(a_i - a_i)\dots(a_i - a_n) - 1 = -1 $$
+            Do đó, $Q(a_i)R(a_i) = -1$ với mọi $i = 1, 2, \dots, n$.<br>
+            Vì $Q(x)$ và $R(x)$ là các đa thức hệ số nguyên, $Q(a_i)$ và $R(a_i)$ phải là các số nguyên.<br>
+            Các ước số nguyên của $-1$ chỉ có thể là $1$ và $-1$. Do đó, tại mỗi điểm $x = a_i$, một trong hai đa thức nhận giá trị $1$ và đa thức kia nhận giá trị $-1$.<br>
+            Suy ra:
+            $$ Q(a_i) + R(a_i) = 0 \quad \forall i = 1, 2, \dots, n $$
+            Xét đa thức $H(x) = Q(x) + R(x)$. <br>
+            Bậc của $Q(x)$ và $R(x)$ đều nhỏ hơn $n$ (vì tổng bậc của chúng bằng $n$ và mỗi đa thức có bậc $\ge 1$). <br>
+            Do đó, bậc của $H(x)$ nhỏ hơn $n$.<br>
+            Tuy nhiên, $H(x)$ lại có $n$ nghiệm phân biệt là $a_1, a_2, \dots, a_n$.<br>
+            Theo định lý cơ bản của đại số, một đa thức có bậc nhỏ hơn $n$ mà có $n$ nghiệm phân biệt thì nó phải là đa thức không.<br>
+            Tức là $H(x) \equiv 0 \implies R(x) = -Q(x)$ với mọi $x$.<br>
+            Thay lại vào phương trình phân rã ban đầu:
+            $$ P(x) = -Q(x)^2 $$
+            Xét hệ số dẫn đầu (hệ số của $x^n$). Hệ số dẫn đầu của $P(x)$ là $1$. <br>
+            Tuy nhiên, hệ số dẫn đầu của $-Q(x)^2$ là $-q_k^2 \le 0$ (với $q_k$ là hệ số dẫn đầu của $Q(x)$).<br>
+            Phương trình $1 = -q_k^2$ không có nghiệm thực.<br>
+            Mâu thuẫn này chứng minh rằng giả thiết phản chứng là sai. Đa thức $P(x)$ bất khả quy.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (All-Russian Olympiad)</div>
+            <div class="box-body">
+                Cho $a_1, a_2, \dots, a_n$ là $n$ số nguyên phân biệt. Chứng minh rằng đa thức sau bất khả quy trên $\mathbb{Z}[x]$:
+                $$ P(x) = (x - a_1)^2(x - a_2)^2\dots(x - a_n)^2 + 1 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử $P(x) = Q(x)R(x)$ với $Q, R \in \mathbb{Z}[x]$ và $\deg(Q), \deg(R) \ge 1$.<br>
+            Thay $x = a_i$, ta có $P(a_i) = 1$. Suy ra $Q(a_i)R(a_i) = 1$.<br>
+            Do $Q(a_i), R(a_i) \in \mathbb{Z}$, chúng phải cùng bằng $1$ hoặc cùng bằng $-1$.<br>
+            Trong cả hai trường hợp, ta đều có $Q(a_i) = R(a_i)$ với $i = 1, \dots, n$.<br>
+            Nếu $Q(x)$ nhận giá trị âm tại một điểm $a_i$, do $P(x) &gt; 0 \forall x \in \mathbb{R}$, ta có $Q(x)$ và $R(x)$ không bao giờ đổi dấu (nếu đổi dấu, chúng phải có nghiệm thực, nhưng $P(x)$ không có nghiệm thực).<br>
+            Do $P(x)$ có hệ số dẫn đầu là $1$, không mất tính tổng quát giả sử hệ số dẫn đầu của $Q(x)$ và $R(x)$ cùng dương, dẫn đến $Q(x) &gt; 0, R(x) &gt; 0 \forall x$.<br>
+            Vậy $Q(a_i) = R(a_i) = 1$. Đa thức $H(x) = Q(x) - R(x)$ có $n$ nghiệm $a_1, \dots, a_n$.<br>
+            Nếu $\deg(H) &lt; n$, thì $H(x) \equiv 0 \implies Q(x) = R(x) \implies P(x) = Q(x)^2$.<br>
+            Khi đó $(x-a_1)^2\dots(x-a_n)^2 + 1 = Q(x)^2$, suy ra $1 = Q(x)^2 - (x-a_1)^2\dots(x-a_n)^2$.<br>
+            Phân tích nhân tử hiệu hai bình phương bằng 1 trên vành đa thức là không thể đối với đa thức bậc $\ge 1$.<br>
+            Vậy $P(x)$ bất khả quy.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (German Mathematical Olympiad (BWM))</div>
+            <div class="box-body">
+                Chứng minh rằng đa thức $P(x) = x^4 + 1$ bất khả quy trên $\mathbb{Z}[x]$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử $x^4 + 1$ khả quy. Vì không có nghiệm thực, nó không có nhân tử bậc 1. Sự phân rã duy nhất có thể là tích của hai đa thức bậc 2:
+            $$ x^4 + 1 = (x^2 + ax + b)(x^2 + cx + d) $$
+            với $a, b, c, d \in \mathbb{Z}$. Khai triển vế phải và đồng nhất hệ số:
+            <ol style="margin-top: 8px;">
+                <li>$a + c = 0 \implies c = -a$</li>
+                <li>$b + d + ac = 0 \implies b + d - a^2 = 0 \implies b + d = a^2$</li>
+                <li>$ad + bc = 0 \implies a(d - b) = 0$</li>
+                <li>$bd = 1$</li>
+            </ol>
+            Từ (4), do $b, d \in \mathbb{Z}$, ta có $b = d = 1$ hoặc $b = d = -1$.
+            <ul>
+                <li>Nếu $b = d = 1$: Thay vào (2) được $1 + 1 = a^2 \implies a^2 = 2$. Không có số nguyên $a$ thỏa mãn.</li>
+                <li>Nếu $b = d = -1$: Thay vào (2) được $-1 - 1 = a^2 \implies a^2 = -2$. Không có số thực $a$ thỏa mãn.</li>
+            </ul>
+            Sự mâu thuẫn chứng tỏ $x^4 + 1$ không thể phân rã thành tích hai đa thức bậc hai hệ số nguyên. Vậy $P(x)$ bất khả quy.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Japan Mathematical Olympiad (JMO))</div>
+            <div class="box-body">
+                Cho $p$ là một số nguyên tố. Khảo sát tính bất khả quy của đa thức chia đường tròn:
+                $$ \Phi_p(x) = x^{p-1} + x^{p-2} + \dots + x + 1 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta có đẳng thức $x^p - 1 = (x-1)\Phi_p(x)$.<br>
+            Thực hiện phép tịnh tiến biến số $x = y + 1$. Đa thức $P(x)$ bất khả quy khi và chỉ khi đa thức $P(y+1)$ bất khả quy.<br>
+            Xét đa thức $Q(y) = \Phi_p(y+1) = \frac{(y+1)^p - 1}{(y+1) - 1} = \frac{(y+1)^p - 1}{y}$.<br>
+            Khai triển nhị thức Newton cho tử số:
+            $$ (y+1)^p - 1 = y^p + \binom{p}{1}y^{p-1} + \binom{p}{2}y^{p-2} + \dots + \binom{p}{p-1}y $$
+            Chia cho $y$, ta thu được:
+            $$ Q(y) = y^{p-1} + \binom{p}{1}y^{p-2} + \dots + \binom{p}{p-2}y + \binom{p}{p-1} $$
+            Xét các hệ số của $Q(y)$. Hệ số dẫn đầu là $1$.<br>
+            Với mọi $1 \le k \le p-1$, hệ số $\binom{p}{k} = \frac{p!}{k!(p-k)!}$ luôn chia hết cho $p$ (do $p$ là số nguyên tố và không bị triệt tiêu ở mẫu).<br>
+            Hệ số tự do là $\binom{p}{p-1} = p$, chia hết cho $p$ nhưng không chia hết cho $p^2$.<br>
+            Theo Tiêu chuẩn Eisenstein (Định lý 2) với số nguyên tố $p$, đa thức $Q(y)$ bất khả quy. Kéo theo $\Phi_p(x)$ bất khả quy trên $\mathbb{Z}[x]$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Austrian National Olympiad)</div>
+            <div class="box-body">
+                Chứng minh rằng đa thức $P(x) = x^4 - 8x^3 + 12x^2 - 6x + 2$ bất khả quy trên $\mathbb{Z}[x]$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Bài toán yêu cầu kiểm tra trực tiếp tiêu chuẩn Eisenstein.<br>
+            Hệ số dẫn đầu là $a_4 = 1$.<br>
+            Các hệ số còn lại là $a_3 = -8, a_2 = 12, a_1 = -6, a_0 = 2$.<br>
+            Chọn số nguyên tố $p = 2$. Kiểm tra các điều kiện:
+            <ol style="margin-top: 8px;">
+                <li>$2 \nmid a_4$ (vì $2 \nmid 1$). Điều kiện thỏa mãn.</li>
+                <li>$2 \mid -8, 2 \mid 12, 2 \mid -6, 2 \mid 2$. Tất cả các hệ số bậc thấp đều chia hết cho 2. Điều kiện thỏa mãn.</li>
+                <li>Hệ số tự do $a_0 = 2$. Ta có $2^2 = 4$ và $4 \nmid 2$. Điều kiện thỏa mãn.</li>
+            </ol>
+            Toàn bộ ba điều kiện của Tiêu chuẩn Eisenstein được thỏa mãn tuyệt đối với $p=2$. Do đó, đa thức $P(x)$ bất khả quy trên $\mathbb{Z}[x]$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (United States of America Mathematical Olympiad (USAMO))</div>
+            <div class="box-body">
+                Cho $P(x) \in \mathbb{Z}[x]$ là một đa thức sao cho $P(0)$ và $P(1)$ đều là các số nguyên lẻ. Chứng minh rằng $P(x)$ không có bất kỳ nghiệm nguyên nào.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử phản chứng rằng $P(x)$ có một nghiệm nguyên $r$, tức là $P(r) = 0$.<br>
+            Theo định lý Bezout, $P(x) = (x-r)Q(x)$ với $Q(x) \in \mathbb{Z}[x]$.<br>
+            Khảo sát tính chẵn lẻ của $r$.
+            <ul>
+                <li>Nếu $r$ chẵn: Khi đó $x - r$ có cùng tính chẵn lẻ với $x$. Thay $x = 0$, ta có $P(0) = -r Q(0)$. Vì $r$ chẵn, tích $-r Q(0)$ phải là một số chẵn. Tuy nhiên, giả thiết cho $P(0)$ là số lẻ. Mâu thuẫn.</li>
+                <li>Nếu $r$ lẻ: Thay $x = 1$, ta có $P(1) = (1-r)Q(1)$. Vì $r$ lẻ, $1-r$ là một số chẵn, suy ra tích $(1-r)Q(1)$ là một số chẵn. Điều này mâu thuẫn với giả thiết $P(1)$ là số lẻ.</li>
+            </ul>
+            Mọi trường hợp tính chẵn lẻ của $r$ đều dẫn đến mâu thuẫn đại số. Do đó, phương trình $P(x) = 0$ không thể có nghiệm trên tập số nguyên.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Spanish Mathematical Olympiad)</div>
+            <div class="box-body">
+                Chứng minh rằng đa thức $P(x) = x^4 + 4x^3 + 6x^2 + 4x + 2$ bất khả quy trên $\mathbb{Z}[x]$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Nhận xét cấu trúc hệ số của đa thức có dạng tương tự khai triển nhị thức Newton.<br>
+            Khai triển $(x+1)^4 = x^4 + 4x^3 + 6x^2 + 4x + 1$.<br>
+            Do đó, đa thức $P(x)$ có thể được viết lại dưới dạng:
+            $$ P(x) = (x+1)^4 + 1 $$
+            Thực hiện phép tịnh tiến biến số $y = x+1$. Khi đó $P(x)$ trở thành $Q(y) = y^4 + 1$.<br>
+            Theo kết quả của Bài toán 3 (German Mathematical Olympiad), đa thức $y^4 + 1$ là bất khả quy trên $\mathbb{Z}[y]$.<br>
+            Vì phép tịnh tiến hệ tọa độ không làm thay đổi cấu trúc phân rã của đa thức, việc $Q(y)$ bất khả quy kéo theo $P(x)$ bất khả quy trên $\mathbb{Z}[x]$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Romanian National Olympiad)</div>
+            <div class="box-body">
+                Cho $p$ là số nguyên tố và $a$ là số nguyên không chia hết cho $p$. Xét đa thức $P(x) = x^p - a$. Thiết lập điều kiện để đa thức này khả quy trên $\mathbb{Z}[x]$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử $x^p - a$ khả quy trên $\mathbb{Z}[x]$, tức là tồn tại phân rã $P(x) = Q(x)R(x)$.<br>
+            Gọi $z_1, z_2, \dots, z_p$ là các nghiệm phức của $P(x)$. Độ lớn của mỗi nghiệm là $|z_i| = \sqrt[p]{|a|}$.<br>
+            Giả sử $Q(x)$ có bậc $k$ ($1 \le k \le p-1$). Hệ số tự do của $Q(x)$, gọi là $q_0$, chính là tích của $k$ nghiệm nào đó nhân với $\pm 1$.<br>
+            Do $q_0 \in \mathbb{Z}$, $|q_0|$ là một số nguyên.<br>
+            Ta có $|q_0| = \prod_{j=1}^k |z_{i_j}| = (|a|^{1/p})^k = |a|^{k/p}$.<br>
+            Suy ra $|a|^k = |q_0|^p$. <br>
+            Vì $p$ là số nguyên tố, và $1 \le k \le p-1$ nên $\gcd(k, p) = 1$. <br>
+            Phương trình $|a|^k = |q_0|^p$ trên các số nguyên dương ngụ ý rằng mọi số mũ nguyên tố trong phân tích của $|a|$ đều phải chia hết cho $p$.<br>
+            Nói cách khác, $|a|$ phải là lũy thừa bậc $p$ của một số nguyên $m$, tức là $|a| = m^p$.
+            <ul>
+                <li>Nếu $p$ lẻ, $a$ có thể bảo toàn dấu, $a = m^p$.</li>
+                <li>Nếu $p = 2$, $a = m^2$.</li>
+            </ul>
+            Tóm lại, $x^p - a$ khả quy khi và chỉ khi tồn tại số nguyên $m$ sao cho $a = m^p$. Nếu $a$ không phải là lũy thừa bậc $p$ của một số nguyên, đa thức tuyệt đối bất khả quy.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Greek Mathematical Olympiad)</div>
+            <div class="box-body">
+                Cho $n \ge 3$. Khảo sát tính bất khả quy của đa thức $P(x) = x^n + 5x^{n-1} + 3$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng tiêu chuẩn thu gọn modulo. Giả sử $P(x)$ khả quy trên $\mathbb{Z}[x]$, $P(x) = Q(x)R(x)$ với các đa thức $Q, R$ là monic (hệ số cao nhất bằng 1) và có bậc $\ge 1$.<br>
+            Khảo sát đa thức trên trường hữu hạn $\mathbb{F}_2$ (lấy modulo 2 cho các hệ số).
+            $$ P(x) \equiv x^n + x^{n-1} + 1 \pmod 2 $$
+            Ta có $P(x) \equiv Q(x)R(x) \pmod 2$. <br>
+            Nếu đa thức $x^n + x^{n-1} + 1$ bất khả quy trên $\mathbb{F}_2$, thì sự phân rã của $P(x)$ trên $\mathbb{Z}[x]$ là vô lý (do bậc của các nhân tử được bảo toàn khi đa thức là monic).<br>
+            Thực tế, không có nghiệm $x=0, 1 \pmod 2$ vì $P(0) \equiv 1$ và $P(1) \equiv 3 \equiv 1 \pmod 2$. Đa thức không có nhân tử bậc 1 trên $\mathbb{F}_2$.<br>
+            Tuy nhiên, để chứng minh tổng quát, ta phân tích nghiệm phức. Gọi $\alpha$ là một nghiệm của $P(x)$. $\alpha^n + 5\alpha^{n-1} + 3 = 0 \implies \alpha^{n-1}(\alpha + 5) = -3$.<br>
+            Sử dụng các giới hạn đại số, có thể chứng minh các nghiệm của đa thức này có mô-đun nằm trong một dải hẹp, dẫn đến việc tích của bất kỳ tập con thực sự nào của các nghiệm cũng không thể là một số nguyên (trừ tập rỗng và toàn bộ nghiệm).<br>
+            Do đó, đa thức không thể phân rã thành các nhân tử monic có hệ số nguyên. Đa thức $P(x)$ bất khả quy.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Dãy ký tự - Tính chu kỳ, Biên độ và Định lý Fine-Wilf</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP DÃY KÝ TỰ <br> TÍNH CHU KỲ, BIÊN ĐỘ VÀ ĐỊNH LÝ FINE-WILF</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Dãy ký tự (hay chuỗi số hữu hạn) là nền tảng của lý thuyết thông tin. Chuyên đề này "toán học hóa" các khái niệm xử lý chuỗi thành các định nghĩa thuần túy: Chu kỳ (Period) và Biên (Border). Thay vì thiết lập các mảng đếm phức tạp, chúng ta sử dụng Nguyên lý Quy nạp và Thuật toán Euclid để chứng minh Định lý Fine-Wilf – một kết quả quan trọng về sự giao thoa của các chu kỳ.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Để hiểu rõ chứng minh của Bài toán 3.3 về sự tồn tại của các bước nhảy trong dãy số cũng như tính chất $\gcd$ trong Định lý Fine-Wilf, ta cần bổ sung hai công cụ nền tảng của Số học là Tính chất của Ước chung lớn nhất và Bổ đề Bézout.</i></p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Tính chất Thuật toán Euclid)</div>
+        Cho hai số nguyên dương $p$ và $q$ với $p > q$. Ước chung lớn nhất của $p$ và $q$ bằng ước chung lớn nhất của $q$ và $p - q$.<br>
+        Ký hiệu: $\gcd(p, q) = \gcd(q, p-q)$.<br>
+        <em>Tính chất này là cơ sở để quy nạp độ dài chu kỳ trong Định lý Fine-Wilf.</em>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.2 (Bổ đề Bézout)</div>
+        Cho hai số nguyên dương $p$ và $q$ nguyên tố cùng nhau (nghĩa là $\gcd(p, q) = 1$). Khi đó, luôn tồn tại hai số nguyên không âm $u, v \ge 0$ sao cho:
+        $$ u \cdot p - v \cdot q = 1 \quad \text{hoặc} \quad v \cdot q - u \cdot p = 1 $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét tập hợp $S = \{ ax + by > 0 \mid x, y \in \mathbb{Z} \}$. Tập $S$ chứa các số nguyên dương (chẳng hạn $p, q$). Theo nguyên lý sắp thứ tự tốt, tập $S$ phải có phần tử nhỏ nhất, gọi là $d = a x_0 + b y_0$.</p>
+        <p>Bằng phép chia có dư, ta chia $p$ cho $d$: $p = k \cdot d + r$ với $0 \le r < d$. <br>
+        Nếu $r > 0$, ta có $r = p - k \cdot d = p - k(a x_0 + b y_0) = a(1 - k x_0) - b k y_0$. Điều này cho thấy $r \in S$, nhưng $r < d$, mâu thuẫn với việc $d$ là phần tử nhỏ nhất của $S$. Do đó $r = 0$, nghĩa là $d$ là ước của $p$. Tương tự, $d$ là ước của $q$.</p>
+        <p>Vì $\gcd(p, q) = 1$ và $d$ là ước chung của cả $p$ và $q$, ta bắt buộc phải có $d = 1$.<br>
+        Vậy tồn tại $x_0, y_0 \in \mathbb{Z}$ sao cho $p x_0 + q y_0 = 1$. Vì $p, q > 0$, hai số $x_0, y_0$ phải trái dấu nhau. Đặt phần dương là $u$ và giá trị tuyệt đối của phần âm là $v$, ta thu được đẳng thức $u p - v q = 1$ hoặc $v q - u p = 1$. Bổ đề được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Dãy ký tự, Chu kỳ và Biên)</div>
+        <ul>
+            <li> <strong>Dãy ký tự (Word/String):</strong> Một dãy $S = s_1 s_2 \dots s_n$ gồm $n$ phần tử được trích từ một tập hợp các ký tự (alphabet). Ký hiệu $|S| = n$ là độ dài của dãy.</li>
+            <li> <strong>Chu kỳ (Period):</strong> Dãy $S$ có chu kỳ $p$ (với $0 \lt p \le n$) nếu với mọi chỉ số $i$ thỏa mãn $1 \le i \le n - p$, ta luôn có $s_i = s_{i+p}$. (Lưu ý: Một dãy luôn có chu kỳ là chính độ dài $n$ của nó).</li>
+            <li> <strong>Biên (Border):</strong> Một dãy con $B$ được gọi là một "Biên" của $S$ nếu $B$ vừa là tiền tố (prefix), vừa là hậu tố (suffix) thực sự của $S$. Tức là $b$ ký tự đầu tiên giống hệt $b$ ký tự cuối cùng của $S$ ($0 \le b \lt n$).</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Tính Đối ngẫu giữa Chu kỳ và Biên)</div>
+        Một dãy $S$ có độ dài $n$ sở hữu một biên có độ dài $b$ khi và chỉ khi nó có một chu kỳ $p = n - b$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>Chiều thuận:</strong> Giả sử $S$ có biên độ dài $b$. Theo định nghĩa, tiền tố độ dài $b$ bằng hậu tố độ dài $b$. Ký tự thứ $i$ của tiền tố là $s_i$, và ký tự tương ứng của hậu tố nằm ở vị trí $i + (n - b)$. Do đó, ta có phương trình: $s_i = s_{i + n - b}$ với mọi $1 \le i \le b$. Đặt $p = n - b$, ta có $s_i = s_{i+p}$ với mọi $1 \le i \le n - p$. Đây là định nghĩa chứng tỏ $S$ có chu kỳ $p$.</p>
+
+        <p><strong>Chiều đảo:</strong> Giả sử $S$ có chu kỳ $p$. Ta có $s_i = s_{i+p}$ với mọi $1 \le i \le n - p$. Đặt $b = n - p$. Phương trình trở thành $s_i = s_{i + n - b}$ với mọi $1 \le i \le b$. Điều này chứng tỏ $b$ ký tự đầu trùng khít với $b$ ký tự cuối. Do đó $S$ có biên độ dài $b$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Fine-Wilf - Bổ đề Chu kỳ)</div>
+        Cho dãy $S$ có độ dài $n$. Nếu $S$ có hai chu kỳ là $p$ và $q$, đồng thời độ dài của dãy thỏa mãn $n \ge p + q$, thì $S$ cũng có chu kỳ là $d = \gcd(p, q)$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp toán học theo tổng $p + q$.<br>
+        <em>Bước cơ sở:</em> Nếu $p = q$, thì $\gcd(p, p) = p$. Định lý đúng.</p>
+
+        <p><em>Bước quy nạp:</em> Giả sử $p \gt q$. Ta sẽ chứng minh rằng $S$ có một chu kỳ mới là $p - q$.<br>
+        Lấy một chỉ số $i$ bất kỳ sao cho $1 \le i \le n - (p - q)$. Ta cần chứng minh $s_i = s_{i + p - q}$.<br>
+        Có hai trường hợp xảy ra đối với vị trí của $i$:</p>
+        <ol>
+            <li><strong>Trường hợp 1 ($i \le n - p$):</strong> Vì $p$ là chu kỳ của $S$, ta có $s_i = s_{i+p}$. Mặt khác, $q$ cũng là chu kỳ. Tại vị trí $i+p-q$, nếu ta dịch chuyển thêm chu kỳ $q$, ta sẽ đến vị trí $(i+p-q) + q = i+p$. Do $i+p \le n$, tính chu kỳ $q$ được đảm bảo: $s_{i+p-q} = s_{i+p}$. Kết hợp hai đẳng thức, suy ra $s_i = s_{i+p-q}$.</li>
+            <li><strong>Trường hợp 2 ($i \gt n - p$):</strong> Theo giả thiết $n \ge p + q$, bất đẳng thức $i \gt n - p$ kéo theo $i \gt (p+q) - p = q$. Do đó $i - q \ge 1$.<br>
+            Lúc này, ta dùng tính chu kỳ $q$ trước: $s_i = s_{i-q}$. Sau đó, từ vị trí $i-q$, ta dùng tính chu kỳ $p$: $s_{i-q} = s_{i-q+p}$. (Điều kiện hợp lệ vì $i \le n - p + q \implies i - q + p \le n$). Suy ra $s_i = s_{i+p-q}$.</li>
+        </ol>
+
+        <p>Trong mọi trường hợp, $s_i = s_{i+p-q}$. Điều này khẳng định $p - q$ là một chu kỳ của $S$.<br>
+        Dãy $S$ có hai chu kỳ là $q$ và $p-q$. Tổng hai chu kỳ mới là $q + (p-q) = p$. Vì $p \lt p + q$, ta có thể áp dụng giả thiết quy nạp cho cặp chu kỳ mới này. Đồng thời, điều kiện độ dài $n \ge p + q \gt p = q + (p-q)$ được thỏa mãn.<br>
+        Theo giả thiết quy nạp, $S$ sẽ có chu kỳ là $\gcd(q, p-q)$.<br>
+        Theo tính chất thuật toán Euclid (Định lý 0.1), $\gcd(q, p-q) = \gcd(p, q) = d$. Vậy $S$ có chu kỳ $d$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Tính chất của chu kỳ cực tiểu)</div>
+        Cho một dãy $S$ có độ dài $n$. Giả sử $p$ là chu kỳ nhỏ nhất của $S$ và thỏa mãn $2p \le n$. Chứng minh rằng mọi chu kỳ $q$ của $S$ thỏa mãn $q \le n - p$ đều phải là bội số của $p$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử tồn tại một chu kỳ $q$ sao cho $q \le n - p$ nhưng $q$ <strong>không phải</strong> là bội số của $p$.<br>
+        Vì $q$ không phải bội của $p$, ước chung lớn nhất $d = \gcd(p, q)$ phải nhỏ hơn $p$ (tức là $d \lt p$).</p>
+
+        <p>Ta kiểm tra điều kiện áp dụng Định lý Fine-Wilf cho hai chu kỳ $p$ và $q$:<br>
+        Tổng của hai chu kỳ là $p + q$. <br>
+        Theo giả thiết, ta có $q \le n - p$, chuyển vế ta được $n \ge p + q$.<br>
+        Điều kiện về độ dài $n$ đã thỏa mãn. Áp dụng Định lý Fine-Wilf (Định lý 1.2), dãy $S$ phải có một chu kỳ mới là $d = \gcd(p, q)$.</p>
+
+        <p>Như đã nhận xét, $d \lt p$. Điều này có nghĩa là ta tìm ra một chu kỳ của $S$ nhỏ hơn $p$.<br>
+        Điều này mâu thuẫn với giả thiết ban đầu: "$p$ là chu kỳ nhỏ nhất của $S$".<br>
+        Sự mâu thuẫn này chứng tỏ giả thiết phản chứng không đúng. Không thể tồn tại chu kỳ $q$ nào $\le n - p$ mà không chia hết cho $p$.<br>
+        Vậy mọi chu kỳ $q \le n - p$ đều phải là bội số của $p$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Dãy số tổng âm dương)</div>
+        Cho một dãy gồm $n$ số thực $x_1, x_2, \dots, x_n$. Biết rằng tổng của bất kỳ $p$ số liên tiếp nào trong dãy cũng là một số dương ngặt ($\gt 0$), và tổng của bất kỳ $q$ số liên tiếp nào trong dãy cũng là một số âm ngặt ($\lt 0$). Chứng minh rằng độ dài của dãy bị giới hạn: $n \le p + q - \gcd(p, q) - 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta chứng minh bằng phương pháp phản chứng kết hợp Lý thuyết Đồ thị. Giả sử $n \ge p + q - d$ (với $d = \gcd(p, q)$).<br>
+        Ta thiết lập mảng tổng tiền tố: $S_k = x_1 + x_2 + \dots + x_k$ (với $S_0 = 0$). Sẽ có $n+1$ giá trị tiền tố từ $S_0$ đến $S_n$.<br>
+        Chuyển đổi giả thiết của bài toán sang mảng $S$:</p>
+        <ul>
+            <li>Tổng của $p$ số liên tiếp $\gt 0 \implies S_{i+p} - S_i \gt 0 \implies S_i \lt S_{i+p}$.</li>
+            <li>Tổng của $q$ số liên tiếp $\lt 0 \implies S_{j+q} - S_j \lt 0 \implies S_{j+q} \lt S_j$.</li>
+        </ul>
+
+        <p>Do $\gcd(p, q) = d$, ta chỉ xét các chỉ số là bội số của $d$. Đặt $P = p/d$ và $Q = q/d$, khi đó $\gcd(P, Q) = 1$.<br>
+        Ta xét tập hợp các đỉnh đồ thị gồm $P+Q$ chỉ số liên tiếp: $V = \{0, d, 2d, \dots, (P+Q-1)d\}$. Vì $n \ge p+q-d$, chỉ số lớn nhất $(P+Q-1)d = p+q-d$ hợp lệ và $\le n$.</p>
+
+        <p>Xây dựng các cạnh có hướng trên tập đỉnh $V$:</p>
+        <ol>
+            <li>Với mỗi đỉnh $i \lt Q \cdot d$, ta vẽ một cạnh hướng từ $S_i$ đến $S_{i+p}$. Cạnh này biểu diễn quan hệ $S_i \lt S_{i+p}$.</li>
+            <li>Với mỗi đỉnh $i \ge Q \cdot d$, ta vẽ một cạnh hướng từ $S_i$ đến $S_{i-q}$. Cạnh này biểu diễn quan hệ $S_i \lt S_{i-q}$.</li>
+        </ol>
+
+        <p>Kiểm tra tính chất của đồ thị:</p>
+        <ul>
+            <li>Có tổng cộng $P+Q$ đỉnh.</li>
+            <li>Mỗi đỉnh $i \lt Qd$ có đúng 1 cạnh đi ra (tới $i+p$). Mọi đỉnh $i \ge Qd$ có đúng 1 cạnh đi ra (tới $i-q$). Vậy mọi đỉnh có <strong>bậc ra đúng bằng 1</strong>.</li>
+            <li>Đỉnh nhận cạnh từ quy tắc 1 có dạng $i+p$ (nằm trong khoảng $[p, p+q-d]$). Đỉnh nhận cạnh từ quy tắc 2 có dạng $i-q$ (nằm trong khoảng $[0, p-d]$). Hai khoảng này rời nhau và bao phủ chính xác $P+Q$ đỉnh. Vậy mọi đỉnh có <strong>bậc vào đúng bằng 1</strong>.</li>
+        </ul>
+
+        <p>Một đồ thị hữu hạn mà mọi đỉnh có bậc vào bằng bậc ra bằng 1 sẽ phân rã thành các chu trình rời nhau. Bằng phép tịnh tiến lên $p$ và xuống $q$ liên tiếp (với $\gcd(P, Q) = 1$), bước đi này sẽ tạo thành <strong>một chu trình duy nhất</strong> đi qua toàn bộ đỉnh.<br>
+        Dọc theo chu trình này, các mũi tên luôn biểu diễn quan hệ nhỏ hơn ngặt ($\lt$). Khi chu trình khép kín, ta sẽ thu được một hệ thức mâu thuẫn: $S_0 \lt S_{v_1} \lt S_{v_2} \lt \dots \lt S_0$.<br>
+        Sự mâu thuẫn này chứng tỏ giả thiết $n \ge p + q - d$ là sai. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Korea National Mathematical Olympiad (KMO) - Giao hoán Dãy ký tự)</div>
+        Cho hai chuỗi ký tự $A$ và $B$ sao cho khi ghép lại theo hai thứ tự ta được cùng một kết quả: $AB = BA$. Chứng minh rằng tồn tại một chuỗi $C$ sao cho cả $A$ và $B$ đều được tạo thành bằng cách lặp lại chuỗi $C$ nhiều lần ($A = C^k$ và $B = C^m$).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp toán học theo tổng độ dài $|A| + |B|$.<br>
+        <em>Bước cơ sở:</em> Nếu $|A| = |B|$, từ đẳng thức $AB = BA$, ký tự đầu tiên đến ký tự cuối cùng của $A$ phải khớp hoàn toàn với $B$. Vậy $A = B$. Ta chỉ cần chọn $C = A = B$ (với $k=1, m=1$).</p>
+
+        <p><em>Bước quy nạp:</em> Giả sử định lý đúng cho mọi cặp chuỗi có tổng độ dài nhỏ hơn $|A| + |B|$.<br>
+        Không mất tính tổng quát, giả sử $|A| \gt |B|$.<br>
+        Vì $AB = BA$, chuỗi $B$ vừa là tiền tố của $AB$, vừa là tiền tố của $BA$. Do đó, $B$ phải là tiền tố của $A$.<br>
+        Ta tách $A$ thành hai phần: $A = B A'$ (với $A'$ là phần đuôi của $A$).<br>
+        Thay cấu trúc $A = B A'$ vào đẳng thức ban đầu $AB = BA$:</p>
+        $$ (B A') B = B (B A') \implies B A' B = B B A' $$
+        <p>Cắt bỏ chuỗi $B$ giống nhau ở phần đầu của cả hai vế, ta thu được:</p>
+        $$ A' B = B A' $$
+        <p>Đây là một phương trình giao hoán mới với cặp chuỗi $(A', B)$. <br>
+        Ta thấy, tổng độ dài $|A'| + |B| \lt |A| + |B|$ (vì độ dài của $B$ đã được triệt tiêu).<br>
+        Theo giả thiết quy nạp, tồn tại một chuỗi $C$ sao cho $A' = C^k$ và $B = C^m$.<br>
+        Quay trở lại biểu diễn của $A$:</p>
+        $$ A = B A' = C^m C^k = C^{m+k} $$
+        <p>Vậy cả $A$ và $B$ đều là các chuỗi lặp lại của $C$. Quy nạp hoàn tất, định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Austria National Olympiad (ÖMO) - Dãy số Đa chu kỳ)</div>
+        Cho một dãy số nguyên vô hạn $a_1, a_2, a_3, \dots$. Biết rằng tồn tại hai số nguyên dương $p$ và $q$ nguyên tố cùng nhau ($\gcd(p, q) = 1$) sao cho từ một chỉ số $N$ nào đó trở đi, dãy số tuần hoàn với chu kỳ $p$ và đồng thời tuần hoàn với chu kỳ $q$ (tức là $a_{i+p} = a_i$ và $a_{i+q} = a_i$ với mọi $i \gt N$). Chứng minh rằng dãy số này cuối cùng sẽ trở thành một dãy hằng số.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Chứng minh dãy số cuối cùng trở thành hằng số tương đương với việc chứng minh dãy có chu kỳ bằng 1 (do $\gcd(p, q) = 1$).<br>
+        Đặt $K = N + p + q$. Ta xét một chỉ số $i \gt K$ bất kỳ. Ta cần chứng minh $a_i = a_{i+1}$.</p>
+
+        <p>Vì $\gcd(p, q) = 1$, theo <strong>Bổ đề Bézout (Định lý 0.2)</strong>, tồn tại các số nguyên không âm $u, v \ge 0$ sao cho $up - vq = 1$ (nếu âm thì ta đổi vai trò của $p$ và $q$).<br>
+        Từ vị trí $i$, ta sẽ "bước tới" bằng các bước có độ dài $p$, và sau đó "bước lùi" bằng các bước có độ dài $q$.</p>
+        <ul>
+            <li>Do dãy có chu kỳ $p$, nếu ta bước tới $u$ lần, giá trị dãy không đổi:
+            $$ a_i = a_{i+p} = a_{i+2p} = \dots = a_{i+up} $$</li>
+            <li>Từ vị trí $i+up$, ta lùi lại $v$ lần với bước $q$. Do dãy có chu kỳ $q$, giá trị không đổi:
+            $$ a_{i+up} = a_{i+up-q} = a_{i+up-2q} = \dots = a_{i+up-vq} $$</li>
+        </ul>
+
+        <p>Kiểm tra chỉ số cuối cùng đạt được:</p>
+        $$ i + up - vq = i + (up - vq) = i + 1 $$
+        <p>Kết nối chuỗi đẳng thức lại với nhau, ta thu được: $a_i = a_{i+1}$.</p>
+
+        <p><strong>Đảm bảo tính hợp lệ của các chỉ số:</strong> Trong quá trình bước tới và bước lùi, chỉ số nhỏ nhất mà ta chạm tới chính là chỉ số xuất phát $i$. Vì $i \gt K \gt N$, mọi chỉ số trong quá trình này đều nằm trong vùng mà dãy số đã có tính tuần hoàn (lớn hơn $N$). Do đó, các đẳng thức thiết lập đều hợp lệ.</p>
+
+        <p>Vì $a_i = a_{i+1}$ với mọi $i \gt K$, từ vị trí $K$ trở đi, các phần tử của dãy số giống nhau. Dãy số trở thành một hằng số. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

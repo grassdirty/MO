@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Đa Thức Phụ & Định Lý Bezout</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình - Tone màu xanh ngọc và tím sao trời */
+            background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(5, 5, 15, 0.95)),
+                        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.4em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #e2e8f0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f1f5f9; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ ĐA THỨC<br>PHƯƠNG PHÁP ĐA THỨC PHỤ VÀ ĐỊNH LÝ BEZOUT</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát giá trị của đa thức tại một tập hợp điểm cho trước là một bài toán nền tảng trong Đại số. Dựa trên định lý cơ bản của đại số, một đa thức bậc $n$ hoàn toàn được xác định nếu biết giá trị của nó tại $n+1$ điểm phân biệt. Chuyên đề này phân tích phương pháp xây dựng đa thức phụ thông qua Định lý Bezout để giải quyết lớp bài toán nội suy và tính toán giá trị đa thức trong các kỳ thi Olympic Toán học.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Nghiệm của đa thức và phép chia đa thức</div>
+            <div class="box-body">
+                Cho đa thức $P(x)$ với hệ số thực. Số thực $\alpha$ được gọi là nghiệm của $P(x)$ nếu $P(\alpha) = 0$. <br>
+                Định lý Bezout khẳng định rằng phần dư trong phép chia đa thức $P(x)$ cho nhị thức $(x - \alpha)$ chính là $P(\alpha)$.
+            </div>
+        </div>
+
+        <p>Từ định nghĩa trên, ta có một hệ quả trực tiếp là định lý phân tích nhân tử:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Định lý phân tích nhân tử (Factor Theorem)</div>
+            <div class="box-body">
+                Một đa thức $P(x)$ bậc $n$ có $k$ nghiệm phân biệt $x_1, x_2, \dots, x_k$ (với $k \le n$) khi và chỉ khi nó có thể được biểu diễn dưới dạng:
+                $$ P(x) = (x - x_1)(x - x_2)\dots(x - x_k)Q(x) $$
+                trong đó $Q(x)$ là một đa thức có bậc $n - k$.<br>
+                Đặc biệt, nếu $k = n$, thì $Q(x)$ là một hằng số $c$, chính là hệ số dẫn đầu của đa thức $P(x)$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Áp dụng định lý chia đa thức, do $x_1$ là nghiệm của $P(x)$, $P(x) = (x-x_1)P_1(x)$. <br>
+            Vì $x_2$ là nghiệm của $P(x)$ và $x_2 \neq x_1$, ta có $P(x_2) = (x_2 - x_1)P_1(x_2) = 0 \implies P_1(x_2) = 0$.<br>
+            Tiếp tục quá trình này $k$ lần, ta thu được biểu diễn $P(x) = (x - x_1)\dots(x - x_k)Q(x)$. <br>
+            Bậc của $P(x)$ là tổng bậc của các nhân tử, do đó $\deg(Q) = n - k$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Sự xác định duy nhất của đa thức</div>
+            <div class="box-body">
+                Nếu hai đa thức $P(x)$ và $R(x)$ có bậc không vượt quá $n$ và nhận cùng giá trị tại $n+1$ điểm phân biệt, thì $P(x) \equiv R(x)$ với mọi $x$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xét đa thức hiệu $H(x) = P(x) - R(x)$. Bậc của $H(x)$ không vượt quá $n$.<br>
+            Theo giả thiết, $H(x)$ có $n+1$ nghiệm phân biệt. <br>
+            Theo Định lý 1, nếu $H(x)$ không phải là đa thức không, số nghiệm tối đa của nó chỉ là $n$. <br>
+            Sự tồn tại $n+1$ nghiệm buộc $H(x)$ phải là đa thức không, tức là $P(x) = R(x)$ với mọi $x$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (USAMO 1975)</div>
+            <div class="box-body">
+                Cho $P(x)$ là một đa thức bậc $n$ thỏa mãn điều kiện:
+                $$ P(k) = \frac{k}{k+1} \quad \text{với } k = 0, 1, 2, \dots, n $$
+                Hãy tính giá trị của $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ giả thiết $P(k) = \frac{k}{k+1}$, ta suy ra phương trình $(k+1)P(k) - k = 0$ đúng với $k = 0, 1, \dots, n$.<br>
+            Xét đa thức phụ:
+            $$ Q(x) = (x+1)P(x) - x $$
+            Bậc của $P(x)$ là $n$, do đó bậc của $Q(x)$ là $n+1$.<br>
+            Đa thức $Q(x)$ có $n+1$ nghiệm phân biệt là $x \in \{0, 1, \dots, n\}$.<br>
+            Theo Định lý phân tích nhân tử (Định lý 1), $Q(x)$ được viết dưới dạng:
+            $$ Q(x) = c \cdot x(x-1)(x-2)\dots(x-n) $$
+            trong đó $c$ là một hằng số thực khác không.<br>
+            Để xác định $c$, ta cần tìm một giá trị $x$ sao cho vế trái $(x+1)P(x) - x$ triệt tiêu thành phần chứa $P(x)$. <br>
+            Chọn $x = -1$, ta có:
+            $$ Q(-1) = (-1+1)P(-1) - (-1) = 1 $$
+            Thay $x = -1$ vào dạng phân tích của $Q(x)$:
+            $$ Q(-1) = c(-1)(-2)(-3)\dots(-n-1) = c \cdot (-1)^{n+1} \cdot (n+1)! $$
+            Đồng nhất hai giá trị của $Q(-1)$, ta thu được:
+            $$ c \cdot (-1)^{n+1} (n+1)! = 1 \implies c = \frac{(-1)^{n+1}}{(n+1)!} $$
+            Bây giờ, ta cần tính $P(n+1)$. Thay $x = n+1$ vào đa thức phụ $Q(x)$:
+            $$ Q(n+1) = (n+2)P(n+1) - (n+1) $$
+            Mặt khác, thay $x = n+1$ vào dạng phân tích nhân tử:
+            $$ Q(n+1) = c(n+1)(n)(n-1)\dots(1) = c \cdot (n+1)! $$
+            Thay giá trị của $c$ vào biểu thức trên:
+            $$ Q(n+1) = \frac{(-1)^{n+1}}{(n+1)!} \cdot (n+1)! = (-1)^{n+1} $$
+            Từ đó, ta thiết lập được phương trình:
+            $$ (n+2)P(n+1) - (n+1) = (-1)^{n+1} $$
+            Giải phương trình này để tìm $P(n+1)$:
+            $$ P(n+1) = \frac{n+1 + (-1)^{n+1}}{n+2} $$
+            Đây là giá trị cần tìm.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Polish Mathematical Olympiad)</div>
+            <div class="box-body">
+                Cho $P(x)$ là một đa thức bậc $n$ thỏa mãn $P(k) = \frac{1}{k+1}$ với $k = 0, 1, 2, \dots, n$. Tính giá trị của $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = (x+1)P(x) - 1$. <br>
+            Vì $P(x)$ có bậc $n$, $Q(x)$ là đa thức bậc $n+1$.<br>
+            Từ giả thiết, $Q(k) = 0$ với mọi $k \in \{0, 1, \dots, n\}$. Đa thức $Q(x)$ có $n+1$ nghiệm phân biệt.<br>
+            Ta phân tích $Q(x)$:
+            $$ Q(x) = c \cdot x(x-1)(x-2)\dots(x-n) $$
+            Chọn $x = -1$ để triệt tiêu $P(x)$ trong phương trình $Q(x) = (x+1)P(x) - 1$:
+            $$ Q(-1) = 0 \cdot P(-1) - 1 = -1 $$
+            Mặt khác, thay $x = -1$ vào dạng nhân tử:
+            $$ Q(-1) = c(-1)(-2)\dots(-n-1) = c(-1)^{n+1}(n+1)! $$
+            Suy ra:
+            $$ c(-1)^{n+1}(n+1)! = -1 \implies c = \frac{-1}{(-1)^{n+1}(n+1)!} = \frac{(-1)^n}{(n+1)!} $$
+            Để tìm $P(n+1)$, ta thay $x = n+1$ vào $Q(x)$:
+            $$ Q(n+1) = (n+2)P(n+1) - 1 $$
+            Và $Q(n+1) = c \cdot (n+1)! = \frac{(-1)^n}{(n+1)!} \cdot (n+1)! = (-1)^n$.<br>
+            Từ đó:
+            $$ (n+2)P(n+1) - 1 = (-1)^n \implies P(n+1) = \frac{1 + (-1)^n}{n+2} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Japan Mathematical Olympiad 1994)</div>
+            <div class="box-body">
+                Cho đa thức $P(x)$ bậc $n$ thỏa mãn $P(k) = \frac{1}{k}$ với mọi $k = 1, 2, \dots, n+1$. Tìm $P(n+2)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = xP(x) - 1$. <br>
+            Bậc của $Q(x)$ là $n+1$. Các nghiệm của $Q(x)$ là $x \in \{1, 2, \dots, n+1\}$.<br>
+            Do đó, $Q(x)$ được phân tích thành:
+            $$ Q(x) = c(x-1)(x-2)\dots(x-n-1) $$
+            Chọn $x = 0$ để triệt tiêu $P(x)$ trong biểu thức $Q(x) = xP(x) - 1$:
+            $$ Q(0) = 0 \cdot P(0) - 1 = -1 $$
+            Thay $x = 0$ vào dạng nhân tử:
+            $$ Q(0) = c(-1)(-2)\dots(-n-1) = c(-1)^{n+1}(n+1)! $$
+            Suy ra:
+            $$ c = \frac{-1}{(-1)^{n+1}(n+1)!} = \frac{(-1)^n}{(n+1)!} $$
+            Tính giá trị tại $x = n+2$:
+            $$ Q(n+2) = (n+2)P(n+2) - 1 $$
+            Và $Q(n+2) = c(n+1)(n)\dots(1) = c(n+1)! = (-1)^n$.<br>
+            Giải phương trình:
+            $$ (n+2)P(n+2) - 1 = (-1)^n \implies P(n+2) = \frac{1 + (-1)^n}{n+2} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (All-Russian Olympiad)</div>
+            <div class="box-body">
+                Cho $P(x)$ là đa thức bậc $n$ thỏa mãn $P(k) = \frac{k^2}{k+1}$ với $k = 0, 1, \dots, n$. Tìm $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = (x+1)P(x) - x^2$. <br>
+            Đa thức $Q(x)$ có bậc $n+1$ và có $n+1$ nghiệm phân biệt $0, 1, \dots, n$.<br>
+            Dạng phân tích nhân tử:
+            $$ Q(x) = c \cdot x(x-1)\dots(x-n) $$
+            Triệt tiêu $P(x)$ bằng cách chọn $x = -1$:
+            $$ Q(-1) = 0 \cdot P(-1) - (-1)^2 = -1 $$
+            Thay $x = -1$ vào dạng nhân tử:
+            $$ c(-1)(-2)\dots(-n-1) = -1 \implies c(-1)^{n+1}(n+1)! = -1 \implies c = \frac{(-1)^n}{(n+1)!} $$
+            Tính giá trị tại $x = n+1$:
+            $$ Q(n+1) = (n+2)P(n+1) - (n+1)^2 $$
+            Và $Q(n+1) = c(n+1)! = (-1)^n$.<br>
+            Từ đó, ta có phương trình:
+            $$ (n+2)P(n+1) - (n+1)^2 = (-1)^n \implies P(n+1) = \frac{(n+1)^2 + (-1)^n}{n+2} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (China Girls Math Olympiad)</div>
+            <div class="box-body">
+                Cho $P(x)$ là đa thức bậc $n$ thỏa mãn $P(k) = \frac{1}{2k+1}$ với $k = 0, 1, \dots, n$. Tìm $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = (2x+1)P(x) - 1$.<br>
+            Bậc của $Q(x)$ là $n+1$. Tập nghiệm của $Q(x)$ là $0, 1, \dots, n$.<br>
+            Dạng nhân tử của $Q(x)$ là:
+            $$ Q(x) = c \cdot x(x-1)\dots(x-n) $$
+            Chọn $x = -\frac{1}{2}$ để triệt tiêu $P(x)$:
+            $$ Q\left(-\frac{1}{2}\right) = 0 \cdot P\left(-\frac{1}{2}\right) - 1 = -1 $$
+            Thay $x = -\frac{1}{2}$ vào dạng nhân tử:
+            $$ Q\left(-\frac{1}{2}\right) = c\left(-\frac{1}{2}\right)\left(-\frac{3}{2}\right)\dots\left(-\frac{2n+1}{2}\right) = c \cdot (-1)^{n+1} \frac{(2n+1)!!}{2^{n+1}} $$
+            Đồng nhất giá trị:
+            $$ c (-1)^{n+1} \frac{(2n+1)!!}{2^{n+1}} = -1 \implies c = \frac{(-1)^n 2^{n+1}}{(2n+1)!!} $$
+            Tính $Q(n+1)$:
+            $$ Q(n+1) = (2n+3)P(n+1) - 1 $$
+            Và $Q(n+1) = c(n+1)! = \frac{(-1)^n 2^{n+1} (n+1)!}{(2n+1)!!}$.<br>
+            Suy ra:
+            $$ P(n+1) = \frac{1 + \frac{(-1)^n 2^{n+1} (n+1)!}{(2n+1)!!}}{2n+3} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Austrian National Olympiad)</div>
+            <div class="box-body">
+                Cho đa thức $P(x)$ bậc $n$ thỏa mãn $P(k) = k$ với $k = 0, 1, \dots, n-1$ và $P(n) = 0$. Tìm $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = P(x) - x$. <br>
+            Bậc của $Q(x)$ là $n$. Đa thức $Q(x)$ có $n$ nghiệm là $0, 1, \dots, n-1$.<br>
+            Ta biểu diễn $Q(x)$ dưới dạng:
+            $$ Q(x) = c \cdot x(x-1)\dots(x-n+1) $$
+            Để tìm $c$, ta sử dụng giả thiết cuối cùng $P(n) = 0$.<br>
+            Thay $x = n$ vào đa thức phụ:
+            $$ Q(n) = P(n) - n = 0 - n = -n $$
+            Thay $x = n$ vào dạng nhân tử:
+            $$ Q(n) = c \cdot n(n-1)\dots(1) = c \cdot n! $$
+            Đồng nhất hai giá trị:
+            $$ c \cdot n! = -n \implies c = \frac{-n}{n!} = \frac{-1}{(n-1)!} $$
+            Do đó, $Q(x) = -\frac{1}{(n-1)!} x(x-1)\dots(x-n+1)$.<br>
+            Để tính $P(n+1)$, ta thay $x = n+1$ vào $Q(x)$:
+            $$ Q(n+1) = P(n+1) - (n+1) $$
+            Và $Q(n+1) = -\frac{1}{(n-1)!} (n+1)n\dots 2 = -n(n+1)$.<br>
+            Từ đó:
+            $$ P(n+1) - (n+1) = -n(n+1) \implies P(n+1) = (n+1) - n(n+1) = 1 - n^2 $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Bulgarian National Olympiad)</div>
+            <div class="box-body">
+                Cho $P(x)$ là đa thức bậc $n$ thỏa mãn $P(k) = \frac{k+1}{k}$ với $k = 1, 2, \dots, n+1$. Tìm $P(n+2)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = xP(x) - (x+1)$.<br>
+            Đa thức $Q(x)$ có bậc $n+1$ và tập nghiệm là $1, 2, \dots, n+1$.<br>
+            Dạng nhân tử:
+            $$ Q(x) = c(x-1)(x-2)\dots(x-n-1) $$
+            Triệt tiêu $P(x)$ bằng cách chọn $x = 0$:
+            $$ Q(0) = 0 \cdot P(0) - (0+1) = -1 $$
+            Thay $x = 0$ vào dạng nhân tử:
+            $$ Q(0) = c(-1)(-2)\dots(-n-1) = c(-1)^{n+1}(n+1)! $$
+            Suy ra:
+            $$ c(-1)^{n+1}(n+1)! = -1 \implies c = \frac{(-1)^n}{(n+1)!} $$
+            Tính giá trị tại $x = n+2$:
+            $$ Q(n+2) = (n+2)P(n+2) - (n+3) $$
+            Và $Q(n+2) = c(n+1)! = (-1)^n$.<br>
+            Giải phương trình:
+            $$ (n+2)P(n+2) - (n+3) = (-1)^n \implies P(n+2) = \frac{n+3 + (-1)^n}{n+2} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Spanish Mathematical Olympiad)</div>
+            <div class="box-body">
+                Đa thức $P(x)$ có bậc $n$ thỏa mãn $P(k) = 2k$ với $k = 0, 1, \dots, n-1$ và $P(n) = 2n+1$. Tính $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức phụ $Q(x) = P(x) - 2x$.<br>
+            Bậc của $Q(x)$ là $n$. Đa thức này có $n$ nghiệm là $0, 1, \dots, n-1$.<br>
+            Dạng nhân tử:
+            $$ Q(x) = c \cdot x(x-1)\dots(x-n+1) $$
+            Sử dụng dữ kiện $P(n) = 2n+1$ để xác định $c$:
+            $$ Q(n) = P(n) - 2n = 2n+1 - 2n = 1 $$
+            Thay $x = n$ vào dạng nhân tử:
+            $$ Q(n) = c \cdot n(n-1)\dots(1) = c \cdot n! $$
+            Đồng nhất giá trị:
+            $$ c \cdot n! = 1 \implies c = \frac{1}{n!} $$
+            Tính giá trị tại $x = n+1$:
+            $$ Q(n+1) = P(n+1) - 2(n+1) $$
+            Và $Q(n+1) = \frac{1}{n!} (n+1)n\dots 2 = n+1$.<br>
+            Giải phương trình:
+            $$ P(n+1) - 2n - 2 = n+1 \implies P(n+1) = 3n + 3 $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Romanian National Olympiad)</div>
+            <div class="box-body">
+                Cho $P(x)$ là đa thức bậc $n$ thỏa mãn $P(k) = 2^k$ với $k = 0, 1, \dots, n$. Tính giá trị của $P(n+1)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Với tập hợp điểm $0, 1, \dots, n$, đa thức $P(x)$ có thể được biểu diễn chính xác thông qua cơ sở đa thức Newton:
+            $$ P(x) = \sum_{j=0}^n \Delta^j P(0) \binom{x}{j} $$
+            Trong đó toán tử sai phân tiến được định nghĩa là $\Delta P(x) = P(x+1) - P(x)$.<br>
+            Vì $P(k) = 2^k$ trên tập các số nguyên $0 \le k \le n$, sai phân bậc nhất là:
+            $$ \Delta P(k) = 2^{k+1} - 2^k = 2^k $$
+            Bằng phép quy nạp, ta dễ dàng chứng minh được mọi sai phân bậc $j$ tại $0$ đều có giá trị bằng 1:
+            $$ \Delta^j P(0) = 1 \quad \forall j \le n $$
+            Thay vào biểu diễn Newton, ta thu được phương trình hiển của đa thức $P(x)$:
+            $$ P(x) = \sum_{j=0}^n \binom{x}{j} $$
+            Để tìm $P(n+1)$, ta thay $x = n+1$ vào tổng trên:
+            $$ P(n+1) = \sum_{j=0}^n \binom{n+1}{j} $$
+            Sử dụng hằng đẳng thức tổng các hệ số nhị thức $\sum_{j=0}^{n+1} \binom{n+1}{j} = 2^{n+1}$.<br>
+            Biểu thức cần tính thiếu đi số hạng cuối cùng $j = n+1$, do đó:
+            $$ P(n+1) = 2^{n+1} - \binom{n+1}{n+1} = 2^{n+1} - 1 $$
+            Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

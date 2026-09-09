@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Bất Đẳng Thức Cauchy-Schwarz Dạng Phân Thức</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình - Tone màu xanh tím huyền ảo */
+            background: linear-gradient(rgba(10, 8, 25, 0.8), rgba(2, 5, 12, 0.9)),
+                        url('https://images.unsplash.com/photo-1464802686167-b939a6910659?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(18, 20, 35, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #38bdf8;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #e2e8f0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f1f5f9;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f1f5f9; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ VÀ BẤT ĐẲNG THỨC<br>BẤT ĐẲNG THỨC CAUCHY-SCHWARZ DẠNG PHÂN THỨC (BỔ ĐỀ TITU)</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Đánh giá cực trị của các biểu thức phân thức là một kỹ thuật trọng tâm trong chuyên ngành Đại số Bất đẳng thức. Bằng việc áp dụng Bất đẳng thức Cauchy-Schwarz dưới dạng phân thức (còn được gọi là Bổ đề Titu), các bài toán chứa đại lượng nghịch đảo có thể được tuyến tính hóa mẫu số và cô lập các bình phương trên tử số. Chuyên đề này trình bày cơ sở lý thuyết của hệ bất đẳng thức này và áp dụng để giải quyết các bài toán tối ưu trong hệ thống các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Bất đẳng thức Cauchy-Schwarz</div>
+            <div class="box-body">
+                Với hai dãy số thực tùy ý $(a_1, a_2, \dots, a_n)$ và $(b_1, b_2, \dots, b_n)$, ta luôn có bất đẳng thức:
+                $$ \left( \sum_{i=1}^n a_i^2 \right) \left( \sum_{i=1}^n b_i^2 \right) \ge \left( \sum_{i=1}^n a_i b_i \right)^2 $$
+                Dấu đẳng thức xảy ra khi và chỉ khi hai dãy số tỷ lệ với nhau, tức là tồn tại hằng số $k$ sao cho $a_i = k b_i$ với mọi $i \in \{1, 2, \dots, n\}$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xét tam thức bậc hai đối với biến số thực $x$:
+            $$ f(x) = \sum_{i=1}^n (a_i x - b_i)^2 $$
+            Bởi vì bình phương của mọi số thực luôn không âm, ta có $f(x) \ge 0$ với mọi $x \in \mathbb{R}$.<br>
+            Khai triển biểu thức của $f(x)$:
+            $$ f(x) = x^2 \left( \sum_{i=1}^n a_i^2 \right) - 2x \left( \sum_{i=1}^n a_i b_i \right) + \left( \sum_{i=1}^n b_i^2 \right) $$
+            Đặt $A = \sum_{i=1}^n a_i^2$, $B = \sum_{i=1}^n a_i b_i$, $C = \sum_{i=1}^n b_i^2$. <br>
+            Tam thức $f(x) = Ax^2 - 2Bx + C \ge 0$ với mọi $x$. <br>
+            Nếu $A = 0$, thì $a_i = 0$ với mọi $i$, bất đẳng thức hiển nhiên đúng.<br>
+            Nếu $A &gt; 0$, điều kiện để tam thức luôn không âm là biệt thức suy rộng $\Delta' \le 0$:
+            $$ \Delta' = B^2 - AC \le 0 \implies B^2 \le AC $$
+            Thay các giá trị $A, B, C$ trở lại, ta thu được bất đẳng thức Cauchy-Schwarz. Dấu đẳng thức xảy ra khi tam thức có nghiệm kép, tức là $a_i x - b_i = 0$, hay $a_i$ tỷ lệ với $b_i$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <p>Từ định lý trên, bằng phép đặt biến số thích hợp, ta thu được hệ quả trực tiếp được sử dụng rất phổ biến trong giải toán đại số phân thức.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Bất đẳng thức Cauchy-Schwarz dạng phân thức (Bổ đề Titu)</div>
+            <div class="box-body">
+                Cho hai dãy số thực $(x_1, x_2, \dots, x_n)$ và $(y_1, y_2, \dots, y_n)$, trong đó $y_i &gt; 0$ với mọi $i \in \{1, 2, \dots, n\}$. Ta có:
+                $$ \sum_{i=1}^n \frac{x_i^2}{y_i} \ge \frac{\left( \sum_{i=1}^n x_i \right)^2}{\sum_{i=1}^n y_i} $$
+                Dấu đẳng thức xảy ra khi và chỉ khi $\frac{x_1}{y_1} = \frac{x_2}{y_2} = \dots = \frac{x_n}{y_n}$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Áp dụng Bất đẳng thức Cauchy-Schwarz (Định lý 1) cho hai dãy số $a_i = \frac{x_i}{\sqrt{y_i}}$ và $b_i = \sqrt{y_i}$. <br>
+            Lưu ý rằng $y_i &gt; 0$ đảm bảo tính hợp lệ của phép khai căn và phép chia. Ta có:
+            $$ \left( \sum_{i=1}^n \left( \frac{x_i}{\sqrt{y_i}} \right)^2 \right) \left( \sum_{i=1}^n (\sqrt{y_i})^2 \right) \ge \left( \sum_{i=1}^n \frac{x_i}{\sqrt{y_i}} \cdot \sqrt{y_i} \right)^2 $$
+            Rút gọn biểu thức:
+            $$ \left( \sum_{i=1}^n \frac{x_i^2}{y_i} \right) \left( \sum_{i=1}^n y_i \right) \ge \left( \sum_{i=1}^n x_i \right)^2 $$
+            Chia cả hai vế cho $\sum_{i=1}^n y_i &gt; 0$, ta thu được điều phải chứng minh.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Mexican Mathematical Olympiad (OMM) 2007)</div>
+            <div class="box-body">
+                Cho $a, b, c$ là các số thực dương thỏa mãn điều kiện $a+b+c=3$. Chứng minh rằng:
+                $$ \frac{a^2}{c+1} + \frac{b^2}{a+1} + \frac{c^2}{b+1} \ge \frac{3}{2} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Áp dụng Bất đẳng thức Cauchy-Schwarz dạng phân thức (Định lý 2) cho ba bộ số $(x_1, x_2, x_3) = (a, b, c)$ và $(y_1, y_2, y_3) = (c+1, a+1, b+1)$.<br>
+            Ta có:
+            $$ \frac{a^2}{c+1} + \frac{b^2}{a+1} + \frac{c^2}{b+1} \ge \frac{(a+b+c)^2}{(c+1) + (a+1) + (b+1)} $$
+            Rút gọn mẫu số ở vế phải:
+            $$ (c+1) + (a+1) + (b+1) = a + b + c + 3 $$
+            Thay điều kiện $a+b+c=3$ vào biểu thức:
+            $$ \frac{(a+b+c)^2}{a+b+c+3} = \frac{3^2}{3+3} = \frac{9}{6} = \frac{3}{2} $$
+            Bất đẳng thức được chứng minh. Dấu đẳng thức xảy ra khi và chỉ khi $\frac{a}{c+1} = \frac{b}{a+1} = \frac{c}{b+1}$. Kết hợp với $a+b+c=3$, ta tìm được nghiệm $a=b=c=1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (South African Mathematical Olympiad (SAMO) 1999)</div>
+            <div class="box-body">
+                Cho $a, b, c$ là các số thực dương. Chứng minh rằng:
+                $$ \frac{a^2}{b} + \frac{b^2}{c} + \frac{c^2}{a} \ge a + b + c $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Áp dụng Định lý 2 với $x_1=a, x_2=b, x_3=c$ và $y_1=b, y_2=c, y_3=a$:
+            $$ \frac{a^2}{b} + \frac{b^2}{c} + \frac{c^2}{a} \ge \frac{(a+b+c)^2}{b+c+a} $$
+            Đơn giản biểu thức ở vế phải:
+            $$ \frac{(a+b+c)^2}{a+b+c} = a + b + c $$
+            Bất đẳng thức được chứng minh. Dấu đẳng thức xảy ra khi $\frac{a}{b} = \frac{b}{c} = \frac{c}{a} \implies a=b=c$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Cyprus National Olympiad)</div>
+            <div class="box-body">
+                Cho $a, b, c$ là các số thực dương. Chứng minh rằng:
+                $$ \frac{a^2}{a+b} + \frac{b^2}{b+c} + \frac{c^2}{c+a} \ge \frac{a+b+c}{2} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Áp dụng Định lý 2 với tử số là $a, b, c$ và mẫu số tương ứng là $a+b, b+c, c+a$:
+            $$ \frac{a^2}{a+b} + \frac{b^2}{b+c} + \frac{c^2}{c+a} \ge \frac{(a+b+c)^2}{(a+b) + (b+c) + (c+a)} $$
+            Tính tổng ở mẫu số vế phải:
+            $$ (a+b) + (b+c) + (c+a) = 2(a+b+c) $$
+            Thay vào biểu thức:
+            $$ \frac{(a+b+c)^2}{2(a+b+c)} = \frac{a+b+c}{2} $$
+            Bất đẳng thức được chứng minh. Dấu đẳng thức xảy ra khi $a=b=c$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Greek Mathematical Olympiad 2008)</div>
+            <div class="box-body">
+                Cho các số thực dương $x, y, z$. Chứng minh bất đẳng thức:
+                $$ \frac{x^2}{y+z} + \frac{y^2}{z+x} + \frac{z^2}{x+y} \ge \frac{x+y+z}{2} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Áp dụng Bổ đề Titu (Định lý 2) đối với biểu thức vế trái:
+            $$ \sum_{cyc} \frac{x^2}{y+z} \ge \frac{(x+y+z)^2}{(y+z) + (z+x) + (x+y)} $$
+            Thu gọn mẫu số vế phải:
+            $$ (y+z) + (z+x) + (x+y) = 2(x+y+z) $$
+            Suy ra:
+            $$ \frac{(x+y+z)^2}{2(x+y+z)} = \frac{x+y+z}{2} $$
+            Bất đẳng thức được chứng minh. Điều kiện đẳng thức là $x=y=z$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Polish Mathematical Olympiad)</div>
+            <div class="box-body">
+                Cho $a, b, c$ là các số thực dương. Chứng minh rằng:
+                $$ \frac{a}{b+2c} + \frac{b}{c+2a} + \frac{c}{a+2b} \ge 1 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Biểu thức ở vế trái chưa có dạng bình phương trên tử số. Ta thực hiện nhân cả tử và mẫu của mỗi phân thức tương ứng với $a, b, c$:
+            $$ \frac{a^2}{ab+2ac} + \frac{b^2}{bc+2ab} + \frac{c^2}{ca+2bc} $$
+            Áp dụng Định lý 2 cho biểu thức vừa biến đổi:
+            $$ \sum_{cyc} \frac{a^2}{ab+2ac} \ge \frac{(a+b+c)^2}{(ab+2ac) + (bc+2ab) + (ca+2bc)} $$
+            Tổng mẫu số là:
+            $$ ab+2ac+bc+2ab+ca+2bc = 3(ab+bc+ca) $$
+            Ta cần chứng minh:
+            $$ \frac{(a+b+c)^2}{3(ab+bc+ca)} \ge 1 \iff (a+b+c)^2 \ge 3(ab+bc+ca) $$
+            Khai triển hằng đẳng thức:
+            $$ a^2+b^2+c^2+2(ab+bc+ca) \ge 3(ab+bc+ca) \iff a^2+b^2+c^2 \ge ab+bc+ca $$
+            Bất đẳng thức cuối cùng luôn đúng do tương đương với $\frac{1}{2}((a-b)^2+(b-c)^2+(c-a)^2) \ge 0$. Do đó, khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Irish Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Cho các số thực dương $a, b, c$. Chứng minh rằng:
+                $$ \frac{a}{b+c} + \frac{b}{c+a} + \frac{c}{a+b} \ge \frac{3}{2} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Tương tự bài toán trước, nhân cả tử và mẫu với các biến tương ứng để tạo dạng bình phương:
+            $$ \frac{a^2}{ab+ac} + \frac{b^2}{bc+ab} + \frac{c^2}{ca+bc} $$
+            Áp dụng Định lý 2:
+            $$ \sum_{cyc} \frac{a^2}{ab+ac} \ge \frac{(a+b+c)^2}{(ab+ac) + (bc+ab) + (ca+bc)} = \frac{(a+b+c)^2}{2(ab+bc+ca)} $$
+            Ta cần chứng minh:
+            $$ \frac{(a+b+c)^2}{2(ab+bc+ca)} \ge \frac{3}{2} \iff (a+b+c)^2 \ge 3(ab+bc+ca) $$
+            Khẳng định này tương đương với $a^2+b^2+c^2 \ge ab+bc+ca$, là một bất đẳng thức đại số cơ bản.<br>
+            Bài toán được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Algerian National Olympiad (ALMO))</div>
+            <div class="box-body">
+                Cho ba số thực dương $a, b, c$ thỏa mãn điều kiện $a+b+c=1$. Chứng minh rằng:
+                $$ \frac{a^2}{b+c} + \frac{b^2}{c+a} + \frac{c^2}{a+b} \ge \frac{1}{2} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng Định lý 2 cho biểu thức vế trái:
+            $$ \frac{a^2}{b+c} + \frac{b^2}{c+a} + \frac{c^2}{a+b} \ge \frac{(a+b+c)^2}{(b+c)+(c+a)+(a+b)} = \frac{(a+b+c)^2}{2(a+b+c)} = \frac{a+b+c}{2} $$
+            Sử dụng điều kiện bài toán $a+b+c=1$, ta thế giá trị vào vế phải:
+            $$ \frac{a+b+c}{2} = \frac{1}{2} $$
+            Bất đẳng thức được chứng minh. Dấu đẳng thức xảy ra khi $a=b=c=\frac{1}{3}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (British Mathematical Olympiad (BMO))</div>
+            <div class="box-body">
+                Cho $a, b, c$ là các số thực dương. Chứng minh bất đẳng thức:
+                $$ \frac{a^3}{b} + \frac{b^3}{c} + \frac{c^3}{a} \ge a^2 + b^2 + c^2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phân thức ở vế trái chứa lũy thừa bậc ba. Nhằm áp dụng Định lý 2, ta nhân cả tử và mẫu với $a, b, c$ để tạo ra bậc chẵn (bậc 4) trên tử số:
+            $$ \frac{a^4}{ab} + \frac{b^4}{bc} + \frac{c^4}{ca} $$
+            Lúc này, biểu thức tử số có dạng $(a^2)^2$. Áp dụng Bổ đề Titu:
+            $$ \frac{(a^2)^2}{ab} + \frac{(b^2)^2}{bc} + \frac{(c^2)^2}{ca} \ge \frac{(a^2+b^2+c^2)^2}{ab+bc+ca} $$
+            Để hoàn tất chứng minh, ta thiết lập bất đẳng thức sau:
+            $$ \frac{(a^2+b^2+c^2)^2}{ab+bc+ca} \ge a^2+b^2+c^2 $$
+            Khẳng định trên tương đương với:
+            $$ (a^2+b^2+c^2)^2 \ge (a^2+b^2+c^2)(ab+bc+ca) \iff a^2+b^2+c^2 \ge ab+bc+ca $$
+            Vì bất đẳng thức $a^2+b^2+c^2 \ge ab+bc+ca$ luôn đúng với mọi số thực, bất đẳng thức ban đầu được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Croatian National Olympiad)</div>
+            <div class="box-body">
+                Cho bốn số thực dương $a, b, c, d$. Chứng minh rằng:
+                $$ \frac{a^2}{a+b} + \frac{b^2}{b+c} + \frac{c^2}{c+d} + \frac{d^2}{d+a} \ge \frac{a+b+c+d}{2} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Bất đẳng thức Cauchy-Schwarz dạng phân thức hoàn toàn có thể áp dụng cho $n$ biến. Áp dụng Định lý 2 với $n=4$:
+            $$ \sum_{cyc} \frac{a^2}{a+b} \ge \frac{(a+b+c+d)^2}{(a+b)+(b+c)+(c+d)+(d+a)} $$
+            Thu gọn mẫu số vế phải:
+            $$ (a+b)+(b+c)+(c+d)+(d+a) = 2(a+b+c+d) $$
+            Từ đó, ta có:
+            $$ \frac{(a+b+c+d)^2}{2(a+b+c+d)} = \frac{a+b+c+d}{2} $$
+            Bất đẳng thức được chứng minh. Dấu đẳng thức xảy ra khi và chỉ khi $a=b=c=d$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

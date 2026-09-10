@@ -368,9 +368,9 @@
             { n:58, file:'index58.html', cat:'comb',  title:'Toán rời rạc và Lý thuyết trò chơi - Phép cộng Nim và Định lý Sprague-Grundy',          desc:'Phép cộng Nim và định lý Sprague-Grundy trong lý thuyết trò chơi.' },
             { n:59, file:'index59.html', cat:'comb',  title:'Hình học Tổ hợp - Nguyên lý Phản xạ André và Cấu trúc Catalan',                          desc:'Nguyên lý phản xạ André và cấu trúc số Catalan.' },
             { n:60, file:'index60.html', cat:'comb',  title:'Đại số Tổ hợp - Lưới nghiệm đơn vị và Tổng các hệ số cách đều',                          desc:'Kỹ thuật roots-of-unity filter để trích xuất tổng hệ số cách đều.' },
-            { n:61, file:'index61.html', cat:'nt',    title:'Số học Tổ hợp — Tích chập Dirichlet și Nghịч đảо Möbius',                        desc:'Tích chập Dirichlet și обратная формула Möbius pentru a преобразovать сумы по делителям.' },
-            { n:62, file:'index62.html', cat:'comb',  title:'Đai algebra Tổ hợp — Không gian Vector над Z₂ și Hệ cơ сɵвы độк лый',            desc:'Множества как бинарные векторы над Z₂: ортогональность, ранг матрицы, граф-модели.' },
-            { n:63, file:'index63.html', cat:'comb',  title:'Đai algebra Tổ hợp — Лwи Young, Phép chèn Schensted și RSK corrеspоndencia',      desc:'Young-таблицы, формула длины крюка и RSK-биекция pentru LIS/LDS.' },
+            { n:61, file:'index61.html', cat:'nt',    title:'Số học Tổ hợp — Tích chập Dirichlet și Nghiș Đao Möbius',                  desc:'Nghiș đao Möbius și Tích chập Dirichlet pentru transformări de sumă peste divizori.' },
+            { n:62, file:'index62.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Không gian Vector trên Z₂ și Hệ liniar independents',         desc:'Vectore binarî pe Z₂ pentru probleme de mulțimi: ortogonalitate și rang de mațrică.' },
+            { n:63, file:'index63.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Lưới Young, Phép chèn Schensted și corespondența RSK',       desc:'Lưới Young, formula de lungime pentru hoán vâști și corespondența RSK pentru LIS și LDS.' },
             { n:1,  file:'vmo1.html',    cat:'poly',  stars:3, title:'Đại số Đa thức & tính chất Số học — Cấu trúc chia hết của đa thức hệ số nguyên',  desc:'Định lý chia hết của đa thức hệ số nguyên và ứng dụng USAMO 1974.' },
             { n:2,  file:'vmo2.html',    cat:'nt',    stars:4, title:'Số học và Đại số — Phương trình Pell và Cấu trúc nghiệm Diophantine bậc hai',      desc:'Phương trình Pell và cấu trúc nghiệm Diophantine bậc hai.' },
             { n:3,  file:'vmo3.html',    cat:'fe',    stars:3, title:'Đại số và Phương trình hàm — Cauchy và các phép biến đổi đồng nhất',              desc:'Phương trình Cauchy và các phép biến đổi đồng nhất.' },
@@ -578,8 +578,8 @@
         })();
         // ============================================================
         //  NGƯỜI ĐANG ONLINE + TRÌNH DUYƏT (heartbeat)
-        //  - Încem primо cu server (PRESENCE_URL); dacă indisponibil -
-        //    mod local (tab-uri активе ale acestui dispozitiv/navigator)
+        //  - Începă cu server (PRESENCE_URL); dacă indisponibil -
+        //    mod local (tab-uri active ale acestui dispozitiv/navigator)
         // ============================================================
         (function () {
             const elOnline = document.getElementById('countOnline');
@@ -614,7 +614,7 @@
             }
             const MY_BROWSER = detectBrowser();
 
-            // ---- mod local (запасной) ----
+            // ---- mod local (de rezervă) ----
             function localMap() {
                 const now = Date.now();
                 let map = {};
@@ -626,7 +626,7 @@
                 return fresh;
             }
 
-            // ---- отрисовка ----
+            // ---- afișare ----
             function browsersFromSessions(map) {
                 const out = {};
                 Object.keys(map).forEach(k => {
@@ -674,7 +674,7 @@
                 }
             }
 
-            // afișeзă imediat, сервер уточнит
+            // afișează imediat, apoi server va rafina
             const m0 = localMap();
             render(Object.keys(m0).length, browsersFromSessions(m0));
             tick();

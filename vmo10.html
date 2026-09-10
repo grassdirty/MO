@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Hệ Thức Newton & Đa Thức Đối Xứng</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình - Tone màu xanh ngọc/tím đậm */
+            background: linear-gradient(to bottom, rgba(8, 15, 30, 0.8), rgba(18, 10, 35, 0.95)),
+                        url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #2dd4bf;
+            border-bottom: 2px solid rgba(45, 212, 191, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ ĐA THỨC VÀ HỆ PHƯƠNG TRÌNH<br>ĐA THỨC ĐỐI XỨNG CƠ BẢN VÀ HỆ THỨC NEWTON</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát cấu trúc của các đa thức đối xứng là một chuyên ngành trọng tâm của Đại số học. Việc biểu diễn các tổng lũy thừa thông qua đa thức đối xứng cơ bản cho phép tuyến tính hóa các hệ phương trình phi tuyến bậc cao. Chuyên đề này tập trung phân tích Định lý cơ bản của đa thức đối xứng và thiết lập Hệ thức Newton, từ đó áp dụng giải quyết các hệ phương trình và bất đẳng thức đại số trong các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Đa thức đối xứng cơ bản</div>
+            <div class="box-body">
+                Cho $n$ biến số $x_1, x_2, \dots, x_n$. Các đa thức đối xứng cơ bản $e_1, e_2, \dots, e_n$ được định nghĩa như sau:
+                \begin{align*}
+                e_1 &= \sum_{i=1}^n x_i \\
+                e_2 &= \sum_{1 \le i < j \le n} x_i x_j \\
+                e_3 &= \sum_{1 \le i < j < k \le n} x_i x_j x_k \\
+                &\dots \\
+                e_n &= x_1 x_2 \dots x_n
+                \end{align*}
+                Quy ước $e_0 = 1$ và $e_k = 0$ với mọi $k > n$.
+            </div>
+        </div>
+
+        <p>Định lý sau đây thiết lập mối liên hệ giữa các đa thức đối xứng cơ bản và phương trình đặc trưng chứa các biến đó.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Định lý Vieta và Đa thức đặc trưng</div>
+            <div class="box-body">
+                Các biến số $x_1, x_2, \dots, x_n$ là các nghiệm của đa thức bậc $n$ sau đây:
+                $$ P(t) = t^n - e_1 t^{n-1} + e_2 t^{n-2} - \dots + (-1)^n e_n = 0 $$
+                Định lý cơ bản của đa thức đối xứng khẳng định rằng: Mọi đa thức đối xứng của các biến $x_1, \dots, x_n$ đều có thể được biểu diễn dưới dạng một đa thức của các biến $e_1, e_2, \dots, e_n$.
+            </div>
+        </div>
+
+        <p>Để tính toán các tổng lũy thừa dạng $p_k = x_1^k + x_2^k + \dots + x_n^k$, ta sử dụng hệ thức truy hồi sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Hệ thức Newton (Newton's Sums)</div>
+            <div class="box-body">
+                Gọi $p_k = \sum_{i=1}^n x_i^k$. Khi đó, với mọi số nguyên dương $k$, ta có hệ thức:
+                $$ p_k - e_1 p_{k-1} + e_2 p_{k-2} - \dots + (-1)^{k-1} e_{k-1} p_1 + (-1)^k k e_k = 0 \quad (\text{nếu } k \le n) $$
+                $$ p_k - e_1 p_{k-1} + e_2 p_{k-2} - \dots + (-1)^n e_n p_{k-n} = 0 \quad (\text{nếu } k > n) $$
+                Riêng với $n=3$, các hệ thức cơ bản thường dùng là:
+                \begin{align*}
+                p_1 &= e_1 \\
+                p_2 &= e_1^2 - 2e_2 \\
+                p_3 &= e_1^3 - 3e_1 e_2 + 3e_3 \quad (\text{từ } p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0)
+                \end{align*}
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Trường hợp $k > n$ được chứng minh trực tiếp bằng cách thay từng nghiệm $x_i$ vào đa thức $P(t)$ ở Định lý 1:
+            $$ x_i^n - e_1 x_i^{n-1} + e_2 x_i^{n-2} - \dots + (-1)^n e_n = 0 $$
+            Nhân hai vế với $x_i^{k-n}$, ta thu được:
+            $$ x_i^k - e_1 x_i^{k-1} + e_2 x_i^{k-2} - \dots + (-1)^n e_n x_i^{k-n} = 0 $$
+            Lấy tổng trên tất cả $i = 1, 2, \dots, n$, ta thu được hệ thức tương ứng cho các đại lượng $p_j$.<br>
+            Trường hợp $k \le n$ được chứng minh chặt chẽ bằng cách sử dụng khai triển đạo hàm logarit của hàm sinh $F(t) = \prod_{i=1}^n (1 - x_i t)$.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Japan Mathematical Olympiad (JMO) 1992)</div>
+            <div class="box-body">
+                Cho ba số thực $x, y, z$ thỏa mãn hệ phương trình:
+                \begin{align*}
+                x + y + z &= 1 \\
+                x^2 + y^2 + z^2 &= 2 \\
+                x^3 + y^3 + z^3 &= 3
+                \end{align*}
+                Tính giá trị của biểu thức $P = x^4 + y^4 + z^4$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $p_k = x^k + y^k + z^k$. Theo giả thiết, ta có $p_1 = 1, p_2 = 2, p_3 = 3$.<br>
+            Mục tiêu là tính $p_4$. Ta xác định các đa thức đối xứng cơ bản $e_1, e_2, e_3$:
+            <ul>
+                <li>Từ định nghĩa, $e_1 = p_1 = 1$.</li>
+                <li>Từ hệ thức Newton thứ nhất: $p_2 - e_1 p_1 + 2e_2 = 0$. Thay số vào:
+                $$ 2 - 1(1) + 2e_2 = 0 \implies 2e_2 = -1 \implies e_2 = -\frac{1}{2} $$</li>
+                <li>Từ hệ thức Newton thứ hai: $p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0$. Thay số vào:
+                $$ 3 - 1(2) + \left(-\frac{1}{2}\right)(1) - 3e_3 = 0 \implies 1 - \frac{1}{2} = 3e_3 \implies \frac{1}{2} = 3e_3 \implies e_3 = \frac{1}{6} $$</li>
+                <li>Áp dụng hệ thức Newton thứ ba cho $k=4$ (với $n=3$, công thức là $p_4 - e_1 p_3 + e_2 p_2 - e_3 p_1 = 0$):
+                $$ p_4 = e_1 p_3 - e_2 p_2 + e_3 p_1 $$</li>
+            </ul>
+            Thay các giá trị $e_1, e_2, e_3$ vừa tìm được vào phương trình:
+            $$ p_4 = 1(3) - \left(-\frac{1}{2}\right)(2) + \left(\frac{1}{6}\right)(1) $$
+            $$ p_4 = 3 + 1 + \frac{1}{6} = 4 + \frac{1}{6} = \frac{25}{6} $$
+            Giá trị của biểu thức là $\frac{25}{6}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (British Mathematical Olympiad (BMO) 1999)</div>
+            <div class="box-body">
+                Tìm tất cả các bộ ba số thực $(x, y, z)$ thỏa mãn hệ phương trình:
+                \begin{align*}
+                x + y + z &= 0 \\
+                x^2 + y^2 + z^2 &= 6 \\
+                x^3 + y^3 + z^3 &= 6
+                \end{align*}
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi các biến là nghiệm của đa thức $t^3 - e_1 t^2 + e_2 t - e_3 = 0$.<br>
+            Theo giả thiết: $e_1 = p_1 = 0$.<br>
+            Tính $e_2$ từ $p_2 = 6$:
+            $$ p_2 = e_1^2 - 2e_2 \implies 6 = 0 - 2e_2 \implies e_2 = -3 $$
+            Tính $e_3$ từ $p_3 = 6$:
+            $$ p_3 - e_1 p_2 + e_2 p_1 - 3e_3 = 0 \implies 6 - 0 + 0 - 3e_3 = 0 \implies e_3 = 2 $$
+            Đa thức đặc trưng là:
+            $$ t^3 - 3t - 2 = 0 $$
+            Phân tích đa thức này thành nhân tử:
+            $$ t^3 - 3t - 2 = t^3 - t - 2t - 2 = t(t-1)(t+1) - 2(t+1) = (t+1)(t^2 - t - 2) = (t+1)^2(t-2) $$
+            Các nghiệm của phương trình là $t = 2$ và $t = -1$ (nghiệm kép).<br>
+            Vì $x, y, z$ là các nghiệm của đa thức này, tập hợp các giá trị của $(x, y, z)$ là các hoán vị của bộ số $(2, -1, -1)$.<br>
+            Các nghiệm là $(2, -1, -1), (-1, 2, -1), (-1, -1, 2)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Romanian National Olympiad 2007)</div>
+            <div class="box-body">
+                Cho $x, y, z \in \mathbb{R}$ thỏa mãn $x+y+z=0$ và $x^2+y^2+z^2=1$. Tính giá trị lớn nhất của biểu thức $P = x^2 y^2 + y^2 z^2 + z^2 x^2$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xác định các đa thức đối xứng cơ bản: $e_1 = 0$ và $p_2 = 1$.<br>
+            Từ $p_2 = e_1^2 - 2e_2$, ta có:
+            $$ 1 = 0 - 2e_2 \implies e_2 = -\frac{1}{2} $$
+            Biểu thức cần tính có thể được biểu diễn qua $e_2$ và $e_3$:
+            $$ P = x^2 y^2 + y^2 z^2 + z^2 x^2 = (xy + yz + zx)^2 - 2xyz(x+y+z) = e_2^2 - 2e_3 e_1 $$
+            Vì $e_1 = 0$, phần sau bị triệt tiêu:
+            $$ P = e_2^2 = \left(-\frac{1}{2}\right)^2 = \frac{1}{4} $$
+            Giá trị của biểu thức $P$ hoàn toàn không phụ thuộc vào $e_3$. Bất kể giá trị của $x, y, z$ là bao nhiêu, miễn là thỏa mãn giả thiết, biểu thức luôn nhận giá trị hằng số. Giá trị lớn nhất của $P$ là $\frac{1}{4}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Austrian National Olympiad 2000)</div>
+            <div class="box-body">
+                Giải hệ phương trình sau trên tập số thực:
+                \begin{align*}
+                x + y + z &= 3 \\
+                x^3 + y^3 + z^3 &= 15 \\
+                x^5 + y^5 + z^5 &= 83
+                \end{align*}
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta có $e_1 = 3, p_3 = 15, p_5 = 83$.<br>
+            Từ hệ thức Newton $p_2 = e_1^2 - 2e_2 = 9 - 2e_2$.<br>
+            Tính $e_3$ từ $p_3$:
+            $$ 15 - 3(9 - 2e_2) + e_2(3) - 3e_3 = 0 \implies 15 - 27 + 6e_2 + 3e_2 - 3e_3 = 0 \implies 9e_2 - 3e_3 = 12 \implies e_3 = 3e_2 - 4 $$
+            Tính $p_4$:
+            $$ p_4 = e_1 p_3 - e_2 p_2 + e_3 p_1 = 3(15) - e_2(9 - 2e_2) + 3e_3 = 45 - 9e_2 + 2e_2^2 + 3e_3 $$
+            Tính $p_5$ bằng hệ thức Newton $p_5 = e_1 p_4 - e_2 p_3 + e_3 p_2$:
+            $$ 83 = 3(45 - 9e_2 + 2e_2^2 + 3e_3) - 15e_2 + e_3(9 - 2e_2) $$
+            Thay $e_3 = 3e_2 - 4$:
+            $$ 83 = 3[45 - 9e_2 + 2e_2^2 + 3(3e_2 - 4)] - 15e_2 + (3e_2 - 4)(9 - 2e_2) $$
+            Rút gọn phần trong ngoặc vuông: $45 - 9e_2 + 2e_2^2 + 9e_2 - 12 = 2e_2^2 + 33$.<br>
+            Phần còn lại: $-15e_2 + 27e_2 - 6e_2^2 - 36 + 8e_2 = -6e_2^2 + 20e_2 - 36$.<br>
+            Tổng vế phải:
+            $$ 3(2e_2^2 + 33) - 6e_2^2 + 20e_2 - 36 = 6e_2^2 + 99 - 6e_2^2 + 20e_2 - 36 = 20e_2 + 63 $$
+            Giải phương trình:
+            $$ 20e_2 + 63 = 83 \implies 20e_2 = 20 \implies e_2 = 1 $$
+            Từ đó $e_3 = 3(1) - 4 = -1$. Đa thức đặc trưng là:
+            $$ t^3 - 3t^2 + t + 1 = 0 \implies (t-1)(t^2 - 2t - 1) = 0 $$
+            Các nghiệm là $t = 1$ và $t = 1 \pm \sqrt{2}$. Bộ nghiệm của hệ là mọi hoán vị của $(1, 1+\sqrt{2}, 1-\sqrt{2})$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Spanish Mathematical Olympiad 2005)</div>
+            <div class="box-body">
+                Cho các số thực $x, y, z$ thỏa mãn $x+y+z=0$. Chứng minh hằng đẳng thức:
+                $$ x^7 + y^7 + z^7 = \frac{7}{10}(x^2 + y^2 + z^2)(x^5 + y^5 + z^5) $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Do $e_1 = 0$, các hệ thức Newton được đơn giản hóa:<br>
+            $p_2 = -2e_2$.<br>
+            $p_3 = 3e_3$.<br>
+            $p_4 = -e_2 p_2 = 2e_2^2$.<br>
+            $p_5 = -e_2 p_3 + e_3 p_2 = -e_2(3e_3) + e_3(-2e_2) = -5e_2 e_3$.<br>
+            $p_6 = -e_2 p_4 + e_3 p_3 = -e_2(2e_2^2) + e_3(3e_3) = -2e_2^3 + 3e_3^2$.<br>
+            $p_7 = -e_2 p_5 + e_3 p_4 = -e_2(-5e_2 e_3) + e_3(2e_2^2) = 5e_2^2 e_3 + 2e_2^2 e_3 = 7e_2^2 e_3$.<br>
+            Bây giờ, ta tính tích của vế phải theo $e_2$ và $e_3$:
+            $$ p_2 \cdot p_5 = (-2e_2)(-5e_2 e_3) = 10e_2^2 e_3 $$
+            Từ đó, ta thiết lập được mối quan hệ tuyến tính:
+            $$ p_7 = 7e_2^2 e_3 = \frac{7}{10} (10e_2^2 e_3) = \frac{7}{10} p_2 p_5 $$
+            Hằng đẳng thức được chứng minh hoàn toàn bằng các phép thay thế đa thức đối xứng.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (All-Russian Olympiad 1999)</div>
+            <div class="box-body">
+                Giải hệ phương trình sau:
+                \begin{align*}
+                x_1 + x_2 + x_3 &= 2 \\
+                x_1^2 + x_2^2 + x_3^2 &= 14 \\
+                x_1^3 + x_2^3 + x_3^3 &= 20
+                \end{align*}
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng các đa thức đối xứng cơ bản. Theo giả thiết $e_1 = 2, p_2 = 14, p_3 = 20$.<br>
+            Từ $p_2 = e_1^2 - 2e_2$:
+            $$ 14 = 4 - 2e_2 \implies 2e_2 = -10 \implies e_2 = -5 $$
+            Từ $p_3 = e_1^3 - 3e_1 e_2 + 3e_3$:
+            $$ 20 = 2^3 - 3(2)(-5) + 3e_3 = 8 + 30 + 3e_3 = 38 + 3e_3 $$
+            Giải phương trình:
+            $$ 3e_3 = 20 - 38 = -18 \implies e_3 = -6 $$
+            Các biến $x_1, x_2, x_3$ là nghiệm của đa thức bậc 3:
+            $$ t^3 - 2t^2 - 5t + 6 = 0 $$
+            Dễ thấy $t = 1$ là một nghiệm do tổng các hệ số $1 - 2 - 5 + 6 = 0$.<br>
+            Phân tích nhân tử:
+            $$ t^3 - 2t^2 - 5t + 6 = (t-1)(t^2 - t - 6) = (t-1)(t-3)(t+2) = 0 $$
+            Các nghiệm là $1, 3, -2$. Hệ phương trình có 6 nghiệm là các hoán vị của $(1, 3, -2)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Korean National Mathematical Olympiad 2001)</div>
+            <div class="box-body">
+                Cho $x, y, z$ là ba số thực khác 0 thỏa mãn $x+y+z=0$. Rút gọn biểu thức sau theo các tổng bình phương:
+                $$ T = \frac{x^5 + y^5 + z^5}{x^3 + y^3 + z^3} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng kết quả từ Bài toán 5 (Spanish Mathematical Olympiad) đối với hệ điều kiện $e_1 = 0$:
+            $$ p_3 = 3e_3 \quad \text{và} \quad p_5 = -5e_2 e_3 $$
+            Thay các đại lượng này vào biểu thức $T$:
+            $$ T = \frac{-5e_2 e_3}{3e_3} = -\frac{5}{3} e_2 $$
+            Mặt khác, ta biết $p_2 = -2e_2$, do đó $e_2 = -\frac{1}{2} p_2$. Thay vào biểu thức của $T$:
+            $$ T = -\frac{5}{3} \left(-\frac{1}{2} p_2\right) = \frac{5}{6} p_2 = \frac{5}{6} (x^2 + y^2 + z^2) $$
+            Biểu thức được rút gọn hoàn toàn.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Greek Mathematical Olympiad 2007)</div>
+            <div class="box-body">
+                Cho các số thực $x, y, z$ thỏa mãn $x+y+z=1$ và $x^3+y^3+z^3=1$. Chứng minh rằng $x^{2007} + y^{2007} + z^{2007} = 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Theo giả thiết $e_1 = 1$ và $p_3 = 1$.<br>
+            Áp dụng hệ thức liên hệ $p_3$:
+            $$ p_3 = e_1^3 - 3e_1 e_2 + 3e_3 \implies 1 = 1 - 3e_2 + 3e_3 \implies 3e_2 = 3e_3 \implies e_2 = e_3 $$
+            Đa thức đặc trưng của ba biến số này là:
+            $$ t^3 - t^2 + e_2 t - e_2 = 0 $$
+            Phân tích nhân tử đa thức trên:
+            $$ t^2(t-1) + e_2(t-1) = 0 \implies (t-1)(t^2 + e_2) = 0 $$
+            Đa thức luôn có một nghiệm thực là $t = 1$.<br>
+            Vì vai trò của ba biến là đối xứng, không mất tính tổng quát, giả sử $z = 1$.<br>
+            Theo phương trình $x+y+z = 1$, ta có $x+y = 0 \implies y = -x$.<br>
+            Tính biểu thức cần chứng minh:
+            $$ x^{2007} + y^{2007} + z^{2007} = x^{2007} + (-x)^{2007} + 1^{2007} = x^{2007} - x^{2007} + 1 = 1 $$
+            Khẳng định được chứng minh. Bậc lẻ đảm bảo sự triệt tiêu của hai số đối nhau.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Austria Federal Comp. for Adv. Students, Part 1 2006)</div>
+            <div class="box-body">
+                Cho hệ phương trình $x+y+z=a, xy+yz+zx=b, xyz=c$. Chứng minh rằng các biến $x, y, z$ không thể lập thành một cấp số cộng nếu đại lượng $2a^3 - 9ab + 27c \neq 0$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta chứng minh bằng phương pháp phản chứng. Giả sử $x, y, z$ lập thành một cấp số cộng.<br>
+            Khi đó, tồn tại số thực $m$ và $d$ sao cho ba nghiệm có dạng $m-d, m, m+d$.<br>
+            Tính tổng ba nghiệm để đối chiếu với đa thức đối xứng cơ bản $e_1$:
+            $$ (m-d) + m + (m+d) = a \implies 3m = a \implies m = \frac{a}{3} $$
+            Do $m$ là một trong các nghiệm của hệ, nó phải thỏa mãn đa thức đặc trưng tạo bởi các đa thức đối xứng:
+            $$ P(t) = t^3 - at^2 + bt - c = 0 $$
+            Thay $t = m = \frac{a}{3}$ vào phương trình trên:
+            $$ \left(\frac{a}{3}\right)^3 - a\left(\frac{a}{3}\right)^2 + b\left(\frac{a}{3}\right) - c = 0 $$
+            Tiến hành khai triển:
+            $$ \frac{a^3}{27} - \frac{a^3}{9} + \frac{ab}{3} - c = 0 $$
+            Quy đồng mẫu số cho $27$:
+            $$ \frac{a^3 - 3a^3 + 9ab - 27c}{27} = 0 \implies -2a^3 + 9ab - 27c = 0 \implies 2a^3 - 9ab + 27c = 0 $$
+            Tuy nhiên, điều này mâu thuẫn trực tiếp với giả thiết $2a^3 - 9ab + 27c \neq 0$.<br>
+            Giả thiết phản chứng sai. Các biến $x, y, z$ không thể lập thành cấp số cộng.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học Tổ hợp - Tích chập Dirichlet và Nghịch đảo Möbius</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC TỔ HỢP <br> TÍCH CHẬP DIRICHLET VÀ NGHỊCH ĐẢO MÖBIUS</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Số học</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đánh giá các tổng số học liên quan đến tính chia hết (ước số, bội số, nguyên tố cùng nhau) thường dẫn đến những biểu thức phức tạp. Chuyên đề này hình thức hóa một công cụ đại số: Tích chập Dirichlet. Bằng cách định nghĩa phép nhân trên không gian các hàm số học, ta có thể chứng minh Công thức Nghịch đảo Möbius — một công cụ cho phép biến đổi các hệ thức tổng ước số thành các biểu thức trực tiếp. Phương pháp này giúp đơn giản hóa các thao tác đại số truyền thống.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Tích chập Dirichlet là một cấu trúc thuộc Đại số Trừu tượng (Lý thuyết Vành) và Số học Giải tích. Để học sinh dễ dàng tiếp cận, ta cần hiểu rõ cơ chế vận hành của phép chập thông qua ví dụ cụ thể:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Minh họa Tích chập Dirichlet)</div>
+        Phép nhân chập Dirichlet của hai hàm số học $f$ và $g$ tại số nguyên dương $n$ duyệt qua tất cả các cách phân tích $n$ thành tích của hai số nguyên dương $d$ và $\frac{n}{d}$. <br>
+        Ví dụ, với $n = 6$, các ước dương của 6 là $1, 2, 3, 6$. Khi đó, giá trị của $(f * g)(6)$ được tính bằng:
+        $$ (f * g)(6) = f(1)g(6) + f(2)g(3) + f(3)g(2) + f(6)g(1) $$
+        Có thể thấy cấu trúc này tương tự như phép nhân đa thức (nơi ta tính tổng các $a_i b_j$ sao cho $i+j=k$), nhưng ở đây ta tính tổng các $f(a)g(b)$ sao cho $a \cdot b = n$.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Hàm số học và Tích chập Dirichlet)</div>
+        <ul>
+            <li> <strong>Hàm số học:</strong> Là một hàm số có tập xác định là tập các số nguyên dương $\mathbb{N}^*$ và nhận giá trị trên trường số thực (hoặc phức).</li>
+            <li> <strong>Tích chập Dirichlet (Dirichlet Convolution):</strong> Cho hai hàm số học $f$ và $g$. Tích chập của chúng, ký hiệu là $f * g$, là một hàm số học mới được định nghĩa bởi:
+            $$ (f * g)(n) = \sum_{d \mid n} f(d) g\left(\frac{n}{d}\right) $$
+            (Tổng được lấy trên tất cả các ước số nguyên dương $d$ của $n$).</li>
+            <li> <strong>Các hàm cơ sở quan trọng:</strong>
+            <ol>
+                <li><em>Hàm đơn vị $\varepsilon(n)$</em>: $\varepsilon(1) = 1$, và $\varepsilon(n) = 0$ với mọi $n \gt 1$.</li>
+                <li><em>Hàm hằng $\mathbf{1}(n)$</em>: $\mathbf{1}(n) = 1$ với mọi $n \ge 1$.</li>
+                <li><em>Hàm đồng nhất $Id(n)$</em>: $Id(n) = n$ với mọi $n \ge 1$.</li>
+            </ol>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Cấu trúc Vành của Tích chập Dirichlet)</div>
+        Phép nhân chập Dirichlet $(*)$ có tính giao hoán, tính kết hợp và nhận hàm $\varepsilon$ làm phần tử đơn vị.<br>
+        Cụ thể, với mọi hàm số học $f, g, h$, ta có:
+        <ol>
+            <li>$f * g = g * f$</li>
+            <li>$(f * g) * h = f * (g * h)$</li>
+            <li>$f * \varepsilon = f$</li>
+        </ol>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>1. Tính giao hoán:</strong></p>
+        $$ (f * g)(n) = \sum_{d \mid n} f(d) g\left(\frac{n}{d}\right) $$
+        <p>Đặt $d' = \frac{n}{d}$. Khi $d$ quét qua tập các ước của $n$, thì $d'$ cũng quét qua tập các ước của $n$. Hơn nữa $d = \frac{n}{d'}$. Thay vào tổng, ta có:</p>
+        $$ \sum_{d' \mid n} f\left(\frac{n}{d'}\right) g(d') = (g * f)(n) $$
+
+        <p><strong>2. Tính kết hợp:</strong><br>
+        Khai triển vế trái:</p>
+        $$ ((f * g) * h)(n) = \sum_{d \mid n} (f * g)(d) h\left(\frac{n}{d}\right) = \sum_{d \mid n} \left( \sum_{k \mid d} f(k) g\left(\frac{d}{k}\right) \right) h\left(\frac{n}{d}\right) $$
+        <p>Mọi cặp $(k, d)$ thỏa mãn $k \mid d$ và $d \mid n$ có thể được viết lại bằng cách đặt $d = k \cdot m$ (với $m \mid \frac{n}{k}$).<br>
+        Khi đó $\frac{d}{k} = m$ và $\frac{n}{d} = \frac{n}{km}$. Thay vào tổng, ta có thể đổi thứ tự lấy tổng:</p>
+        $$ \sum_{k \mid n} \sum_{m \mid \frac{n}{k}} f(k) g(m) h\left(\frac{n}{km}\right) = \sum_{k \mid n} f(k) \left( \sum_{m \mid \frac{n}{k}} g(m) h\left(\frac{n/k}{m}\right) \right) $$
+        <p>Phần trong ngoặc tròn chính là $(g * h)\left(\frac{n}{k}\right)$.<br>
+        Do đó, biểu thức bằng $\sum_{k \mid n} f(k) (g * h)\left(\frac{n}{k}\right) = (f * (g * h))(n)$.</p>
+
+        <p><strong>3. Phần tử đơn vị:</strong></p>
+        $$ (f * \varepsilon)(n) = \sum_{d \mid n} f(d) \varepsilon\left(\frac{n}{d}\right) $$
+        <p>Theo định nghĩa, $\varepsilon(n/d)$ chỉ bằng $1$ khi $\frac{n}{d} = 1$, tức là $d = n$. Với mọi $d \neq n$, $\varepsilon(n/d) = 0$.<br>
+        Do đó, trong tổng chỉ còn duy nhất một số hạng khác $0$ là khi $d=n$.</p>
+        $$ (f * \varepsilon)(n) = f(n) \cdot \varepsilon(1) = f(n) $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.2 (Hàm Möbius $\mu(n)$)</div>
+        Hàm Möbius được định nghĩa là nghịch đảo Dirichlet của hàm hằng $\mathbf{1}$. Tức là:
+        $$ \mu * \mathbf{1} = \varepsilon \iff \sum_{d \mid n} \mu(d) = \begin{cases} 1 & \text{nếu } n = 1 \\ 0 & \text{nếu } n \gt 1 \end{cases} $$
+        Biểu diễn tường minh của $\mu(n)$: Giả sử phân tích tiêu chuẩn của $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$.
+        <ul>
+            <li> $\mu(1) = 1$.</li>
+            <li> $\mu(n) = (-1)^k$ nếu $a_1 = a_2 = \dots = a_k = 1$ (tức là $n$ không có ước chính phương).</li>
+            <li> $\mu(n) = 0$ nếu tồn tại $a_i \ge 2$ ($n$ chia hết cho bình phương của một số nguyên tố).</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Công thức Nghịch đảo Möbius - Möbius Inversion Formula)</div>
+        Với hai hàm số học $f$ và $g$ bất kỳ, ta có đẳng thức tương đương sau:
+        $$ g(n) = \sum_{d \mid n} f(d) \iff f(n) = \sum_{d \mid n} g(d) \mu\left(\frac{n}{d}\right) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Chuyển đổi bài toán sang ngôn ngữ Tích chập Dirichlet:<br>
+        Giả thiết $g(n) = \sum_{d \mid n} f(d) \cdot 1$ có thể viết lại thành phương trình hàm:</p>
+        $$ g = f * \mathbf{1} $$
+        <p>Ta cần chứng minh $f = g * \mu$.<br>
+        Sử dụng tính kết hợp của tích chập (Định lý 1.1), ta nhân chập cả hai vế của giả thiết với hàm $\mu$:</p>
+        $$ g * \mu = (f * \mathbf{1}) * \mu $$
+        $$ g * \mu = f * (\mathbf{1} * \mu) $$
+        <p>Theo định nghĩa của hàm Möbius (là nghịch đảo của $\mathbf{1}$), ta có $\mathbf{1} * \mu = \varepsilon$. Thay vào phương trình:</p>
+        $$ g * \mu = f * \varepsilon $$
+        <p>Theo tính chất phần tử đơn vị (Định lý 1.1), $f * \varepsilon = f$. Vậy ta có:</p>
+        $$ g * \mu = f $$
+        <p>Khai triển định nghĩa của tích chập $g * \mu$, ta thu được kết luận: $f(n) = \sum_{d \mid n} g(d) \mu\left(\frac{n}{d}\right)$.<br>
+        Định lý được chứng minh thông qua các phép toán đại số cơ bản trên Vành Dirichlet.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Đếm số điểm nhìn thấy được)</div>
+        Trên một lưới tọa độ $\mathbb{Z}^2$, đứng từ gốc tọa độ $(0,0)$, bạn có thể "nhìn thấy" một điểm $(x, y)$ nếu không có điểm nguyên nào khác nằm trên đoạn thẳng nối $(0,0)$ và $(x, y)$. <br>
+        Chứng minh rằng số lượng các điểm nguyên $(x, y)$ nhìn thấy được thỏa mãn $1 \le x \le N$ và $1 \le y \le N$ có thể được tính bằng công thức:
+        $$ S = \sum_{d=1}^N \mu(d) \left\lfloor \frac{N}{d} \right\rfloor^2 $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Một điểm $(x, y)$ nhìn thấy được từ $(0,0)$ khi và chỉ khi $x$ và $y$ nguyên tố cùng nhau, tức là $\gcd(x, y) = 1$.<br>
+        Bài toán yêu cầu tính tổng:</p>
+        $$ S = \sum_{x=1}^N \sum_{y=1}^N [\gcd(x, y) = 1] $$
+        <p>(Trong đó ngoặc vuông là hàm chỉ thị, bằng 1 nếu mệnh đề đúng, bằng 0 nếu sai).<br>
+        Theo định nghĩa của hàm Möbius, ta có tính chất triệt tiêu $\sum_{d \mid n} \mu(d) = 1$ nếu $n=1$ và $=0$ nếu $n \gt 1$.<br>
+        Do đó, hàm chỉ thị $[\gcd(x, y) = 1]$ có thể được viết lại thành:</p>
+        $$ [\gcd(x, y) = 1] = \sum_{d \mid \gcd(x,y)} \mu(d) $$
+        <p>Thay biểu thức này vào tổng ban đầu:</p>
+        $$ S = \sum_{x=1}^N \sum_{y=1}^N \sum_{d \mid \gcd(x,y)} \mu(d) $$
+        <p>Điều kiện $d \mid \gcd(x,y)$ tương đương với việc $d \mid x$ và $d \mid y$.<br>
+        Đổi thứ tự lấy tổng (đưa tổng theo $d$ ra ngoài cùng). Biến $d$ có thể chạy từ $1$ đến $N$:</p>
+        $$ S = \sum_{d=1}^N \mu(d) \left( \sum_{\substack{x=1 \\ d \mid x}}^N 1 \right) \left( \sum_{\substack{y=1 \\ d \mid y}}^N 1 \right) $$
+        <p>Số lượng các số nguyên dương $x$ trong đoạn $[1, N]$ chia hết cho $d$ chính là $\left\lfloor \frac{N}{d} \right\rfloor$.<br>
+        Tương tự cho biến $y$, ta thu được:</p>
+        $$ S = \sum_{d=1}^N \mu(d) \left\lfloor \frac{N}{d} \right\rfloor \left\lfloor \frac{N}{d} \right\rfloor = \sum_{d=1}^N \mu(d) \left\lfloor \frac{N}{d} \right\rfloor^2 $$
+        <p>Khẳng định được chứng minh. Việc đổi thứ tự tổng Sigma là một kỹ thuật quan trọng của phương pháp đếm này.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Austria National Olympiad (ÖMO) - Tổng UCLN)</div>
+        Chứng minh rằng tổng của Ước chung lớn nhất của $n$ với mọi số nguyên từ $1$ đến $n$ có thể được phân rã thành:
+        $$ \sum_{i=1}^n \gcd(i, n) = \sum_{d \mid n} d \cdot \varphi\left(\frac{n}{d}\right) $$
+        (Trong đó $\varphi(n)$ là hàm Euler, đếm số lượng các số nguyên dương nhỏ hơn hoặc bằng $n$ và nguyên tố cùng nhau với $n$).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta biến đổi trực tiếp tổng bên trái. Thay vì duyệt biến $i$ từ $1$ đến $n$, ta nhóm các phần tử theo giá trị của $d = \gcd(i, n)$.<br>
+        Vì $d = \gcd(i, n)$, $d$ phải là một ước số của $n$ ($d \mid n$).<br>
+        Gọi $A_d$ là tập hợp các số $i$ (với $1 \le i \le n$) sao cho $\gcd(i, n) = d$.<br>
+        Tổng ban đầu có thể được viết lại thành:</p>
+        $$ \sum_{i=1}^n \gcd(i, n) = \sum_{d \mid n} \sum_{i \in A_d} d = \sum_{d \mid n} d \cdot |A_d| $$
+        <p>Bây giờ ta đếm số lượng phần tử của tập hợp $A_d$.<br>
+        Điều kiện $\gcd(i, n) = d$ tương đương với việc $i$ có dạng $i = k \cdot d$, và:</p>
+        $$ \gcd(k \cdot d, n) = d \iff \gcd\left(k, \frac{n}{d}\right) = 1 $$
+        <p>Đồng thời, do $1 \le i \le n$, nên $1 \le k \cdot d \le n \iff 1 \le k \le \frac{n}{d}$.<br>
+        Vậy số lượng các giá trị $i$ thỏa mãn chính là số lượng các giá trị $k$ nằm trong đoạn $\left[1, \frac{n}{d}\right]$ và nguyên tố cùng nhau với $\frac{n}{d}$.<br>
+        Theo định nghĩa của hàm Euler, số lượng các giá trị $k$ này là $\varphi\left(\frac{n}{d}\right)$.<br>
+        Tức là $|A_d| = \varphi\left(\frac{n}{d}\right)$.<br>
+        Thay vào phương trình tổng, ta có:</p>
+        $$ \sum_{i=1}^n \gcd(i, n) = \sum_{d \mid n} d \cdot \varphi\left(\frac{n}{d}\right) $$
+        <p>Bằng ngôn ngữ Tích chập Dirichlet, điều này chỉ ra rằng hàm $f(n) = \sum_{i=1}^n \gcd(i, n)$ chính là kết quả của phép chập $Id * \varphi$. Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (India National Olympiad (INMO) - Tích chập và Tổng ước số)</div>
+        Ký hiệu $\sigma(n)$ là tổng tất cả các ước số nguyên dương của $n$. <br>
+        Sử dụng cấu trúc của Tích chập Dirichlet, hãy chứng minh một cách ngắn gọn đẳng thức sau:
+        $$ \sum_{d \mid n} \mu(d) \sigma\left(\frac{n}{d}\right) = n $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đầu tiên, ta biểu diễn lại các hàm số học trong phương trình.<br>
+        Theo định nghĩa, $\sigma(n) = \sum_{d \mid n} d = \sum_{d \mid n} Id(d) \cdot 1$. <br>
+        Dịch sang ngôn ngữ tích chập, ta có:</p>
+        $$ \sigma = Id * \mathbf{1} $$
+        <p>Biểu thức ở vế trái của bài toán là tổng $\sum_{d \mid n} \mu(d) \sigma\left(\frac{n}{d}\right)$, theo định nghĩa chính là tích chập của $\mu$ và $\sigma$:</p>
+        $$ \text{Vế Trái} = \mu * \sigma $$
+        <p>Thay biểu diễn của $\sigma$ vào biểu thức trên:</p>
+        $$ \text{Vế Trái} = \mu * (Id * \mathbf{1}) $$
+        <p>Sử dụng <strong>tính giao hoán và tính kết hợp</strong> của Tích chập Dirichlet (Định lý 1.1):</p>
+        $$ \text{Vế Trái} = \mu * (\mathbf{1} * Id) = (\mu * \mathbf{1}) * Id $$
+        <p>Theo định nghĩa của hàm Möbius (Định nghĩa 1.2), $\mu$ là nghịch đảo của $\mathbf{1}$, tức là $\mu * \mathbf{1} = \varepsilon$. Thay vào phương trình:</p>
+        $$ \text{Vế Trái} = \varepsilon * Id $$
+        <p>Theo tính chất phần tử đơn vị, khi chập bất kỳ hàm nào với $\varepsilon$, ta thu được chính hàm đó:</p>
+        $$ \text{Vế Trái} = Id $$
+        <p>Hai hàm số học bằng nhau nghĩa là giá trị của chúng tại mọi số nguyên $n$ đều bằng nhau. <br>
+        Do $Id(n) = n$, ta suy ra:</p>
+        $$ \sum_{d \mid n} \mu(d) \sigma\left(\frac{n}{d}\right) = n $$
+        <p>Bài toán INMO được chứng minh bằng các tính chất của vành Dirichlet.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Japan Mathematical Olympiad (JMO) - Đếm Dãy Ký Tự Không Tuần Hoàn)</div>
+        Cho bảng chữ cái gồm $k$ ký tự. Ký hiệu $M(n)$ là số lượng các chuỗi có độ dài $n$ <strong>không có tính tuần hoàn</strong> (tức là không thể biểu diễn dưới dạng lặp đi lặp lại của một chuỗi ngắn hơn). <br>
+        Sử dụng Công thức Nghịch đảo Möbius, hãy chứng minh rằng:
+        $$ M(n) = \sum_{d \mid n} \mu\left(\frac{n}{d}\right) k^d $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi chuỗi ký tự có độ dài $n$ đều có một "chu kỳ cơ sở" duy nhất (minimal period). <br>
+        Ví dụ: chuỗi $ABABAB$ độ dài 6 có chu kỳ cơ sở là $AB$ độ dài 2. Chuỗi $AAAA$ độ dài 4 có chu kỳ cơ sở là $A$ độ dài 1.<br>
+        Chu kỳ cơ sở của một chuỗi độ dài $n$ phải là một ước số $d$ của $n$. Bản thân phần chu kỳ cơ sở (độ dài $d$) bắt buộc phải là một chuỗi <strong>không tuần hoàn</strong> (nếu không, ta có thể rút gọn nó thành chu kỳ nhỏ hơn nữa).</p>
+
+        <p>Ta đếm tổng số lượng chuỗi có độ dài $n$ trên bảng chữ cái $k$ ký tự. Mỗi vị trí có $k$ cách chọn, nên tổng số chuỗi là $k^n$.<br>
+        Mặt khác, ta phân loại tất cả $k^n$ chuỗi này theo độ dài chu kỳ cơ sở $d$ của chúng. <br>
+        Với mỗi ước số $d \mid n$, số lượng các chuỗi có độ dài $n$ nhận $d$ làm chu kỳ cơ sở chính bằng số lượng các chuỗi không tuần hoàn có độ dài $d$ (vì phần còn lại chỉ là việc lặp chép lại chuỗi lõi này $n/d$ lần). <br>
+        Số lượng này, theo định nghĩa, chính là $M(d)$.<br>
+        Lấy tổng trên toàn bộ các chu kỳ cơ sở có thể có, ta có đẳng thức:</p>
+        $$ k^n = \sum_{d \mid n} M(d) $$
+        
+        <p>Bây giờ, ta áp dụng <strong>Công thức Nghịch đảo Möbius (Định lý 1.3)</strong>.<br>
+        Trong định lý, đặt $g(n) = k^n$ và $f(n) = M(n)$. Ta có $g(n) = \sum_{d \mid n} f(d)$.<br>
+        Suy ra:</p>
+        $$ f(n) = \sum_{d \mid n} g(d) \mu\left(\frac{n}{d}\right) $$
+        <p>Thay $f(n)$ và $g(n)$ bằng các hàm tương ứng:</p>
+        $$ M(n) = \sum_{d \mid n} k^d \cdot \mu\left(\frac{n}{d}\right) = \sum_{d \mid n} \mu\left(\frac{n}{d}\right) k^d $$
+        <p>Mối liên kết giữa Lý thuyết Chuỗi (String Combinatorics) và Số học được thể hiện qua công thức này.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

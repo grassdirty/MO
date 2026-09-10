@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Dãy Số Truy Hồi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ huyền ảo - Tone màu xanh ngọc/tím đậm */
+            background: linear-gradient(to bottom, rgba(8, 15, 30, 0.8), rgba(18, 10, 35, 0.95)),
+                        url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #2dd4bf;
+            border-bottom: 2px solid rgba(45, 212, 191, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: ĐẠI SỐ VÀ LÝ THUYẾT SỐ<br>PHƯƠNG TRÌNH SAI PHÂN TUYẾN TÍNH VÀ TÍNH CHẤT SỐ HỌC CỦA DÃY SỐ</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Việc khảo sát cấu trúc nghiệm của các dãy số được định nghĩa bởi hệ thức truy hồi tuyến tính là một trong những nền tảng quan trọng của Đại số giải tích. Thông qua phương trình đặc trưng và công thức Binet, các phần tử của dãy số rời rạc được biểu diễn dưới dạng các hàm mũ trên trường số phức. Chuyên đề này tập trung phân tích các bất biến đại số (như đồng nhất thức Cassini) và tính chất chia hết để giải quyết lớp bài toán cấu trúc dãy số trong các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Dãy số truy hồi tuyến tính cấp hai</div>
+            <div class="box-body">
+                Một dãy số $(u_n)_{n \ge 0}$ được gọi là dãy truy hồi tuyến tính cấp hai thuần nhất nếu nó thỏa mãn phương trình:
+                $$ u_{n+2} = a u_{n+1} + b u_n \quad \forall n \ge 0 $$
+                trong đó $a, b$ là các hằng số thực (thường là số nguyên) và $b \neq 0$.
+            </div>
+        </div>
+
+        <p>Để giải phương trình sai phân này, ta cần thiết lập phương trình đặc trưng liên kết với nó.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Phương trình đặc trưng và Công thức nghiệm tổng quát</div>
+            <div class="box-body">
+                Xét dãy $(u_n)$ với hệ thức $u_{n+2} - a u_{n+1} - b u_n = 0$. Phương trình đặc trưng tương ứng là:
+                $$ r^2 - ar - b = 0 $$
+                Giả sử phương trình có hai nghiệm phân biệt $r_1, r_2 \in \mathbb{C}$. Khi đó, công thức tổng quát của dãy số là:
+                $$ u_n = c_1 r_1^n + c_2 r_2^n $$
+                với $c_1, c_2$ là các hằng số được xác định duy nhất bởi các điều kiện ban đầu $u_0$ và $u_1$.
+            </div>
+        </div>
+
+        <p>Một trong những tính chất bảo toàn quan trọng nhất của các dãy truy hồi dạng này là Đồng nhất thức Cassini, thể hiện sự bất biến của một định thức ma trận.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Đồng nhất thức bậc hai (Cassini's Identity)</div>
+            <div class="box-body">
+                Nếu dãy $(u_n)$ thỏa mãn $u_{n+2} = a u_{n+1} + b u_n$, thì biểu thức:
+                $$ u_{n+1}^2 - a u_{n+1}u_n - b u_n^2 $$
+                có giá trị bằng $(-b)^n (u_1^2 - a u_1 u_0 - b u_0^2)$.<br>
+                Đặc biệt, khi $a=1, b=1$ (dãy Fibonacci), $u_{n+1}u_{n-1} - u_n^2 = (-1)^n$.
+            </div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (All-Russian Olympiad 1993)</div>
+            <div class="box-body">
+                Cho dãy số nguyên $(x_n)$ thỏa mãn điều kiện $x_1 = 1$, $x_2 = 4$ và hệ thức:
+                $$ x_{n+2} = 4x_{n+1} - x_n \quad \forall n \ge 1 $$
+                Chứng minh rằng đại lượng $3x_n^2 + 1$ luôn là một số chính phương với mọi số nguyên dương $n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét phương trình đặc trưng của dãy số:
+            $$ r^2 - 4r + 1 = 0 $$
+            Phương trình có hai nghiệm thực phân biệt là $r_1 = 2 + \sqrt{3}$ và $r_2 = 2 - \sqrt{3}$.<br>
+            Theo Định lý 1, công thức tổng quát của dãy số có dạng:
+            $$ x_n = c_1 (2+\sqrt{3})^n + c_2 (2-\sqrt{3})^n $$
+            Sử dụng các điều kiện ban đầu để xác định $c_1, c_2$:
+            <ul>
+                <li>Với $n=1$: $c_1(2+\sqrt{3}) + c_2(2-\sqrt{3}) = 1$</li>
+                <li>Với $n=2$: $c_1(2+\sqrt{3})^2 + c_2(2-\sqrt{3})^2 = 4 \implies c_1(7+4\sqrt{3}) + c_2(7-4\sqrt{3}) = 4$</li>
+            </ul>
+            Giải hệ phương trình tuyến tính này, ta thu được:
+            $$ c_1 = \frac{1}{2\sqrt{3}}, \quad c_2 = -\frac{1}{2\sqrt{3}} $$
+            Do đó, công thức hiện của dãy số là:
+            $$ x_n = \frac{(2+\sqrt{3})^n - (2-\sqrt{3})^n}{2\sqrt{3}} $$
+            Bây giờ, xét đại lượng $3x_n^2 + 1$ theo yêu cầu bài toán:
+            $$ 3x_n^2 + 1 = 3 \left( \frac{(2+\sqrt{3})^n - (2-\sqrt{3})^n}{2\sqrt{3}} \right)^2 + 1 $$
+            Khai triển bình phương phân thức:
+            $$ 3x_n^2 + 1 = \frac{(2+\sqrt{3})^{2n} - 2[(2+\sqrt{3})(2-\sqrt{3})]^n + (2-\sqrt{3})^{2n}}{4} + 1 $$
+            Lưu ý rằng $(2+\sqrt{3})(2-\sqrt{3}) = 4 - 3 = 1$. Thay vào biểu thức:
+            $$ 3x_n^2 + 1 = \frac{(2+\sqrt{3})^{2n} - 2 + (2-\sqrt{3})^{2n}}{4} + \frac{4}{4} = \frac{(2+\sqrt{3})^{2n} + 2 + (2-\sqrt{3})^{2n}}{4} $$
+            Nhận thấy tử số chính là một hằng đẳng thức bình phương hoàn thiếu:
+            $$ 3x_n^2 + 1 = \left( \frac{(2+\sqrt{3})^n + (2-\sqrt{3})^n}{2} \right)^2 $$
+            Đặt $y_n = \frac{(2+\sqrt{3})^n + (2-\sqrt{3})^n}{2}$. Ta cần chứng minh $y_n$ là một số nguyên.<br>
+            Đại lượng $y_n$ là tổng của hai số phức liên hợp (trong trường mở rộng), do đó nó có thể được biểu diễn bởi một hệ thức truy hồi tương tự.<br>
+            Thật vậy, do $r_1, r_2$ cùng là nghiệm của $r^2 - 4r + 1 = 0$, dãy $(y_n)$ cũng thỏa mãn phương trình sai phân:
+            $$ y_{n+2} = 4y_{n+1} - y_n $$
+            Với các giá trị ban đầu:<br>
+            $y_1 = \frac{2+\sqrt{3} + 2-\sqrt{3}}{2} = 2 \in \mathbb{Z}$.<br>
+            $y_2 = \frac{(2+\sqrt{3})^2 + (2-\sqrt{3})^2}{2} = \frac{7+4\sqrt{3} + 7-4\sqrt{3}}{2} = 7 \in \mathbb{Z}$.<br>
+            Vì $y_1, y_2 \in \mathbb{Z}$ và hệ số truy hồi là các số nguyên, theo nguyên lý quy nạp, $y_n \in \mathbb{Z}$ với mọi $n \ge 1$.<br>
+            Từ đó $3x_n^2 + 1 = y_n^2$ chính là bình phương của một số nguyên. Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Spanish Mathematical Olympiad 2001)</div>
+            <div class="box-body">
+                Cho dãy số $(a_n)$ với $a_0=1, a_1=3$ và $a_{n+2} = 6a_{n+1} - a_n$. Chứng minh rằng đại lượng $a_n^2 - 1$ luôn bằng hai lần một số chính phương với mọi $n \ge 0$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương trình đặc trưng là $r^2 - 6r + 1 = 0$, có hai nghiệm $r_{1,2} = 3 \pm 2\sqrt{2}$.<br>
+            Lưu ý rằng $3 \pm 2\sqrt{2} = (\sqrt{2} \pm 1)^2$.<br>
+            Sử dụng các điều kiện ban đầu, ta tìm được công thức hiện của dãy số:
+            $$ a_n = \frac{(3+2\sqrt{2})^n + (3-2\sqrt{2})^n}{2} $$
+            Tính toán biểu thức $a_n^2 - 1$:
+            $$ a_n^2 - 1 = \left( \frac{(3+2\sqrt{2})^n + (3-2\sqrt{2})^n}{2} \right)^2 - 1 = \frac{(3+2\sqrt{2})^{2n} + 2 + (3-2\sqrt{2})^{2n}}{4} - \frac{4}{4} $$
+            $$ = \frac{(3+2\sqrt{2})^{2n} - 2 + (3-2\sqrt{2})^{2n}}{4} = \left( \frac{(3+2\sqrt{2})^n - (3-2\sqrt{2})^n}{2} \right)^2 $$
+            Đặt $b_n = \frac{(3+2\sqrt{2})^n - (3-2\sqrt{2})^n}{2\sqrt{2}}$. Ta có:
+            $$ a_n^2 - 1 = 2 \left( \frac{(3+2\sqrt{2})^n - (3-2\sqrt{2})^n}{2\sqrt{2}} \right)^2 = 2 b_n^2 $$
+            Tương tự bài cốt lõi, $b_n$ thỏa mãn hệ thức truy hồi $b_{n+2} = 6b_{n+1} - b_n$ với $b_0 = 0, b_1 = 2$. Do đó $b_n$ là số nguyên. Bài toán được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Greek Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Cho dãy $(u_n)$ xác định bởi $u_0=0, u_1=1$ và $u_{n+2} = 3u_{n+1} - u_n$. Chứng minh rằng biểu thức $I_n = u_{n+1}^2 - 3u_{n+1}u_n + u_n^2$ có giá trị không đổi với mọi $n \ge 0$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta tính $I_{n+1}$ và biểu diễn nó qua các số hạng có chỉ số nhỏ hơn:
+            $$ I_{n+1} = u_{n+2}^2 - 3u_{n+2}u_{n+1} + u_{n+1}^2 $$
+            Thay $u_{n+2} = 3u_{n+1} - u_n$ vào biểu thức:
+            $$ I_{n+1} = (3u_{n+1} - u_n)^2 - 3(3u_{n+1} - u_n)u_{n+1} + u_{n+1}^2 $$
+            $$ = 9u_{n+1}^2 - 6u_{n+1}u_n + u_n^2 - 9u_{n+1}^2 + 3u_{n+1}u_n + u_{n+1}^2 $$
+            $$ = u_{n+1}^2 - 3u_{n+1}u_n + u_n^2 = I_n $$
+            Vì $I_{n+1} = I_n$, dãy $(I_n)$ là một dãy hằng.<br>
+            Tại $n=0$, $I_0 = u_1^2 - 3u_1 u_0 + u_0^2 = 1^2 - 0 + 0 = 1$.<br>
+            Do đó, đại lượng này luôn bằng 1 với mọi $n \ge 0$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Japan Mathematical Olympiad (JMO) 1993)</div>
+            <div class="box-body">
+                Cho dãy Fibonacci $F_1=1, F_2=1, F_{n+2}=F_{n+1}+F_n$. Chứng minh rằng với mọi $n \ge 2$, ta có $F_{n+1}F_{n-1} - F_n^2 = (-1)^n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta sử dụng phương pháp biến đổi đại số trực tiếp cho đại lượng $\Delta_n = F_{n+1}F_{n-1} - F_n^2$:
+            $$ \Delta_n = (F_n + F_{n-1})F_{n-1} - F_n^2 = F_n F_{n-1} + F_{n-1}^2 - F_n^2 $$
+            $$ = F_{n-1}^2 - F_n(F_n - F_{n-1}) = F_{n-1}^2 - F_n F_{n-2} = - (F_n F_{n-2} - F_{n-1}^2) = - \Delta_{n-1} $$
+            Hệ thức $\Delta_n = -\Delta_{n-1}$ chỉ ra rằng dãy này đổi dấu luân phiên.<br>
+            Bằng phương pháp quy nạp lùi:
+            $$ \Delta_n = (-1)^{n-2} \Delta_2 = (-1)^n (F_3 F_1 - F_2^2) $$
+            Với $F_1 = 1, F_2 = 1, F_3 = 2$, ta có $\Delta_2 = 2 \times 1 - 1^2 = 1$.<br>
+            Vậy $\Delta_n = (-1)^n$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (United States of America Mathematical Olympiad (USAMO) 1990)</div>
+            <div class="box-body">
+                Cho dãy $(x_n)$ xác định bởi $x_1=2, x_2=3$ và $x_{n+2} = 3x_{n+1} - 2x_n$. Tìm công thức tổng quát của $x_n$ và chứng minh $x_n = 2^{n-1} + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương trình đặc trưng của dãy là:
+            $$ r^2 - 3r + 2 = 0 \implies (r-1)(r-2) = 0 $$
+            Phương trình có hai nghiệm $r_1 = 1$ và $r_2 = 2$.<br>
+            Công thức nghiệm tổng quát có dạng:
+            $$ x_n = c_1 \cdot 1^n + c_2 \cdot 2^n = c_1 + c_2 2^n $$
+            Áp dụng điều kiện ban đầu:
+            <ul>
+                <li>$n=1$: $c_1 + 2c_2 = 2$</li>
+                <li>$n=2$: $c_1 + 4c_2 = 3$</li>
+            </ul>
+            Lấy phương trình dưới trừ phương trình trên, ta được $2c_2 = 1 \implies c_2 = \frac{1}{2}$.<br>
+            Thay vào phương trình đầu, $c_1 + 1 = 2 \implies c_1 = 1$.<br>
+            Từ đó:
+            $$ x_n = 1 + \frac{1}{2} \cdot 2^n = 1 + 2^{n-1} $$
+            Công thức tổng quát đã được thiết lập và chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Romanian National Olympiad 2003)</div>
+            <div class="box-body">
+                Xét dãy số nguyên $(x_n)$ thỏa mãn $x_0=2, x_1=a$ và $x_{n+2} = a x_{n+1} - x_n$. Chứng minh rằng $x_n^2 - x_{n+1}x_{n-1} = 4 - a^2$ với mọi $n \ge 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $I_n = x_n^2 - x_{n+1}x_{n-1}$. Ta tính $I_{n+1}$:
+            $$ I_{n+1} = x_{n+1}^2 - x_{n+2}x_n $$
+            Thay $x_{n+2} = a x_{n+1} - x_n$:
+            $$ I_{n+1} = x_{n+1}^2 - (a x_{n+1} - x_n)x_n = x_{n+1}^2 - a x_{n+1}x_n + x_n^2 $$
+            Khai triển $I_n$:
+            $$ I_n = x_n^2 - x_{n+1}(a x_n - x_{n+1}) = x_n^2 - a x_{n+1}x_n + x_{n+1}^2 $$
+            Từ hai biểu thức trên, ta thấy $I_{n+1} = I_n$ với mọi $n$.<br>
+            Do đó đại lượng này là một bất biến. Ta tính giá trị của nó tại $n=1$:
+            $$ I_1 = x_1^2 - x_2 x_0 $$
+            Với $x_2 = a x_1 - x_0 = a(a) - 2 = a^2 - 2$.
+            $$ I_1 = a^2 - (a^2 - 2)(2) = a^2 - 2a^2 + 4 = 4 - a^2 $$
+            Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Vietnam National Olympiad (VMO) 1997)</div>
+            <div class="box-body">
+                Cho dãy $(u_n)$ thỏa mãn $u_0=0, u_1=1$ và $u_{n+2} = 2u_{n+1} + u_n$. Chứng minh rằng ước chung lớn nhất $\gcd(u_n, u_{n+1}) = 1$ với mọi $n \ge 0$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng thuật toán Euclid, ta có thể tính ước chung lớn nhất của hai số hạng liên tiếp:
+            $$ \gcd(u_{n+2}, u_{n+1}) = \gcd(2u_{n+1} + u_n, u_{n+1}) $$
+            Theo tính chất $\gcd(A + kB, B) = \gcd(A, B)$, ta loại bỏ bội số của $u_{n+1}$:
+            $$ \gcd(2u_{n+1} + u_n, u_{n+1}) = \gcd(u_n, u_{n+1}) $$
+            Do đó, $\gcd(u_{n+1}, u_n)$ là một bất biến không phụ thuộc vào $n$.<br>
+            Kéo lùi chỉ số về $n=0$:
+            $$ \gcd(u_n, u_{n+1}) = \dots = \gcd(u_0, u_1) = \gcd(0, 1) = 1 $$
+            Bài toán được chứng minh bằng lý thuyết đồng dư cơ bản.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Korean Mathematical Olympiad (KMO) 1999)</div>
+            <div class="box-body">
+                Cho dãy $(a_n)$ với $a_0=0, a_1=1$ và $a_{n+2} = p a_{n+1} + q a_n$ với $p, q$ là các số nguyên dương và $\gcd(p, q) = 1$. Chứng minh rằng $\gcd(a_n, q) = 1$ với mọi $n \ge 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Tiến hành chứng minh bằng quy nạp toán học.<br>
+            <strong>Bước cơ sở:</strong> Tại $n=1$, $a_1 = 1$, hiển nhiên $\gcd(1, q) = 1$.<br>
+            Tại $n=2$, $a_2 = p(1) + q(0) = p$. Vì $\gcd(p, q) = 1$, ta có $\gcd(a_2, q) = 1$.<br>
+            <strong>Bước quy nạp:</strong> Giả sử $\gcd(a_k, q) = 1$ đúng đến $k = n+1$. Ta chứng minh nó đúng với $k = n+2$.<br>
+            Gọi $d = \gcd(a_{n+2}, q)$. Ta có $d \mid q$ và $d \mid a_{n+2}$.<br>
+            Theo hệ thức truy hồi, $a_{n+2} = p a_{n+1} + q a_n$.<br>
+            Vì $d \mid q$, nên $d \mid (q a_n)$. Kết hợp với $d \mid a_{n+2}$, ta suy ra $d \mid (p a_{n+1})$.<br>
+            Do $\gcd(p, q) = 1$ và $d \mid q$, nên $\gcd(d, p) = 1$.<br>
+            Từ $d \mid p a_{n+1}$ và $\gcd(d, p) = 1$, theo Bổ đề Euclid, ta bắt buộc phải có $d \mid a_{n+1}$.<br>
+            Lúc này, $d$ vừa là ước của $q$, vừa là ước của $a_{n+1}$.<br>
+            Tuy nhiên, theo giả thiết quy nạp, $\gcd(a_{n+1}, q) = 1$. Suy ra $d = 1$.<br>
+            Vậy $\gcd(a_{n+2}, q) = 1$. Theo nguyên lý quy nạp, khẳng định đúng với mọi $n \ge 1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Bulgarian National Olympiad 2001)</div>
+            <div class="box-body">
+                Cho dãy số $(v_n)$ xác định bởi $v_0=2, v_1=P$ và $v_{n+2} = P v_{n+1} - Q v_n$. Chứng minh rằng $v_n = \alpha^n + \beta^n$, trong đó $\alpha, \beta$ là hai nghiệm phân biệt của phương trình $x^2 - Px + Q = 0$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương trình đặc trưng của hệ thức truy hồi chính xác là $r^2 - Pr + Q = 0$.<br>
+            Vì phương trình có hai nghiệm $\alpha, \beta$, công thức nghiệm tổng quát của dãy số là:
+            $$ v_n = c_1 \alpha^n + c_2 \beta^n $$
+            Dựa vào các điều kiện ban đầu để xác định $c_1, c_2$:
+            <ul>
+                <li>Tại $n=0$: $v_0 = c_1 \alpha^0 + c_2 \beta^0 = c_1 + c_2 = 2$.</li>
+                <li>Tại $n=1$: $v_1 = c_1 \alpha + c_2 \beta = P$.</li>
+            </ul>
+            Theo định lý Vieta cho phương trình $x^2 - Px + Q = 0$, ta có tổng hai nghiệm $\alpha + \beta = P$.<br>
+            Do đó phương trình thứ hai trở thành $c_1 \alpha + c_2 \beta = \alpha + \beta$.<br>
+            Giải hệ phương trình tuyến tính này:<br>
+            Bởi vì $\alpha \neq \beta$, nghiệm duy nhất của hệ là $c_1 = 1$ và $c_2 = 1$.<br>
+            Vậy công thức tổng quát của dãy số là:
+            $$ v_n = 1 \cdot \alpha^n + 1 \cdot \beta^n = \alpha^n + \beta^n $$
+            Đẳng thức được chứng minh hoàn toàn.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

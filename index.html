@@ -218,6 +218,33 @@
             background: #fff;
         }
 
+
+        /* ===== Bară online din footer ===== */
+        .footer-live {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(135deg, #0b1f4d, #1c3a8a);
+            color: #fff; border-radius: 40px;
+            padding: 9px 22px; margin: 0 auto 14px;
+            width: fit-content; max-width: 92%;
+            font-size: 0.95rem; font-weight: 600;
+            box-shadow: 0 4px 16px rgba(11,31,77,0.25);
+            flex-wrap: wrap;
+        }
+        .live-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #2ee36b;
+            animation: pulse 1.6s infinite;
+        }
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(46,227,107,.55); }
+            70%  { box-shadow: 0 0 0 8px rgba(46,227,107,0); }
+            100% { box-shadow: 0 0 0 0 rgba(46,227,107,0); }
+        }
+        .footer-live .brow {
+            display: inline-block; background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.35);
+            border-radius: 20px; padding: 2px 10px; font-size: 0.85rem;
+        }
         @media (max-width: 520px) {
             .grid { grid-template-columns: 1fr; }
             .hero { padding: 50px 16px 70px; }
@@ -260,6 +287,10 @@
     </main>
 
     <footer>
+        <div class="footer-live" id="footerLive" style="display:none">
+            <span class="live-dot"></span>
+            <span id="footerText">Đang online: <b>0</b> người</span>
+        </div>
         Blog tổng hợp các chuyên đề Toán học Olympic • Các bài viết thuộc thư mục OLYMPIC
     </footer>
 
@@ -337,6 +368,9 @@
             { n:58, file:'index58.html', cat:'comb',  title:'Toán rời rạc và Lý thuyết trò chơi - Phép cộng Nim và Định lý Sprague-Grundy',          desc:'Phép cộng Nim và định lý Sprague-Grundy trong lý thuyết trò chơi.' },
             { n:59, file:'index59.html', cat:'comb',  title:'Hình học Tổ hợp - Nguyên lý Phản xạ André và Cấu trúc Catalan',                          desc:'Nguyên lý phản xạ André và cấu trúc số Catalan.' },
             { n:60, file:'index60.html', cat:'comb',  title:'Đại số Tổ hợp - Lưới nghiệm đơn vị và Tổng các hệ số cách đều',                          desc:'Kỹ thuật roots-of-unity filter để trích xuất tổng hệ số cách đều.' },
+            { n:61, file:'index61.html', cat:'nt',    title:'Số học Tổ hợp — Tích chập Dirichlet și Nghịч đảо Möbius',                        desc:'Tích chập Dirichlet și обратная формула Möbius pentru a преобразovать сумы по делителям.' },
+            { n:62, file:'index62.html', cat:'comb',  title:'Đai algebra Tổ hợp — Không gian Vector над Z₂ și Hệ cơ сɵвы độк лый',            desc:'Множества как бинарные векторы над Z₂: ортогональность, ранг матрицы, граф-модели.' },
+            { n:63, file:'index63.html', cat:'comb',  title:'Đai algebra Tổ hợp — Лwи Young, Phép chèn Schensted și RSK corrеspоndencia',      desc:'Young-таблицы, формула длины крюка и RSK-биекция pentru LIS/LDS.' },
             { n:1,  file:'vmo1.html',    cat:'poly',  stars:3, title:'Đại số Đa thức & tính chất Số học — Cấu trúc chia hết của đa thức hệ số nguyên',  desc:'Định lý chia hết của đa thức hệ số nguyên và ứng dụng USAMO 1974.' },
             { n:2,  file:'vmo2.html',    cat:'nt',    stars:4, title:'Số học và Đại số — Phương trình Pell và Cấu trúc nghiệm Diophantine bậc hai',      desc:'Phương trình Pell và cấu trúc nghiệm Diophantine bậc hai.' },
             { n:3,  file:'vmo3.html',    cat:'fe',    stars:3, title:'Đại số và Phương trình hàm — Cauchy và các phép biến đổi đồng nhất',              desc:'Phương trình Cauchy và các phép biến đổi đồng nhất.' },
@@ -344,7 +378,9 @@
             { n:5,  file:'vmo5.html',    cat:'ineq',  stars:3, title:'Đại số và Bất đẳng thức — Cauchy-Schwarz dạng phân thức (Bổ đề Titu)',           desc:'Bất đẳng thức Cauchy-Schwarz dạng phân thức (bổ đề Titu).' },
             { n:6,  file:'vmo6.html',    cat:'poly',  stars:4, title:'Đại số Đa thức — Tính bất khả quy của đa thức hệ số nguyên và Tiêu chuẩn Eisenstein', desc:'Tính bất khả quy của đa thức hệ số nguyên và tiêu chuẩn Eisenstein.' },
             { n:7,  file:'vmo7.html',    cat:'comb',  stars:4, title:'Đại số Tổ hợp — Phương pháp Đa thức sinh và Bộ lọc căn bậc n của đơn vị',        desc:'Phương pháp đa thức sinh và bộ lọc căn bậc n của đơn vị.' },
-            { n:8,  file:'vmo8.html',    cat:'poly',  stars:3, title:'Đại số Đa thức — Phương trình hàm đa thức và Phương pháp xác định nghiệm',        desc:'Phương trình hàm đa thức và phương pháp xác định nghiệm.' }
+            { n:8,  file:'vmo8.html',    cat:'poly',  stars:3, title:'Đại số Đa thức — Phương trình hàm đa thức và Phương pháp xác định nghiệm',        desc:'Phương trình hàm đa thức và phương pháp xác định nghiệm.' },
+            { n:9,  file:'vmo9.html',    cat:'poly',  stars:4, title:'Đai algebra и Лы theory of numbers — Phương equation sai phânt tunến tinh și Тính châтность числа дãy', desc:'Линейные рекурренции: характеристическое уравнение, формулa Binet, тождество Cassini.' },
+            { n:10, file:'vmo10.html',   cat:'poly',  stars:3, title:'Đai algebra Đa polynomial и Hệ equations — Đa polynomial symmetric базовые и Newton тождества', desc:'Симметрические полиномы: фундаментальная теорема, тождества Newton pentru сумм powers.' }
         ];
 
         // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
@@ -478,6 +514,10 @@
         //    vd: 1250 → "1,25K"  •  143454 → "143,454K"  •  1234567 → "1,234567M"
         //  - Nếu APPS_SCRIPT_URL không gọi được → tự chuyển về localStorage
         // ============================================================
+        // PRESENCE_URL — introduce aici URL nòu web-app (vezi AppsScript_Code.gs);
+        //   cu acesta "người online" și phân trin duyət vor deveni globale.
+        //   Dacă rồmane gol ('') -> funcționează doar modul local (dispozitivul).
+        const PRESENCE_URL = ''; // ex: https://script.google.com/macros/s/XXXX/exec
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKjYk2elM5kLba26kINmjIf98G_hQGNM5KlBUWhiRmy-wUK3W1NaQTfMy2-AXBxV56/exec';
 
         (function () {
@@ -536,40 +576,111 @@
 
             countGlobal().then(ok => { if (!ok) countLocal(); });
         })();
-
         // ============================================================
-        //  BỘ ĐẾM NGƯỜI ĐANG ONLINE
-        //  - Mỗi trình duyệt/mở trang tạo 1 phiên (sid) duy nhất
-        //  - Gửi "heartbeat" mỗi 15 giây để xác nhận còn online
-        //  - Apps Script tự xóa phiên nào quá 60 giây không "sống"
-        //    => con số hiển thị = người đang thực sự xem
+        //  NGƯỜI ĐANG ONLINE + TRÌNH DUYƏT (heartbeat)
+        //  - Încem primо cu server (PRESENCE_URL); dacă indisponibil -
+        //    mod local (tab-uri активе ale acestui dispozitiv/navigator)
         // ============================================================
         (function () {
             const elOnline = document.getElementById('countOnline');
-            if (!elOnline) return;
+            const footerLive = document.getElementById('footerLive');
+            const footerText = document.getElementById('footerText');
+            if (!elOnline || !footerLive || !footerText) return;
 
-            let sid = sessionStorage.getItem('olympic_sid');
+            const TTL = 70 * 1000;
+            const INTERVAL = 20000;
+            const LKEY = 'olympic_presence_local';
+
+            let sid = null;
+            try { sid = sessionStorage.getItem('olympic_sid'); } catch (e) { /* bỏ qua */ }
             if (!sid) {
                 sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
                 try { sessionStorage.setItem('olympic_sid', sid); } catch (e) { /* bỏ qua */ }
             }
 
-            async function heartbeat() {
-                if (!APPS_SCRIPT_URL) return;
-                try {
-                    const res = await fetch(APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'action=heartbeat&sid=' + encodeURIComponent(sid)
-                    });
-                    const data = await res.json();
-                    if (data && data.ok) elOnline.textContent = Number(data.online || 0);
-                } catch (e) { /* tạm thời bỏ qua, lần sau thử lại */ }
+            function detectBrowser() {
+                const ua = (navigator.userAgent || '').toLowerCase();
+                if (ua.indexOf('bing') >= 0 || ua.indexOf('bingweb') >= 0) return 'Bing';
+                if (ua.indexOf('edg/') >= 0) return 'Edge';
+                if (ua.indexOf('opr/') >= 0 || ua.indexOf('opera') >= 0) return 'Opera';
+                if (ua.indexOf('yabrowser') >= 0 || ua.indexOf('yaformat') >= 0) return 'Yandex';
+                if (ua.indexOf('samsungbrowser') >= 0) return 'Samsung';
+                if (ua.indexOf('firefox') >= 0 || ua.indexOf('fx/') >= 0) return 'Firefox';
+                if (ua.indexOf('ucbrowser') >= 0) return 'UC';
+                if (ua.indexOf('chrome') >= 0 || ua.indexOf('chromium') >= 0) return 'Chrome';
+                if (ua.indexOf('safari') >= 0) return 'Safari';
+                if (ua.indexOf('msie') >= 0 || ua.indexOf('trident') >= 0) return 'IE';
+                return 'Other';
+            }
+            const MY_BROWSER = detectBrowser();
+
+            // ---- mod local (запасной) ----
+            function localMap() {
+                const now = Date.now();
+                let map = {};
+                try { map = JSON.parse(localStorage.getItem(LKEY) || '{}') || {}; } catch (e) { map = {}; }
+                const fresh = {};
+                Object.keys(map).forEach(k => { if (now - Number(map[k].t || 0) < TTL) fresh[k] = map[k]; });
+                fresh[sid] = { b: MY_BROWSER, t: now };
+                try { localStorage.setItem(LKEY, JSON.stringify(fresh)); } catch (e) { /* bỏ qua */ }
+                return fresh;
             }
 
-            heartbeat();
-            setInterval(heartbeat, 15000);
+            // ---- отрисовка ----
+            function browsersFromSessions(map) {
+                const out = {};
+                Object.keys(map).forEach(k => {
+                    const b = map[k].b || 'Other';
+                    out[b] = (out[b] || 0) + 1;
+                });
+                return out;
+            }
+            function render(online, browsers) {
+                const n = Number(online) || 0;
+                if (elOnline) elOnline.textContent = String(n);
+                let html = 'Đang online: <b>' + n + '</b> người';
+                const names = Object.keys(browsers || {}).filter(k => browsers[k] > 0)
+                    .sort((a, b) => browsers[b] - browsers[a]);
+                if (names.length) {
+                    html += ' &nbsp;•&nbsp; ' + names.map(k =>
+                        '<span class="brow">' + k + '(' + browsers[k] + ')</span>').join(' ');
+                }
+                footerLive.style.display = 'flex';
+                footerText.innerHTML = html;
+            }
+        // ---- server heartbeat (Apps Script: action=heartbeat) ----
+            async function serverHeartbeat() {
+                if (!PRESENCE_URL) return null;
+                try {
+                    const res = await fetch(PRESENCE_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'action=heartbeat&sid=' + encodeURIComponent(sid) +
+                              '&browser=' + encodeURIComponent(MY_BROWSER)
+                    });
+                    if (!res.ok) return null;
+                    const data = await res.json();
+                    return (data && data.ok) ? data : null;
+                } catch (e) { return null; }
+            }
+
+            async function tick() {
+                const srv = await serverHeartbeat();
+                if (srv) {
+                    render(srv.online, srv.browsers || {});
+                } else {
+                    const m = localMap();
+                    render(Object.keys(m).length, browsersFromSessions(m));
+                }
+            }
+
+            // afișeзă imediat, сервер уточнит
+            const m0 = localMap();
+            render(Object.keys(m0).length, browsersFromSessions(m0));
+            tick();
+            setInterval(tick, INTERVAL);
         })();
+
     </script>
 </body>
 </html>

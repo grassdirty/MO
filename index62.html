@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Không gian Vector trên Z_2 và Hệ cơ sở độc lập</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> KHÔNG GIAN VECTOR TRÊN $\mathbb{Z}_2$ VÀ HỆ CƠ SỞ ĐỘC LẬP</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đánh giá tính chẵn lẻ của sự giao cắt giữa các tập hợp là một bài toán trong Tổ hợp Đếm. Chuyên đề này hình thức hóa một công cụ đại số: Không gian Vector trên trường hữu hạn $\mathbb{Z}_2$. Bằng cách coi các tập hợp như những vector nhị phân và phép giao như tích vô hướng modulo 2, chúng ta sẽ thiết lập Định lý Trực giao và cấu trúc Không gian sinh. Đại số Tuyến tính sẽ giúp giải quyết các mô hình đồ thị và hệ tập hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Chuyên đề này sử dụng một số khái niệm của Đại số tuyến tính ở bậc Đại học như Không gian nghiệm, Không gian cột và Định lý Hạng - Độ suy biến. Để học sinh THPT dễ dàng tiếp thu bài toán 2.1 và 3.2, ta cần nắm vững các khái niệm sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Không gian Nghiệm, Không gian Cột và Định lý Hạng - Độ suy biến)</div>
+        Cho $M$ là một ma trận kích thước $m \times n$ (gồm $m$ hàng và $n$ cột).
+        <ul>
+            <li><strong>Không gian cột (Column Space):</strong> Ký hiệu $\text{Col}(M)$, là không gian sinh bởi các cột của $M$. Một vector $d$ thuộc $\text{Col}(M)$ nếu hệ phương trình $Mx = d$ có nghiệm. Số chiều của $\text{Col}(M)$ được gọi là hạng (Rank) của ma trận, ký hiệu là $k$.</li>
+            <li><strong>Không gian nghiệm (Null Space):</strong> Ký hiệu $\text{Null}(M)$, là tập hợp tất cả các vector $x$ sao cho $Mx = \mathbf{0}$. Đây là tập nghiệm của hệ phương trình thuần nhất.</li>
+            <li><strong>Định lý Hạng - Độ suy biến (Rank-Nullity Theorem):</strong> Đối với một ma trận có $n$ cột, tổng số chiều của Không gian cột và Không gian nghiệm luôn bằng $n$:
+            $$ \dim(\text{Col}(M)) + \dim(\text{Null}(M)) = n $$</li>
+        </ul>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Trường $\mathbb{Z}_2$ và Vector Nhị phân)</div>
+        Để sử dụng Đại số tuyến tính trong Toán rời rạc, ta giới hạn các phép toán trong hai trạng thái: Chẵn (0) và Lẻ (1).
+        <ul>
+            <li> <strong>Trường $\mathbb{Z}_2$:</strong> Là một hệ thống đại số chỉ gồm hai phần tử $\{0, 1\}$. Phép cộng và phép nhân được thực hiện theo modulo 2 (ví dụ: $1 + 1 = 0$, $1 \cdot 1 = 1$). Phép cộng này tương đương với phép toán XOR (Phép cộng Nim) trong hệ nhị phân.</li>
+            <li> <strong>Không gian vector $\mathbb{Z}_2^n$:</strong> Là tập hợp tất cả các vector có $n$ chiều, mỗi chiều nhận giá trị $0$ hoặc $1$. Mọi tập con $A \subseteq \{1, 2, \dots, n\}$ đều có thể được biểu diễn duy nhất bằng một vector chỉ thị $v_A \in \mathbb{Z}_2^n$, trong đó phần tử thứ $i$ bằng $1$ nếu $i \in A$ và bằng $0$ nếu $i \notin A$.</li>
+            <li> <strong>Tích vô hướng (Dot Product):</strong> Với hai vector $u, v \in \mathbb{Z}_2^n$, tích vô hướng của chúng được định nghĩa là $u \cdot v = \sum_{i=1}^n u_i v_i \pmod 2$. <br>
+            Trong ngôn ngữ tập hợp, $v_A \cdot v_B \equiv |A \cap B| \pmod 2$. Hai vector được gọi là trực giao nếu $u \cdot v = 0$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Không gian sinh và Hệ cơ sở)</div>
+        Cho một tập hợp các vector $S = \{v_1, v_2, \dots, v_m\}$ trong không gian $\mathbb{Z}_2^n$. Tập $S$ được gọi là <strong>độc lập tuyến tính</strong> nếu phương trình $\sum_{i=1}^m c_i v_i = \mathbf{0}$ (với $c_i \in \{0, 1\}$) chỉ có nghiệm duy nhất là tất cả các $c_i = 0$.<br>
+        Nếu $S$ độc lập tuyến tính, <strong>Không gian sinh</strong> (Span) của $S$, bao gồm tất cả các tổ hợp tuyến tính $\sum c_i v_i$, chứa chính xác $2^m$ vector phân biệt.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Một tổ hợp tuyến tính của hệ $S$ có dạng $v = c_1 v_1 + c_2 v_2 + \dots + c_m v_m$.<br>
+        Vì mỗi hệ số $c_i$ chỉ có thể nhận giá trị $0$ hoặc $1$, có tất cả $2^m$ cách chọn bộ hệ số $(c_1, c_2, \dots, c_m)$.<br>
+        Ta cần chứng minh rằng mỗi cách chọn bộ hệ số đều tạo ra một vector $v$ hoàn toàn phân biệt.<br>
+        Giả sử phản chứng, tồn tại hai bộ hệ số khác nhau $(c_1, c_2, \dots, c_m)$ và $(d_1, d_2, \dots, d_m)$ sinh ra cùng một vector:</p>
+        $$ \sum_{i=1}^m c_i v_i = \sum_{i=1}^m d_i v_i $$
+        <p>Ta lấy vế trái trừ đi vế phải. Trên trường $\mathbb{Z}_2$, phép trừ giống phép cộng ($1 - 1 = 0$ và $1 + 1 = 0 \pmod 2$). Ta có thể chuyển vế bằng phép cộng:</p>
+        $$ \sum_{i=1}^m (c_i + d_i) v_i = \mathbf{0} $$
+        <p>Vì hai bộ hệ số là khác nhau, tồn tại ít nhất một chỉ số $k$ sao cho $c_k \neq d_k$.<br>
+        Vì $c_k, d_k \in \{0, 1\}$, điều này kéo theo $c_k + d_k = 1 \pmod 2$.<br>
+        Như vậy, ta tìm được một tổ hợp tuyến tính của hệ $S$ bằng $\mathbf{0}$ nhưng có ít nhất một hệ số (tại vị trí $k$) khác $0$.<br>
+        Điều này mâu thuẫn với định nghĩa "độc lập tuyến tính" của hệ $S$.<br>
+        Do đó không có hai bộ hệ số nào sinh ra cùng một vector. Không gian sinh chứa chính xác $2^m$ phần tử phân biệt. Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Không gian con Trực giao)</div>
+        Cho $M$ là một ma trận đối xứng kích thước $n \times n$ trên trường $\mathbb{Z}_2$. Không gian cột (Column Space) của $M$ và Không gian nghiệm (Null Space) của $M$ có mối quan hệ trực giao mật thiết. Một vector cột $d \in \mathbb{Z}_2^n$ nằm trong Không gian cột của $M$ khi và chỉ khi $d$ trực giao với mọi vector thuộc Không gian nghiệm của $M$. Tức là:
+        $$ d \in \text{Col}(M) \iff d \cdot y = 0 \quad \text{với mọi } y \text{ thỏa mãn } My = \mathbf{0} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>Chiều thuận ($\Rightarrow$):</strong> Giả sử $d \in \text{Col}(M)$. Theo định nghĩa của Không gian cột, tồn tại một vector $x \in \mathbb{Z}_2^n$ sao cho $M x = d$.<br>
+        Lấy một vector $y$ bất kỳ thuộc Không gian nghiệm của $M$, tức là $My = \mathbf{0}$.<br>
+        Ta xét tích vô hướng của $d$ và $y$ (viết dưới dạng nhân ma trận là $y^T d$):</p>
+        $$ y^T d = y^T (M x) $$
+        <p>Sử dụng tính chất kết hợp của phép nhân ma trận:</p>
+        $$ y^T (M x) = (y^T M) x $$
+        <p>Vì $M$ là ma trận đối xứng, $M = M^T$. Do đó $y^T M = y^T M^T = (My)^T$.<br>
+        Mà $My = \mathbf{0}$, nên $(My)^T = \mathbf{0}^T$.<br>
+        Suy ra:</p>
+        $$ y^T d = \mathbf{0}^T x = 0 $$
+        <p>Vậy $d$ trực giao với $y$.</p>
+
+        <p><strong>Chiều đảo ($\Leftarrow$):</strong> Giả sử $d$ trực giao với mọi $y \in \text{Null}(M)$.<br>
+        Trong Đại số tuyến tính trên bất kỳ trường nào, Không gian hàng (Row Space) của $M$ luôn là phần bù trực giao của Không gian nghiệm (Null Space). Tức là, tập hợp các vector trực giao với toàn bộ Null(M) chính là Không gian hàng của $M$.<br>
+        Do đó, $d$ bắt buộc phải nằm trong Không gian hàng của $M$.<br>
+        Mặt khác, vì ma trận $M$ đối xứng ($M = M^T$), Không gian hàng của $M$ đồng nhất với Không gian cột của $M$.<br>
+        Kéo theo, $d$ nằm trong Không gian cột của $M$. <br>
+        Định lý được chứng minh. Đây là một công cụ phân tích để giải các hệ phương trình đồng dư.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Truy vấn Tập con có Tổng Nim bằng 0)</div>
+        Cho một tập hợp $S$ gồm $n$ số nguyên dương. Hai người chơi một trò chơi trên các tập con của $S$. Người ta định nghĩa một tập con là "cân bằng" nếu tổng Nim (phép XOR bitwise) của tất cả các phần tử trong tập con đó bằng 0. <br>
+        Bằng cách sử dụng Không gian Vector trên $\mathbb{Z}_2$, hãy chứng minh rằng số lượng các tập con cân bằng (bao gồm cả tập rỗng) luôn luôn là một lũy thừa của 2, cụ thể bằng $2^{n-k}$, trong đó $k$ là số lượng phần tử của một cơ sở độc lập tuyến tính được trích xuất từ $S$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mỗi số nguyên dương trong tập $S$ được phân tích dưới hệ nhị phân và coi như một vector cột trong không gian $\mathbb{Z}_2^d$ (với $d$ là số lượng bit lớn nhất). <br>
+        Có $n$ số nguyên tương ứng với $n$ vector $v_1, v_2, \dots, v_n$.<br>
+        Một tập con $A \subseteq S$ được biểu diễn bởi một vector chỉ thị $c = (c_1, c_2, \dots, c_n)^T \in \mathbb{Z}_2^n$. ($c_i = 1$ nếu $v_i \in A$, và $c_i = 0$ nếu ngược lại).<br>
+        Tập con $A$ là "cân bằng" (có tổng Nim bằng 0) khi và chỉ khi:</p>
+        $$ c_1 v_1 + c_2 v_2 + \dots + c_n v_n = \mathbf{0} $$
+        <p>Xây dựng ma trận $M$ có kích thước $d \times n$, trong đó các cột chính là các vector $v_i$.<br>
+        Phương trình trên trở thành:</p>
+        $$ M \cdot c = \mathbf{0} $$
+        <p>Như vậy, số lượng các tập con cân bằng bằng <strong>số lượng các nghiệm $c$</strong> của hệ phương trình thuần nhất này trên trường $\mathbb{Z}_2$.<br>
+        Nói cách khác, nó bằng số lượng phần tử của <strong>Không gian nghiệm</strong> $\text{Null}(M)$.</p>
+
+        <p>Theo Định lý Hạng - Độ suy biến (Định lý 0.1), đối với một ma trận $M$ có $n$ cột:</p>
+        $$ \dim(\text{Col}(M)) + \dim(\text{Null}(M)) = n $$
+        <p>Không gian cột $\text{Col}(M)$ chính là Không gian sinh (Span) của $n$ vector ban đầu. Số chiều của không gian này, ký hiệu là $k$, là số lượng vector lớn nhất tạo thành một hệ <strong>độc lập tuyến tính</strong> (Cơ sở - Basis).<br>
+        Do đó:</p>
+        $$ \dim(\text{Null}(M)) = n - k $$
+        <p>Không gian nghiệm là một không gian vector con có số chiều là $n - k$. Theo Định lý 1.1, số lượng phần tử của một không gian vector trên $\mathbb{Z}_2$ có số chiều $D$ luôn luôn là $2^D$.<br>
+        Vậy, số lượng các nghiệm $c$ là $2^{n-k}$.<br>
+        Điều này chứng tỏ có đúng $2^{n-k}$ tập con cân bằng. Bài toán được giải quyết thông qua việc ánh xạ vào Không gian null.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Romanian National Olympiad - Bài toán Câu lạc bộ Chẵn lẻ / Oddtown)</div>
+        Trong một trường học có $n$ học sinh và $n$ câu lạc bộ. Biết rằng:
+        <ol>
+            <li>Mỗi câu lạc bộ có một <strong>số lẻ</strong> học sinh tham gia.</li>
+            <li>Bất kỳ hai câu lạc bộ phân biệt nào cũng có chung một <strong>số chẵn</strong> học sinh.</li>
+        </ol>
+        Chứng minh rằng, với hệ thống câu lạc bộ này, <strong>mọi học sinh</strong> trong trường đều phải tham gia ít nhất một câu lạc bộ (không có học sinh nào không tham gia bất kỳ câu lạc bộ nào).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta mô hình hóa bài toán bằng Không gian Vector $\mathbb{Z}_2$.<br>
+        Mỗi học sinh được đánh số từ $1$ đến $n$. <br>
+        Mỗi câu lạc bộ $C_i$ ($1 \le i \le n$) được biểu diễn bởi một vector chỉ thị $v_i \in \mathbb{Z}_2^n$. Phần tử thứ $j$ của $v_i$ bằng $1$ nếu học sinh $j$ thuộc câu lạc bộ $C_i$, và bằng $0$ nếu ngược lại.</p>
+
+        <p>Ta biểu diễn các giả thiết của bài toán sang ngôn ngữ Tích vô hướng modulo 2:</p>
+        <ol>
+            <li>Mỗi câu lạc bộ có số lẻ thành viên:
+            $$ |C_i| \equiv 1 \pmod 2 \implies v_i \cdot v_i = 1 \quad \forall i $$</li>
+            <li>Hai câu lạc bộ bất kỳ có giao chung số chẵn thành viên:
+            $$ |C_i \cap C_j| \equiv 0 \pmod 2 \implies v_i \cdot v_j = 0 \quad \forall i \neq j $$</li>
+        </ol>
+
+        <p>Xét ma trận liên thuộc $M$ kích thước $n \times n$, trong đó các hàng là các vector $v_1, v_2, \dots, v_n$.<br>
+        Tích của ma trận $M$ với ma trận chuyển vị $M^T$ tạo ra một ma trận $n \times n$ mà phần tử ở vị trí $(i, j)$ chính là tích vô hướng $v_i \cdot v_j$.<br>
+        Theo các điều kiện trên, các phần tử trên đường chéo chính của $M M^T$ đều bằng $1$, và các phần tử ngoài đường chéo chính đều bằng $0$.<br>
+        Nghĩa là, trên trường $\mathbb{Z}_2$:</p>
+        $$ M M^T = I_n \quad \text{(với } I_n \text{ là ma trận đơn vị)} $$
+        <p>Từ phương trình này, ta có thể tính định thức:</p>
+        $$ \det(M M^T) = \det(I_n) = 1 \pmod 2 $$
+        $$ \det(M) \cdot \det(M^T) = (\det(M))^2 = 1 \implies \det(M) \neq 0 $$
+        <p>Vì định thức của ma trận $M$ khác 0, ma trận $M$ là một ma trận <strong>khả nghịch</strong> (có hạng đầy đủ bằng $n$).<br>
+        Điều này kéo theo các cột của $M$ cũng tạo thành một hệ độc lập tuyến tính và không có cột nào là cột $\mathbf{0}$ toàn số 0.</p>
+
+        <p>Trong cấu trúc của ma trận liên thuộc $M$, cột thứ $j$ biểu diễn thông tin tham gia câu lạc bộ của học sinh thứ $j$.<br>
+        Nếu tồn tại một học sinh không tham gia bất kỳ câu lạc bộ nào, thì toàn bộ cột thứ $j$ của ma trận $M$ sẽ bao gồm toàn số 0.<br>
+        Nếu một ma trận có một cột toàn số 0, định thức của nó bắt buộc phải bằng 0.<br>
+        Nhưng ta đã chứng minh $\det(M) \neq 0$. Sự mâu thuẫn này chứng tỏ không thể có cột nào toàn số 0.<br>
+        Vậy, mọi học sinh đều phải tham gia ít nhất một câu lạc bộ. Bài toán được chứng minh bằng định thức ma trận.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Australian Math Olympiad - Phân đôi Mạng lưới Quan hệ)</div>
+        Có $n$ người trong một căn phòng, một số người là bạn bè của nhau (quan hệ bạn bè là hai chiều). Chứng minh rằng luôn có thể chia $n$ người này thành 2 nhóm (một trong hai nhóm có thể rỗng) sao cho: Bất kỳ ai cũng có một <strong>số chẵn</strong> người bạn nằm trong <strong>cùng nhóm</strong> với mình.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Mô hình hóa cấu trúc bạn bè thành một đồ thị vô hướng $G$, với ma trận kề $A$ kích thước $n \times n$ trên $\mathbb{Z}_2$. <br>
+        $A_{ij} = 1$ nếu $i$ và $j$ là bạn, $A_{ij} = 0$ nếu không. (Đường chéo chính $A_{ii} = 0$). Ma trận $A$ là đối xứng ($A = A^T$).</p>
+
+        <p>Việc chia $n$ người thành 2 nhóm tương đương với việc gán cho mỗi người một giá trị: $x_i = 1$ (thuộc Nhóm 1) và $x_i = 0$ (thuộc Nhóm 0).<br>
+        Trạng thái phân nhóm được đại diện bởi một vector cột $x = (x_1, \dots, x_n)^T \in \mathbb{Z}_2^n$.</p>
+
+        <p>Ta thiết lập phương trình cho điều kiện "số lượng bạn bè trong cùng nhóm là số chẵn":</p>
+        <ul>
+            <li>Đối với một người $i$ ở Nhóm 1 ($x_i = 1$): Số bạn bè trong Nhóm 1 của người $i$ (modulo 2) chính là phần tử thứ $i$ của vector $A x$. Do đó ta cần $(A x)_i \equiv 0 \pmod 2$.</li>
+            <li>Đối với một người $i$ ở Nhóm 0 ($x_i = 0$): Số bạn bè trong Nhóm 0 bằng tổng số bạn bè (bậc của đỉnh $i$, gọi là $d_i$) trừ đi số bạn bè ở Nhóm 1 (là $(A x)_i$). Ta cần: $d_i - (A x)_i \equiv 0 \pmod 2 \implies (A x)_i \equiv d_i \pmod 2$.</li>
+        </ul>
+
+        <p>Cả hai trường hợp có thể được gộp chung thành một phương trình modulo 2 duy nhất cho mọi đỉnh $i$:</p>
+        $$ (A x)_i \equiv d_i (1 - x_i) \pmod 2 $$
+        <p>Khai triển và chuyển vế:</p>
+        $$ (A x)_i + d_i x_i \equiv d_i \pmod 2 $$
+        <p>Gọi $D$ là ma trận đường chéo kích thước $n \times n$ mà phần tử $D_{ii} = d_i \pmod 2$. Vector bậc $d = (d_1, \dots, d_n)^T$.<br>
+        Hệ phương trình trở thành dạng ma trận:</p>
+        $$ (A + D) x = d $$
+        <p>Ký hiệu ma trận $M = A + D$. Đây chính là <strong>Ma trận Laplace</strong> của đồ thị trên $\mathbb{Z}_2$. <br>
+        Đặc biệt, $M$ là một ma trận đối xứng ($M = M^T$) và đường chéo chính của $M$ chính là vector $d$.<br>
+        Bài toán yêu cầu chứng minh tồn tại cách chia nhóm, nghĩa là ta phải chứng minh <strong>hệ phương trình $M x = d$ luôn có nghiệm</strong>. Điều này tương đương với việc chứng minh vector $d$ luôn nằm trong <strong>Không gian cột</strong> của $M$.</p>
+
+        <p>Áp dụng <strong>Định lý Không gian con Trực giao (Định lý 1.2)</strong>:<br>
+        Vì $M$ đối xứng, $d \in \text{Col}(M)$ khi và chỉ khi $d$ trực giao với mọi vector $y \in \text{Null}(M)$.<br>
+        Ta lấy một vector $y$ bất kỳ thuộc Không gian nghiệm của $M$, tức là $M y = \mathbf{0}$. Ta cần chứng minh tích vô hướng $d \cdot y = 0$.</p>
+
+        <p>Xét dạng toàn phương $y^T M y$. Vì $M y = \mathbf{0}$, ta có:</p>
+        $$ y^T M y = y^T (M y) = y^T \mathbf{0} = 0 $$
+        <p>Mặt khác, ta tính trực tiếp $y^T M y$ thông qua $A$ và $D$:</p>
+        $$ y^T M y = y^T (A + D) y = y^T A y + y^T D y $$
+        <p>Phân tích từng thành phần:</p>
+        <ol>
+            <li>$y^T A y = \sum_{i=1}^n \sum_{j=1}^n A_{ij} y_i y_j$.<br>
+            Bởi vì $A$ đối xứng và bằng 0 trên đường chéo, mọi cặp chỉ số $i \neq j$ sẽ xuất hiện thành từng cặp: $A_{ij} y_i y_j + A_{ji} y_j y_i = 2 A_{ij} y_i y_j$.<br>
+            Trên trường modulo 2, mọi số chẵn đều bằng 0. Do đó tổng này triệt tiêu: $y^T A y \equiv 0 \pmod 2$.</li>
+            <li>$y^T D y = \sum_{i=1}^n d_i y_i^2$.<br>
+            Trên trường $\mathbb{Z}_2$, vì $y_i \in \{0, 1\}$, ta luôn có $y_i^2 = y_i$.<br>
+            Do đó: $y^T D y = \sum_{i=1}^n d_i y_i$. Đây là định nghĩa của tích vô hướng $d \cdot y$.</li>
+        </ol>
+
+        <p>Kết hợp lại, ta có:</p>
+        $$ 0 = y^T M y = 0 + d \cdot y \implies d \cdot y = 0 $$
+        <p>Vector $d$ thực sự trực giao với mọi nghiệm của $M$. Theo Định lý 1.2, $d$ luôn nằm trong Không gian cột của $M$. Hệ phương trình $(A+D)x = d$ luôn có nghiệm.<br>
+        Từ một bài đếm quan hệ chẵn lẻ của cấu trúc đồ thị, ta đã sử dụng Ma trận Laplace để giải quyết.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

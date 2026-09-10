@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Đại số Tổ hợp - Lưới Young, Phép chèn Schensted và Tương ứng RSK</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: ĐẠI SỐ TỔ HỢP <br> LƯỚI YOUNG, PHÉP CHÈN SCHENSTED VÀ TƯƠNG ỨNG RSK</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Đánh giá độ dài của các dãy con đơn điệu trong một hoán vị là bài toán nền tảng của tối ưu hóa. Chuyên đề này giới thiệu một cấu trúc không gian hai chiều: Lưới Young (Young Tableau). Bằng cách hình thức hóa thuật toán sắp xếp thành Phép chèn Schensted, chúng ta sẽ chứng minh Sự tương ứng Robinson-Schensted-Knuth (RSK) — một song ánh kết nối mọi hoán vị với một cặp lưới Young. Qua đó, cấu trúc LIS (dãy tăng) và LDS (dãy giảm) sẽ được biểu diễn thông qua hình dáng hình học của lưới.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong chuyên đề này, Bài toán 3.2 và 3.3 sử dụng các tính chất sâu của Lưới Young thường được giảng dạy ở Đại học. Để học sinh THPT dễ tiếp cận, ta cần bổ sung Công thức Độ dài móc và liên hệ Mạng luồng (Max-flow Min-cut):</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Công thức Độ dài Móc - Hook Length Formula)</div>
+        Cho một biểu đồ Ferrers hình dáng $\lambda$ gồm $n$ ô vuông. Với mỗi ô $x \in \lambda$, <strong>độ dài móc</strong> $h(x)$ được định nghĩa là tổng số ô nằm cùng hàng bên phải $x$, số ô nằm cùng cột bên dưới $x$ và chính ô $x$.<br>
+        Số lượng các Lưới Young Chuẩn (SYT) có hình dáng $\lambda$, ký hiệu $f^\lambda$, được tính bằng công thức:
+        $$ f^\lambda = \frac{n!}{\prod_{x \in \lambda} h(x)} $$
+        Công thức này cung cấp cách đếm số Lưới Young cho bất kỳ cấu trúc hình học nào, thay vì thiết lập quy hoạch động phức tạp.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Định lý Dilworth mở rộng và $k$-dãy con)</div>
+        Định lý Greene (được đề cập ở Bài toán 3.3) chứng minh giới hạn số lượng phần tử của $k$ dãy con tăng không giao nhau. Để chứng minh chặn này là chặt (tức là dấu bằng luôn đạt được), người ta sử dụng <strong>Mạng luồng cực đại - Lát cắt cực tiểu</strong> (Max-Flow Min-Cut).<br>
+        Cụ thể, việc tìm $k$ dãy con tăng rời nhau có tổng phần tử lớn nhất trên một hoán vị tương đương với việc tìm $k$ đường đi rời nhau đỉnh trên một Đồ thị có hướng không chu trình (DAG). Theo đối ngẫu luồng-cắt, giá trị cực đại này luôn đạt được và tỷ lệ thuận với số lượng phần tử ở $k$ hàng đầu tiên của lưới Young tương ứng.
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Biểu đồ Ferrers và Lưới Young Chuẩn)</div>
+        <ul>
+            <li> <strong>Phân hoạch (Partition):</strong> Một phân hoạch của số nguyên dương $n$ là một dãy các số nguyên dương $\lambda = (\lambda_1, \lambda_2, \dots, \lambda_k)$ sao cho $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_k$ và $\sum \lambda_i = n$.</li>
+            <li> <strong>Biểu đồ Ferrers:</strong> Biểu diễn phân hoạch $\lambda$ dưới dạng một tập hợp các ô vuông được căn lề trái, trong đó hàng thứ $i$ (từ trên xuống) có đúng $\lambda_i$ ô vuông. Tập hợp các ô này định hình "Hình dáng" (Shape) $\lambda$.</li>
+            <li> <strong>Lưới Young Chuẩn (Standard Young Tableau - SYT):</strong> Là một cách điền các số từ $1$ đến $n$ vào các ô của biểu đồ Ferrers hình dáng $\lambda$ sao cho:
+            <ol>
+                <li>Mỗi số xuất hiện đúng $1$ lần.</li>
+                <li>Các số trên cùng một hàng tăng ngặt từ trái sang phải.</li>
+                <li>Các số trên cùng một cột tăng ngặt từ trên xuống dưới.</li>
+            </ol>
+            </li>
+        </ul>
+    </div>
+
+    <p>Để kết nối hoán vị với Lưới Young, ta sử dụng thao tác toán học gọi là Phép chèn Schensted.</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Chèn Schensted - Schensted Insertion)</div>
+        Cho một Lưới Young Chuẩn $T$ và một số nguyên $x$ chưa có trong $T$. Phép chèn $x$ vào $T$ (ký hiệu $T \leftarrow x$) được thực hiện theo quy tắc sau:
+        <ol>
+            <li>Xét hàng đầu tiên của $T$. Nếu $x$ lớn hơn tất cả các số trong hàng này, đặt $x$ vào ô mới ở cuối hàng. Quá trình chèn kết thúc.</li>
+            <li>Nếu không, tìm số $y$ <strong>nhỏ nhất</strong> trong hàng lớn hơn $x$. Thay thế (bump) $y$ bằng $x$. </li>
+            <li>Lấy số $y$ vừa bị đẩy ra, tiếp tục chèn $y$ vào hàng ngay bên dưới theo đúng quy tắc trên. Lặp lại cho đến khi một số được đặt vào ô trống ở cuối một hàng hoặc tạo ra một hàng mới.</li>
+        </ol>
+        <strong>Khẳng định:</strong> Lưới thu được sau khi chèn luôn là một Lưới Young Chuẩn hợp lệ.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta cần chứng minh rằng sau bất kỳ phép "đẩy" nào, tính chất tăng dần theo hàng và theo cột vẫn được bảo toàn.<br>
+        Giả sử ta đang chèn số $x$ vào một hàng $R$. Hàng này đang có các phần tử $a_1 \lt a_2 \lt \dots \lt y \lt \dots \lt a_k$.<br>
+        Trong đó, $y$ là số nhỏ nhất trong hàng lớn hơn $x$. Nghĩa là phần tử nằm ngay trước $y$ (nếu có) nhỏ hơn $x$.<br>
+        Ta thay $y$ bằng $x$.</p>
+        <ul>
+            <li><strong>Tính chất hàng:</strong> Vì phần tử trước nó nhỏ hơn $x$, và $x \lt y \lt$ (phần tử sau $y$), việc thay $y$ bằng $x$ giữ cho hàng $R$ vẫn tăng ngặt từ trái sang phải.</li>
+            <li><strong>Tính chất cột:</strong> Cần chứng minh $x$ lớn hơn phần tử nằm ngay trên nó (nếu có) và nhỏ hơn phần tử nằm ngay dưới nó (nếu có).<br>
+            Bởi vì $x$ thay thế $y$, và $y$ lớn hơn phần tử nằm ngay trên $y$ (theo tính chất của lưới chuẩn ban đầu). Ký hiệu phần tử phía trên $y$ là $z$. Nếu $z \gt x$, thì ở bước chèn trước đó (khi đẩy phần tử xuống hàng của $z$), phần tử bị đẩy xuống không thể là $x$, gây mâu thuẫn (chứng minh quy nạp cho thấy phần tử chèn vào luôn lớn hơn phần tử phía trên cùng cột). Hơn nữa, ô trống luôn được sinh ra hợp lệ.</li>
+        </ul>
+        <p>Sau đó, số $y$ bị đẩy xuống hàng dưới. Vì $y \gt x$, sự chèn tiếp theo bảo toàn cấu trúc. Quá trình dừng lại khi số bị đẩy được đặt vào cuối hàng, tạo thành một lưới mới. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Sự tương ứng Robinson-Schensted-Knuth - Định lý RSK)</div>
+        Tồn tại một song ánh (bijection) giữa tập hợp tất cả các hoán vị $\pi$ của tập $\{1, 2, \dots, n\}$ và tập hợp tất cả các cặp $(P, Q)$, trong đó $P$ và $Q$ là hai Lưới Young Chuẩn (SYT) có <strong>cùng một hình dáng</strong> $\lambda$.<br>
+        Trong đó, $P$ được gọi là "Bảng Chèn" (Insertion Tableau) và $Q$ được gọi là "Bảng Ghi" (Recording Tableau).
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>Xây dựng ánh xạ (Từ $\pi \to (P, Q)$):</strong><br>
+        Cho hoán vị $\pi = x_1 x_2 \dots x_n$.<br>
+        Bắt đầu với $P_0 = \emptyset$ và $Q_0 = \emptyset$.<br>
+        Với mỗi $i$ từ $1$ đến $n$:</p>
+        <ol>
+            <li> Tạo $P_i$ bằng cách chèn $x_i$ vào $P_{i-1}$ theo phép chèn Schensted ($P_i = P_{i-1} \leftarrow x_i$).</li>
+            <li> Hình dáng của $P_i$ sẽ có thêm đúng 1 ô mới so với $P_{i-1}$. Ta tạo $Q_i$ bằng cách lấy $Q_{i-1}$ và điền số $i$ (chỉ số bước) vào vị trí của ô mới này.</li>
+        </ol>
+        <p>Sau $n$ bước, ta thu được bảng $P_n = P$ và $Q_n = Q$. <br>
+        Bảng $P$ chứa các giá trị của hoán vị (đảm bảo tính SYT theo Định lý 1.1). Bảng $Q$ chứa các bước $1, 2, \dots, n$. Vì mỗi bước điền vào ô mới tạo ra ở lề biểu đồ, các số trong $Q$ tăng theo cả hàng và cột. Vậy $Q$ cũng là một SYT.</p>
+
+        <p><strong>Xây dựng ánh xạ ngược (Từ $(P, Q) \to \pi$):</strong><br>
+        Ta cần chứng minh quá trình này có thể đảo ngược duy nhất.<br>
+        Tìm phần tử lớn nhất trong bảng $Q$ (là số $n$). Vị trí của số $n$ trong $Q$ cho ta biết <strong>chính xác ô cuối cùng</strong> được thêm vào bảng $P$ ở bước thứ $n$.<br>
+        Biết được ô cuối cùng ở hàng nào, ta có thể "kéo ngược" phép chèn Schensted (Reverse Bumping):<br>
+        Giả sử ô cuối cùng nằm ở hàng $k$ và chứa số $y$. Ta nhấc $y$ ra khỏi hàng $k$. Số $y$ này được đẩy xuống từ hàng $k-1$. Nó phải thay thế một số $z$ trong hàng $k-1$. Số $z$ chính là số <strong>lớn nhất</strong> trong hàng $k-1$ mà nhỏ hơn $y$.<br>
+        Ta nhấc $z$ ra và thay $y$ vào. Tiếp tục kéo ngược $z$ lên hàng $k-2$, v.v., cho đến khi ta đẩy một số $x$ ra khỏi hàng 1. <br>
+        Số $x$ này chính là $x_n$ (phần tử cuối cùng của hoán vị).<br>
+        Bằng cách lặp lại quá trình này dựa trên các số $n-1, n-2, \dots, 1$ trong bảng $Q$, ta khôi phục lại toàn bộ hoán vị $\pi$ một cách duy nhất. Sự tồn tại nghịch đảo duy nhất chứng minh ánh xạ này là một song ánh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Chứng minh Đại số cho Bài toán LIS-LDS / Định lý Erdős-Szekeres)</div>
+        Cho một hoán vị $\pi$ của tập hợp $\{1, 2, \dots, n\}$. Chứng minh hai tính chất hình học sau của Bảng chèn $P$ được tạo ra từ $\pi$:
+        <ol>
+            <li>Chiều dài của hàng đầu tiên của bảng $P$ bằng đúng chiều dài của Dãy con tăng dài nhất (LIS) của $\pi$.</li>
+            <li>Chiều dài của cột đầu tiên của bảng $P$ bằng đúng chiều dài của Dãy con giảm dài nhất (LDS) của $\pi$.</li>
+        </ol>
+        Từ đó, hãy sử dụng Sự tương ứng RSK để chứng minh Định lý Erdős-Szekeres: Mọi dãy gồm $ab+1$ số phân biệt đều chứa một dãy con tăng độ dài $a+1$ hoặc một dãy con giảm độ dài $b+1$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p><strong>Phần 1: Sự tương đương cấu trúc</strong><br>
+        Khi ta chèn $x_i$ vào hàng đầu tiên của $P$, nếu $x_i$ lớn hơn phần tử cuối cùng của hàng, nó được thêm vào cuối (mở rộng LIS). Nếu không, nó thay thế phần tử nhỏ nhất lớn hơn nó (duy trì cấu trúc để tiếp nhận các phần tử nhỏ hơn tiếp theo). Do đó, số lượng phần tử trên hàng đầu tiên của $P$ luôn luôn bằng độ dài của Dãy con tăng dài nhất.</p>
+
+        <p>Tương tự, định lý RSK có tính đối xứng: Nếu ta lật ngược hoán vị, số lượng ô bị đẩy xuống các hàng dưới sẽ tăng lên. Số phần tử bị đẩy xuống liên tục tạo thành một dãy giảm. Chiều sâu của quá trình đẩy (tức là số lượng hàng, hay chiều dài cột đầu tiên) bằng độ dài của Dãy con giảm dài nhất.</p>
+
+        <p><strong>Phần 2: Chứng minh Định lý Erdős-Szekeres bằng Lưới Young</strong><br>
+        Cho một dãy gồm $N = ab+1$ số phân biệt. Dãy này tương đương với một hoán vị của $N$ phần tử.<br>
+        Áp dụng Định lý RSK (Định lý 1.2), hoán vị này tương ứng với một Lưới Young $P$ có $N$ ô vuông.<br>
+        Giả sử phản chứng rằng:</p>
+        <ul>
+            <li>Dãy con tăng dài nhất có độ dài $\le a$.</li>
+            <li>Dãy con giảm dài nhất có độ dài $\le b$.</li>
+        </ul>
+        <p>Theo tính chất vừa chứng minh ở Phần 1:</p>
+        <ul>
+            <li>Số ô trên hàng đầu tiên của lưới $P$ (chiều rộng tối đa của lưới) $\le a$.</li>
+            <li>Số ô trên cột đầu tiên của lưới $P$ (chiều cao tối đa của lưới) $\le b$.</li>
+        </ul>
+
+        <p>Vì biểu đồ Ferrers của Lưới Young được căn lề trái và lề trên, tất cả các ô của lưới bắt buộc phải nằm gọn bên trong một hình chữ nhật có kích thước tối đa là $b$ hàng và $a$ cột.<br>
+        Tổng số ô vuông có thể chứa trong hình chữ nhật này là:</p>
+        $$ \text{Số ô} \le a \times b = ab $$
+        <p>Tuy nhiên, theo giả thiết, hoán vị có $N = ab+1$ phần tử, nên Lưới Young $P$ phải chứa đúng $ab+1$ ô vuông.<br>
+        Điều này dẫn đến $ab+1 \le ab$, một mâu thuẫn.<br>
+        Sự mâu thuẫn chứng tỏ giả thiết phản chứng là sai. Không thể đồng thời có LIS $\le a$ và LDS $\le b$.<br>
+        Do đó, phải có LIS $\ge a+1$ hoặc LDS $\ge b+1$. Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Đối xứng Dãy Tăng và Giảm)</div>
+        Trong tập hợp tất cả $n!$ hoán vị của các số từ $1$ đến $n$. Ký hiệu tập $\mathcal{S}(L, D)$ là tập hợp các hoán vị có độ dài dãy con tăng dài nhất đúng bằng $L$ và độ dài dãy con giảm dài nhất đúng bằng $D$. <br>
+        Chứng minh rằng số lượng hoán vị trong $\mathcal{S}(L, D)$ bằng số lượng hoán vị trong $\mathcal{S}(D, L)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán yêu cầu chứng minh $|\mathcal{S}(L, D)| = |\mathcal{S}(D, L)|$. Việc đếm trực tiếp tập hợp này rất khó vì sự đan xen của các dãy con. Tuy nhiên, bằng Sự tương ứng RSK, cấu trúc này có tính đối xứng.</p>
+
+        <p>Theo Định lý RSK, mỗi hoán vị $\pi \in \mathcal{S}(L, D)$ tương ứng duy nhất với một cặp Lưới Young Chuẩn $(P, Q)$ có cùng hình dáng $\lambda$.<br>
+        Ký hiệu hình dáng $\lambda$ có $r$ hàng và $c$ cột. Theo kết quả của Bài toán 2.1:</p>
+        <ul>
+            <li>Chiều dài LIS của $\pi$ là $L$, nên số cột $c = L$.</li>
+            <li>Chiều dài LDS của $\pi$ là $D$, nên số hàng $r = D$.</li>
+        </ul>
+        <p>Vậy, tập $\mathcal{S}(L, D)$ tương đương với tập hợp tất cả các cặp SYT $(P, Q)$ có hình dáng $\lambda$, với $\lambda$ thỏa mãn có đúng $D$ hàng và $L$ cột.</p>
+
+        <p>Bây giờ, ta xét <strong>Toán tử Chuyển vị (Conjugate/Transpose)</strong> trên Lưới Young. <br>
+        Với một phân hoạch $\lambda$, phân hoạch liên hợp $\lambda'$ thu được bằng cách lật biểu đồ Ferrers của $\lambda$ qua đường chéo chính. (Hàng trở thành cột, cột trở thành hàng).<br>
+        Rõ ràng, nếu $\lambda$ có $D$ hàng và $L$ cột, thì $\lambda'$ sẽ có $L$ hàng và $D$ cột.<br>
+        Nếu $P$ là một Lưới Young Chuẩn hình dáng $\lambda$, việc lật chuyển vị $P$ sẽ tạo ra một lưới mới $P'$ hình dáng $\lambda'$. <br>
+        Vì ta chỉ lật qua đường chéo, tính chất các hàng tăng dần và các cột tăng dần của $P'$ vẫn được bảo toàn. Vậy $P'$ cũng là một Lưới Young Chuẩn.<br>
+        Ánh xạ lật này $(P, Q) \to (P', Q')$ là một song ánh giữa tập hợp các cặp SYT hình dáng $\lambda$ và các cặp SYT hình dáng $\lambda'$.</p>
+
+        <p>Thông qua RSK ngược, mỗi cặp $(P', Q')$ hình dáng $\lambda'$ (với $L$ hàng và $D$ cột) sẽ tương ứng duy nhất với một hoán vị $\pi'$.<br>
+        Bởi vì lưới $P'$ có số cột là $D$ và số hàng là $L$, hoán vị $\pi'$ bắt buộc phải có:</p>
+        <ul>
+            <li>LIS = Số cột = $D$.</li>
+            <li>LDS = Số hàng = $L$.</li>
+        </ul>
+        <p>Điều này có nghĩa là $\pi' \in \mathcal{S}(D, L)$.<br>
+        Vì quá trình biến đổi RSK $\to$ Lật Chuyển vị $\to$ RSK ngược là một chuỗi các song ánh, ta kết luận tập $\mathcal{S}(L, D)$ có lực lượng bằng đúng tập $\mathcal{S}(D, L)$. Định lý được chứng minh. (Hoán vị $\pi'$ sinh ra bởi phép chuyển vị này chính là hình ảnh của hoán vị $\pi$ qua Đối hợp Schützenberger, kết hợp với phép đảo ngược dãy).</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 ((China) National High School Mathematics League - Số lưới chữ nhật $2 \times n$ / Định lý Catalan)</div>
+        Có bao nhiêu cách điền các số từ $1$ đến $2n$ vào một bảng hình chữ nhật kích thước $2 \times n$ (gồm 2 hàng và $n$ cột) sao cho các số trên mỗi hàng tăng dần từ trái sang phải, và các số trên mỗi cột tăng dần từ trên xuống dưới?
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bảng hình chữ nhật $2 \times n$ với các điều kiện trên là định nghĩa của một <strong>Lưới Young Chuẩn (SYT)</strong> có hình dáng $\lambda = (n, n)$ (gồm 2 hàng, mỗi hàng có $n$ ô).<br>
+        Bài toán yêu cầu tính số lượng các Lưới Young Chuẩn có hình dáng $(n, n)$. Ký hiệu là $f^{\lambda}$.</p>
+
+        <p>Ta thiết lập một song ánh giữa các Lưới Young này với <strong>Đường đi Dyck</strong> (hoặc chuỗi ngoặc đúng).<br>
+        Xét quá trình điền các số từ $1$ đến $2n$ vào lưới $2 \times n$.<br>
+        Bất cứ khi nào ta điền số $k$ ($1 \le k \le 2n$):</p>
+        <ul>
+            <li>Nếu ta điền $k$ vào hàng thứ nhất, ta quy ước đó là một bước đi sang phải $R(1,0)$.</li>
+            <li>Nếu ta điền $k$ vào hàng thứ hai, ta quy ước đó là một bước đi lên trên $U(0,1)$.</li>
+        </ul>
+
+        <p>Điều kiện hợp lệ của Lưới Young Chuẩn:</p>
+        <ol>
+            <li><strong>Các hàng tăng dần:</strong> Ta điền số theo thứ tự từ $1$ đến $2n$. Điều này tự động thỏa mãn vì mỗi ô mới điền vào luôn chứa số lớn hơn các ô đã điền trước đó.</li>
+            <li><strong>Các cột tăng dần:</strong> Tại bất kỳ cột $j$ nào, phần tử ở hàng 1 phải nhỏ hơn phần tử ở hàng 2. Điều này có nghĩa là: Số lượng các số được điền vào hàng 2 không bao giờ được vượt quá số lượng các số đã được điền vào hàng 1 tại bất kỳ thời điểm $k$ nào.</li>
+        </ol>
+
+        <p>Chuyển sang ngôn ngữ đường đi: Số bước đi lên $U$ không bao giờ vượt quá số bước đi sang phải $R$ tại mọi thời điểm.<br>
+        Và tổng cộng ta có $n$ bước $R$ (điền kín hàng 1) và $n$ bước $U$ (điền kín hàng 2).<br>
+        Đây là định nghĩa của một Đường đi Dyck từ gốc tọa độ $(0,0)$ đến $(n, n)$ nằm hoàn toàn dưới đường chéo chính $y = x$.<br>
+        Số lượng các đường đi Dyck này là Số Catalan thứ $n$:</p>
+        $$ C_n = \frac{1}{n+1} \binom{2n}{n} $$
+        <p>Vậy, số cách điền bảng thỏa mãn là $\frac{1}{n+1} \binom{2n}{n}$. </p>
+        <p>(Ghi chú: Đối với các Lưới Young hình dáng bất kỳ, bài toán đếm được tính bằng <strong>Công thức Độ dài Móc (Hook Length Formula)</strong> được đề cập ở Khái niệm 0.1. Với bảng $2 \times n$, công thức móc cũng cho ra đúng kết quả số Catalan).</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Czech and Slovak National Olympiad - Mở rộng LIS cho K chuỗi rời nhau)</div>
+        Cho một hoán vị $\pi$. Gọi $I_k$ là kích thước (số lượng phần tử) lớn nhất của hợp $k$ dãy con tăng bất kỳ trong $\pi$ (các dãy con này không giao nhau). Chứng minh rằng $I_k$ chính bằng tổng số lượng phần tử của $k$ hàng đầu tiên trong Lưới Young (Bảng chèn) $P$ tương ứng với $\pi$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đây là nội dung của <strong>Định lý Greene (Greene's Theorem)</strong>, một sự mở rộng của định lý RSK.<br>
+        Ta chứng minh dựa trên nguyên lý hoạt động của Phép chèn Schensted.</p>
+
+        <p>Xét quá trình chèn hoán vị $\pi$ để tạo ra lưới $P$.<br>
+        Một phần tử $x$ được chèn vào hàng 1. Nếu nó bị đẩy (bump), nó sẽ rơi xuống hàng 2. Nếu bị đẩy tiếp, nó rơi xuống hàng 3...<br>
+        Nói cách khác, hàng thứ $r$ của lưới $P$ chứa những phần tử đã bị "đẩy" đúng $r-1$ lần.</p>
+
+        <p>Sự đối ngẫu của RSK cho thấy vai trò của hàng và cột có thể hoán đổi.<br>
+        Nếu ta coi Lưới $P$ là sự phân hoạch các phần tử, thì:</p>
+        <ul>
+            <li>Độ dài hàng 1 là kích thước của 1 dãy con tăng dài nhất ($I_1 = \lambda_1$).</li>
+            <li>Bất kỳ hai phần tử nào nằm trên cùng một <strong>cột</strong> của $P$ đều tạo thành một dãy giảm. Do đó, nếu ta muốn chọn ra các dãy con tăng, mỗi dãy con tăng chỉ có thể chứa <strong>tối đa 1 phần tử</strong> từ mỗi cột (vì nếu chứa 2 phần tử cùng cột, chúng tạo thành nghịch thế, không thể cùng nằm trong dãy tăng).</li>
+        </ul>
+
+        <p>Bây giờ, nếu ta muốn lập $k$ dãy con tăng không giao nhau. Vì mỗi dãy con tăng chỉ được lấy tối đa 1 phần tử từ mỗi cột, $k$ dãy con tăng sẽ lấy được <strong>tối đa $k$ phần tử</strong> từ mỗi cột.<br>
+        Trong biểu đồ Ferrers $\lambda$, nếu một cột có độ cao $\gt k$, ta chỉ lấy được đúng $k$ phần tử. Nếu một cột có độ cao $\le k$, ta lấy được toàn bộ các phần tử của cột đó.<br>
+        Số lượng phần tử tối đa lấy được chính là tổng số các phần tử nằm trong vùng giới hạn "độ cao không quá $k$". Về mặt hình học lưới, vùng này <strong>chính là hợp của $k$ hàng đầu tiên</strong>!<br>
+        Do đó, sức chứa tối đa của $k$ dãy con tăng bị chặn trên bởi tổng $\lambda_1 + \lambda_2 + \dots + \lambda_k$.</p>
+
+        <p>Greene đã chứng minh sâu hơn bằng lý thuyết mạng luồng (như đã giới thiệu ở Định lý 0.1) rằng giới hạn này là chặt, tức là luôn có thể xây dựng được $k$ dãy tăng có kích thước đạt tới chặn trên này.<br>
+        Vậy $I_k = \sum_{i=1}^k \lambda_i$.<br>
+        Mối liên kết giữa hợp các chuỗi tối ưu và tổng độ dài các hàng trên Lưới Young đã đưa Hình học Tổ hợp trở thành công cụ hiệu quả trong việc quy hoạch dữ liệu rời rạc.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

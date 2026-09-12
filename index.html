@@ -3,231 +3,634 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tổng Hợp 180 Bài Nền Tảng Đạo Đức</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Olympic Toán học — Blog Tổng hợp Chuyên đề</title>
     <style>
-        /* Thiết lập nền cánh đồng xanh cho trang */
-        body, html {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Ảnh cánh đồng xanh bát ngát từ Unsplash */
-            background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2500&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f6fb;
         }
 
-        /* Khung chứa tổng thể */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 40px;
-            background-color: rgba(255, 255, 255, 0.85); /* Màu trắng bán trong suốt */
-            backdrop-filter: blur(12px); /* Hiệu ứng kính mờ */
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
+        /* ===== Hero ===== */
+        .hero {
+            background: linear-gradient(135deg, #0b1f4d 0%, #1c3a8a 55%, #2a5db0 100%);
+            color: #fff;
             text-align: center;
-            color: #2e7d32; /* Màu xanh lá đậm */
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            padding: 70px 20px 90px;
+            position: relative;
+            overflow: hidden;
         }
-
-        /* Bộ đếm lượt xem */
-        .view-counter {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 6px 16px;
-            margin: -20px auto 30px;
-            padding: 10px 26px;
-            width: fit-content;
-            background: rgba(232, 245, 233, 0.92);
-            border: 1px solid #a5d6a7;
+        .hero::after {
+            content: "";
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.08), transparent 35%),
+                radial-gradient(circle at 85% 70%, rgba(255,255,255,0.10), transparent 40%);
+            pointer-events: none;
+        }
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.4);
             border-radius: 30px;
-            color: #2e7d32;
+            padding: 6px 18px;
+            font-size: 0.9rem; letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        .hero h1 {
+            font-size: clamp(1.9rem, 5vw, 3.2rem);
+            font-weight: 800; letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+        .hero h1 span { color: #ffd166; }
+        .hero p {
+            max-width: 720px;
+            margin: 0 auto 26px;
+            font-size: 1.05rem;
+            color: #dfe7ff;
+        }
+        .hero .stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .stat {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 14px;
+            padding: 12px 22px;
+            min-width: 110px;
+        }
+        .stat b { display: block; font-size: 1.6rem; color: #ffd166; }
+        .stat small { font-size: 0.82rem; color: #dfe7ff; }
+        .last-visit { margin-top: 14px; font-size: 0.85rem; color: #dfe7ff; text-align: center; }
+
+        /* ===== Toolbar ===== */
+        .toolbar {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #e3e8f2;
+            padding: 14px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .toolbar-inner { max-width: 1200px; margin: 0 auto; }
+        .search-box { position: relative; margin-bottom: 12px; }
+        .search-box input {
+            width: 100%;
+            padding: 13px 20px 13px 46px;
             font-size: 1rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.12);
+            border: 2px solid #d5ddef;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
         }
-
-        .view-counter i {
-            color: #4caf50;
-            font-size: 1.15rem;
+        .search-box input:focus { border-color: #2a5db0; }
+        .search-box svg {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            width: 20px; height: 20px;
+            stroke: #8a94ad; fill: none; stroke-width: 2;
         }
-
-        .view-counter b {
-            color: #1b5e20;
-            font-size: 1.15rem;
+        .filters { display: block; }
+        .pill {
+            cursor: pointer;
+            border: 1.5px solid #ccd5e8;
+            background: #fff;
+            color: #45507a;
+            border-radius: 30px;
+            padding: 7px 15px;
+            font-size: 0.88rem; font-weight: 600;
+            transition: all 0.15s;
+            font-family: inherit;
         }
+        .pill:hover { border-color: #2a5db0; color: #2a5db0; transform: translateY(-1px); }
+        .pill.active { background: #2a5db0; border-color: #2a5db0; color: #fff; }
+        .result-count { margin: 6px 2px 0; font-size: 0.85rem; color: #7a86a5; }
 
-        .view-counter .view-last {
-            color: #558b2f;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border-left: 1px solid #a5d6a7;
-            padding-left: 16px;
+        /* ===== Bộ lọc 2 cấp: Nhóm (Bổ trợ / VMO) + Chủ đề ===== */
+        .filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-row + .filter-row { margin-top: 8px; }
+        .pill.group { border-width: 2px; }
+        .pill.group.bd { border-color: #2a5db0; color: #2a5db0; }
+        .pill.group.bd.active { background: #2a5db0; border-color: #2a5db0; color: #fff; }
+        .pill.group.vmo { border-color: #6d28d9; color: #6d28d9; }
+        .pill.group.vmo.active { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+        .pill .cnt {
+            display: inline-block;
+            background: rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 1px 8px;
+            margin-left: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
         }
+        .pill.group.active .cnt { background: rgba(255,255,255,0.3); }
 
-        /* Lưới hiển thị các link */
-        .grid-container {
+        /* ===== Thẻ nhóm + độ khó trên card ===== */
+        .card .group-badge {
+            display: inline-block;
+            align-self: flex-start;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border-radius: 6px;
+            padding: 3px 10px;
+            margin-bottom: 8px;
+        }
+        .card .group-badge.bd { background: #e8eefb; color: #2a5db0; }
+        .card .group-badge.vmo { background: #f3e8ff; color: #6d28d9; }
+        .card.vmo { border-left-color: #6d28d9; }
+        .card .stars { color: #f5b301; font-size: 1.05rem; letter-spacing: 2px; }
+        .card .difficulty {
+            display: flex; align-items: center; gap: 8px;
+            margin: 0 0 10px;
+        }
+        .card .diff-text { font-size: 0.78rem; font-weight: 600; color: #8b5cf6; }
+        .card .cat { margin-bottom: 6px; }
+
+        /* ===== Cards ===== */
+        main { max-width: 1200px; margin: 0 auto; padding: 30px 20px 60px; }
+        .grid {
             display: grid;
-            /* Tự động chia cột, mỗi cột rộng tối thiểu 120px */
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
         }
-
-        /* Thiết kế cho từng ô link */
-        .link-item {
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e6ebf5;
+            border-left: 6px solid var(--c, #2a5db0);
+            padding: 22px 20px 18px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 10px;
-            background: #ffffff;
-            border: 2px solid #a5d6a7; /* Viền xanh lá nhạt */
-            border-radius: 15px;
-            text-decoration: none;
-            color: #2e7d32;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            position: relative;
         }
-
-        /* Hiệu ứng khi di chuột vào ô link */
-        .link-item:hover {
-            transform: translateY(-5px); /* Nổi lên trên */
-            box-shadow: 0 10px 20px rgba(46, 125, 50, 0.2); /* Đổ bóng xanh */
-            background: #e8f5e9; /* Nền đổi sang xanh rất nhạt */
-            border-color: #4caf50;
-            color: #1b5e20;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(20,40,90,0.14);
         }
-
-        /* Thiết kế icon */
-        .link-item i {
-            font-size: 28px;
+        .card .num {
+            position: absolute;
+            top: 14px; right: 16px;
+            font-size: 2rem; font-weight: 800;
+            color: rgba(0,0,0,0.06);
+            line-height: 1;
+        }
+        .card .cat {
+            display: inline-block;
+            align-self: flex-start;
+            font-size: 0.74rem; font-weight: 700;
+            letter-spacing: 0.6px; text-transform: uppercase;
+            color: var(--c, #2a5db0);
+            background: color-mix(in srgb, var(--c, #2a5db0) 12%, #fff);
+            border-radius: 20px;
+            padding: 4px 12px;
             margin-bottom: 12px;
-            color: #4caf50;
+        }
+        .card h3 {
+            font-size: 1.08rem; color: #1a2442;
+            margin-bottom: 8px; line-height: 1.35;
+            min-height: 3.2em;
+        }
+        .card p { font-size: 0.9rem; color: #5b6685; flex-grow: 1; margin-bottom: 14px; }
+        a.card { text-decoration: none; }
+        .card .read {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--c, #2a5db0); font-weight: 700; font-size: 0.92rem;
+        }
+        .card:hover .read { text-decoration: underline; }
+
+        .no-results {
+            text-align: center; color: #7a86a5;
+            padding: 60px 20px; font-size: 1.05rem;
+            display: none;
         }
 
-        .link-item:hover i {
-            color: #2e7d32;
+        footer {
+            text-align: center;
+            padding: 30px 20px 40px;
+            color: #7a86a5; font-size: 0.9rem;
+            border-top: 1px solid #e3e8f2;
+            background: #fff;
         }
 
-        /* Tên bài */
-        .link-item span {
-            font-size: 1.1rem;
-            font-weight: 600;
+        /* ===== MỤC ĐẶC BÍŒT: QUÀ TẶNG CUỘC SỐNG ===== */
+        .gift {
+            margin: 4px 0 26px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #0b1f4d 0%, #1c3a8a 30%, #6d28d9 70%, #9d4dff 100%);
+            border: 2px solid rgba(255, 209, 102, 0.85);
+            box-shadow: 0 12px 34px rgba(80, 30, 140, 0.28), 0 0 0 5px rgba(255, 209, 102, 0.16);
+            color: #fff;
+            padding: 26px;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .gift::after {
+            content: "";
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(255,255,255,0.10), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.12), transparent 45%);
+            pointer-events: none;
+        }
+        .gift .shine {
+            position: absolute;
+            top: -40%; left: -30%;
+            width: 60px; height: 240%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            transform: rotate(18deg);
+            animation: giftShine 5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes giftShine {
+            0%, 56% { left: -30%; opacity: 0; }
+            58%     { opacity: 1; }
+            90%, 100% { left: 110%; opacity: 0; }
+        }
+        .gift-icon { font-size: 2.7rem; line-height: 1; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25)); }
+        .gift-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.45);
+            border-radius: 30px;
+            padding: 3px 14px;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: #ffd166;
+        }
+        .gift-text { flex: 1 1 auto; min-width: 240px; }
+        .gift h2 {
+            font-size: clamp(1.35rem, 3vw, 1.95rem);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0 0 6px;
+        }
+        .gift h2 span { color: #ffd166; }
+        .gift p {
+            font-size: 0.98rem;
+            max-width: 640px;
+            color: #d7c4ff;
+            margin: 0;
+        }
+        .gift-btn {
+            flex: 0 0 auto;
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd166 0%, #ffb703 100%);
+            color: #1c3a8a;
+            font-weight: 800;
+            font-size: 1.06rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 30px;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            animation: giftPulse 2.4s ease-in-out infinite;
+        }
+        .gift-btn:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 10px 26px rgba(255, 183, 3, 0.5);
+        }
+        @keyframes giftPulse {
+            0%, 100% { box-shadow: 0 6px 16px rgba(255, 183, 3, 0.30); }
+            50%      { box-shadow: 0 0 0 8px rgba(255, 209, 102, 0.28), 0 6px 22px rgba(255, 183, 3, 0.55); }
+        }
+        @media (max-width: 700px) {
+            .gift { flex-direction: column; align-items: flex-start; }
+            .gift-btn { align-self: stretch; text-align: center; }
         }
 
-        /* Thanh cuộn */
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #81c784; 
-            border-radius: 6px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4caf50; 
-        }
 
-        /* Responsive cho thiết bị di động */
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
-            h1 {
-                font-size: 1.8rem;
-            }
-            .grid-container {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 15px;
-            }
-            .link-item {
-                padding: 15px 10px;
-            }
-            .view-counter {
-                margin: -14px 0 24px;
-                padding: 8px 16px;
-                font-size: 0.9rem;
-                border-radius: 20px;
-            }
-            .view-counter .view-last {
-                border-left: none;
-                padding-left: 0;
-                width: 100%;
-                text-align: center;
-            }
+        /* ===== Bară online din footer ===== */
+        .footer-live {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(135deg, #0b1f4d, #1c3a8a);
+            color: #fff; border-radius: 40px;
+            padding: 9px 22px; margin: 0 auto 14px;
+            width: fit-content; max-width: 92%;
+            font-size: 0.95rem; font-weight: 600;
+            box-shadow: 0 4px 16px rgba(11,31,77,0.25);
+            flex-wrap: wrap;
+        }
+        .live-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #2ee36b;
+            animation: pulse 1.6s infinite;
+        }
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(46,227,107,.55); }
+            70%  { box-shadow: 0 0 0 8px rgba(46,227,107,0); }
+            100% { box-shadow: 0 0 0 0 rgba(46,227,107,0); }
+        }
+        .footer-live .brow {
+            display: inline-block; background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.35);
+            border-radius: 20px; padding: 2px 10px; font-size: 0.85rem;
+        }
+        @media (max-width: 520px) {
+            .grid { grid-template-columns: 1fr; }
+            .hero { padding: 50px 16px 70px; }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>Tổng Hợp 180 Bài Nền Tảng Đạo Đức</h1>
-
-        <!-- BỘ ĐẾM LƯỢT XEM (Google Apps Script + Google Sheets) -->
-        <div class="view-counter">
-            <i class="fa-solid fa-eye"></i>
-            <span>Lượt xem: <b id="viewCount">0</b></span>
-            <span class="view-last" id="viewLast"></span>
+    <header class="hero">
+        <span class="badge">Olympic • Toán học — Thư viện Chuyên đề</span>
+        <h1>Blog Tổng hợp <span>Chuyên đề</span></h1>
+        <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
+           tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
+        <div class="stats">
+            <div class="stat"><b id="countAll">68</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countVmo">8</b><small>Luyện tập VMO</small></div>
+            <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
+            <div class="stat"><b id="countOnline">0</b><small>Đang online</small></div>
+            <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
         </div>
+        <div class="last-visit" id="lastVisit"></div>
+    </header>
 
-        <div class="grid-container" id="links-wrapper">
+    <div class="toolbar">
+        <div class="toolbar-inner">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+                <input type="text" id="search" placeholder="Tìm theo chuyên đề hoặc từ khóa...">
             </div>
+            <div class="filters" id="filters">
+                <div class="filter-row" id="groupRow"></div>
+                <div class="filter-row" id="catRow"></div>
+            </div>
+            <div class="result-count" id="countText"></div>
+        </div>
     </div>
 
+    <main>
+        <section class="gift" aria-label="QUÀ TẶNG CUỘC SỐNG">
+            <span class="shine" aria-hidden="true"></span>
+            <div class="gift-icon" aria-hidden="true">🎁</div>
+            <div class="gift-text">
+                <span class="gift-badge">✦ SPECIAL ✦</span>
+                <h2>QUÀ TẶNG <span>CUỘC SỐNG</span></h2>
+                <p>Quà Tặng Cuộc Sống (Gift of Life) .</p>
+            </div>
+            <a class="gift-btn" href="https://grassdirty.github.io/LIFE_GIFT/" target="_blank" rel="noopener">VÀO →</a>
+        </section>
+
+        <div class="grid" id="grid"></div>
+        <div class="no-results" id="noResults">Không tìm thấy chuyên đề nào phù hợp. Hãy thử từ khóa khác.</div>
+    </main>
+
+    <footer>
+        <div class="footer-live" id="footerLive" style="display:none">
+            <span class="live-dot"></span>
+            <span id="footerText">Đang online: <b>0</b> người</span>
+        </div>
+        Blog tổng hợp các chuyên đề Toán học Olympic • Các bài viết thuộc thư mục OLYMPIC
+    </footer>
+
     <script>
-        // Lấy thẻ div chứa lưới
-        const wrapper = document.getElementById('links-wrapper');
-        
-        // Vòng lặp từ 1 đến 180 để tạo HTML cho từng link
-        for (let i = 1; i <= 180; i++) {
-            // Tạo thẻ a
-            const linkTag = document.createElement('a');
-            linkTag.href = `index${i}.html`;
-            linkTag.className = 'link-item';
-            
-            // Gắn icon và text vào thẻ a
-            linkTag.innerHTML = `
-                <i class="fa-solid fa-seedling"></i>
-                <span>Bài ${i}</span>
-            `;
-            
-            // Đưa thẻ a vào trong khung chứa
-            wrapper.appendChild(linkTag);
+        // ===== Danh mục =====
+        const CATS = {
+            fe:    { label: 'Phương trình hàm',                          color: '#800000' },
+            poly:  { label: 'Đa thức & Dãy số',                          color: '#000080' },
+            nt:    { label: 'Số học',                                    color: '#228b22' },
+            comb:  { label: 'Đại số tổ hợp',                             color: '#8b008b' },
+            ineq:  { label: 'Bất đẳng thức',                             color: '#b8860b' },
+            graph: { label: 'Lý thuyết đồ thị',                          color: '#008080' },
+            dio:   { label: 'Phương trình Diophantine',                  color: '#8b4513' }
+        };
+
+        // ===== Danh sách bài viết (phần 1) =====
+        const POSTS = [
+            { n:1,  file:'index1.html',  cat:'fe',    title:'Phương trình hàm Đa thức và Kỹ thuật phân tích nghiệm',                                  desc:'Kỹ thuật phân tích nghiệm dành cho phương trình hàm đa thức.' },
+            { n:2,  file:'index2.html',  cat:'poly',  title:'Dãy số truy hồi - Kỹ thuật tuyến tính hóa và bất biến',                                  desc:'Tuyến tính hóa dãy truy hồi và phương pháp tìm bất biến.' },
+            { n:3,  file:'index3.html',  cat:'nt',    title:'Số học bậc cao - Bổ đề nâng số mũ (LTE) và Cấp',                                        desc:'Bổ đề nâng số mũ (LTE) và khái niệm cấp của phần tử.' },
+            { n:4,  file:'index4.html',  cat:'fe',    title:'Phương trình hàm trên R - Kỹ thuật Cauchy và Điểm bất động',                            desc:'Phương trình hàm trên R: kỹ thuật Cauchy và điểm bất động.' },
+            { n:5,  file:'index5.html',  cat:'graph', title:'Lý thuyết Đồ thị - Cấu trúc và Đồ thị Cực trị',                                         desc:'Cấu trúc đồ thị và bài toán tìm đồ thị cực trị.' },
+            { n:6,  file:'index6.html',  cat:'dio',   title:'Phương trình Diophantine - Bước nhảy Vieta và Lùi vô hạn',                              desc:'Bước nhảy Vieta và phương pháp lùi vô hạn trong bài toán Diophantine.' },
+            { n:7,  file:'index7.html',  cat:'poly',  title:'Hàm sinh hình thức và Bộ lọc căn bậc n của đơn vị',                                     desc:'Hàm sinh hình thức và kỹ thuật bộ lọc căn bậc n của đơn vị.' },
+            { n:8,  file:'index8.html',  cat:'poly',  title:'Đa thức bất khả quy và Tiêu chuẩn Eisenstein',                                       desc:'Đa thức bất khả quy và tiêu chuẩn Eisenstein.' },
+            { n:9,  file:'index9.html',  cat:'poly',  title:'Đa thức Chebyshev và tính chất cực trị Minimax (bản 2)',                               desc:'Bản trình bày bổ sung về đa thức Chebyshev.' },
+            { n:10, file:'index10.html', cat:'comb',  title:'Đại số Tổ hợp - Không gian Vector trên trường hữu hạn và Định lý Oddtown',              desc:'Không gian vectơ trên trường hữu hạn và định lý Oddtown.' },
+            { n:11, file:'index11.html', cat:'poly',  title:'Đa thức và Dãy số - Nội suy Lagrange và Sai phân hữu hạn',                              desc:'Nội suy Lagrange và kỹ thuật sai phân hữu hạn.' },
+            { n:12, file:'index12.html', cat:'nt',    title:'Số học bậc cao - Thặng dư bậc hai và ký hiệu Legendre',                                 desc:'Thặng dư bậc hai và các tính chất của ký hiệu Legendre.' },
+            { n:13, file:'index13.html', cat:'nt',    title:'Số học và Dãy số - Phương trình Pell và Hệ thức truy hồi',                              desc:'Phương trình Pell và các hệ thức truy hồi liên quan.' },
+            { n:14, file:'index14.html', cat:'nt',    title:'Số học bậc cao - Định lý Zsigmondy và ước nguyên tố của dãy số',                        desc:'Định lý Zsigmondy và ước nguyên tố của dãy số.' },
+            { n:15, file:'index15.html', cat:'fe',    title:'Phương trình hàm trên tập rời rạc - Đánh giá đơn điệu và quỹ đạo bất động',             desc:'Phương trình hàm trên tập rời rạc: đánh giá đơn điệu, quỹ đạo bất động.' },
+            { n:16, file:'index16.html', cat:'nt',    title:'Số học bậc cao - Căn nguyên thủy và chỉ số',                                           desc:'Căn nguyên thủy và lý thuyết chỉ số.' },
+            { n:17, file:'index17.html', cat:'poly',  title:'Đa thức bậc cao - Đạo hàm hình thức và bội của nghiệm',                                 desc:'Đạo hàm hình thức và tính bội của nghiệm đa thức.' },
+            { n:18, file:'index18.html', cat:'comb',  title:'Số học và Tổ hợp - Định lý Lucas và Định lý Kummer',                                    desc:'Định lý Lucas và định lý Kummer trong tổ hợp.' },
+            { n:19, file:'index19.html', cat:'nt',    title:'Số học bậc cao - Bổ đề Hensel và đồng dư bậc cao',                                     desc:'Bổ đề Hensel và cách giải đồng dư bậc cao.' },
+            { n:20, file:'index20.html', cat:'ineq',  title:'Bất đẳng thức đại số - Định lý Schur và kỹ thuật p, q, r',                              desc:'Định lý Schur và kỹ thuật p, q, r cho bất đẳng thức đại số.' },
+            { n:21, file:'index21.html', cat:'ineq',  title:'Bất đẳng thức đại số - Phương pháp dồn biến (Mixing Variables)',                        desc:'Phương pháp dồn biến (mixing variables) cho bất đẳng thức.' },
+            { n:22, file:'index22.html', cat:'poly',  title:'Đại số và Đa thức - Đa thức đối xứng và hệ thức Newton',                                desc:'Đa thức đối xứng và hệ thức Newton.' },
+            { n:23, file:'index23.html', cat:'nt',    title:'Số học bậc cao - Bổ đề nâng số mũ (LTE)',                                              desc:'Bổ đề nâng số mũ (LTE) và các ứng dụng.' },
+            { n:24, file:'index24.html', cat:'comb',  title:'Tổ hợp đếm - Nguyên lý Bao hàm - Loại trừ và Ứng dụng',                              desc:'Nguyên lý bao hàm - loại trừ (PIE) và các ứng dụng trong bài toán đếm.' },
+            { n:25, file:'index25.html', cat:'ineq',  title:'Bất đẳng thức Đại số - Dãy trội và Bất đẳng thức Karamata',                           desc:'Dãy trội (majorization) và bất đẳng thức Karamata.' },
+            { n:26, file:'index26.html', cat:'comb',  title:'Tổ hợp Tập hợp - Cấu trúc đối xích và các định lý cực trị',                            desc:'Cấu trúc đối xích (antichain) và các định lý cực trị cho họ tập hợp.' },
+            { n:27, file:'index27.html', cat:'poly',  title:'Đại số và Đa thức - Đa thức bất khả quy và Tiêu chuẩn Eisenstein',                     desc:'Đa thức bất khả quy và tiêu chuẩn Eisenstein.' },
+            { n:28, file:'index28.html', cat:'poly',  title:'Đa thức Chebyshev và tính chất cực trị',                                              desc:'Đa thức Chebyshev và các tính chất cực trị của chúng.' },
+            { n:29, file:'index29.html', cat:'graph', title:'Tổ hợp và Lý thuyết Đồ thị - Đồ thị phẳng và Định lý Mantel',                          desc:'Đồ thị phẳng và định lý Mantel.' },
+            { n:30, file:'index30.html', cat:'comb',  title:'Tổ hợp Đếm và Lý thuyết Đồ thị - Định lý Ramsey và Bài toán Tô màu',                    desc:'Định lý Ramsey và các bài toán tô màu.' },
+            { n:31, file:'index31.html', cat:'nt',    title:'Số học bậc cao - Thặng dư bậc hai và Ký hiệu Legendre',                                desc:'Thặng dư bậc hai và ký hiệu Legendre (bản bổ sung).' },
+            { n:32, file:'index32.html', cat:'comb',  title:'Đại số Tổ hợp - Hàm sinh và Kỹ thuật nghiệm đơn vị',                                   desc:'Hàm sinh và kỹ thuật nghiệm đơn vị.' },
+            { n:33, file:'index33.html', cat:'nt',    title:'Số học bậc cao - Hàm Möbius và Kỹ thuật nghịch đảo',                                    desc:'Hàm Möbius và kỹ thuật nghịch đảo đại số.' },
+            { n:34, file:'index34.html', cat:'comb',  title:'Tổ hợp Rời rạc - Lý thuyết trò chơi, trò chơi Nim và Sprague-Grundy',                  desc:'Lý thuyết trò chơi: Nim và định lý Sprague-Grundy.' },
+            { n:35, file:'index35.html', cat:'comb',  title:'Đại số Tổ hợp - Tác động nhóm và Bổ đề Burnside',                                      desc:'Tác động nhóm và bổ đề Burnside trong bài toán đếm.' },
+            { n:36, file:'index36.html', cat:'comb',  title:'Tổ hợp Rời rạc - Hệ đại diện phân biệt và Định lý Hall',                                desc:'Hệ đại diện phân biệt (SDR) và định lý Hall.' },
+            { n:37, file:'index37.html', cat:'comb',  title:'Đại số Tổ hợp - Không gian Vector trên trường hữu hạn và Định lý Oddtown (bản 2)',    desc:'Bổ sung về không gian vectơ hữu hạn và Oddtown.' },
+            { n:38, file:'index38.html', cat:'comb',  title:'Tổ hợp Đếm - Nguyên lý Phản xạ và Cấu trúc số Catalan',                                 desc:'Nguyên lý phản xạ và cấu trúc số Catalan.' },
+            { n:39, file:'index39.html', cat:'comb',  title:'Tổ hợp Rời rạc - Phương pháp Bất biến, Đơn biến và Hệ thống trạng thái',                desc:'Phương pháp bất biến, đơn biến và hệ thống trạng thái.' },
+            { n:40, file:'index40.html', cat:'comb',  title:'Tổ hợp Rời rạc - Đồ thị giải đấu (Tournaments) và các định lý cấu trúc',               desc:'Đồ thị giải đấu (tournaments) và các định lý cấu trúc.' },
+            { n:41, file:'index41.html', cat:'comb',  title:'Tổ hợp Đếm - Mã Prüfer và Định lý Cayley',                                             desc:'Mã Prüfer và định lý Cayley đếm số cây.' },
+            { n:42, file:'index42.html', cat:'comb',  title:'Đại số Tổ hợp - Định lý Điểm không Tổ hợp (Combinatorial Nullstellensatz)',            desc:'Định lý điểm không tổ hợp (combinatorial nullstellensatz).' },
+            { n:43, file:'index43.html', cat:'comb',  title:'Tổ hợp Hiện đại - Phương pháp Xác suất và Tính tuyến tính của Kỳ vọng',                 desc:'Phương pháp xác suất và tính tuyến tính của kỳ vọng.' },
+            { n:44, file:'index44.html', cat:'comb',  title:'Đại số Tổ hợp - Phân hoạch số nguyên và Định lý Ngũ giác Euler',                        desc:'Phân hoạch số nguyên và định lý ngũ giác Euler.' },
+            { n:45, file:'index45.html', cat:'poly',  title:'Đại số và Đa thức - Đa thức nội suy Lagrange và Toán tử sai phân hữu hạn',               desc:'Đa thức nội suy Lagrange và toán tử sai phân hữu hạn.' },
+            { n:46, file:'index46.html', cat:'comb',  title:'Tổ hợp Rời rạc - Tập sắp thứ tự bộ phận và Định lý Dilworth',                            desc:'Tập sắp thứ tự bộ phận (poset) và định lý Dilworth.' },
+            { n:47, file:'index47.html', cat:'comb',  title:'Tổ hợp Rời rạc - Hệ tập hợp cực trị và Bổ đề Hoa hướng dương',                           desc:'Hệ tập hợp cực trị và bổ đề Hoa hướng dương (sunflower).' },
+            { n:48, file:'index48.html', cat:'graph', title:'Đại số và Lý thuyết Đồ thị - Ma trận kề, Phổ đồ thị và Đếm đường đi',                     desc:'Ma trận kề, phổ đồ thị và kỹ thuật đếm đường đi.' },
+            { n:49, file:'index49.html', cat:'graph', title:'Lý thuyết Đồ thị - Chu trình Euler, Định lý Ore và Cấu trúc De Bruijn',                   desc:'Chu trình Euler, định lý Ore và cấu trúc De Bruijn.' },
+            { n:50, file:'index50.html', cat:'graph', title:'Lý thuyết đồ thị - Tô màu đồ thị, đa thức sắc số và PIE',                               desc:'Tô màu đồ thị, đa thức sắc số và nguyên lý bù trừ (PIE).' },
+            { n:51, file:'index51.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut',                             desc:'Mạng luồng và định lý đối ngẫu max-flow min-cut.' },
+            { n:52, file:'index52.html', cat:'comb',  title:'Tổ hợp Rời rạc - Mạng luồng và Đối ngẫu Max-Flow Min-Cut (bản 2)',                     desc:'Bản 2 — mạng luồng và định lý đối ngẫu max-flow min-cut.' },
+            { n:53, file:'index53.html', cat:'graph', title:'Lý thuyết Đồ thị - Cấu trúc Cây, Đỉnh Trọng tâm và Kỹ thuật Phân rã',                     desc:'Cấu trúc cây, đỉnh trọng tâm và kỹ thuật phân rã (centroid decomposition).' },
+            { n:54, file:'index54.html', cat:'comb',  title:'Tối ưu Tổ hợp & Hình học - Đường bao dưới và Tối ưu hệ thức truy hồi',                    desc:'Đường bao dưới (lower envelope) và tối ưu các hệ thức truy hồi.' },
+            { n:55, file:'index55.html', cat:'comb',  title:'Tổ hợp Dãy ký tự - Tính chu kỳ, Biên độ và Định lý Fine-Wilf',                            desc:'Tính chu kỳ, biên độ của dãy ký tự và định lý Fine-Wilf.' },
+            { n:56, file:'index56.html', cat:'comb',  title:'Tối ưu Tổ hợp - Lý thuyết Matroid và Nguyên lý Tham lam',                                desc:'Lý thuyết matroid và nguyên lý tham lam trong tối ưu tổ hợp.' },
+            { n:57, file:'index57.html', cat:'comb',  title:'Đại số Trừu tượng và Tổ hợp - Nhóm Hoán vị, Bổ đề Burnside và Định lý Pólya',            desc:'Nhóm hoán vị, bổ đề Burnside và định lý đếm Pólya.' },
+            { n:58, file:'index58.html', cat:'comb',  title:'Toán rời rạc và Lý thuyết trò chơi - Phép cộng Nim và Định lý Sprague-Grundy',          desc:'Phép cộng Nim và định lý Sprague-Grundy trong lý thuyết trò chơi.' },
+            { n:59, file:'index59.html', cat:'comb',  title:'Hình học Tổ hợp - Nguyên lý Phản xạ André và Cấu trúc Catalan',                          desc:'Nguyên lý phản xạ André và cấu trúc số Catalan.' },
+            { n:60, file:'index60.html', cat:'comb',  title:'Đại số Tổ hợp - Lưới nghiệm đơn vị và Tổng các hệ số cách đều',                          desc:'Kỹ thuật roots-of-unity filter để trích xuất tổng hệ số cách đều.' },
+            { n:61, file:'index61.html', cat:'nt',    title:'Số học Tổ hợp — Tích chập Dirichlet și Nghiș Đao Möbius',                  desc:'Nghiș đao Möbius și Tích chập Dirichlet pentru transformări de sumă peste divizori.' },
+            { n:62, file:'index62.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Không gian Vector trên Z₂ și Hệ liniar independents',         desc:'Vectore binarî pe Z₂ pentru probleme de mulțimi: ortogonalitate și rang de mațrică.' },
+            { n:63, file:'index63.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Lưới Young, Phép chèn Schensted și corespondența RSK',       desc:'Lưới Young, formula de lungime pentru hoán vâști și corespondența RSK pentru LIS și LDS.' },
+            { n:1,  file:'vmo1.html',    cat:'poly',  stars:3, title:'Đại số Đa thức & tính chất Số học — Cấu trúc chia hết của đa thức hệ số nguyên',  desc:'Định lý chia hết của đa thức hệ số nguyên và ứng dụng USAMO 1974.' },
+            { n:2,  file:'vmo2.html',    cat:'nt',    stars:4, title:'Số học và Đại số — Phương trình Pell và Cấu trúc nghiệm Diophantine bậc hai',      desc:'Phương trình Pell và cấu trúc nghiệm Diophantine bậc hai.' },
+            { n:3,  file:'vmo3.html',    cat:'fe',    stars:3, title:'Đại số và Phương trình hàm — Cauchy và các phép biến đổi đồng nhất',              desc:'Phương trình Cauchy và các phép biến đổi đồng nhất.' },
+            { n:4,  file:'vmo4.html',    cat:'poly',  stars:3, title:'Đại số Đa thức — Phương pháp Đa thức phụ và Định lý Bezout',                      desc:'Phương pháp đa thức phụ và định lý Bézout.' },
+            { n:5,  file:'vmo5.html',    cat:'ineq',  stars:3, title:'Đại số và Bất đẳng thức — Cauchy-Schwarz dạng phân thức (Bổ đề Titu)',           desc:'Bất đẳng thức Cauchy-Schwarz dạng phân thức (bổ đề Titu).' },
+            { n:6,  file:'vmo6.html',    cat:'poly',  stars:4, title:'Đại số Đa thức — Tính bất khả quy của đa thức hệ số nguyên và Tiêu chuẩn Eisenstein', desc:'Tính bất khả quy của đa thức hệ số nguyên và tiêu chuẩn Eisenstein.' },
+            { n:7,  file:'vmo7.html',    cat:'comb',  stars:4, title:'Đại số Tổ hợp — Phương pháp Đa thức sinh và Bộ lọc căn bậc n của đơn vị',        desc:'Phương pháp đa thức sinh và bộ lọc căn bậc n của đơn vị.' },
+            { n:8,  file:'vmo8.html',    cat:'poly',  stars:3, title:'Đại số Đa thức — Phương trình hàm đa thức và Phương pháp xác định nghiệm',        desc:'Phương trình hàm đa thức và phương pháp xác định nghiệm.' },
+            { n:9,  file:'vmo9.html',    cat:'poly',  stars:4, title:'Đại số Đa thức - Đại số và lý thuyết số phương trình sai phân tuyến tính và tính chất số học của dãy số', desc:'Đại số và lý thuyết số phương trình sai phân tuyến tính và tính chất số học của dãy số.' },
+            { n:10, file:'vmo10.html',   cat:'poly',  stars:3, title:'Đại số Đa thức - Hệ phương trình đa thức đối xứng cơ bản và hệ thức Newton', desc:'Hệ phương trình đa thức đối xứng cơ bản và hệ thức Newton.' }
+        ];
+
+        // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
+        const grid        = document.getElementById('grid');
+        const filtersEl   = document.getElementById('filters');
+        const noResults   = document.getElementById('noResults');
+        const countText   = document.getElementById('countText');
+        const searchInput = document.getElementById('search');
+
+        const groupRow = document.getElementById('groupRow');
+        const catRow   = document.getElementById('catRow');
+
+        let activeGroup = 'all';
+        let activeCat   = 'all';
+
+        // Nhóm bộ sưu tập: index*.html -> CHUYÊN ĐỀ BỔ TRỢ, vmo*.html -> LUYỆN TẬP VMO
+        const GROUPS = {
+            bd:  { label: 'CHUYÊN ĐỀ BỔ TRỢ' },
+            vmo: { label: 'LUYỆN TẬP VMO' }
+        };
+
+        // Tự nhận diện nhóm dựa trên tiền tố tên file
+        function groupOf(p) {
+            return (p.file || '').indexOf('vmo') === 0 ? 'vmo' : 'bd';
         }
+
+        // Tạo nút lọc: cấp 1 = nhóm (kèm số lượng), cấp 2 = chủ đề
+        function buildFilters() {
+            groupRow.innerHTML =
+                '<button class="pill group active" data-group="all">Tất cả</button>' +
+                Object.keys(GROUPS).map(g => {
+                    const count = POSTS.filter(p => groupOf(p) === g).length;
+                    return '<button class="pill group ' + g + '" data-group="' + g + '">' +
+                        GROUPS[g].label + ' <span class="cnt">' + count + '</span></button>';
+                }).join('');
+
+            catRow.innerHTML =
+                '<button class="pill active" data-cat="all">Tất cả chủ đề</button>' +
+                Object.keys(CATS).map(k =>
+                    '<button class="pill" data-cat="' + k + '">' + CATS[k].label + '</button>'
+                ).join('');
+        }
+
+        filtersEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.pill');
+            if (!btn) return;
+
+            if (btn.dataset.group) {
+                activeGroup = btn.dataset.group;
+                groupRow.querySelectorAll('.pill')
+                    .forEach(p => p.classList.toggle('active', p === btn));
+            } else if (btn.dataset.cat) {
+                activeCat = btn.dataset.cat;
+                catRow.querySelectorAll('.pill')
+                    .forEach(p => p.classList.toggle('active', p === btn));
+            }
+            render();
+        });
+
+        searchInput.addEventListener('input', render);
+
+        // Bỏ dấu tiếng Việt để tìm kiếm linh hoạt (vd: gõ "phuong trinh ham")
+        function normalize(s) {
+            return s.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd');
+        }
+
+        function starsHTML(n) {
+            n = Math.max(0, Math.min(5, Number(n) || 0));
+            return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(n);
+        }
+
+        function cardHTML(p) {
+            const c = CATS[p.cat];
+            const isVmo = groupOf(p) === 'vmo';
+            const color = isVmo ? '#6d28d9' : (c ? c.color : '#2a5db0');
+            const groupBadge = isVmo
+                ? '<span class="group-badge vmo">LUYỆN TẬP VMO</span>'
+                : '<span class="group-badge bd">CHUYÊN ĐỀ BỔ TRỢ</span>';
+            const difficulty = isVmo
+                ? '<span class="difficulty">' +
+                    '<span class="stars" title="Độ khó ' + p.stars + '/5">' + starsHTML(p.stars) + '</span>' +
+                    '<span class="diff-text">Độ khó ' + p.stars + '/5</span>' +
+                  '</span>'
+                : '';
+
+            return '<a class="card' + (isVmo ? ' vmo' : '') + '" style="--c:' + color + '" href="' + p.file + '">' +
+                '<span class="num">' + p.n + '</span>' +
+                groupBadge +
+                (c ? '<span class="cat">' + c.label + '</span>' : '') +
+                difficulty +
+                '<h3>' + p.title + '</h3>' +
+                '<p>' + p.desc + '</p>' +
+                '<span class="read">' + (isVmo ? 'Vào luyện tập →' : 'Mở bài viết →') + '</span>' +
+                '</a>';
+        }
+
+        function render() {
+            const q = normalize(searchInput.value.trim()).replace(/\s+/g, ' ');
+            const list = POSTS.filter(p => {
+                const okGroup = activeGroup === 'all' || groupOf(p) === activeGroup;
+                if (!okGroup) return false;
+                const okCat = activeCat === 'all' || p.cat === activeCat;
+                if (!okCat) return false;
+                if (!q) return true;
+                const hay = normalize(p.title + ' ' + p.desc + ' ' +
+                    (CATS[p.cat] ? CATS[p.cat].label : '') + ' ' + GROUPS[groupOf(p)].label);
+                const num = String(p.n);
+                return hay.includes(q) || q === num || q.includes(num);
+            });
+
+            grid.innerHTML = list.map(cardHTML).join('');
+            noResults.style.display = list.length ? 'none' : 'block';
+            countText.textContent = 'Hiển thị ' + list.length + ' / ' + POSTS.length + ' bài';
+        }
+
+        buildFilters();
+        render();
+
+        // Cập nhật số liệu thống kê (tự đếm từ danh sách POSTS)
+        document.getElementById('countAll').textContent = POSTS.length;
+        document.getElementById('countVmo').textContent = POSTS.filter(p => groupOf(p) === 'vmo').length;
+        document.getElementById('countCat').textContent = Object.keys(CATS).length;
 
         // ============================================================
         //  BỘ ĐẾM LƯỢT TRUY CẬP TOÀN CỤC — Google Apps Script + Sheets
+        //  - Chỉ hiển thị TỔNG LƯƢT XEM (phần "hôm nay" đã bỏ)
         //  - Hiển thị thông minh: K = hàng nghìn, M = hàng triệu
-        //    vd: 1250 → "1,25K" • 143454 → "143,454K" • 1234567 → "1,234567M"
+        //    vd: 1250 → "1,25K"  •  143454 → "143,454K"  •  1234567 → "1,234567M"
         //  - Nếu APPS_SCRIPT_URL không gọi được → tự chuyển về localStorage
-        //  - Hướng dẫn cài đặt: xem file INSTRUCTIONS_APPS_SCRIPT.md
         // ============================================================
-        // 👉 Dán URL web-app của bạn vào đây (tạo theo INSTRUCTIONS_APPS_SCRIPT.md):
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVasAXZWBkKQSfJ8GPsw26gnT-Um1per-sp1F9cP4iGhR_hG_7ESb6x_GW8Isw4y_r/exec'; // ex: https://script.google.com/macros/s/XXXX/exec
+        // PRESENCE_URL — introduce aici URL nòu web-app (vezi AppsScript_Code.gs);
+        //   cu acesta "người online" și phân trin duyət vor deveni globale.
+        //   Dacă rồmane gol ('') -> funcționează doar modul local (dispozitivul).
+        const PRESENCE_URL = ''; // ex: https://script.google.com/macros/s/XXXX/exec
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKjYk2elM5kLba26kINmjIf98G_hQGNM5KlBUWhiRmy-wUK3W1NaQTfMy2-AXBxV56/exec';
 
         (function () {
-            const KEY = 'ntdd_blog_visits';
-            const elTotal = document.getElementById('viewCount');
-            const elLast  = document.getElementById('viewLast');
+            const KEY = 'olympic_blog_visits';
+            const elTotal = document.getElementById('countVisits');
+            const elLast  = document.getElementById('lastVisit');
 
-            // Chuyển số → định dạng thông minh (K / M), dấu phẩy = ","
+            // Chuyển số → bìn diện thông minh (K / M), dấu phây decimal = ","
             function smartNumber(n) {
                 n = Number(n) || 0;
                 if (n >= 1000000) return String(n / 1000000).replace('.', ',') + 'M';
@@ -240,7 +643,7 @@
                 if (elLast && data.lastVisit) elLast.textContent = 'Lần truy cập gần nhất: ' + data.lastVisit;
             }
 
-            // ---- Chế độ TOÀN CỤC: gọi Google Apps Script ----
+            // ---- Chế mode TOÀN CỤC: gọi Apps Script ----
             async function countGlobal() {
                 if (!APPS_SCRIPT_URL) return false;
                 try {
@@ -252,7 +655,7 @@
                     if (!res.ok) return false;
                     const data = await res.json();
                     if (data && data.ok) {
-                        show({ total: data.total, lastVisit: data.lastVisit });
+                        show({ total: data.total, todayCount: data.todayCount, lastVisit: data.lastVisit });
                         return true;
                     }
                     return false;
@@ -261,7 +664,7 @@
                 }
             }
 
-            // ---- Chế độ CỤC BỘ (dự phòng, không cần internet) ----
+            // ---- Chế mode CỤC BỘ (dự phòng) ----
             function countLocal() {
                 let data = { total: 0, lastVisit: '' };
                 try {
@@ -278,7 +681,111 @@
 
             countGlobal().then(ok => { if (!ok) countLocal(); });
         })();
-    </script>
+        // ============================================================
+        //  NGƯỜI ĐANG ONLINE + TRÌNH DUYƏT (heartbeat)
+        //  - Începă cu server (PRESENCE_URL); dacă indisponibil -
+        //    mod local (tab-uri active ale acestui dispozitiv/navigator)
+        // ============================================================
+        (function () {
+            const elOnline = document.getElementById('countOnline');
+            const footerLive = document.getElementById('footerLive');
+            const footerText = document.getElementById('footerText');
+            if (!elOnline || !footerLive || !footerText) return;
 
+            const TTL = 70 * 1000;
+            const INTERVAL = 20000;
+            const LKEY = 'olympic_presence_local';
+
+            let sid = null;
+            try { sid = sessionStorage.getItem('olympic_sid'); } catch (e) { /* bỏ qua */ }
+            if (!sid) {
+                sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+                try { sessionStorage.setItem('olympic_sid', sid); } catch (e) { /* bỏ qua */ }
+            }
+
+            function detectBrowser() {
+                const ua = (navigator.userAgent || '').toLowerCase();
+                if (ua.indexOf('bing') >= 0 || ua.indexOf('bingweb') >= 0) return 'Bing';
+                if (ua.indexOf('edg/') >= 0) return 'Edge';
+                if (ua.indexOf('opr/') >= 0 || ua.indexOf('opera') >= 0) return 'Opera';
+                if (ua.indexOf('yabrowser') >= 0 || ua.indexOf('yaformat') >= 0) return 'Yandex';
+                if (ua.indexOf('samsungbrowser') >= 0) return 'Samsung';
+                if (ua.indexOf('firefox') >= 0 || ua.indexOf('fx/') >= 0) return 'Firefox';
+                if (ua.indexOf('ucbrowser') >= 0) return 'UC';
+                if (ua.indexOf('chrome') >= 0 || ua.indexOf('chromium') >= 0) return 'Chrome';
+                if (ua.indexOf('safari') >= 0) return 'Safari';
+                if (ua.indexOf('msie') >= 0 || ua.indexOf('trident') >= 0) return 'IE';
+                return 'Other';
+            }
+            const MY_BROWSER = detectBrowser();
+
+            // ---- mod local (de rezervă) ----
+            function localMap() {
+                const now = Date.now();
+                let map = {};
+                try { map = JSON.parse(localStorage.getItem(LKEY) || '{}') || {}; } catch (e) { map = {}; }
+                const fresh = {};
+                Object.keys(map).forEach(k => { if (now - Number(map[k].t || 0) < TTL) fresh[k] = map[k]; });
+                fresh[sid] = { b: MY_BROWSER, t: now };
+                try { localStorage.setItem(LKEY, JSON.stringify(fresh)); } catch (e) { /* bỏ qua */ }
+                return fresh;
+            }
+
+            // ---- afișare ----
+            function browsersFromSessions(map) {
+                const out = {};
+                Object.keys(map).forEach(k => {
+                    const b = map[k].b || 'Other';
+                    out[b] = (out[b] || 0) + 1;
+                });
+                return out;
+            }
+            function render(online, browsers) {
+                const n = Number(online) || 0;
+                if (elOnline) elOnline.textContent = String(n);
+                let html = 'Đang online: <b>' + n + '</b> người';
+                const names = Object.keys(browsers || {}).filter(k => browsers[k] > 0)
+                    .sort((a, b) => browsers[b] - browsers[a]);
+                if (names.length) {
+                    html += ' &nbsp;•&nbsp; ' + names.map(k =>
+                        '<span class="brow">' + k + '(' + browsers[k] + ')</span>').join(' ');
+                }
+                footerLive.style.display = 'flex';
+                footerText.innerHTML = html;
+            }
+        // ---- server heartbeat (Apps Script: action=heartbeat) ----
+            async function serverHeartbeat() {
+                if (!PRESENCE_URL) return null;
+                try {
+                    const res = await fetch(PRESENCE_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'action=heartbeat&sid=' + encodeURIComponent(sid) +
+                              '&browser=' + encodeURIComponent(MY_BROWSER)
+                    });
+                    if (!res.ok) return null;
+                    const data = await res.json();
+                    return (data && data.ok) ? data : null;
+                } catch (e) { return null; }
+            }
+
+            async function tick() {
+                const srv = await serverHeartbeat();
+                if (srv) {
+                    render(srv.online, srv.browsers || {});
+                } else {
+                    const m = localMap();
+                    render(Object.keys(m).length, browsersFromSessions(m));
+                }
+            }
+
+            // afișează imediat, apoi server va rafina
+            const m0 = localMap();
+            render(Object.keys(m0).length, browsersFromSessions(m0));
+            tick();
+            setInterval(tick, INTERVAL);
+        })();
+
+    </script>
 </body>
 </html>

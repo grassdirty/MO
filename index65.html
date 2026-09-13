@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Đại số - Dàn Boole và Phép biến đổi Möbius trên tập hợp</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP ĐẠI SỐ <br> DÀN BOOLE VÀ PHÉP BIẾN ĐỔI MÖBIUS TRÊN TẬP HỢP</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các tổng tổ hợp chạy trên tất cả các tập con của một không gian hữu hạn là một bài toán thường gặp nhưng có độ phức tạp cao. Chuyên đề này giới thiệu một cấu trúc đại số: Dàn Boole (Boolean Lattice). Bằng cách định nghĩa các hàm tập hợp (Set Functions) và thiết lập Công thức Nghịch đảo Möbius trên cấu trúc bao hàm, ta có thể đơn giản hóa các điều kiện giao/hợp. Đây là dạng tổng quát của Nguyên lý Bao hàm - Loại trừ (PIE), tạo ra những hệ thức giải tích để phân tích các bài toán rời rạc.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Phép biến đổi trên các tập con thường sử dụng tư duy "phân rã theo từng phần tử". Để học sinh THPT có thể tiếp cận dễ dàng với bài toán 3.2 và 3.3, ta cần làm quen với nguyên lý sau:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Kỹ thuật đếm theo phần tử độc lập - Element-wise Contribution)</div>
+        Khi đánh giá một tổng chạy trên toàn bộ tập lũy thừa (ví dụ $\sum_{A \subseteq S} \dots$), thay vì liệt kê từng tập hợp $A$, ta xét trạng thái của từng phần tử $x \in S$. 
+        <ul>
+            <li> Đối với mỗi tập $A$, một phần tử $x \in S$ chỉ có thể rơi vào $2$ trạng thái độc lập: hoặc $x \in A$, hoặc $x \notin A$.</li>
+            <li> Nếu đại lượng bên trong tổng có thể phân tích thành tích của các thành phần độc lập tương ứng với mỗi phần tử (ví dụ $(-1)^{|A|} = \prod_{x \in S} (-1)^{[x \in A]}$), ta có thể áp dụng tính chất phân phối để hoán đổi tổng và tích:
+            $$ \sum_{A \subseteq S} \prod_{x \in S} g(x, A) = \prod_{x \in S} \left( \sum_{x \in A} g(x, A) + \sum_{x \notin A} g(x, A) \right) $$
+            Tính chất này giúp chuyển một tổng có $2^{|S|}$ số hạng thành tích của $|S|$ thừa số đơn giản.</li>
+        </ul>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Dàn Boole và Hàm Tập Hợp)</div>
+        <ul>
+            <li> <strong>Tập nền và Tập lũy thừa:</strong> Cho $S$ là một tập hợp hữu hạn có $n$ phần tử. Tập lũy thừa của $S$, ký hiệu là $2^S$, là họ tất cả các tập con của $S$. Cùng với quan hệ bao hàm ($\subseteq$), $2^S$ tạo thành một cấu trúc gọi là <strong>Dàn Boole</strong>.</li>
+            <li> <strong>Hàm tập hợp (Set Function):</strong> Là một hàm số nhận đầu vào là một tập con $A \subseteq S$ và trả về một số thực. $f: 2^S \to \mathbb{R}$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Bổ đề Triệt tiêu Tập hợp - Subset Cancellation Lemma)</div>
+        Cho hai tập hợp $A$ và $B$ thỏa mãn $A \subseteq B \subseteq S$. Tổng đại số các dấu đan phiên sinh ra bởi tất cả các tập hợp trung gian $C$ nằm giữa $A$ và $B$ luôn thỏa mãn:
+        $$ \sum_{C: A \subseteq C \subseteq B} (-1)^{|B \setminus C|} = 
+        \begin{cases} 
+        1 & \text{nếu } A = B \\ 
+        0 & \text{nếu } A \subset B \text{ (bao hàm ngặt)}
+        \end{cases} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét các tập hợp $C$ thỏa mãn $A \subseteq C \subseteq B$. <br>
+        Mọi tập hợp $C$ như vậy đều có thể được tạo ra bằng cách lấy tập $A$ hợp với một tập con $K$ nào đó của tập hiệu $B \setminus A$. (Nghĩa là $C = A \cup K$, với $K \subseteq B \setminus A$).<br>
+        Vì $A$ và $K$ rời nhau, ta có $|C| = |A| + |K|$. <br>
+        Mặt khác, tập hiệu $B \setminus C$ chính là phần còn lại của $B \setminus A$ sau khi đã bỏ đi $K$.<br>
+        Do đó, $|B \setminus C| = |B \setminus A| - |K|$.<br>
+        Đặt $m = |B \setminus A|$. Kích thước của $K$, ký hiệu là $k$, có thể chạy từ $0$ đến $m$. Với mỗi kích thước $k$, có đúng $\binom{m}{k}$ cách chọn tập con $K$.<br>
+        Ta biến đổi tổng ban đầu:</p>
+        $$ \sum_{C: A \subseteq C \subseteq B} (-1)^{|B \setminus C|} = \sum_{k=0}^m \binom{m}{k} (-1)^{m - k} $$
+        <p>Theo khai triển Nhị thức Newton cho $(1 - 1)^m$:</p>
+        $$ (1 - 1)^m = \sum_{k=0}^m \binom{m}{k} 1^k (-1)^{m-k} $$
+        <ul>
+            <li> Nếu $A = B$, tức là $m = 0$. Khai triển $(1-1)^0$ theo quy ước bằng $1$.</li>
+            <li> Nếu $A \subset B$, tức là $m \gt 0$. Khai triển $(1-1)^m = 0^m = 0$.</li>
+        </ul>
+        <p>Bổ đề được chứng minh. Tính chất này là cơ sở cho Nguyên lý Bao hàm - Loại trừ.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Phép Nghịch đảo Möbius trên Tập hợp - Generalized PIE)</div>
+        Cho hai hàm tập hợp $f, g: 2^S \to \mathbb{R}$. Sự biến đổi tích lũy từ dưới lên (từ tập con lên tập cha) có tính chất nghịch đảo. Cụ thể, hai mệnh đề sau là tương đương:
+        $$ g(A) = \sum_{B \subseteq A} f(B) \iff f(A) = \sum_{B \subseteq A} (-1)^{|A \setminus B|} g(B) $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng cách thay thế trực tiếp và hoán đổi thứ tự tính tổng (Double Summation).<br>
+        Giả sử $g(A) = \sum_{B \subseteq A} f(B)$. Ta khai triển vế phải của phương trình cần chứng minh:</p>
+        $$ \text{Vế phải} = \sum_{B \subseteq A} (-1)^{|A \setminus B|} g(B) = \sum_{B \subseteq A} (-1)^{|A \setminus B|} \left( \sum_{C \subseteq B} f(C) \right) $$
+        <p>Đây là một tổng kép lấy trên tất cả các cặp tập hợp $(B, C)$ thỏa mãn $C \subseteq B \subseteq A$.<br>
+        Ta thay đổi thứ tự lấy tổng: Cố định tập $C$ trước. Với mỗi tập $C \subseteq A$ cố định, tập $B$ phải là các tập trung gian thỏa mãn $C \subseteq B \subseteq A$.</p>
+        $$ \text{Vế phải} = \sum_{C \subseteq A} f(C) \left( \sum_{B: C \subseteq B \subseteq A} (-1)^{|A \setminus B|} \right) $$
+        <p>Quan sát tổng bên trong ngoặc tròn. Theo <strong>Bổ đề Triệt tiêu (Định lý 1.1)</strong> áp dụng cho hai tập $C$ và $A$:</p>
+        $$ \sum_{B: C \subseteq B \subseteq A} (-1)^{|A \setminus B|} = \begin{cases} 1 & \text{nếu } C = A \\ 0 & \text{nếu } C \subset A \end{cases} $$
+        <p>Do đó, trong toàn bộ tổng lớn bên ngoài chạy theo $C$, tất cả các số hạng ứng với $C \neq A$ đều bằng $0$ và bị triệt tiêu. Số hạng duy nhất còn lại là khi $C = A$, và nó được nhân với $1$.</p>
+        $$ \text{Vế phải} = f(A) \cdot 1 = f(A) $$
+        <p>Đẳng thức được chứng minh. Điều này khẳng định rằng nếu ta biết tổng thông tin của các tập con, ta có thể khôi phục lại thông tin gốc của từng tập hợp.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Phân tách Giao của Hàm Tập hợp)</div>
+        Cho $f$ và $g$ là hai hàm tập hợp trên $2^S$. Ta định nghĩa "Tích chập Giao" của chúng là hàm $h$ sao cho:
+        $$ h(A) = \sum_{B \cap C = A} f(B)g(C) $$
+        Nghĩa là $h(A)$ bằng tổng của tích $f(B)g(C)$ trên tất cả các cặp tập hợp $(B, C)$ mà phần giao của chúng chính xác bằng $A$.<br>
+        Chứng minh rằng nếu ta định nghĩa phép biến đổi tích lũy từ trên xuống (Superset Sum) là $F(A) = \sum_{X \supseteq A} f(X)$ và $G(A) = \sum_{X \supseteq A} g(X)$, thì hàm tích lũy của $h$, ký hiệu $H(A) = \sum_{X \supseteq A} h(X)$, sẽ thỏa mãn hệ thức:
+        $$ H(A) = F(A) \cdot G(A) $$
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta đi từ định nghĩa của hàm tích lũy $H(A)$:</p>
+        $$ H(A) = \sum_{X \supseteq A} h(X) $$
+        <p>Thay định nghĩa của $h(X)$ vào tổng:</p>
+        $$ H(A) = \sum_{X \supseteq A} \left( \sum_{B \cap C = X} f(B)g(C) \right) $$
+        <p>Tổng kép này thực chất là việc quét qua tất cả các cặp tập hợp $(B, C)$ sao cho phần giao của chúng, $B \cap C$, là một siêu tập hợp của $A$ (tức là $B \cap C \supseteq A$).<br>
+        Do đó ta có thể viết gộp lại:</p>
+        $$ H(A) = \sum_{B \cap C \supseteq A} f(B)g(C) $$
+        <p>Theo lý thuyết tập hợp, điều kiện $B \cap C \supseteq A$ tương đương với việc: tập $B$ chứa $A$ <strong>và</strong> tập $C$ chứa $A$ ($B \supseteq A \land C \supseteq A$).<br>
+        Vì hai điều kiện này là độc lập với nhau, ta có thể tách tổng kép thành tích của hai tổng đơn:</p>
+        $$ H(A) = \left( \sum_{B \supseteq A} f(B) \right) \cdot \left( \sum_{C \supseteq A} g(C) \right) $$
+        <p>Quan sát lại, hai tổng bên trong dấu ngoặc chính là định nghĩa của hàm tích lũy $F(A)$ và $G(A)$.</p>
+        $$ H(A) = F(A) \cdot G(A) $$
+        <p>Khẳng định được chứng minh. Hệ thức này cho thấy phép Giao ($B \cap C = A$) được đơn giản hóa khi phân tích trên không gian của các siêu tập hợp.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Austria National Olympiad (ÖMO) - Khôi phục Hàm từ Bình phương Tập hợp)</div>
+        Cho tập hợp $S$ gồm $n$ phần tử. Một hàm số $f$ được định nghĩa trên các tập con của $S$ thỏa mãn điều kiện sau: Với mọi tập con $A \subseteq S$, ta luôn có:
+        $$ \sum_{B \subseteq A} f(B) = |A|^2 $$
+        Hãy tính giá trị của $f(S)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $g(A) = |A|^2$. Giả thiết của bài toán có dạng $g(A) = \sum_{B \subseteq A} f(B)$.<br>
+        Áp dụng trực tiếp <strong>Phép Nghịch đảo Möbius (Định lý 1.2)</strong>, ta có thể khôi phục $f(S)$:</p>
+        $$ f(S) = \sum_{B \subseteq S} (-1)^{|S \setminus B|} g(B) = \sum_{B \subseteq S} (-1)^{n - |B|} |B|^2 $$
+        <p>Để tính tổng này, ta gom các tập hợp $B$ theo kích thước của chúng. Giả sử $|B| = k$. Với mỗi kích thước $k$ (từ $0$ đến $n$), có đúng $\binom{n}{k}$ cách chọn tập con $B$. Tổng trở thành:</p>
+        $$ f(S) = \sum_{k=0}^n \binom{n}{k} (-1)^{n-k} k^2 $$
+        <p>Ta dùng giải tích để đánh giá tổng này. Xét đa thức:</p>
+        $$ P(x) = (x - 1)^n = \sum_{k=0}^n \binom{n}{k} x^k (-1)^{n-k} $$
+        <p>Ta cần tạo ra hệ số $k^2$. Lấy đạo hàm bậc nhất của $P(x)$:</p>
+        $$ P'(x) = n(x-1)^{n-1} = \sum_{k=0}^n \binom{n}{k} k x^{k-1} (-1)^{n-k} $$
+        <p>Nhân cả hai vế với $x$:</p>
+        $$ x P'(x) = n x (x-1)^{n-1} = \sum_{k=0}^n \binom{n}{k} k x^k (-1)^{n-k} $$
+        <p>Tiếp tục lấy đạo hàm bậc nhất một lần nữa đối với toàn bộ biểu thức $x P'(x)$:</p>
+        $$ \frac{d}{dx} \left[ n x (x-1)^{n-1} \right] = \sum_{k=0}^n \binom{n}{k} k^2 x^{k-1} (-1)^{n-k} $$
+        <p>Áp dụng quy tắc đạo hàm tích ở vế trái:</p>
+        $$ n(x-1)^{n-1} + n x (n-1)(x-1)^{n-2} = \sum_{k=0}^n \binom{n}{k} k^2 x^{k-1} (-1)^{n-k} $$
+        <p>Thay $x = 1$ vào phương trình trên. Vế phải chính là biểu thức cần tính $f(S)$.<br>
+        Ở vế trái, vì có nhân tử $(x-1)$, giá trị của nó phụ thuộc vào $n$:</p>
+        <ul>
+            <li> Nếu $n \ge 3$: Cả hai số hạng đều chứa $(x-1)$ với số mũ $\ge 1$. Khi $x=1$, vế trái bằng $0$.</li>
+            <li> Nếu $n = 2$: Vế trái là $2(1-1)^1 + 2(1)(1)(1-1)^0 = 0 + 2(1) = 2$.</li>
+            <li> Nếu $n = 1$: Vế trái là $1(1-1)^0 + 0 = 1$.</li>
+        </ul>
+
+        <p>Kết luận:</p>
+        $$ f(S) = 
+        \begin{cases} 
+        1 & \text{nếu } n = 1 \\ 
+        2 & \text{nếu } n = 2 \\ 
+        0 & \text{nếu } n \ge 3 
+        \end{cases} $$
+        <p>Bài toán được giải quyết thông qua kỹ thuật đạo hàm đa thức.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (South African Mathematical Olympiad (SAMO) - Tổng Dấu Đan Phiên Kép)</div>
+        Cho một tập hợp hữu hạn $S$ gồm $n$ phần tử. Tính tổng sau trên tất cả các cặp tập con $(A, B)$ của $S$:
+        $$ \Sigma = \sum_{A \subseteq S} \sum_{B \subseteq S} (-1)^{|A \cup B|} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Việc đánh giá trực tiếp dựa trên kích thước của $A$ và $B$ sẽ sinh ra các hệ số nhị thức phức tạp vì $|A \cup B| = |A| + |B| - |A \cap B|$. Ta sử dụng tư duy "Phân rã theo phần tử" (đã nêu ở Khái niệm 0.1).</p>
+
+        <p>Thay vì nhìn từng tập hợp $A$ và $B$, ta xem xét từng phần tử $x \in S$.<br>
+        Trong việc xây dựng một cặp tập hợp $(A, B)$, mỗi phần tử $x$ có 4 trạng thái độc lập để lựa chọn:</p>
+        <ol>
+            <li>$x \notin A$ và $x \notin B$. (Tức là $x \notin A \cup B$).</li>
+            <li>$x \in A$ và $x \notin B$. (Tức là $x \in A \cup B$).</li>
+            <li>$x \notin A$ và $x \in B$. (Tức là $x \in A \cup B$).</li>
+            <li>$x \in A$ và $x \in B$. (Tức là $x \in A \cup B$).</li>
+        </ol>
+
+        <p>Đại lượng $(-1)^{|A \cup B|}$ có thể phân rã thành tích của các yếu tố đóng góp từ từng phần tử $x$:</p>
+        $$ (-1)^{|A \cup B|} = \prod_{x \in S} (-1)^{[x \in A \cup B]} $$
+        <p>(Trong đó hàm chỉ thị $[x \in A \cup B]$ bằng $1$ nếu đúng, bằng $0$ nếu sai).</p>
+
+        <p>Vì sự lựa chọn trạng thái cho mỗi phần tử $x$ là hoàn toàn độc lập với nhau, tổng của tích trên mọi cặp $(A, B)$ bằng tích của tổng đóng góp trên từng phần tử (theo tính chất phân phối $\sum \prod = \prod \sum$).</p>
+        $$ \Sigma = \prod_{x \in S} \left( \sum_{\text{4 trạng thái của } x} (-1)^{[x \in A \cup B]} \right) $$
+
+        <p>Ta tính tổng đóng góp của $1$ phần tử $x$ qua 4 trạng thái:</p>
+        <ul>
+            <li>Trạng thái 1 ($x \notin A \cup B$): Đóng góp $(-1)^0 = 1$.</li>
+            <li>Trạng thái 2 ($x \in A \cup B$): Đóng góp $(-1)^1 = -1$.</li>
+            <li>Trạng thái 3 ($x \in A \cup B$): Đóng góp $(-1)^1 = -1$.</li>
+            <li>Trạng thái 4 ($x \in A \cup B$): Đóng góp $(-1)^1 = -1$.</li>
+        </ul>
+
+        <p>Tổng đóng góp của một phần tử $x$ là: $1 + (-1) + (-1) + (-1) = -2$.<br>
+        Bởi vì tập $S$ có $n$ phần tử, tích của các đóng góp độc lập này là:</p>
+        $$ \Sigma = \prod_{x \in S} (-2) = (-2)^n $$
+        <p>Bài toán được giải quyết thông qua việc tính toán độc lập trên từng phần tử.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Irish Mathematical Olympiad - Lớp Chân Lý của Họ Tập Hợp)</div>
+        Có bao nhiêu cách chọn ra một bộ $k$ tập con $(A_1, A_2, \dots, A_k)$ của tập hợp $S$ ($|S|=n$) sao cho thỏa mãn đồng thời hai điều kiện sau:
+        <ol>
+            <li>Giao của tất cả các tập hợp là tập rỗng: $A_1 \cap A_2 \cap \dots \cap A_k = \emptyset$.</li>
+            <li>Hợp của tất cả các tập hợp là toàn bộ không gian: $A_1 \cup A_2 \cup \dots \cup A_k = S$.</li>
+        </ol>
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Sử dụng phương pháp đếm trạng thái độc lập trên từng phần tử, thay vì chọn từng tập hợp $A_i$ (vốn ràng buộc lẫn nhau), ta đi từng phần tử $x \in S$ và quyết định xem $x$ sẽ thuộc về những tập hợp $A_i$ nào.</p>
+
+        <p>Để xác định vị trí của một phần tử $x$ đối với $k$ tập hợp $A_1, \dots, A_k$, ta phải gán cho nó một "vector chân lý" (Truth Vector) gồm $k$ thành phần nhị phân. Thành phần thứ $i$ bằng $1$ nếu $x \in A_i$, và bằng $0$ nếu $x \notin A_i$.<br>
+        Vì có $k$ thành phần, mỗi phần tử $x$ có đúng $2^k$ cách gán vector chân lý.<br>
+        Các ràng buộc từ đề bài yêu cầu:</p>
+        <ol>
+            <li>Điều kiện $A_1 \cap \dots \cap A_k = \emptyset$ có nghĩa là: <strong>Không có phần tử nào</strong> thuộc về tất cả $k$ tập hợp. <br>
+            Nghĩa là, vector chân lý của $x$ không được phép chứa toàn số 1: $(1, 1, \dots, 1)$. (Loại trừ 1 trạng thái).</li>
+            <li>Điều kiện $A_1 \cup \dots \cup A_k = S$ có nghĩa là: <strong>Mọi phần tử</strong> phải thuộc về ít nhất một tập hợp $A_i$.<br>
+            Nghĩa là, vector chân lý của $x$ không được phép chứa toàn số 0: $(0, 0, \dots, 0)$. (Loại trừ 1 trạng thái khác).</li>
+        </ol>
+
+        <p>Hai trạng thái bị loại trừ này là phân biệt (với điều kiện $k \ge 1$).<br>
+        Do đó, đối với một phần tử $x$, số lượng các vector chân lý hợp lệ là: $2^k - 2$.<br>
+        Bởi vì việc gán vector chân lý cho mỗi phần tử $x$ là độc lập với các phần tử khác trong tập $S$, và mỗi cách gán sẽ định hình ra một bộ $(A_1, \dots, A_k)$ duy nhất, tổng số cách chọn bộ tập hợp chính bằng tích số cách chọn cho $n$ phần tử.<br>
+        Vậy số lượng các bộ tập hợp thỏa mãn là:</p>
+        $$ (2^k - 2)^n $$
+        <p>Bài toán được đưa về phép đếm cơ bản thông qua điều kiện của từng phần tử.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Cấp Của Phần Tử & Nguyên Lý Ước Nguyên Tố Nhỏ Nhất</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh đậm/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ LÝ THUYẾT ĐỒNG DƯ<br>CẤP CỦA PHẦN TỬ VÀ NGUYÊN LÝ ƯỚC NGUYÊN TỐ NHỎ NHẤT</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát tính chia hết của các biểu thức dạng lũy thừa $a^n \pm 1$ là một trong những nền tảng của Số học giải tích. Khái niệm cấp của phần tử (Order) thiết lập mối quan hệ phân tích sâu sắc giữa số mũ thực tế và cấu trúc nhóm nhân của vành thặng dư modulo $p$. Chuyên đề này hệ thống hóa các định lý về cấp của một số nguyên, kết hợp với nguyên lý ước nguyên tố nhỏ nhất, nhằm đập tan các phương trình Diophantine chia hết trong hệ thống Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Cấp của phần tử modulo $n$</div>
+            <div class="box-body">
+                Cho $a, n$ là hai số nguyên dương sao cho $\gcd(a, n) = 1$. Cấp của $a$ modulo $n$, ký hiệu là $\operatorname{ord}_n(a)$, là số nguyên dương $k$ nhỏ nhất thỏa mãn hệ thức đồng dư:
+                $$ a^k \equiv 1 \pmod n $$
+            </div>
+        </div>
+
+        <p>Cấu trúc chia hết của số mũ được kiểm soát hoàn toàn bởi cấp của phần tử thông qua định lý sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Tính chất chia hết của số mũ</div>
+            <div class="box-body">
+                Nếu $\gcd(a, n) = 1$ và tồn tại số nguyên dương $m$ sao cho $a^m \equiv 1 \pmod n$, thì:
+                $$ \operatorname{ord}_n(a) \mid m $$
+                Hệ quả từ Định lý Fermat nhỏ: Nếu $p$ là số nguyên tố và $p \nmid a$, thì $a^{p-1} \equiv 1 \pmod p$. Do đó, ta luôn có:
+                $$ \operatorname{ord}_p(a) \mid p - 1 $$
+            </div>
+        </div>
+
+        <p>Trong nhiều bài toán đánh giá, việc phân tích sự tồn tại của một biểu thức chia hết cho một số nguyên $n$ thường được quy về việc xét ước nguyên tố nhỏ nhất của $n$.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Nguyên lý ước nguyên tố nhỏ nhất</div>
+            <div class="box-body">
+                Giả sử $n > 1$ là một số nguyên dương lẻ và $p$ là ước nguyên tố nhỏ nhất của $n$. Khi đó, nếu $p \mid a^n - 1$ (với $\gcd(a, p) = 1$), ta có:
+                $$ \operatorname{ord}_p(a) \mid \gcd(n, p-1) $$
+                Do $p$ là ước nguyên tố nhỏ nhất của $n$, $n$ không thể có bất kỳ ước số chung nào lớn hơn 1 với $p-1$. Suy ra $\gcd(n, p-1) = 1$, kéo theo $\operatorname{ord}_p(a) = 1$. Tức là $a \equiv 1 \pmod p$.
+            </div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (All-Russian Olympiad 2000)</div>
+            <div class="box-body">
+                Chứng minh rằng không tồn tại số nguyên dương lẻ $n > 1$ nào thỏa mãn điều kiện chia hết:
+                $$ n \mid 3^n + 1 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại số nguyên dương lẻ $n &gt; 1$ thỏa mãn $n \mid 3^n + 1$.<br>
+            Vì $n &gt; 1$, gọi $p$ là ước nguyên tố nhỏ nhất của $n$. Do $n$ lẻ, ta bắt buộc có $p \ge 3$.<br>
+            Từ giả thiết $n \mid 3^n + 1$, suy ra $p \mid 3^n + 1$. Điều này tương đương với:
+            $$ 3^n \equiv -1 \pmod p $$
+            Rõ ràng $p \neq 3$ vì nếu $p = 3$, ta có $0 \equiv -1 \pmod 3$, vô lý. Vậy $\gcd(3, p) = 1$.<br>
+            Bình phương hai vế của hệ thức đồng dư trên:
+            $$ 3^{2n} \equiv 1 \pmod p $$
+            Theo định nghĩa về cấp của phần tử (Định lý 1), ta có:
+            $$ \operatorname{ord}_p(3) \mid 2n \quad \text{và} \quad \operatorname{ord}_p(3) \nmid n $$
+            Đồng thời, theo Định lý Fermat nhỏ, do $p$ là số nguyên tố:
+            $$ \operatorname{ord}_p(3) \mid p - 1 $$
+            Từ $\operatorname{ord}_p(3) \mid 2n$ và $\operatorname{ord}_p(3) \mid p - 1$, ta suy ra:
+            $$ \operatorname{ord}_p(3) \mid \gcd(2n, p - 1) $$
+            Vì $p$ là ước nguyên tố nhỏ nhất của $n$, mọi ước nguyên tố của $n$ đều lớn hơn hoặc bằng $p$. Do đó, $n$ và $p-1$ hoàn toàn nguyên tố cùng nhau, tức là $\gcd(n, p-1) = 1$.<br>
+            Kéo theo:
+            $$ \gcd(2n, p-1) \mid 2 \gcd(n, p-1) = 2 $$
+            Vậy $\operatorname{ord}_p(3)$ là một ước số của 2. Suy ra $\operatorname{ord}_p(3) \in \{1, 2\}$.
+            <ul>
+                <li>Nếu $\operatorname{ord}_p(3) = 1$: Ta có $3^1 \equiv 1 \pmod p \implies p \mid 2$, vô lý vì $p \ge 3$.</li>
+                <li>Nếu $\operatorname{ord}_p(3) = 2$: Ta có $3^2 \equiv 1 \pmod p \implies p \mid 8 \implies p = 2$, vô lý vì $p \ge 3$.</li>
+            </ul>
+            Cả hai trường hợp đều dẫn đến sự mâu thuẫn khắt khe. Do đó, giả thiết phản chứng là sai. Không tồn tại số nguyên lẻ $n &gt; 1$ nào thỏa mãn điều kiện bài toán.
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Greek Mathematical Olympiad 2005)</div>
+            <div class="box-body">
+                Chứng minh rằng không tồn tại số nguyên dương $n > 1$ sao cho $n \mid 2^n - 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại số nguyên dương $n &gt; 1$ thỏa mãn $n \mid 2^n - 1$. Rõ ràng $n$ phải là số lẻ.<br>
+            Gọi $p$ là ước nguyên tố nhỏ nhất của $n$. Ta có $p \mid 2^n - 1 \implies 2^n \equiv 1 \pmod p$.<br>
+            Khi đó $\operatorname{ord}_p(2) \mid n$.<br>
+            Mặt khác, $\operatorname{ord}_p(2) \mid p - 1$.<br>
+            Suy ra $\operatorname{ord}_p(2) \mid \gcd(n, p-1)$.<br>
+            Vì $p$ là ước nguyên tố nhỏ nhất của $n$, ta có $\gcd(n, p-1) = 1$.<br>
+            Do đó $\operatorname{ord}_p(2) = 1$, nghĩa là $2^1 \equiv 1 \pmod p \implies p \mid 1$.<br>
+            Điều này mâu thuẫn với việc $p$ là một số nguyên tố. Vậy không tồn tại $n &gt; 1$ thỏa mãn.
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Spanish Mathematical Olympiad 2002)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên tố $(p, q)$ sao cho $p \mid 2^q - 1$ và $q \mid 2^p - 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ giả thiết $p \mid 2^q - 1$, ta có $2^q \equiv 1 \pmod p$. Suy ra $\operatorname{ord}_p(2) \mid q$.<br>
+            Vì $q$ là số nguyên tố, $\operatorname{ord}_p(2)$ chỉ có thể là $1$ hoặc $q$.<br>
+            Nếu $\operatorname{ord}_p(2) = 1$, thì $p \mid 2^1 - 1 = 1$, vô lý.<br>
+            Vậy $\operatorname{ord}_p(2) = q$. Theo định lý Fermat nhỏ, $\operatorname{ord}_p(2) \mid p - 1 \implies q \mid p - 1$.<br>
+            Từ đó ta suy ra $q &lt; p$.<br>
+            Lập luận hoàn toàn đối xứng đối với giả thiết $q \mid 2^p - 1$, ta thu được $p &lt; q$.<br>
+            Hai bất đẳng thức $q &lt; p$ và $p &lt; q$ mâu thuẫn trực tiếp với nhau.<br>
+            Do đó, hệ điều kiện không có bất kỳ nghiệm nguyên tố nào.
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Japan Mathematical Olympiad (JMO) 2005)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên tố $p$ sao cho $p \mid 2^p + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Theo định lý Fermat nhỏ, với mọi số nguyên tố $p$, ta có $2^p \equiv 2 \pmod p$.<br>
+            Cộng $1$ vào hai vế của hệ thức đồng dư:
+            $$ 2^p + 1 \equiv 2 + 1 = 3 \pmod p $$
+            Theo giả thiết của bài toán, $p \mid 2^p + 1$, tức là $2^p + 1 \equiv 0 \pmod p$.<br>
+            Đồng nhất hai kết quả, ta thu được:
+            $$ 3 \equiv 0 \pmod p \implies p \mid 3 $$
+            Vì $p$ là một số nguyên tố, giá trị duy nhất thỏa mãn là $p = 3$.<br>
+            Thử lại với $p = 3$: $3 \mid 2^3 + 1 = 9$, mệnh đề hoàn toàn chính xác. Nghiệm duy nhất là $p=3$.
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Italian Mathematical Olympiad 2006)</div>
+            <div class="box-body">
+                Chứng minh rằng nếu $p$ là một số nguyên tố lẻ, thì mọi ước nguyên tố của $2^p - 1$ đều lớn hơn $p$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $q$ là một ước nguyên tố bất kỳ của $2^p - 1$. Ta có $q \mid 2^p - 1 \implies 2^p \equiv 1 \pmod q$.<br>
+            Từ đó, $\operatorname{ord}_q(2) \mid p$.<br>
+            Vì $p$ là một số nguyên tố, $\operatorname{ord}_q(2)$ chỉ có thể là $1$ hoặc $p$.<br>
+            Nếu $\operatorname{ord}_q(2) = 1$, ta có $q \mid 2^1 - 1 = 1$, vô lý.<br>
+            Vậy bắt buộc $\operatorname{ord}_q(2) = p$.<br>
+            Theo định lý Fermat nhỏ áp dụng cho số nguyên tố $q$, ta có $\operatorname{ord}_q(2) \mid q - 1$.<br>
+            Thay giá trị cấp vào, ta được $p \mid q - 1$.<br>
+            Điều này tương đương với $q \equiv 1 \pmod p$, từ đó suy ra $q = kp + 1$ với $k \ge 1$.<br>
+            Do đó, $q \ge p + 1 &gt; p$. Khẳng định được chứng minh hoàn toàn.
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Romanian National Olympiad 2006)</div>
+            <div class="box-body">
+                Cho số nguyên tố $p > 3$. Chứng minh rằng ước nguyên tố nhỏ nhất của đại lượng $\frac{p^p - 1}{p - 1}$ lớn hơn $p$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $q$ là ước nguyên tố nhỏ nhất của biểu thức $\frac{p^p - 1}{p - 1}$. Rõ ràng $q \mid p^p - 1 \implies p^p \equiv 1 \pmod q$.<br>
+            Từ đó, $\operatorname{ord}_q(p) \mid p$. Vì $p$ là số nguyên tố, $\operatorname{ord}_q(p) \in \{1, p\}$.
+            <ul>
+                <li>Nếu $\operatorname{ord}_q(p) = 1$, tức là $p \equiv 1 \pmod q \implies q \mid p - 1$.<br>
+                Mặt khác, $q \mid \frac{p^p - 1}{p - 1} = p^{p-1} + p^{p-2} + \dots + p + 1$.<br>
+                Thay $p \equiv 1 \pmod q$ vào tổng này, ta có $q \mid 1 + 1 + \dots + 1 = p$.<br>
+                Suy ra $q \mid p$, dẫn đến $q = p$. Tuy nhiên, $q \mid p - 1$, tạo ra mâu thuẫn $p \mid p-1$.<br>
+                Vậy trường hợp này vô nghiệm.</li>
+                <li>Bắt buộc $\operatorname{ord}_q(p) = p$. Theo định lý Fermat nhỏ, $p \mid q - 1$.<br>
+                Suy ra $q \equiv 1 \pmod p$, kéo theo $q \ge p + 1 &gt; p$. Bài toán được chứng minh.</li>
+            </ul>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (United States of America Mathematical Olympiad (USAMO) 2003)</div>
+            <div class="box-body">
+                Chứng minh rằng tồn tại vô số số nguyên dương $n$ sao cho $n \mid 2^n + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta sẽ xây dựng một dãy vô hạn $(n_k)$ thỏa mãn điều kiện bài toán bằng phương pháp quy nạp.<br>
+            Chọn $n_1 = 3$. Rõ ràng $3 \mid 2^3 + 1 = 9$.<br>
+            Giả sử tồn tại $n_k$ lẻ thỏa mãn $n_k \mid 2^{n_k} + 1$. Ta định nghĩa phần tử tiếp theo là:
+            $$ n_{k+1} = 2^{n_k} + 1 $$
+            Vì $n_k \ge 3$, $n_{k+1}$ là một số nguyên dương lẻ.<br>
+            Ta cần chứng minh $n_{k+1} \mid 2^{n_{k+1}} + 1$.<br>
+            Vì $n_k \mid 2^{n_k} + 1$, tồn tại số nguyên lẻ $c$ sao cho $2^{n_k} + 1 = c n_k$, hay $n_{k+1} = c n_k$.<br>
+            Khi đó:
+            $$ 2^{n_{k+1}} + 1 = 2^{c n_k} + 1 = (2^{n_k})^c + 1 $$
+            Theo hằng đẳng thức cơ bản với $c$ là số lẻ, đa thức $(x^c + 1)$ luôn chia hết cho $(x + 1)$.<br>
+            Thay $x = 2^{n_k}$, ta có:
+            $$ (2^{n_k} + 1) \mid ((2^{n_k})^c + 1) \implies n_{k+1} \mid 2^{n_{k+1}} + 1 $$
+            Vì dãy $(n_k)$ tăng ngặt ($n_{k+1} &gt; n_k$), ta thu được vô số nghiệm thỏa mãn bài toán.
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Polish Mathematical Olympiad 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên tố $(p, q)$ sao cho $p^2 \mid 2^q - 1$ và $q \mid 2^p - 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ giả thiết $q \mid 2^p - 1$, áp dụng lập luận tương tự bài toán 4, ta có $\operatorname{ord}_q(2) = p \implies p \mid q - 1$.<br>
+            Từ hệ thức $p \mid q-1$, ta suy ra $p &lt; q$.<br>
+            Mặt khác, từ giả thiết $p^2 \mid 2^q - 1$, ta kéo theo hệ quả yếu hơn là $p \mid 2^q - 1$.<br>
+            Lập luận tương tự, $\operatorname{ord}_p(2) = q \implies q \mid p - 1$.<br>
+            Hệ thức $q \mid p-1$ dẫn đến $q &lt; p$.<br>
+            Sự đối kháng giữa hai hệ thức $p &lt; q$ và $q &lt; p$ tạo thành một mâu thuẫn tuyệt đối.<br>
+            Hệ điều kiện không có bất kỳ cặp nghiệm nguyên tố nào.
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (All-Russian Olympiad 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên tố $(p, q)$ thỏa mãn đồng thời $p \mid 5^q + 1$ và $q \mid 5^p + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Trường hợp 1: Nếu $p = 2$.<br>
+            Giả thiết thứ nhất $2 \mid 5^q + 1$ luôn đúng với mọi $q$.<br>
+            Giả thiết thứ hai $q \mid 5^2 + 1 = 26 \implies q \in \{2, 13\}$.<br>
+            Ta thu được hai nghiệm là $(2, 2)$ và $(2, 13)$. Do tính đối xứng, $(13, 2)$ cũng là nghiệm.<br><br>
+
+            Trường hợp 2: Cả $p$ và $q$ đều là các số nguyên tố lẻ. Giả sử $p \le q$.<br>
+            Từ $p \mid 5^q + 1 \implies p \mid 5^{2q} - 1$. Khi đó $\operatorname{ord}_p(5) \mid 2q$.<br>
+            Cấp không thể là ước của $q$ vì $5^q \equiv -1 \not\equiv 1 \pmod p$.<br>
+            Đồng thời, $\operatorname{ord}_p(5) \mid p - 1$. Do đó $\operatorname{ord}_p(5) \mid \gcd(2q, p-1)$.<br>
+            Vì $p \le q$, $p-1 &lt; q$, nên $\gcd(q, p-1) = 1$. Suy ra $\gcd(2q, p-1) = 2$.<br>
+            Vậy $\operatorname{ord}_p(5) \mid 2 \implies p \mid 5^2 - 1 = 24$.<br>
+            Do $p$ là số nguyên tố lẻ, giá trị duy nhất thỏa mãn là $p = 3$.<br>
+            Thay $p = 3$ vào giả thiết thứ hai: $q \mid 5^3 + 1 = 126 = 2 \cdot 3^2 \cdot 7$.<br>
+            Vì $q$ là số nguyên tố lẻ và $q \ge p = 3$, $q$ có thể là $3$ hoặc $7$.
+            <ul>
+                <li>Nếu $q = 3$, ta có nghiệm $(3, 3)$.</li>
+                <li>Nếu $q = 7$, kiểm tra giả thiết thứ nhất: $p = 3 \mid 5^7 + 1$. Vì $5 \equiv -1 \pmod 3$, $5^7 + 1 \equiv (-1)^7 + 1 = 0 \pmod 3$. Thỏa mãn.<br>
+                Do tính đối xứng, $(7, 3)$ cũng là một nghiệm.</li>
+            </ul>
+            Tập hợp tất cả các cặp nghiệm nguyên tố là: $(2, 2), (2, 13), (13, 2), (3, 3), (3, 7), (7, 3)$.
+        </div>
+
+    </div>
+</body>
+</html>

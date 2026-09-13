@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Bổ Đề Nâng Lũy Thừa (LTE)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh đậm/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ<br>BỔ ĐỀ NÂNG LŨY THỪA (LIFTING THE EXPONENT LEMMA) VÀ PHƯƠNG TRÌNH DIOPHANTINE MŨ</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát số mũ đúng (p-adic valuation) của một số nguyên là một công cụ trọng tâm trong Số học giải tích. Bổ đề nâng lũy thừa (Lifting The Exponent Lemma - LTE) thiết lập mối liên hệ trực tiếp giữa số mũ đúng của một hiệu (hoặc tổng) các lũy thừa với số mũ đúng của cơ số và số mũ tương ứng. Chuyên đề này phân tích cơ sở lý thuyết của Bổ đề LTE, kết hợp với các tính chất cấp của số nguyên modulo $p$, nhằm giải quyết triệt để các phương trình Diophantine mũ trong hệ thống các kỳ thi Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Số mũ đúng (p-adic valuation)</div>
+            <div class="box-body">
+                Cho $p$ là một số nguyên tố và $n$ là một số nguyên khác $0$. Số mũ đúng của $p$ trong phân tích ra thừa số nguyên tố của $n$, ký hiệu là $v_p(n)$, là số nguyên không âm $k$ lớn nhất sao cho $p^k \mid n$. Quy ước $v_p(0) = +\infty$.<br>
+                Các tính chất cơ bản: <br>
+                1. $v_p(ab) = v_p(a) + v_p(b)$.<br>
+                2. $v_p(a+b) \ge \min\{v_p(a), v_p(b)\}$, đẳng thức xảy ra khi $v_p(a) \neq v_p(b)$.
+            </div>
+        </div>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Bổ đề Nâng lũy thừa đối với số nguyên tố lẻ (LTE)</div>
+            <div class="box-body">
+                Cho $p$ là một số nguyên tố lẻ ($p &gt; 2$). Cho $x, y$ là các số nguyên sao cho $p \mid x-y$ nhưng $p \nmid x$ và $p \nmid y$. Khi đó, với mọi số nguyên dương $n$, ta có:
+                $$ v_p(x^n - y^n) = v_p(x-y) + v_p(n) $$
+                Hệ quả đối với tổng: Nếu $n$ là một số nguyên dương <strong>lẻ</strong> và $p \mid x+y$ (với $p \nmid x, p \nmid y$), thì:
+                $$ v_p(x^n + y^n) = v_p(x+y) + v_p(n) $$
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Chứng minh được thực hiện thông qua phương pháp quy nạp toán học. Ta biểu diễn $x^n - y^n = (x-y)(x^{n-1} + x^{n-2}y + \dots + y^{n-1})$. Bước cốt lõi là chứng minh $v_p(x^{n-1} + \dots + y^{n-1}) = v_p(n)$ khi đặt $x = y + pk$. Việc khai triển nhị thức Newton cho các số hạng $(y+pk)^m$ sẽ triệt tiêu các thành phần bậc cao của $p$, để lại duy nhất thành phần tuyến tính $n y^{n-1}$, từ đó xác lập đẳng thức định giá p-adic.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 2: Bổ đề Nâng lũy thừa đối với $p = 2$</div>
+            <div class="box-body">
+                Cho $x, y$ là hai số nguyên <strong>lẻ</strong> sao cho $4 \mid x-y$. Với mọi số nguyên dương $n$, ta có:
+                $$ v_2(x^n - y^n) = v_2(x-y) + v_2(n) $$
+                Trong trường hợp tổng quát, nếu $x, y$ lẻ và $n$ là một số nguyên dương <strong>chẵn</strong>, ta có hằng đẳng thức mở rộng:
+                $$ v_2(x^n - y^n) = v_2(x-y) + v_2(x+y) + v_2(n) - 1 $$
+            </div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Romanian National Olympiad 2005)</div>
+            <div class="box-body">
+                Chứng minh rằng phương trình $3^n = x^k + y^k$ không có nghiệm nguyên dương thỏa mãn đồng thời các điều kiện: $x &gt; 1, y &gt; 1, n \ge 1, k \ge 3$ là một số lẻ, và $\gcd(x,y)=1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại các số nguyên dương $x, y, n, k$ thỏa mãn toàn bộ điều kiện của bài toán.<br>
+            Vì $k$ là số nguyên dương lẻ, theo hằng đẳng thức đại số, đa thức $x^k + y^k$ phân tích được thành $(x+y)(x^{k-1} - x^{k-2}y + \dots + y^{k-1})$.<br>
+            Do đó, $x+y$ là một ước của $x^k+y^k = 3^n$. Hệ quả là $x+y = 3^m$ với $m$ là một số nguyên dương.<br>
+            Vì $x &gt; 1$ và $y &gt; 1$, ta có $x \ge 2, y \ge 2 \implies x+y \ge 4$.<br>
+            Giá trị lũy thừa của 3 nhỏ nhất vượt qua 4 là 9, nên $x+y \ge 9$, tương đương $m \ge 2$.<br>
+            Hơn nữa, vì $\gcd(x, y) = 1$ và $x+y = 3^m$, ta có $3 \nmid x$ và $3 \nmid y$.<br>
+            Áp dụng Bổ đề Nâng lũy thừa (Định lý 1) cho số nguyên tố $p=3$:
+            $$ v_3(x^k + y^k) = v_3(x+y) + v_3(k) $$
+            Thay $x^k+y^k = 3^n$ và $x+y = 3^m$ vào phương trình định giá:
+            $$ n = m + v_3(k) $$
+            Từ đẳng thức này, ta suy ra $3^n = 3^m \cdot 3^{v_3(k)}$. <br>
+            Mặt khác, $3^n = x^k + y^k = (x+y)(x^{k-1} - x^{k-2}y + \dots + y^{k-1})$.<br>
+            Do $x+y = 3^m$, đại lượng còn lại phải thỏa mãn:
+            $$ x^{k-1} - x^{k-2}y + \dots + y^{k-1} = 3^{n-m} = 3^{v_3(k)} $$
+            Ta sẽ tiến hành đánh giá đại lượng $x^k + y^k$ để chỉ ra sự mâu thuẫn với kích thước của $k$.<br>
+            Áp dụng bất đẳng thức trung bình lũy thừa (hoặc tính lồi của hàm $f(t) = t^k$ với $k \ge 3$):
+            $$ \frac{x^k+y^k}{2} \ge \left(\frac{x+y}{2}\right)^k \implies x^k+y^k \ge \frac{(x+y)^k}{2^{k-1}} $$
+            Suy ra:
+            $$ \frac{x^k+y^k}{x+y} \ge \frac{(x+y)^{k-1}}{2^{k-1}} $$
+            Vì $x+y \ge 9$, ta có $\frac{x^k+y^k}{x+y} \ge \left(\frac{9}{2}\right)^{k-1}$.<br>
+            Đối chiếu với kết quả đại số trước đó:
+            $$ 3^{v_3(k)} \ge \left(\frac{9}{2}\right)^{k-1} $$
+            Theo tính chất của định giá p-adic, $v_3(k) \le \log_3(k) \implies 3^{v_3(k)} \le k$.<br>
+            Kết hợp lại, ta thu được:
+            $$ k \ge \left(\frac{9}{2}\right)^{k-1} $$
+            Ta chứng minh bất đẳng thức $(9/2)^{k-1} &gt; k$ đúng với mọi số nguyên $k \ge 3$ bằng quy nạp.<br>
+            - Tại $k=3$: $(9/2)^2 = 81/4 = 20.25 &gt; 3$. Khẳng định đúng.<br>
+            - Giả sử đúng với $k$, xét $k+1$: $(9/2)^k = \frac{9}{2} \left(\frac{9}{2}\right)^{k-1} &gt; \frac{9}{2} k &gt; k+1$.<br>
+            Sự mâu thuẫn khắt khe giữa giới hạn dưới của đa thức và định giá p-adic chứng tỏ giả thiết phản chứng là sai. Phương trình không có nghiệm nguyên thỏa mãn.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Bulgarian National Olympiad 1997)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ sao cho $3^n - 1$ chia hết cho $2^n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Trường hợp 1: Nếu $n$ là số lẻ. Khi đó $3^n - 1 \equiv 3 - 1 \equiv 2 \pmod 4$.<br>
+            Do đó, $v_2(3^n - 1) = 1$. Điều kiện $2^n \mid 3^n - 1$ kéo theo $n \le v_2(3^n-1) = 1$. Ta thu được nghiệm $n=1$. Thử lại: $2^1 \mid 3^1 - 1$, hoàn toàn hợp lý.<br><br>
+
+            Trường hợp 2: Nếu $n$ là số chẵn. Đặt $n = 2k$ với $k \in \mathbb{Z}^+$.<br>
+            Áp dụng Bổ đề LTE cho $p=2$ (Định lý 2) đối với $x=3, y=1$:
+            $$ v_2(3^{2k} - 1^{2k}) = v_2(3-1) + v_2(3+1) + v_2(2k) - 1 = 1 + 2 + v_2(k) + 1 - 1 = v_2(k) + 3 $$
+            Chú ý rằng $v_2(k) = v_2(2k) - 1 = v_2(n) - 1$. Thay vào biểu thức trên:
+            $$ v_2(3^n - 1) = v_2(n) - 1 + 3 = v_2(n) + 2 $$
+            Điều kiện chia hết $2^n \mid 3^n - 1$ đòi hỏi:
+            $$ n \le v_2(3^n - 1) \implies n \le v_2(n) + 2 $$
+            Gọi $a = v_2(n)$, ta có phân tích $n = 2^a m$ với $m$ là số nguyên dương lẻ.<br>
+            Bất đẳng thức trở thành:
+            $$ 2^a m \le a + 2 $$
+            Xét các giá trị của $a$:
+            <ul>
+                <li>Nếu $a = 1$: $2m \le 3 \implies m=1 \implies n = 2^1 \cdot 1 = 2$. Thử lại $2^2 \mid 3^2 - 1 \implies 4 \mid 8$ (Đúng).</li>
+                <li>Nếu $a = 2$: $4m \le 4 \implies m=1 \implies n = 2^2 \cdot 1 = 4$. Thử lại $2^4 \mid 3^4 - 1 \implies 16 \mid 80$ (Đúng).</li>
+                <li>Nếu $a \ge 3$: Bằng quy nạp, dễ dàng chứng minh $2^a &gt; a+2$ với mọi $a \ge 3$. Bất đẳng thức vô nghiệm do $m \ge 1$.</li>
+            </ul>
+            Kết luận: Các giá trị $n$ thỏa mãn bài toán là $n \in \{1, 2, 4\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Irish Mathematical Olympiad 1996)</div>
+            <div class="box-body">
+                Cho $p$ là một số nguyên tố. Chứng minh rằng phương trình $2^p + 3^p = a^n$ không có nghiệm nguyên dương $a \ge 1, n \ge 2$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét $p=2$: Phương trình trở thành $2^2 + 3^2 = 13 = a^n$. Vì 13 là số nguyên tố, nó không thể được biểu diễn dưới dạng lũy thừa bậc $n \ge 2$ của một số nguyên. Trường hợp này vô nghiệm.<br>
+            Xét $p \ge 3$: Khi $p$ là số nguyên tố lẻ, đa thức $2^p + 3^p$ phân tích được và chia hết cho $2+3 = 5$.<br>
+            Vì $5 \mid 2^p + 3^p = a^n$, ta suy ra $5 \mid a$.<br>
+            Do $n \ge 2$, ta bắt buộc phải có $5^2 \mid a^n$, tức là $25 \mid 2^p + 3^p$.<br>
+            Áp dụng Bổ đề LTE cho $p=5$ (với điều kiện 5 lẻ, $p$ lẻ, $5 \nmid 2$, $5 \nmid 3$):
+            $$ v_5(3^p + 2^p) = v_5(3+2) + v_5(p) = 1 + v_5(p) $$
+            Để $25 \mid 2^p + 3^p$, ta cần $v_5(2^p+3^p) \ge 2$.<br>
+            Suy ra $1 + v_5(p) \ge 2 \implies v_5(p) \ge 1$.<br>
+            Vì $p$ là số nguyên tố, điều kiện $v_5(p) \ge 1$ chỉ xảy ra khi và chỉ khi $p = 5$.<br>
+            Kiểm tra trực tiếp với $p=5$:
+            $$ 2^5 + 3^5 = 32 + 243 = 275 $$
+            Phân tích ra thừa số nguyên tố: $275 = 25 \times 11 = 5^2 \times 11$.<br>
+            Giá trị $275$ không phải là lũy thừa bậc $n \ge 2$ của bất kỳ số nguyên nào (do số mũ của thừa số $11$ là $1$, không chia hết cho $n \ge 2$).<br>
+            Mâu thuẫn. Phương trình đã cho hoàn toàn vô nghiệm.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (All-Russian Olympiad 1996)</div>
+            <div class="box-body">
+                Chứng minh rằng nếu số nguyên dương $n$ thỏa mãn $n \mid 3^n - 2^n$ thì $n=1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại số nguyên dương $n &gt; 1$ thỏa mãn $n \mid 3^n - 2^n$.<br>
+            Vì $n &gt; 1$, gọi $p$ là ước nguyên tố nhỏ nhất của $n$. <br>
+            Từ giả thiết $p \mid n$ và $n \mid 3^n - 2^n$, ta có $p \mid 3^n - 2^n$, tương đương:
+            $$ 3^n \equiv 2^n \pmod p $$
+            Dễ thấy $p \neq 2$ và $p \neq 3$ vì nếu $p=2 \implies 2 \mid 3^n$, vô lý. Do đó $p &gt; 3$.<br>
+            Vì $p \nmid 2$, tồn tại nghịch đảo modulo $p$ của $2$. Nhân hai vế với $2^{-n}$, ta được:
+            $$ (3 \cdot 2^{-1})^n \equiv 1 \pmod p $$
+            Gọi $d$ là cấp (order) của phần tử $3 \cdot 2^{-1}$ modulo $p$, ký hiệu $d = \text{ord}_p(3 \cdot 2^{-1})$.<br>
+            Theo định nghĩa của cấp, ta có $d \mid n$.<br>
+            Theo Định lý Fermat nhỏ, $(3 \cdot 2^{-1})^{p-1} \equiv 1 \pmod p$, nên $d \mid p-1$.<br>
+            Do đó, $d$ chia hết ước chung lớn nhất của $n$ và $p-1$: $d \mid \gcd(n, p-1)$.<br>
+            Tuy nhiên, $p$ được định nghĩa là ước nguyên tố nhỏ nhất của $n$, điều này đồng nghĩa với việc $n$ không có bất kỳ ước nguyên tố nào nhỏ hơn hoặc bằng $p-1$.<br>
+            Suy ra $\gcd(n, p-1) = 1$. Kéo theo $d = 1$.<br>
+            Cấp bằng 1 nghĩa là:
+            $$ (3 \cdot 2^{-1})^1 \equiv 1 \pmod p \implies 3 \equiv 2 \pmod p \implies p \mid 3 - 2 = 1 $$
+            Điều này mâu thuẫn hoàn toàn với việc $p$ là một số nguyên tố. <br>
+            Giả thiết phản chứng sai. Chỉ có $n=1$ thỏa mãn bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Japan Mathematical Olympiad (JMO) 1990)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ sao cho $3^n \mid 2^n + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Điều kiện cần đầu tiên là $n$ phải là số lẻ. Thật vậy, nếu $n$ chẵn, $2^n + 1 \equiv (-1)^n + 1 \equiv 2 \pmod 3$, không chia hết cho 3, dẫn đến mâu thuẫn.<br>
+            Với $n$ lẻ, ta áp dụng Bổ đề LTE cho $p=3$ đối với biểu thức tổng:
+            $$ v_3(2^n + 1^n) = v_3(2+1) + v_3(n) = 1 + v_3(n) $$
+            Điều kiện chia hết $3^n \mid 2^n + 1$ đòi hỏi:
+            $$ n \le v_3(2^n + 1) \implies n \le 1 + v_3(n) $$
+            Gọi $a = v_3(n)$, phân tích $n = 3^a m$ với $m$ là số nguyên dương không chia hết cho 3.<br>
+            Bất đẳng thức trở thành:
+            $$ 3^a m \le a + 1 $$
+            Xét các giá trị của $a$:
+            <ul>
+                <li>Nếu $a = 0$: $m \le 1 \implies m=1 \implies n = 1$. Thử lại $3^1 \mid 2^1 + 1 \implies 3 \mid 3$ (Đúng).</li>
+                <li>Nếu $a \ge 1$: $3^a m \ge 3^a &gt; a + 1$ (chứng minh bằng quy nạp cơ bản với mọi $a \ge 1$). Bất đẳng thức vô nghiệm.</li>
+            </ul>
+            Vậy giá trị duy nhất thỏa mãn là $n=1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Austrian National Olympiad 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ sao cho $n^2 \mid 2^n + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Rõ ràng $n=1$ là một nghiệm. Giả sử $n &gt; 1$.<br>
+            Gọi $p$ là ước nguyên tố nhỏ nhất của $n$. <br>
+            Từ $p \mid n^2 \implies p \mid 2^n + 1 \implies p \mid 2^{2n} - 1$.<br>
+            Theo định lý Fermat nhỏ, $p \mid 2^{p-1} - 1$.<br>
+            Do đó, $\text{ord}_p(2)$ chia hết $\gcd(2n, p-1)$.<br>
+            Vì $p$ là ước nguyên tố nhỏ nhất của $n$, $\gcd(n, p-1) = 1$. Suy ra $\gcd(2n, p-1) \mid 2$.<br>
+            Vậy $\text{ord}_p(2) \mid 2$. <br>
+            Nếu $\text{ord}_p(2) = 1$, $p \mid 1$ (Vô lý).<br>
+            Nếu $\text{ord}_p(2) = 2$, $p \mid 2^2 - 1 = 3 \implies p=3$.<br>
+            Vậy ước nguyên tố nhỏ nhất của $n$ bắt buộc phải là 3. Đặt $n = 3^a m$ với $a \ge 1$ và $3 \nmid m$.<br>
+            Do $n$ lẻ (vì $2^n+1$ lẻ), $m$ phải là số lẻ.<br>
+            Áp dụng LTE cho $p=3$:
+            $$ v_3(2^n + 1) = v_3(2+1) + v_3(n) = 1 + a $$
+            Điều kiện $n^2 \mid 2^n + 1$ kéo theo $v_3(n^2) \le v_3(2^n + 1) \implies 2a \le 1 + a \implies a \le 1$.<br>
+            Vì $a \ge 1$, ta có $a = 1$. Suy ra $n = 3m$.<br>
+            Điều kiện chia hết trở thành: $9m^2 \mid 2^{3m} + 1 = 8^m + 1$.<br>
+            Giả sử $m &gt; 1$. Gọi $q$ là ước nguyên tố nhỏ nhất của $m$.<br>
+            Tương tự lập luận trên, $q \mid 8^m + 1 \implies q \mid 8^{2m} - 1 = 2^{6m} - 1$.<br>
+            Và $q \mid 2^{q-1} - 1$. Ta có $\text{ord}_q(2) \mid \gcd(6m, q-1)$.<br>
+            Vì $q$ là ước nguyên tố nhỏ nhất của $m$, $\gcd(m, q-1) = 1$. Suy ra $\text{ord}_q(2) \mid 6$.<br>
+            Các tập ước của 6 là $1, 2, 3, 6$.<br>
+            $2^1 - 1 = 1$, $2^2 - 1 = 3$, $2^3 - 1 = 7$, $2^6 - 1 = 63 = 9 \times 7$.<br>
+            Các ước nguyên tố phân biệt phát sinh từ cấp $\le 6$ là 3 và 7.<br>
+            Vì $q &gt; 3$ (do $p=3$ là nhỏ nhất và $3 \nmid m$), ta bắt buộc có $q = 7$.<br>
+            Nhưng $8 \equiv 1 \pmod 7$, suy ra $8^m + 1 \equiv 1^m + 1 \equiv 2 \pmod 7$.<br>
+            Số 7 tuyệt đối không thể là ước của $8^m + 1$.<br>
+            Sự mâu thuẫn này chứng tỏ $m$ không thể có bất kỳ ước nguyên tố nào. Vậy $m=1$.<br>
+            Suy ra $n = 3 \cdot 1 = 3$. Thử lại $3^2 \mid 2^3 + 1 \implies 9 \mid 9$ (Đúng).<br>
+            Tập nghiệm là $n \in \{1, 3\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Greek Mathematical Olympiad 1996)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên tố $p$ sao cho $p \mid 2^p + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Theo Định lý Fermat nhỏ, với mọi số nguyên tố $p$, ta luôn có hằng đẳng thức đồng dư:
+            $$ 2^p \equiv 2 \pmod p $$
+            Cộng 1 vào cả hai vế:
+            $$ 2^p + 1 \equiv 2 + 1 \equiv 3 \pmod p $$
+            Theo giả thiết $p \mid 2^p + 1$, ta có $2^p + 1 \equiv 0 \pmod p$.<br>
+            Đồng nhất hai kết quả:
+            $$ 3 \equiv 0 \pmod p \implies p \mid 3 $$
+            Vì $p$ là số nguyên tố, giá trị duy nhất thỏa mãn là $p = 3$.<br>
+            Thử lại với $p=3$: $2^3 + 1 = 9$, chia hết cho 3. Nghiệm được xác nhận.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (United States of America Mathematical Olympiad (USAMO) 1998)</div>
+            <div class="box-body">
+                Tìm tất cả số nguyên dương $n$ sao cho $5^n \mid 2^n + 3^n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát tính chẵn lẻ của $n$.<br>
+            Nếu $n$ là số chẵn, $n = 2k$. <br>
+            Theo modulo 5, ta có $2^{2k} + 3^{2k} \equiv 4^k + 9^k \equiv 4^k + (-1)^k \pmod 5$.<br>
+            Do $4 \equiv -1 \pmod 5$, biểu thức trên đồng dư với $(-1)^k + (-1)^k \pmod 5$.<br>
+            Đại lượng này nhận giá trị $2$ hoặc $-2$, tuyệt đối không chia hết cho 5.<br>
+            Vậy $n$ bắt buộc phải là số lẻ.<br>
+            Áp dụng Bổ đề LTE cho $p=5$ (vì $5 \mid 2+3$ và 5 là số nguyên tố lẻ):
+            $$ v_5(2^n + 3^n) = v_5(2+3) + v_5(n) = 1 + v_5(n) $$
+            Điều kiện chia hết $5^n \mid 2^n + 3^n$ thiết lập giới hạn:
+            $$ n \le v_5(2^n + 3^n) \implies n \le 1 + v_5(n) $$
+            Ký hiệu $a = v_5(n)$, phân tích $n = 5^a m$. Ta có:
+            $$ 5^a m \le a + 1 $$
+            Với $a \ge 1$, bất đẳng thức $5^a &gt; a+1$ luôn đúng, dẫn đến vô nghiệm.<br>
+            Vậy $a = 0$. Suy ra $m \le 1 \implies m = 1$.<br>
+            Kết quả $n = 5^0 \cdot 1 = 1$.<br>
+            Thử lại: $5^1 \mid 2^1 + 3^1 \implies 5 \mid 5$ (Đúng).<br>
+            Nghiệm duy nhất là $n=1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Spanish Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng không tồn tại số nguyên dương $n &gt; 1$ nào thỏa mãn điều kiện chia hết $n \mid 2^n - 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại số nguyên $n &gt; 1$ thỏa mãn $n \mid 2^n - 1$.<br>
+            Gọi $p$ là ước nguyên tố nhỏ nhất của $n$. <br>
+            Từ giả thiết, ta có $p \mid 2^n - 1$, hay $2^n \equiv 1 \pmod p$.<br>
+            Gọi $d$ là cấp của 2 modulo $p$: $d = \text{ord}_p(2)$.<br>
+            Tính chất của cấp ngụ ý rằng $d \mid n$.<br>
+            Mặt khác, Định lý Fermat nhỏ cho biết $2^{p-1} \equiv 1 \pmod p$ (vì $p \neq 2$ do $2^n - 1$ là số lẻ), suy ra $d \mid p-1$.<br>
+            Tổng hợp lại, $d \mid \gcd(n, p-1)$.<br>
+            Theo định nghĩa, $p$ là ước nguyên tố nhỏ nhất của $n$, do đó $n$ không có ước số chung nào lớn hơn 1 với tập hợp các số nhỏ hơn $p$. <br>
+            Cụ thể, $\gcd(n, p-1) = 1$.<br>
+            Từ đó ta bắt buộc phải có $d = 1$.<br>
+            Cấp bằng 1 nghĩa là:
+            $$ 2^1 \equiv 1 \pmod p \implies p \mid 1 $$
+            Điều này mâu thuẫn hoàn toàn với việc $p$ là số nguyên tố. <br>
+            Sự mâu thuẫn này chứng tỏ không tồn tại bất kỳ số nguyên $n &gt; 1$ nào thỏa mãn bài toán. Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Tổ hợp Cực trị và Xác suất - Phương pháp Xác suất và Tính tuyến tính của Kỳ vọng</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TỔ HỢP CỰC TRỊ VÀ XÁC SUẤT <br> PHƯƠNG PHÁP XÁC SUẤT VÀ TÍNH TUYẾN TÍNH CỦA KỲ VỌNG</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Phương pháp Xác suất (The Probabilistic Method) giải quyết vấn đề chứng minh sự tồn tại của một cấu trúc bằng một nguyên lý cơ bản: "Nếu xác suất để chọn ngẫu nhiên được một cấu trúc là lớn hơn 0, thì cấu trúc đó chắc chắn tồn tại". Chuyên đề này hình thức hóa Biến ngẫu nhiên và Tính tuyến tính của Kỳ vọng, đưa các bài toán đếm về các phép cộng xác suất rời rạc, cung cấp công cụ đánh giá cực trị trong Lý thuyết Đồ thị và Hệ tập hợp.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Phương pháp xác suất trong tổ hợp sử dụng các khái niệm mở rộng từ chương trình xác suất của THPT. Để hiểu rõ các phép chứng minh dưới đây, ta cần nắm vững ý tưởng về Kỳ vọng và Biến chỉ thị:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Kỳ vọng và Biến chỉ thị)</div>
+        <ul>
+            <li><strong>Kỳ vọng (Expected Value):</strong> Là giá trị trung bình đạt được của một đại lượng ngẫu nhiên. Ký hiệu là $\mathbb{E}[X]$.</li>
+            <li><strong>Biến chỉ thị (Indicator Variable):</strong> Để đếm số lượng các đối tượng thỏa mãn một tính chất, ta gán cho mỗi đối tượng một biến $I$. Nếu đối tượng thỏa mãn, $I = 1$; nếu không, $I = 0$. <br>
+            Khi đó, $\mathbb{E}[I] = 1 \cdot P(\text{thỏa mãn}) + 0 \cdot P(\text{không thỏa mãn}) = P(\text{thỏa mãn})$.<br>
+            Việc đếm tổng số đối tượng trở thành việc tính tổng các biến chỉ thị: $X = \sum I_i$, suy ra $\mathbb{E}[X] = \sum \mathbb{E}[I_i] = \sum P(I_i = 1)$. Đây là kỹ thuật chuyển đổi từ bài toán Đếm sang bài toán Tính xác suất.</li>
+        </ul>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Không gian Xác suất, Biến ngẫu nhiên và Biến chỉ thị)</div>
+        <ul>
+            <li> <strong>Không gian xác suất rời rạc:</strong> Là một tập hợp hữu hạn các kết quả có thể xảy ra $\Omega = \{w_1, w_2, \dots, w_k\}$, mỗi kết quả $w_i$ đi kèm với một xác suất $P(w_i) \in [0, 1]$ sao cho $\sum P(w_i) = 1$.</li>
+            <li> <strong>Biến ngẫu nhiên (Random Variable) $X$:</strong> Là một hàm ánh xạ mỗi kết quả $w \in \Omega$ thành một số thực. $X: \Omega \to \mathbb{R}$.</li>
+            <li> <strong>Kỳ vọng toán học (Expected Value) $\mathbb{E}[X]$:</strong> Là giá trị trung bình theo trọng số xác suất của biến $X$, được tính bằng: 
+            $$ \mathbb{E}[X] = \sum_{w \in \Omega} X(w) \cdot P(w) $$</li>
+            <li> <strong>Biến chỉ thị (Indicator Variable) $I_A$:</strong> Cho một biến cố $A \subseteq \Omega$. Biến chỉ thị $I_A$ nhận giá trị $1$ nếu biến cố $A$ xảy ra, và nhận giá trị $0$ nếu $A$ không xảy ra.<br>
+            Tính chất cốt lõi: $\mathbb{E}[I_A] = 1 \cdot P(A) + 0 \cdot P(A^c) = P(A)$.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Tính tuyến tính của Kỳ vọng - Linearity of Expectation)</div>
+        Cho $X$ và $Y$ là hai biến ngẫu nhiên bất kỳ trên cùng một không gian xác suất. Kỳ vọng của tổng luôn bằng tổng các kỳ vọng, <strong>cho dù hai biến này có phụ thuộc vào nhau hay không</strong>:
+        $$ \mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y] $$
+        Tổng quát: Với mọi hằng số $c_i$ và biến ngẫu nhiên $X_i$: $\mathbb{E}\left[\sum c_i X_i\right] = \sum c_i \mathbb{E}[X_i]$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Tính chất này không yêu cầu sự độc lập của các biến. Ta chứng minh từ định nghĩa cơ sở:</p>
+        $$ \mathbb{E}[X + Y] = \sum_{w \in \Omega} (X(w) + Y(w)) \cdot P(w) $$
+        <p>Áp dụng tính chất phân phối của phép nhân đối với phép cộng:</p>
+        $$ \mathbb{E}[X + Y] = \sum_{w \in \Omega} \left( X(w) \cdot P(w) + Y(w) \cdot P(w) \right) $$
+        <p>Vì tổng hữu hạn có tính chất giao hoán và kết hợp, ta tách thành hai tổng riêng biệt:</p>
+        $$ \mathbb{E}[X + Y] = \sum_{w \in \Omega} X(w) \cdot P(w) + \sum_{w \in \Omega} Y(w) \cdot P(w) $$
+        <p>Theo đúng định nghĩa, hai tổng này lần lượt chính là kỳ vọng của $X$ và $Y$:</p>
+        $$ \mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y] $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Nguyên lý Tồn tại qua Kỳ vọng - Existence via Expectation)</div>
+        Cho $X$ là một biến ngẫu nhiên trên không gian xác suất. Nếu $\mathbb{E}[X] = \mu$, thì <strong>phải tồn tại</strong> ít nhất một kết quả $w_1 \in \Omega$ sao cho $X(w_1) \ge \mu$, và cũng tồn tại ít nhất một kết quả $w_2 \in \Omega$ sao cho $X(w_2) \le \mu$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phản chứng. <br>
+        Giả sử không tồn tại kết quả nào làm cho $X(w) \ge \mu$. Điều này có nghĩa là với <strong>mọi</strong> kết quả $w \in \Omega$, ta luôn có $X(w) \lt \mu$.<br>
+        Tính kỳ vọng $\mathbb{E}[X]$ dựa trên giả thiết này:</p>
+        $$ \mathbb{E}[X] = \sum_{w \in \Omega} X(w) \cdot P(w) $$
+        <p>Do $P(w) \ge 0$ và có ít nhất một $P(w) \gt 0$, đồng thời $X(w) \lt \mu$, ta thiết lập được bất đẳng thức ngặt:</p>
+        $$ \mathbb{E}[X] < \sum_{w \in \Omega} \mu \cdot P(w) = \mu \sum_{w \in \Omega} P(w) $$
+        <p>Vì tổng xác suất của toàn bộ không gian luôn bằng 1 ($\sum P(w) = 1$), ta thu được:</p>
+        $$ \mathbb{E}[X] < \mu \cdot 1 = \mu $$
+        <p>Điều này mâu thuẫn với giả thiết ban đầu $\mathbb{E}[X] = \mu$.<br>
+        Sự mâu thuẫn chứng minh rằng bắt buộc phải tồn tại một trạng thái $w_1$ sao cho $X(w_1) \ge \mu$. Tương tự (bằng cách xét giả thiết $X(w) \gt \mu \forall w$), ta chứng minh được sự tồn tại của $w_2$ sao cho $X(w_2) \le \mu$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Phân đôi Đồ thị bằng Lựa chọn ngẫu nhiên)</div>
+        Mọi đồ thị vô hướng $G = (V, E)$ không có khuyên đều chứa một đồ thị con hai phía (Bipartite subgraph) chứa ít nhất một nửa số cạnh của đồ thị gốc. Nói cách khác, luôn có thể chia tập đỉnh $V$ thành hai tập rời nhau $A$ và $B$ sao cho số lượng cạnh có một đầu mút thuộc $A$ và một đầu mút thuộc $B$ lớn hơn hoặc bằng $|E| / 2$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sẽ sử dụng <strong>Phương pháp Xác suất</strong>.</p>
+
+        <p>Ta tiến hành phân chia các đỉnh vào hai tập $A$ và $B$ một cách <strong>ngẫu nhiên và độc lập</strong>.<br>
+        Với mỗi đỉnh $v \in V$, ta gán xác suất:</p>
+        <ul>
+            <li>Xác suất $1/2$: Gán $v$ vào tập $A$.</li>
+            <li>Xác suất $1/2$: Gán $v$ vào tập $B$.</li>
+        </ul>
+
+        <p>Ký hiệu biến ngẫu nhiên $X$ là số lượng các cạnh "nối chéo" (bị cắt ngang) giữa tập $A$ và tập $B$. Ta cần đánh giá kỳ vọng $\mathbb{E}[X]$.<br>
+        Ta rã biến $X$ thành tổng các Biến chỉ thị trên từng cạnh.<br>
+        Với mỗi cạnh $e \in E$, gọi $I_e$ là biến chỉ thị:</p>
+        <ul>
+            <li>$I_e = 1$ nếu cạnh $e$ có một đầu thuộc $A$ và một đầu thuộc $B$.</li>
+            <li>$I_e = 0$ nếu cạnh $e$ có cả hai đầu cùng thuộc $A$ hoặc cùng thuộc $B$.</li>
+        </ul>
+        <p>Tổng số lượng cạnh chéo là tổng của tất cả các biến chỉ thị:</p>
+        $$ X = \sum_{e \in E} I_e $$
+        <p>Áp dụng <strong>Tính tuyến tính của Kỳ vọng (Định lý 1.1)</strong>:</p>
+        $$ \mathbb{E}[X] = \mathbb{E}\left[ \sum_{e \in E} I_e \right] = \sum_{e \in E} \mathbb{E}[I_e] $$
+        <p>Ta tính $\mathbb{E}[I_e]$. Theo Định nghĩa 1.1, $\mathbb{E}[I_e] = P(I_e = 1)$.<br>
+        Giả sử cạnh $e$ nối hai đỉnh $u$ và $v$. Cạnh $e$ bị cắt khi và chỉ khi $u$ và $v$ được gán vào hai tập khác nhau.<br>
+        Có tất cả $2 \times 2 = 4$ cách gán cho cặp $(u, v)$ (cùng $A$, cùng $B$, $u \in A, v \in B$, và $u \in B, v \in A$).<br>
+        Vì việc gán là độc lập và đồng khả năng, mỗi trạng thái có xác suất $1/4$.<br>
+        Có $2$ trạng thái làm cho $u, v$ khác tập. Do đó, xác suất để cạnh $e$ bị cắt là:</p>
+        $$ P(I_e = 1) = \frac{2}{4} = \frac{1}{2} $$
+        <p>Thay vào tổng kỳ vọng:</p>
+        $$ \mathbb{E}[X] = \sum_{e \in E} \frac{1}{2} = \frac{|E|}{2} $$
+        <p>Kỳ vọng của số lượng cạnh nối chéo là một nửa tổng số cạnh.<br>
+        Theo <strong>Nguyên lý Tồn tại (Định lý 1.2)</strong>, nếu kỳ vọng là $|E|/2$, thì bắt buộc phải tồn tại ít nhất một cách phân chia cụ thể các đỉnh sao cho số cạnh chéo $\ge |E|/2$.<br>
+        Định lý được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (All-Russian Olympiad - Định lý Szele về Đường đi Hamilton trong Giải đấu)</div>
+        Một "Giải đấu" (Tournament) là một đồ thị có hướng trong đó giữa bất kỳ hai đỉnh phân biệt nào cũng có đúng một cạnh có hướng. Đường đi Hamilton là một đường đi có hướng đi qua tất cả $n$ đỉnh của đồ thị, mỗi đỉnh đúng một lần.<br>
+        Chứng minh rằng, với mọi $n \ge 3$, tồn tại một giải đấu có $n$ đỉnh chứa ít nhất $\frac{n!}{2^{n-1}}$ đường đi Hamilton phân biệt.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán yêu cầu tìm một cấu hình đồ thị cụ thể có số lượng đường đi lớn. Ta áp dụng Phương pháp Xác suất.</p>
+
+        <p>Xét một tập hợp gồm $n$ đỉnh cố định. Ta tạo ra một giải đấu ngẫu nhiên bằng cách: Với mỗi cặp đỉnh $\{u, v\}$, ta gán hướng của cạnh bằng xác suất:</p>
+        <ul>
+            <li>Xác suất $1/2$: Cạnh hướng từ $u \to v$.</li>
+            <li>Xác suất $1/2$: Cạnh hướng từ $v \to u$.</li>
+        </ul>
+        <p>Mọi cặp đỉnh đều được quyết định độc lập. Có $2^{\binom{n}{2}}$ giải đấu có thể tạo ra, tất cả đều đồng khả năng.</p>
+
+        <p>Có tất cả $n!$ hoán vị của $n$ đỉnh. Ký hiệu tập các hoán vị là $S_n$. <br>
+        Mỗi hoán vị $\pi = (v_1, v_2, \dots, v_n)$ tương ứng với một "ứng cử viên" cho đường đi Hamilton.<br>
+        Gọi $X$ là biến ngẫu nhiên đếm tổng số lượng đường đi Hamilton trong giải đấu được tạo ra.<br>
+        Với mỗi hoán vị $\pi \in S_n$, ta định nghĩa biến chỉ thị $I_\pi$:</p>
+        <ul>
+            <li>$I_\pi = 1$ nếu $\pi$ thực sự là một đường đi hợp lệ trong giải đấu (tất cả các cạnh đều hướng từ $v_i \to v_{i+1}$).</li>
+            <li>$I_\pi = 0$ nếu ngược lại.</li>
+        </ul>
+        <p>Tổng số đường đi Hamilton là $X = \sum_{\pi \in S_n} I_\pi$.<br>
+        Áp dụng Tính tuyến tính của Kỳ vọng:</p>
+        $$ \mathbb{E}[X] = \sum_{\pi \in S_n} \mathbb{E}[I_\pi] = \sum_{\pi \in S_n} P(I_\pi = 1) $$
+        <p>Ta tính xác suất để một hoán vị $\pi = (v_1, v_2, \dots, v_n)$ trở thành đường đi hợp lệ.<br>
+        Điều này xảy ra khi và chỉ khi $n-1$ cạnh liên tiếp: $(v_1, v_2), (v_2, v_3), \dots, (v_{n-1}, v_n)$ đều có hướng từ trái sang phải.<br>
+        Vì hướng của các cạnh được quyết định độc lập, xác suất để một cạnh có hướng đúng là $1/2$.<br>
+        Xác suất để cả $n-1$ cạnh độc lập này cùng có hướng đúng là:</p>
+        $$ P(I_\pi = 1) = \left( \frac{1}{2} \right)^{n-1} = \frac{1}{2^{n-1}} $$
+        <p>Vì có tổng cộng $n!$ hoán vị, ta cộng dồn kỳ vọng:</p>
+        $$ \mathbb{E}[X] = \sum_{\pi \in S_n} \frac{1}{2^{n-1}} = \frac{n!}{2^{n-1}} $$
+        <p>Vì kỳ vọng của số lượng đường đi Hamilton trên tất cả các giải đấu ngẫu nhiên là $\frac{n!}{2^{n-1}}$, theo Nguyên lý Tồn tại (Định lý 1.2), bắt buộc phải có ít nhất một giải đấu cụ thể sở hữu số lượng đường đi $\ge \frac{n!}{2^{n-1}}$.<br>
+        Định lý Szele được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Chinese Mathematical Olympiad (CMO) - Định lý Caro-Wei về Tập Độc Lập)</div>
+        Trong một đồ thị vô hướng $G = (V, E)$, một "Tập độc lập" (Independent Set) là một tập hợp các đỉnh sao cho không có bất kỳ hai đỉnh nào kề nhau. Gọi $d_v$ là bậc (số lượng đỉnh kề) của đỉnh $v$. <br>
+        Sử dụng phương pháp xác suất, chứng minh rằng đồ thị $G$ luôn chứa một Tập độc lập có kích thước lớn hơn hoặc bằng:
+        $$ \sum_{v \in V} \frac{1}{d_v + 1} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét một hoán vị ngẫu nhiên (thứ tự duyệt) của tất cả $|V|$ đỉnh của đồ thị. <br>
+        Gọi $S$ là tập hợp các đỉnh được chọn bởi quy tắc sau: Một đỉnh $v$ sẽ được đưa vào $S$ <strong>khi và chỉ khi</strong> nó xuất hiện <strong>trước</strong> tất cả $d_v$ đỉnh kề của nó trong hoán vị ngẫu nhiên.</p>
+        
+        <p><strong>Khẳng định:</strong> Tập $S$ chắc chắn là một Tập độc lập.<br>
+        <em>Chứng minh:</em> Giả sử phản chứng $S$ không độc lập, tức là có hai đỉnh kề nhau $u$ và $v$ cùng thuộc $S$. Trong hoán vị, một đỉnh phải đứng trước đỉnh kia. Không mất tính tổng quát, giả sử $u$ đứng trước $v$. <br>
+        Nhưng vì $u$ kề với $v$, việc $u$ đứng trước $v$ có nghĩa là $v$ đã đứng <strong>sau</strong> một đỉnh kề của nó (là $u$). Theo quy tắc, $v$ không thể được chọn vào $S$. Mâu thuẫn! Vậy $S$ độc lập.</p>
+
+        <p>Bây giờ ta tính kỳ vọng kích thước của tập $S$.<br>
+        Gọi $I_v$ là biến chỉ thị cho biến cố đỉnh $v$ được chọn vào $S$ ($I_v = 1$ nếu chọn, $0$ nếu không).<br>
+        Kích thước của $S$ là $X = \sum_{v \in V} I_v$.<br>
+        Theo Tính tuyến tính của Kỳ vọng:</p>
+        $$ \mathbb{E}[X] = \sum_{v \in V} P(v \in S) $$
+        <p>Xác suất để $v \in S$ được tính như sau: Đỉnh $v$ được chọn khi và chỉ khi nó đứng đầu tiên trong số $d_v + 1$ đỉnh (gồm chính nó và $d_v$ đỉnh kề).<br>
+        Bởi vì hoán vị là hoàn toàn ngẫu nhiên, cơ hội để đỉnh $v$ được xếp ở vị trí đầu tiên trong nhóm $d_v + 1$ người này là hoàn toàn công bằng, tức là:</p>
+        $$ P(v \in S) = \frac{1}{d_v + 1} $$
+        <p>Thay vào tổng kỳ vọng:</p>
+        $$ \mathbb{E}[X] = \sum_{v \in V} \frac{1}{d_v + 1} $$
+        <p>Vì kỳ vọng kích thước của tập độc lập sinh bởi thuật toán ngẫu nhiên này là tổng trên, theo Định lý Tồn tại, bắt buộc phải có ít nhất một hoán vị cụ thể sinh ra một Tập độc lập có kích thước $\ge \sum \frac{1}{d_v + 1}$. Định lý Caro-Wei được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Brazil National Olympiad (OBM) - Tô màu Hệ tập hợp / Định lý Erdos Property B)</div>
+        Cho một họ $\mathcal{F}$ gồm $k$ tập hợp phân biệt. Biết rằng mỗi tập hợp trong $\mathcal{F}$ đều chứa đúng $n$ phần tử. (Các tập hợp có thể giao nhau tùy ý).<br>
+        Chứng minh rằng, nếu $k < 2^{n-1}$, thì ta luôn có thể tô màu tất cả các phần tử (nằm trong hợp của các tập này) bằng 2 màu (Đỏ và Xanh) sao cho: <strong>Không có bất kỳ tập hợp nào trong $\mathcal{F}$ bị đơn sắc</strong> (tức là mọi tập hợp đều chứa ít nhất 1 phần tử Đỏ và 1 phần tử Xanh).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta có họ $\mathcal{F} = \{A_1, A_2, \dots, A_k\}$, với $|A_i| = n$.<br>
+        Ta sẽ tiến hành tô màu ngẫu nhiên. Với mỗi phần tử $x \in \bigcup_{i=1}^k A_i$, ta thực hiện gán màu độc lập:</p>
+        <ul>
+            <li>Xác suất $1/2$: Tô màu Đỏ.</li>
+            <li>Xác suất $1/2$: Tô màu Xanh.</li>
+        </ul>
+
+        <p>Gọi $E_i$ là biến cố "Tập hợp $A_i$ bị đơn sắc" (tức là toàn bộ $n$ phần tử của $A_i$ đều màu Đỏ, hoặc toàn bộ đều màu Xanh).<br>
+        Vì các phần tử được tô màu độc lập:<br>
+        Xác suất để toàn bộ $A_i$ màu Đỏ là $(1/2)^n$.<br>
+        Xác suất để toàn bộ $A_i$ màu Xanh là $(1/2)^n$.<br>
+        Hai trường hợp này rời nhau, nên xác suất để $A_i$ bị đơn sắc là:</p>
+        $$ P(E_i) = \left( \frac{1}{2} \right)^n + \left( \frac{1}{2} \right)^n = \frac{2}{2^n} = \frac{1}{2^{n-1}} $$
+        <p>Ta quan tâm đến biến cố "Tồn tại ít nhất một tập hợp bị đơn sắc", tức là biến cố hợp $E = \bigcup_{i=1}^k E_i$.<br>
+        Sử dụng <strong>Bất đẳng thức Boole (Union Bound)</strong>: Xác suất của biến cố hợp luôn nhỏ hơn hoặc bằng tổng xác suất của các biến cố thành phần:</p>
+        $$ P(E) = P\left( \bigcup_{i=1}^k E_i \right) \le \sum_{i=1}^k P(E_i) $$
+        <p>Thay $P(E_i) = \frac{1}{2^{n-1}}$ vào:</p>
+        $$ P(E) \le \sum_{i=1}^k \frac{1}{2^{n-1}} = k \cdot \frac{1}{2^{n-1}} = \frac{k}{2^{n-1}} $$
+        <p>Theo giả thiết của bài toán, ta có $k \lt 2^{n-1}$.<br>
+        Kéo theo:</p>
+        $$ P(E) \le \frac{k}{2^{n-1}} < 1 $$
+        <p>Điều này có nghĩa là xác suất để việc tô màu ngẫu nhiên <strong>thất bại</strong> (tạo ra tập đơn sắc) là <strong>nhỏ hơn 1</strong>.<br>
+        Hệ quả là: Xác suất để việc tô màu ngẫu nhiên <strong>thành công</strong> (tất cả các tập đều có 2 màu, tức là biến cố đối $E^c$) bằng $1 - P(E) \gt 0$.<br>
+        Bởi vì xác suất để có một cách tô màu thành công là lớn hơn 0, nên <strong>chắc chắn phải tồn tại</strong> ít nhất một cách tô màu như vậy trong thực tế.<br>
+        Phương pháp xác suất cho phép chứng minh sự tồn tại mà không phụ thuộc vào cấu trúc giao cắt cụ thể của các tập hợp.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

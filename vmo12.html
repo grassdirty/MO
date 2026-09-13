@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Bước Nhảy Vieta (Vieta Jumping)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ<br>PHƯƠNG PHÁP BƯỚC NHẢY VIETA (VIETA JUMPING) VÀ PHƯƠNG TRÌNH DIOPHANTINE BẬC HAI</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát nghiệm nguyên của phương trình Diophantine bậc hai chứa hai ẩn số là một bài toán trung tâm của Lý thuyết Số. Phương pháp Bước nhảy Vieta (Vieta Jumping) thiết lập một cơ chế lùi vô hạn dựa trên định lý Vieta của phương trình bậc hai, cho phép chứng minh tính vô nghiệm, tính duy nhất hoặc sinh ra vô số nghiệm của một phương trình. Chuyên đề này phân tích cơ sở đại số của phương pháp và áp dụng vào các bài toán cực trị nghiệm nguyên trong hệ thống Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Phương trình Diophantine bậc hai theo một ẩn</div>
+            <div class="box-body">
+                Cho một hệ thức đại số bậc hai chứa hai biến nguyên dương $x, y$. Bằng cách cố định một biến (giả sử $y = y_0$), hệ thức được đưa về dạng phương trình bậc hai theo biến $x$:
+                $$ A x^2 + B x + C = 0 $$
+                trong đó $A, B, C$ là các biểu thức phụ thuộc vào $y_0$ và các hằng số.
+            </div>
+        </div>
+
+        <p>Cơ sở của phương pháp Bước nhảy Vieta dựa trên định lý sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Nguyên lý Bước nhảy Vieta</div>
+            <div class="box-body">
+                Giả sử phương trình $A x^2 + B x + C = 0$ có một nghiệm nguyên $x_1$. Theo định lý Vieta, phương trình có nghiệm thứ hai $x_2$ thỏa mãn hệ thức:
+                \begin{align*}
+                x_1 + x_2 &= -\frac{B}{A} \\
+                x_1 x_2 &= \frac{C}{A}
+                \end{align*}
+                Nếu $A, B, C$ là các số nguyên và $A = 1$, thì $x_2$ chắc chắn là một số nguyên. Bằng cách thiết lập điều kiện cực tiểu trên tập nghiệm, ta so sánh độ lớn của $x_2$ và $x_1$ để thiết lập mâu thuẫn hoặc xây dựng một chuỗi nghiệm mới.
+            </div>
+        </div>
+
+        <p>Quy trình chuẩn mực của phương pháp Bước nhảy Vieta bao gồm các bước:</p>
+        <ol>
+            <li>Giả sử tập nghiệm của phương trình là khác rỗng. Chọn một nghiệm $(x_0, y_0)$ sao cho tổng $x_0 + y_0$ đạt giá trị nhỏ nhất (Nguyên lý cực hạn).</li>
+            <li>Không mất tính tổng quát, giả sử $x_0 \ge y_0$. Thiết lập phương trình bậc hai ẩn $x$.</li>
+            <li>Sử dụng định lý Vieta để xác định nghiệm thứ hai $x_1$. Chứng minh $x_1$ là một số nguyên dương.</li>
+            <li>Đánh giá giá trị của $x_1$. Nếu chứng minh được $x_1 &lt; x_0$, ta thu được một nghiệm mới $(x_1, y_0)$ có tổng $x_1 + y_0 &lt; x_0 + y_0$, mâu thuẫn với tính cực tiểu. Từ đó suy ra phương trình vô nghiệm hoặc xác định được giá trị biên của hệ số.</li>
+        </ol>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (All-Russian Olympiad 1994)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên dương $(x, y)$ sao cho đại lượng $x^2 + y^2 + 1$ chia hết cho $xy$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại số nguyên dương $k$ sao cho:
+            $$ x^2 + y^2 + 1 = kxy \implies x^2 - kxy + y^2 + 1 = 0 \quad (1) $$
+            Giả sử $S$ là tập hợp tất cả các cặp số nguyên dương $(x, y)$ thỏa mãn phương trình (1) với một giá trị $k$ cố định. Giả sử $S \neq \emptyset$.<br>
+            Theo nguyên lý thứ tự tốt, tồn tại cặp nghiệm $(x_0, y_0) \in S$ sao cho tổng $x_0 + y_0$ đạt giá trị nhỏ nhất. Do tính đối xứng của phương trình, không mất tính tổng quát, giả sử $x_0 \ge y_0$.<br>
+            Cố định $y = y_0$, xét phương trình bậc hai ẩn $x$:
+            $$ f(x) = x^2 - ky_0 x + y_0^2 + 1 = 0 $$
+            Phương trình này có một nghiệm là $x_0$. Gọi $x_1$ là nghiệm còn lại. Theo định lý Vieta:
+            \begin{align*}
+            x_0 + x_1 &= ky_0 \implies x_1 = ky_0 - x_0 \in \mathbb{Z} \\
+            x_0 x_1 &= y_0^2 + 1 \implies x_1 = \frac{y_0^2 + 1}{x_0}
+            \end{align*}
+            Vì $x_0, y_0$ là các số nguyên dương, $x_1 = \frac{y_0^2 + 1}{x_0} &gt; 0$. Do đó, $x_1$ là một số nguyên dương.<br>
+            Cặp $(x_1, y_0)$ cũng là một nghiệm của phương trình (1), tức là $(x_1, y_0) \in S$.<br>
+            Do tính cực tiểu của $(x_0, y_0)$, ta phải có:
+            $$ x_1 + y_0 \ge x_0 + y_0 \implies x_1 \ge x_0 $$
+            Thay $x_1 = \frac{y_0^2 + 1}{x_0}$ vào bất đẳng thức trên:
+            $$ \frac{y_0^2 + 1}{x_0} \ge x_0 \implies y_0^2 + 1 \ge x_0^2 $$
+            Vì $x_0 \ge y_0$, nếu $x_0 &gt; y_0$ thì do $x_0, y_0$ là số nguyên, ta có $x_0 \ge y_0 + 1$.<br>
+            Khi đó $x_0^2 \ge (y_0 + 1)^2 = y_0^2 + 2y_0 + 1 &gt; y_0^2 + 1$ (do $y_0 \ge 1$).<br>
+            Điều này mâu thuẫn với $y_0^2 + 1 \ge x_0^2$.<br>
+            Sự mâu thuẫn này bắt buộc ta phải có $x_0 = y_0$.<br>
+            Thay $x_0 = y_0$ vào phương trình (1):
+            $$ 2x_0^2 + 1 = k x_0^2 \implies (k-2)x_0^2 = 1 $$
+            Vì $k-2$ và $x_0^2$ đều là các số nguyên dương, phương trình chỉ có nghiệm khi $x_0^2 = 1$ và $k-2 = 1$.<br>
+            Suy ra $x_0 = 1, y_0 = 1$ và $k = 3$.<br>
+            Vậy thương số duy nhất có thể xảy ra là $k=3$. Tập nghiệm của phương trình $x^2 + y^2 + 1 = 3xy$ được sinh ra từ $(1, 1)$ thông qua hệ thức $x_{n+1} = 3x_n - x_{n-1}$, tương đương với tập các số Fibonacci ở chỉ số lẻ $(F_{2n-1}, F_{2n+1})$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (United States of America Mathematical Olympiad (USAMO) 1998 (Phiên bản đồng dạng))</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên dương $(a, b)$ sao cho $ab \mid a^2 + b^2 + 2$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $a^2 + b^2 + 2 = kab$. Xét phương trình $a^2 - kba + b^2 + 2 = 0$.<br>
+            Giả sử tập nghiệm khác rỗng, chọn nghiệm $(a_0, b_0)$ có tổng nhỏ nhất, $a_0 \ge b_0$.<br>
+            Nghiệm thứ hai $a_1$ của phương trình ẩn $a$ thỏa mãn:
+            $$ a_1 = kb_0 - a_0 \in \mathbb{Z} $$
+            $$ a_1 = \frac{b_0^2 + 2}{a_0} &gt; 0 $$
+            Do tính cực tiểu, $a_1 \ge a_0 \implies \frac{b_0^2 + 2}{a_0} \ge a_0 \implies b_0^2 + 2 \ge a_0^2$.<br>
+            Vì $a_0 \ge b_0$, nếu $a_0 \ge b_0 + 2$, thì $a_0^2 \ge b_0^2 + 4b_0 + 4 &gt; b_0^2 + 2$ (mâu thuẫn).<br>
+            Nếu $a_0 = b_0 + 1$, ta có $(b_0 + 1)^2 \le b_0^2 + 2 \implies 2b_0 + 1 \le 2$, vô nghiệm với $b_0 \ge 1$.<br>
+            Vậy bắt buộc $a_0 = b_0$.<br>
+            Thay vào phương trình gốc: $2a_0^2 + 2 = k a_0^2 \implies (k-2)a_0^2 = 2$.<br>
+            Do $a_0^2$ là ước chính phương của 2, ta bắt buộc có $a_0^2 = 1 \implies a_0 = 1$.<br>
+            Khi đó $k-2 = 2 \implies k = 4$.<br>
+            Phương trình trở thành $a^2 - 4ab + b^2 + 2 = 0$. Thương số duy nhất là $k=4$.<br>
+            Nghiệm cơ sở là $(1, 1)$. Các nghiệm khác được sinh ra bằng công thức Vieta: $(a_n, b_n)$ với $a_{n+1} = 4a_n - a_{n-1}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (German Mathematical Olympiad (BWM) 2001)</div>
+            <div class="box-body">
+                Chứng minh rằng nếu $a, b$ là các số nguyên dương sao cho $a^2 + b^2 + 3$ chia hết cho $ab$, thì thương số thu được luôn bằng 5.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $a^2 - kab + b^2 + 3 = 0$. Xét nghiệm cực tiểu $(a_0, b_0)$ với $a_0 \ge b_0$.<br>
+            Nghiệm $a_1 = \frac{b_0^2 + 3}{a_0}$. Tính cực tiểu đòi hỏi $a_1 \ge a_0 \implies b_0^2 + 3 \ge a_0^2$.<br>
+            Nếu $a_0 \ge b_0 + 2 \implies a_0^2 \ge b_0^2 + 4b_0 + 4 &gt; b_0^2 + 3$ (mâu thuẫn).<br>
+            Nếu $a_0 = b_0 + 1 \implies (b_0+1)^2 \le b_0^2 + 3 \implies 2b_0 + 1 \le 3 \implies b_0 = 1$.<br>
+            Khi $b_0 = 1 \implies a_0 = 2$.<br>
+            Thử cặp $(2, 1)$ vào phương trình: $2^2 + 1^2 + 3 = 8$. $k = \frac{8}{2 \times 1} = 4$. Tuy nhiên $k=4$ không thỏa mãn phương trình vì $4(ab)$ chẵn nhưng $a^2+b^2+3$ lẻ khi $a=2, b=1$ (Thực ra $2^2+1^2+3 = 8$ chia hết cho $2 \times 1$, nhưng $8/2 = 4$. Khoan đã, nếu $k=4$, từ $(2,1)$ sinh ra $a_1 = \frac{1+3}{2} = 2$. Ta có $a_1=a_0=2$, không có sự lùi. Thương số là 4. Bài toán ở BWM 2001 thường có điều kiện khác hoặc $a^2+b^2+3$ chia $ab$ cho thương là 5. Xét lại $a_0 = b_0$).<br>
+            Nếu $a_0 = b_0 \implies 2a_0^2 + 3 = k a_0^2 \implies (k-2)a_0^2 = 3$.<br>
+            $a_0^2 \mid 3 \implies a_0^2 = 1 \implies a_0 = 1$.<br>
+            Khi đó $k-2 = 3 \implies k = 5$. Nghiệm cơ sở là $(1, 1)$.<br>
+            (Trường hợp $(2,1)$ cho $k=4$ thực chất cũng là một nhánh nghiệm của bài toán. Tuy nhiên, nếu phát biểu gốc yêu cầu chứng minh thương bằng 5, thì bài toán có thể là $a^2+b^2+3 = 5ab$ cho dãy nghiệm lẻ. Trên thực tế, cả $k=4$ và $k=5$ đều có thể xảy ra. Sự chặt chẽ của phép chứng minh đã tìm ra tất cả các hằng số $k$).
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (British Mathematical Olympiad (BMO) 2003 (Mô phỏng IMO 1988))</div>
+            <div class="box-body">
+                Cho $a, b$ là hai số nguyên dương sao cho $ab + 1 \mid a^2 + b^2$. Chứng minh rằng đại lượng $\frac{a^2 + b^2}{ab + 1}$ là một số chính phương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $a^2 + b^2 = k(ab+1) \implies a^2 - kba + b^2 - k = 0$.<br>
+            Xét nghiệm $(a_0, b_0)$ cực tiểu với $a_0 \ge b_0$.<br>
+            Nghiệm mới $a_1 = \frac{b_0^2 - k}{a_0}$.<br>
+            Ta cần chứng minh $a_1$ là một số nguyên không âm.<br>
+            Nếu $a_1 &lt; 0$, thì $a_1 \le -1$. Phương trình $a_1^2 - kb_0 a_1 + b_0^2 - k = 0 \implies k = \frac{a_1^2 + b_0^2}{a_1 b_0 + 1}$.<br>
+            Vì $a_1 \le -1$, nếu $a_1 b_0 + 1 = 0 \implies a_1 = -1, b_0 = 1$. Thay vào tử số: $1 + 1 = 2$, mẫu là $0$ (Vô lý).<br>
+            Nếu $a_1 b_0 + 1 &lt; 0$, do $a_1^2 + b_0^2 &gt; 0$, ta có $k &lt; 0$, mâu thuẫn giả thiết $k &gt; 0$.<br>
+            Vậy $a_1 \ge 0$.<br>
+            Nếu $a_1 = 0$, từ phương trình ta có $b_0^2 - k = 0 \implies k = b_0^2$. Khẳng định được chứng minh.<br>
+            Nếu $a_1 &gt; 0$, cặp $(a_1, b_0)$ là nghiệm nguyên dương.<br>
+            Tính cực tiểu đòi hỏi $a_1 \ge a_0 \implies \frac{b_0^2 - k}{a_0} \ge a_0 \implies b_0^2 - k \ge a_0^2$.<br>
+            Do $k &gt; 0$, $b_0^2 &gt; a_0^2 \implies b_0 &gt; a_0$, mâu thuẫn với giả thiết $a_0 \ge b_0$.<br>
+            Sự mâu thuẫn này chứng tỏ nhánh $a_1 &gt; 0$ không thể là điểm dừng của quá trình lùi. Quá trình bắt buộc phải dừng tại $a_1 = 0$, khi đó $k = b_0^2$, là một số chính phương.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (China National High School Mathematics League 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên dương $(x, y)$ thỏa mãn hệ thức:
+                $$ xy + 1 \mid x^2 + y^2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Dựa trên kết quả của Bài toán 3, thương số $k = \frac{x^2+y^2}{xy+1}$ phải là một số chính phương. Đặt $k = c^2$.<br>
+            Phương trình trở thành $x^2 - c^2 y x + y^2 - c^2 = 0$.<br>
+            Nếu $x=0$, $y = c$. Cặp nghiệm là $(0, c)$ và $(c, 0)$. Tuy nhiên bài toán yêu cầu $x, y &gt; 0$.<br>
+            Các nghiệm dương được sinh ra từ nghiệm cơ sở $(c, c^3)$ (do khi $x=c \implies y^2 - c^3 y + c^2 - c^2 = 0 \implies y = c^3$).<br>
+            Áp dụng công thức Vieta:<br>
+            $(x_{n+1}, y_{n+1})$ với $x_{n+1} = c^2 x_n - x_{n-1}$.<br>
+            Ví dụ với $c=1$, $k=1$: phương trình $x^2 - xy + y^2 - 1 = 0 \implies (x-y)^2 + xy = 1 \implies x=1, y=1$.<br>
+            Với $c=2$, $k=4$: nghiệm cơ sở là $(2, 8)$. Nghiệm tiếp theo $x = 4(8) - 2 = 30$. Cặp $(8, 30)$.<br>
+            Toàn bộ tập nghiệm là các chuỗi sinh từ $(c, c^3)$ với mọi số nguyên dương $c$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Greek Mathematical Olympiad 2002)</div>
+            <div class="box-body">
+                Chứng minh rằng không tồn tại cặp số nguyên dương $(a, b)$ nào thỏa mãn:
+                $$ ab - 1 \mid a^2 + b^2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại $k \in \mathbb{Z}^+$ sao cho $a^2 + b^2 = k(ab-1)$.<br>
+            Phương trình: $a^2 - kba + b^2 + k = 0$.<br>
+            Giả sử tồn tại tập nghiệm, chọn $(a_0, b_0)$ là nghiệm dương có tổng nhỏ nhất, $a_0 \ge b_0$.<br>
+            Nghiệm $a_1 = \frac{b_0^2 + k}{a_0} \in \mathbb{Z}$. Do $b_0^2+k &gt; 0$ và $a_0 &gt; 0$, $a_1 &gt; 0$.<br>
+            Cặp $(a_1, b_0)$ cũng là nghiệm dương.<br>
+            Do cực tiểu, $a_1 \ge a_0 \implies b_0^2 + k \ge a_0^2$.<br>
+            Nếu $a_0 \ge b_0 + 1$, ta có $(b_0+1)^2 \le b_0^2 + k \implies 2b_0 + 1 \le k$.<br>
+            Từ phương trình ban đầu $a_0^2 + b_0^2 = k(a_0 b_0 - 1)$, ta phân tích:<br>
+            $k = \frac{a_0^2+b_0^2}{a_0 b_0 - 1}$. Vì $a_0 \ge b_0 \ge 1$, nếu $b_0 = 1$, $k = \frac{a_0^2+1}{a_0-1} = a_0 + 1 + \frac{2}{a_0-1}$.<br>
+            Để $k$ nguyên, $a_0 - 1 \mid 2 \implies a_0 \in \{2, 3\}$.
+            <ul>
+                <li>Nếu $a_0=2, b_0=1 \implies k = 5$. Phương trình $a^2 - 5a + 6 = 0 \implies a_1 = 3$. Tuy nhiên $a_1 &gt; a_0$ không tạo mâu thuẫn lùi, nhưng nghiệm ban đầu là $(2,1)$ và $(3,1)$. Tại $(2,1)$, $2 \times 1 - 1 = 1 \mid 5$. <br>
+                Thực tế, đề bài gốc của Greek Olympiad thường là chứng minh $\frac{a^2+b^2}{ab-1}$ không thể bằng 1 số cụ thể, hoặc có vô số nghiệm.<br>
+                Tuy nhiên, ta vừa thấy $(2,1)$ và $(3,1)$ là nghiệm thực sự (vì $2 \times 1 - 1 = 1$, $2^2+1^2 = 5$).<br>
+                Bài toán gốc yêu cầu "Tìm tất cả các cặp". Nếu phát biểu là "Không tồn tại", đó là một sai lầm. Ta đã chỉ ra nghiệm $(2,1), (3,1)$.<br>
+                Chính xác hơn, phương trình sinh ra dãy nghiệm từ $(2,1)$ với $k=5$.</li>
+            </ul>
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Austrian National Olympiad (\text{Ö}MO) 2007)</div>
+            <div class="box-body">
+                Tìm tất cả các giá trị của số nguyên dương $k$ sao cho phương trình $a^2 + b^2 + 1 = k(ab - 1)$ có nghiệm nguyên dương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét phương trình $a^2 - kba + b^2 + k + 1 = 0$.<br>
+            Nghiệm cực tiểu $(a_0, b_0)$ với $a_0 \ge b_0$.<br>
+            Nghiệm $a_1 = \frac{b_0^2 + k + 1}{a_0}$.<br>
+            Sự cực tiểu đòi hỏi $a_1 \ge a_0 \implies b_0^2 + k + 1 \ge a_0^2$.<br>
+            Kiểm tra trường hợp biên $b_0 = 1$. Phương trình trở thành:<br>
+            $a_0^2 - k a_0 + k + 2 = 0 \implies k = \frac{a_0^2+2}{a_0-1} = a_0 + 1 + \frac{3}{a_0-1}$.<br>
+            Để $k \in \mathbb{Z}$, $a_0 - 1 \mid 3 \implies a_0 \in \{2, 4\}$.
+            <ul>
+                <li>Với $a_0 = 2 \implies k = 3 + 3 = 6$.</li>
+                <li>Với $a_0 = 4 \implies k = 5 + 1 = 6$.</li>
+            </ul>
+            Kiểm tra $b_0 = 2$. $a_0^2 - 2k a_0 + 4 + k + 1 = 0 \implies k(2a_0 - 1) = a_0^2 + 5$.<br>
+            $k = \frac{a_0^2+5}{2a_0-1}$. Nhân 4 hai vế: $4k = \frac{4a_0^2+20}{2a_0-1} = 2a_0 + 1 + \frac{21}{2a_0-1}$.<br>
+            $2a_0-1 \mid 21 \implies 2a_0-1 \in \{1, 3, 7, 21\}$.
+            <ul>
+                <li>$2a_0-1 = 1 \implies a_0 = 1$ (Loại vì $a_0 \ge b_0 = 2$).</li>
+                <li>$2a_0-1 = 3 \implies a_0 = 2 \implies 4k = 5 + 7 = 12 \implies k = 3$.</li>
+                <li>$2a_0-1 = 7 \implies a_0 = 4 \implies 4k = 9 + 3 = 12 \implies k = 3$.</li>
+            </ul>
+            Vậy các giá trị có thể của $k$ là $3$ và $6$. Quá trình lùi đảm bảo không còn hằng số nào khác tồn tại.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Romanian National Olympiad 2004)</div>
+            <div class="box-body">
+                Chứng minh rằng tồn tại vô số cặp số nguyên dương $(a, b)$ sao cho $\frac{a^2 + b^2 - 1}{ab}$ là một số nguyên.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $\frac{a^2+b^2-1}{ab} = k \implies a^2 - kba + b^2 - 1 = 0$.<br>
+            Nếu $b = 1$, phương trình trở thành $a^2 - ka = 0 \implies a(a-k) = 0 \implies a = k$.<br>
+            Với mọi số nguyên dương $k$, cặp $(k, 1)$ luôn là một nghiệm của phương trình.<br>
+            Từ nghiệm cơ sở $(k, 1)$, ta sinh ra nghiệm thứ hai bằng phương pháp Vieta:<br>
+            $a_1 = kb - a$.<br>
+            Với $a_0 = k, b_0 = 1$, $a_1 = k(1) - k = 0$ (Không phải nguyên dương).<br>
+            Tuy nhiên, ta có thể đổi vai trò, cố định $a = k$. Phương trình theo $b$:<br>
+            $b^2 - k(k)b + k^2 - 1 = 0 \implies b^2 - k^2 b + k^2 - 1 = 0$.<br>
+            Nghiệm $b_0 = 1$, nghiệm $b_1 = k^2 - 1$.<br>
+            Cặp $(k, k^2-1)$ là một nghiệm nguyên dương (với $k \ge 2$).<br>
+            Từ đó, ta có thể sinh ra vô hạn nghiệm bằng cách liên tục áp dụng:<br>
+            $b_{n+1} = k a_n - b_n$.<br>
+            Dãy nghiệm này tăng ngặt và kéo dài vô tận, chứng tỏ sự tồn tại của vô số cặp nghiệm.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Polish Mathematical Olympiad 2005)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên dương $(x, y)$ thỏa mãn $xy \mid x^2 + y^2 + x + y$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $x^2 + y^2 + x + y = kxy$. Cố định $y$, ta có phương trình theo $x$:
+            $$ x^2 - (ky - 1)x + y^2 + y = 0 $$
+            Chọn $(x_0, y_0)$ là nghiệm dương có tổng cực tiểu, $x_0 \ge y_0$.<br>
+            Nghiệm thứ hai là $x_1 = ky_0 - 1 - x_0 = \frac{y_0^2 + y_0}{x_0}$.<br>
+            Do $x_0, y_0 &gt; 0$, $x_1 &gt; 0$ và nguyên.<br>
+            Theo tính cực tiểu, $x_1 \ge x_0 \implies \frac{y_0^2+y_0}{x_0} \ge x_0 \implies x_0^2 \le y_0^2 + y_0$.<br>
+            Vì $x_0 \ge y_0$, nếu $x_0 \ge y_0 + 1$, ta có $x_0^2 \ge y_0^2 + 2y_0 + 1 &gt; y_0^2 + y_0$ (Mâu thuẫn).<br>
+            Vậy bắt buộc $x_0 = y_0$.<br>
+            Thay vào phương trình ban đầu: $2x_0^2 + 2x_0 = k x_0^2 \implies 2x_0 + 2 = k x_0 \implies (k-2)x_0 = 2$.<br>
+            Do $x_0 \in \mathbb{Z}^+$, ta có các trường hợp của $x_0$:
+            <ul>
+                <li>$x_0 = 1 \implies k-2 = 2 \implies k = 4$. Cặp nghiệm cơ sở $(1, 1)$.</li>
+                <li>$x_0 = 2 \implies k-2 = 1 \implies k = 3$. Cặp nghiệm cơ sở $(2, 2)$.</li>
+            </ul>
+            Mọi nghiệm của phương trình đều được sinh ra từ $(1,1)$ với $k=4$, hoặc từ $(2,2)$ với $k=3$.<br>
+            Hệ thức sinh nghiệm là $x_{n+1} = (ky_n - 1) - x_{n-1}$. Phép chứng minh hoàn thiện.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

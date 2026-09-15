@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Bài toán Đếm số cây khung và Mã Prüfer - OEIS A000272</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh dương đậm) */
+        .definition {
+            background-color: rgba(0, 0, 255, 0.05);
+            border-color: #00008b;
+        }
+        .definition .box-title { color: #00008b; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #ccc;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: BÀI TOÁN ĐẾM SỐ CÂY KHUNG VÀ MÃ PRÜFER <br> (OEIS A000272)</h1>
+    <div class="author-info">Độ khó: $\star\star\star\star\star$ (Mức độ VMO, TST, IMO)</div>
+
+    <h2>1. Giới thiệu bài toán (OEIS A000272)</h2>
+    <p>Trong lý thuyết đồ thị và tổ hợp học, một trong những kết quả nền tảng là việc xác định số lượng cây có thể tạo ra từ một tập hợp các đỉnh phân biệt. Dãy số biểu diễn số lượng cây trên $n$ đỉnh được dán nhãn được lưu trữ với mã <strong>OEIS A000272</strong>.</p>
+
+    <div class="box definition">
+        <div class="box-title">Định lý 1.1 (Định lý Cayley - Cayley's Formula)</div>
+        Cho một tập hợp $V$ gồm $n$ đỉnh được dán nhãn phân biệt (với $n \ge 2$). Số lượng các cây khác nhau có thể xây dựng trên tập đỉnh $V$ là:
+        $$T_n = n^{n-2}$$
+    </div>
+
+    <p>Các giá trị đầu tiên của dãy số (với $n \ge 1$):<br>
+    $1, 1, 3, 16, 125, 1296, 16807, 262144, 4782969, \dots$</p>
+
+    <p>Bài toán này xuất hiện thường xuyên trong các kỳ thi học sinh giỏi quốc gia (VMO), chọn đội tuyển (TST) và Olympic Toán học Quốc tế (IMO) dưới dạng các bài toán đếm cấu trúc liên thông, xác suất trên đồ thị hoặc thiết lập song ánh.</p>
+
+    <h2>2. Kiến thức nền tảng và Nâng cấp chuyên đề</h2>
+    <p>Để chứng minh công thức Cayley và giải quyết các bài toán đếm cây phức tạp, công cụ hiệu quả nhất là <strong>Mã Prüfer (Prüfer Sequence)</strong>. Đây là một song ánh giữa tập hợp các cây trên $n$ đỉnh và tập hợp các dãy số có độ dài $n-2$.</p>
+
+    <div class="box definition">
+        <div class="box-title">Thuật toán 2.1 (Xây dựng Mã Prüfer từ một cây $T$)</div>
+        <ol>
+            <li>Lặp lại quá trình sau $n-2$ lần:</li>
+            <li>Tìm lá (đỉnh có bậc 1) có nhãn nhỏ nhất trong cây $T$.</li>
+            <li>Ghi lại nhãn của đỉnh kề với lá đó vào dãy Prüfer.</li>
+            <li>Xóa lá đó và cạnh tương ứng khỏi cây.</li>
+            <li>Dãy thu được có độ dài $n-2$, các phần tử thuộc $\{1, 2, \dots, n\}$.</li>
+        </ol>
+    </div>
+
+    <p><strong>Phân tích tính chất cốt lõi (Chuẩn VMO/TST):</strong><br>
+    Từ thuật toán trên, ta rút ra một định lý quan trọng phục vụ trực tiếp cho các bài toán đếm:</p>
+
+    <div class="box definition">
+        <div class="box-title">Định lý 2.2 (Định lý về bậc của đỉnh - Degree Theorem)</div>
+        Đỉnh $v$ trong cây $T$ có bậc $\deg(v) = k$ khi và chỉ khi nhãn $v$ xuất hiện đúng $k-1$ lần trong mã Prüfer của cây $T$.<br>
+        <em>Hệ quả:</em> Đỉnh là lá ($\deg(v) = 1$) sẽ không xuất hiện trong mã Prüfer.
+    </div>
+
+    <h2>3. Mã code minh họa (Python)</h2>
+
+<pre><code class="language-python">def cayley_formula(n):
+    """Tinh so luong cay dan nhan tren n dinh."""
+    if n <= 1:
+        return 1
+    return n ** (n - 2)
+
+def prufer_to_tree(prufer_sequence):
+    """
+    Phuc hoi danh sach cac canh cua cay tu ma Prufer.
+    prufer_sequence: list chua cac so tu 1 den n (do dai n-2)
+    """
+    n = len(prufer_sequence) + 2
+    degree = [1] * (n + 1)
+    
+    for node in prufer_sequence:
+        degree[node] += 1
+        
+    edges = []
+    for node in prufer_sequence:
+        for i in range(1, n + 1):
+            if degree[i] == 1:
+                edges.append((i, node))
+                degree[i] -= 1
+                degree[node] -= 1
+                break
+                
+    last_two = [i for i in range(1, n + 1) if degree[i] == 1]
+    edges.append((last_two[0], last_two[1]))
+    
+    return edges
+</code></pre>
+
+    <h2>4. Các bài tập áp dụng</h2>
+
+    <div class="solution-title">Bài toán 4.1 (Khởi động)</div>
+    <p>Có bao nhiêu cây dán nhãn trên $5$ đỉnh sao cho đỉnh số $1$ là một lá?</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đỉnh $1$ là lá $\iff \deg(1) = 1 \iff$ đỉnh $1$ xuất hiện $0$ lần trong mã Prüfer. Dãy Prüfer có độ dài $3$, các phần tử thuộc $\{2, 3, 4, 5\}$. Số cách lập là $4^3 = 64$ cây.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.2 (VMO)</div>
+    <p>Cho $n \ge 3$. Có bao nhiêu cây trên $n$ đỉnh được dán nhãn phân biệt sao cho đỉnh số $1$ có bậc đúng bằng $k$ (với $1 \le k \le n-1$)?</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đỉnh $1$ có bậc $k$ nên xuất hiện $k-1$ lần trong mã. Số cách chọn vị trí là $\binom{n-2}{k-1}$. Các vị trí còn lại có thể điền $n-1$ nhãn khác. Số lượng cây là $\binom{n-2}{k-1} (n-1)^{n-1-k}$.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.3 (TST)</div>
+    <p>Cho tập hợp $S = \{1, 2, \dots, n\}$. Đếm số lượng các cây có $n$ đỉnh dán nhãn từ $S$ sao cho các đỉnh $1, 2, \dots, m$ ($m \lt n$) đều là lá của cây đó.</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Các đỉnh $1, 2, \dots, m$ là lá nên không có mặt trong mã Prüfer. $n-2$ vị trí của mã chỉ được chọn từ $n-m$ nhãn còn lại. Kết quả là $(n-m)^{n-2}$.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.4 (Đồng nhất thức Tổ hợp)</div>
+    <p>Bằng cách áp dụng mã Prüfer, hãy chứng minh đẳng thức:</p>
+    $$\sum_{\substack{d_i \ge 1 \\ \sum d_i = 2n-2}} \frac{(n-2)!}{(d_1-1)!(d_2-1)! \dots (d_n-1)!} = n^{n-2}$$
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo tính chất phân phối đa thức (multinomial theorem), hệ số của các cấu hình bậc $(d_1, \dots, d_n)$ chính là số lượng mã Prüfer có tần suất xuất hiện tương ứng. Vét cạn toàn bộ tần suất sẽ bằng tổng số dãy mã, tức là $n^{n-2}$.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.5 (TST)</div>
+    <p>Lấy ngẫu nhiên một cây từ tập hợp tất cả các cây dán nhãn trên $n$ đỉnh. Tính giá trị kỳ vọng của số lượng lá trên cây đó.</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xác suất đỉnh $i$ là lá bằng xác suất $i$ không nằm trong mã Prüfer: $\left( 1 - \frac{1}{n} \right)^{n-2}$. Áp dụng tính tuyến tính của kỳ vọng, kỳ vọng tổng số lá là $n \left( 1 - \frac{1}{n} \right)^{n-2}$.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.6 (Đếm bằng đối xứng)</div>
+    <p>Cho đồ thị đầy đủ $K_n$ với $n \ge 3$. Tính số lượng cây khung của $K_n$ có chứa một cạnh $e = (u, v)$ cho trước.</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tổng số cạnh của $n^{n-2}$ cây là $n^{n-2}(n-1)$. Đồ thị $K_n$ có $\frac{n(n-1)}{2}$ cạnh. Theo tính đối xứng, mỗi cạnh xuất hiện với số lần bằng nhau. Kết quả là $\frac{n^{n-2}(n-1)}{n(n-1)/2} = 2n^{n-3}$.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.7 (IMO - Song ánh Joyal)</div>
+    <p>Cho $V$ là tập hợp gồm $n$ phần tử. Đếm số lượng các hàm số $f: V \to V$ bằng hai cách để chứng minh lại Định lý Cayley.</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tổng số hàm $f$ là $n^n$. Mọi hàm $f$ sinh ra một đồ thị có hướng (mỗi đỉnh ra bậc 1). Rút trích các chu trình có hướng thành một đường đi vô hướng nối hai đỉnh được đánh dấu (spine) thiết lập song ánh giữa các hàm này và tập các cây có $2$ đỉnh phân biệt được đánh dấu. Có $n^2 T_n$ cây như vậy $\implies n^2 T_n = n^n \implies T_n = n^{n-2}$.</p>
+    </div>
+
+    <div class="solution-title">Bài toán 4.8 (Định lý ma trận Kirchhoff)</div>
+    <p>Cho đồ thị hai phía đầy đủ $K_{a,b}$. Bằng phương pháp đếm thích hợp, chứng minh số lượng cây khung của đồ thị này là $a^{b-1}b^{a-1}$.</p>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Áp dụng Định lý Kirchhoff, tính định thức của ma trận con sinh từ ma trận Laplacian của $K_{a,b}$. Kết quả giải tích của định thức này trả về đúng $a^{b-1}b^{a-1}$.</p>
+    </div>
+
+</body>
+</html>

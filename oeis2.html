@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Bài toán Phân hoạch tập hợp và Số Bell</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #ccc;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: BÀI TOÁN PHÂN HOẠCH TẬP HỢP VÀ SỐ BELL <br> (SET PARTITIONS AND BELL NUMBERS - OEIS A000110)</h1>
+    <div class="author-info">Độ khó: $\star\star\star\circ\circ$</div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong Bài 7 và Bài 8, để chứng minh công thức Dobiński, ta cần sử dụng khái niệm <strong>Hàm sinh mũ</strong> (Exponential Generating Function) và khai triển Taylor của hàm số $e^x$, vốn là các công cụ thường được học ở Giải tích và Đại số Tổ hợp bậc Đại học. Để học sinh THPT dễ dàng tiếp cận, dưới đây là các khái niệm cơ sở:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Hàm sinh mũ và Khai triển Taylor)</div>
+        <ul>
+            <li><strong>Hàm sinh mũ:</strong> Cho một dãy số $(a_n)_{n \ge 0}$, hàm sinh mũ của dãy này là một chuỗi hình thức $E(x) = \sum_{n=0}^\infty a_n \frac{x^n}{n!}$. Việc chia cho $n!$ giúp xử lý các bài toán tổ hợp có phân biệt thứ tự hoặc phân hoạch tập hợp một cách thuận tiện.</li>
+            <li><strong>Đạo hàm của hàm sinh mũ:</strong> Đạo hàm của $E(x)$ theo $x$ là $E'(x) = \sum_{n=1}^\infty a_n \frac{x^{n-1}}{(n-1)!} = \sum_{n=0}^\infty a_{n+1} \frac{x^n}{n!}$. Đặc tính này giúp dễ dàng liên kết với các hệ thức truy hồi dạng $a_{n+1} = f(a_n)$.</li>
+            <li><strong>Khai triển Taylor của $e^x$:</strong> Hàm số mũ cơ bản có khai triển chuỗi là $e^x = \sum_{n=0}^\infty \frac{x^n}{n!}$.</li>
+        </ul>
+    </div>
+
+    <h2>1. Giới thiệu bài toán</h2>
+    <p>Trong lý thuyết tổ hợp, một <strong>phân hoạch tập hợp</strong> (set partition) của một tập hợp $S$ là một tập các tập con khác rỗng của $S$, sao cho mọi phần tử của $S$ thuộc đúng một tập con duy nhất. Các tập con này được gọi là các "khối" (blocks).</p>
+    <p>Bài toán đặt ra là: Cho một tập hợp gồm $n$ phần tử, có bao nhiêu cách để phân hoạch tập hợp này? Dãy số biểu diễn số lượng phân hoạch này theo $n$ được gọi là <strong>Số Bell</strong> (ký hiệu là $B_n$), được lưu trữ trên bách khoa toàn thư trực tuyến về chuỗi số nguyên với mã <strong>OEIS A000110</strong>.</p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Định nghĩa hình thức)</div>
+        Số Bell thứ $n$, ký hiệu là $B_n$, là số lượng các quan hệ tương đương trên một tập hợp có $n$ phần tử, hoặc tương đương là số cách phân hoạch tập hợp đó thành các tập con khác rỗng rời nhau. <br>
+        Quy ước $B_0 = 1$.
+    </div>
+
+    <p>Các giá trị đầu tiên của dãy số (với $n \ge 0$):</p>
+    $$1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, \dots$$
+
+    <h2>2. Kiến thức nền tảng</h2>
+    <p>Để giải quyết và nghiên cứu sâu về số Bell, ta cần công cụ là Số Stirling loại 2 và các hệ thức truy hồi.</p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 2.1 (Số Stirling loại 2 - Stirling numbers of the second kind)</div>
+        Ký hiệu là $S(n, k)$ hoặc $\left\{ \begin{matrix} n \\ k \end{matrix} \right\}$, biểu thị số cách phân hoạch một tập hợp $n$ phần tử thành đúng $k$ khối khác rỗng.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 2.1 (Mối liên hệ giữa Số Bell và Số Stirling loại 2)</div>
+        Số Bell là tổng của tất cả các số Stirling loại 2 với số khối $k$ chạy từ $0$ đến $n$:
+        $$B_n = \sum_{k=0}^n S(n, k)$$
+    </div>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử ta cần phân hoạch tập hợp $S$ gồm $n$ phần tử. Một phân hoạch bất kỳ của $S$ sẽ chia $S$ thành đúng $k$ khối không rỗng, với $0 \le k \le n$. <br>
+        Theo Định nghĩa 2.1, số cách chia $S$ thành đúng $k$ khối không rỗng là số Stirling loại 2, $S(n,k)$. <br>
+        Vì các trường hợp chia thành $k$ khối (với các giá trị $k$ phân biệt) là các trường hợp rời nhau và bao phủ toàn bộ các cách phân hoạch có thể có của $S$, tổng số cách phân hoạch $S$ chính là tổng của $S(n,k)$ khi $k$ chạy từ $0$ đến $n$. <br>
+        Theo định nghĩa, tổng này chính là số Bell $B_n$. Do đó, $B_n = \sum_{k=0}^n S(n,k)$. Khẳng định được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 2.2 (Hệ thức truy hồi của Số Bell)</div>
+        Số Bell thỏa mãn phương trình truy hồi sau:
+        $$B_{n+1} = \sum_{k=0}^n \binom{n}{k} B_k$$
+    </div>
+
+    <h2>3. Phân tích và Lời giải bài toán tổng quát</h2>
+    
+    <div class="proof">
+        <div class="proof-title">Chứng minh hệ thức truy hồi của $B_n$ (Định lý 2.2).</div>
+        <p>Xét tập hợp $S$ gồm $n+1$ phần tử: $S = \{1, 2, \dots, n, n+1\}$. Ta tìm số cách phân hoạch $S$.</p>
+        <p>Tập con (khối) chứa phần tử thứ $n+1$ có thể chứa thêm $n-k$ phần tử khác từ tập $\{1, 2, \dots, n\}$ (với $0 \le k \le n$). <br>
+        Điều này có nghĩa là, sau khi tách khối chứa phần tử $n+1$ ra, tập hợp còn lại sẽ có đúng $k$ phần tử.</p>
+
+        <ol>
+            <li>Số cách chọn $k$ phần tử còn lại từ $n$ phần tử ban đầu là $\binom{n}{k}$.</li>
+            <li>Số cách phân hoạch $k$ phần tử còn lại này chính là $B_k$.</li>
+            <li>Theo quy tắc nhân, với mỗi $k$, có $\binom{n}{k} B_k$ cách phân hoạch.</li>
+        </ol>
+
+        <p>Lấy tổng tất cả các trường hợp của $k$ từ $0$ đến $n$, ta có:</p>
+        $$B_{n+1} = \sum_{k=0}^n \binom{n}{k} B_k$$
+        <p>Đẳng thức được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>4. Thuật toán minh họa (Python)</h2>
+    <p>Dưới đây là thuật toán sinh các giá trị của dãy OEIS A000110. Để tính toán, ta sử dụng phương pháp <strong>Tam giác Bell</strong> (Bell Triangle) với độ phức tạp $\mathcal{O}(n^2)$, cho phép tính mà không cần dùng đến hệ số nhị thức hay giai thừa.</p>
+
+<pre><code class="language-python">def calculate_bell_numbers(n):
+    """
+    Tinh n so Bell dau tien bang phuong phap Tam giac Bell.
+    """
+    if n == 0:
+        return [1]
+        
+    bell_triangle = [[0 for _ in range(n)] for _ in range(n)]
+    bell_triangle[0][0] = 1
+    
+    for i in range(1, n):
+        # Phan tu dau tien cua hang i bang phan tu cuoi cung cua hang i-1
+        bell_triangle[i][0] = bell_triangle[i-1][i-1]
+        
+        for j in range(1, i + 1):
+            # Quy hoach dong: B[i][j] = B[i-1][j-1] + B[i][j-1]
+            bell_triangle[i][j] = bell_triangle[i-1][j-1] + bell_triangle[i][j-1]
+            
+    # Cac so Bell nam o cot dau tien (hoac duong cheo) cua tam giac
+    bell_numbers = [bell_triangle[i][0] for i in range(n)]
+    return bell_numbers
+
+# In ra 10 phan tu dau tien cua day OEIS A000110
+N = 10
+bell_seq = calculate_bell_numbers(N)
+for i in range(N):
+    print(f"B_{i} = {bell_seq[i]}")
+</code></pre>
+
+    <h2>5. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.1</div>
+        Tính $B_4$ trực tiếp bằng cách liệt kê tất cả các phân hoạch của tập hợp $S = \{1, 2, 3, 4\}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Liệt kê các phân hoạch của $\{1, 2, 3, 4\}$ theo số lượng khối $k$:</p>
+        <ul>
+            <li>$k=1$ (1 khối): $\{1, 2, 3, 4\}$ (1 cách)</li>
+            <li>$k=2$ (2 khối): 
+            <ul>
+                <li>Chia dạng (1, 3): $\{1\} \cup \{2,3,4\}$, $\{2\} \cup \{1,3,4\}$, $\{3\} \cup \{1,2,4\}$, $\{4\} \cup \{1,2,3\}$ (4 cách)</li>
+                <li>Chia dạng (2, 2): $\{1,2\} \cup \{3,4\}$, $\{1,3\} \cup \{2,4\}$, $\{1,4\} \cup \{2,3\}$ (3 cách)</li>
+            </ul>
+            Tổng: $7$ cách.</li>
+            <li>$k=3$ (3 khối): Thu được bằng cách lấy 1 cặp đi cùng nhau và 2 phần tử đứng riêng. Số cặp có thể chọn là $\binom{4}{2} = 6$. (6 cách)</li>
+            <li>$k=4$ (4 khối): $\{1\} \cup \{2\} \cup \{3\} \cup \{4\}$ (1 cách)</li>
+        </ul>
+        <p>Tổng số cách: $B_4 = 1 + 7 + 6 + 1 = 15$.</p>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.2</div>
+        Sử dụng hệ thức truy hồi $B_{n+1} = \sum_{k=0}^n \binom{n}{k} B_k$, hãy tính $B_5$ và $B_6$, biết $B_0=1, B_1=1, B_2=2, B_3=5, B_4=15$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Áp dụng công thức $B_{n+1} = \sum_{k=0}^n \binom{n}{k} B_k$:</p>
+        <p>Tính $B_5$ (với $n=4$):</p>
+        $$B_5 = \binom{4}{0}B_0 + \binom{4}{1}B_1 + \binom{4}{2}B_2 + \binom{4}{3}B_3 + \binom{4}{4}B_4$$
+        $$B_5 = 1(1) + 4(1) + 6(2) + 4(5) + 1(15) = 1 + 4 + 12 + 20 + 15 = 52.$$
+        <p>Tính $B_6$ (với $n=5$):</p>
+        $$B_6 = \binom{5}{0}B_0 + \binom{5}{1}B_1 + \binom{5}{2}B_2 + \binom{5}{3}B_3 + \binom{5}{4}B_4 + \binom{5}{5}B_5$$
+        $$B_6 = 1(1) + 5(1) + 10(2) + 10(5) + 5(15) + 1(52) = 1 + 5 + 20 + 50 + 75 + 52 = 203.$$
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.3 (Ứng dụng)</div>
+        Một công ty có $n$ nhân viên cần chia thành các nhóm làm việc (không giới hạn số nhóm, không có nhóm rỗng). Tính số cách chia nhóm khi $n = 6$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Yêu cầu của bài toán chính là tìm số cách phân hoạch tập hợp 6 nhân viên thành các tập con khác rỗng. Số cách chia chính là số Bell $B_6$. <br>
+        Theo kết quả từ Bài toán 5.2, $B_6 = 203$. <br>
+        <strong>Kết luận:</strong> Có $203$ cách chia nhóm.</p>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.4</div>
+        Chứng minh rằng số lượng các quan hệ tương đương trên một tập hợp $X$ có $n$ phần tử bằng đúng số Bell $B_n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo định lý cơ bản của lý thuyết tập hợp, mỗi quan hệ tương đương trên một tập $X$ tạo ra một và chỉ một phân hoạch của $X$ thành các lớp tương đương. <br>
+        Ngược lại, mọi phân hoạch của $X$ đều xác định duy nhất một quan hệ tương đương (trong đó hai phần tử có quan hệ với nhau khi và chỉ khi chúng thuộc cùng một khối của phân hoạch). <br>
+        Do đó, có một song ánh giữa tập hợp các quan hệ tương đương trên $X$ và tập hợp các phân hoạch của $X$. Số lượng các phân hoạch là $B_n$. <br>
+        <strong>Kết luận:</strong> Số quan hệ tương đương trên $X$ bằng $B_n$.</p>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.5</div>
+        Chứng minh công thức truy hồi của số Stirling loại 2:
+        $$S(n, k) = k \cdot S(n-1, k) + S(n-1, k-1)$$
+        với điều kiện biên $S(n, 1) = S(n, n) = 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét tập hợp $n$ phần tử, ta cần chia thành $k$ khối. Ta tập trung vào phần tử thứ $n$. Có hai trường hợp rời nhau:</p>
+        <ol>
+            <li><strong>Phần tử thứ $n$ nằm ở một khối riêng biệt:</strong> Khối này chỉ chứa phần tử $n$. Vậy $n-1$ phần tử còn lại phải được chia vào $k-1$ khối. Số cách là $S(n-1, k-1)$.</li>
+            <li><strong>Phần tử thứ $n$ nằm chung với các phần tử khác:</strong> Nghĩa là $n-1$ phần tử trước đó đã được chia thành $k$ khối sẵn. Phần tử $n$ có thể được bỏ vào bất kỳ khối nào trong $k$ khối này. Số cách là $k \cdot S(n-1, k)$.</li>
+        </ol>
+        <p>Tổng hợp lại, ta được hệ thức: $S(n, k) = k \cdot S(n-1, k) + S(n-1, k-1)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.6</div>
+        Dựa vào hệ thức truy hồi ở Bài toán 5.5, hãy tính số Stirling loại 2 $S(5, 3)$. Từ đó, cho biết có bao nhiêu cách chia 5 đồ vật phân biệt vào 3 hộp giống nhau (không có hộp rỗng).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Áp dụng công thức $S(n, k) = kS(n-1, k) + S(n-1, k-1)$ để tính $S(5, 3)$:</p>
+        <ul>
+            <li>$S(3, 1) = 1, S(3, 3) = 1$.</li>
+            <li>$S(3, 2) = 2S(2, 2) + S(2, 1) = 2(1) + 1 = 3$.</li>
+            <li>$S(4, 2) = 2S(3, 2) + S(3, 1) = 2(3) + 1 = 7$.</li>
+            <li>$S(4, 3) = 3S(3, 3) + S(3, 2) = 3(1) + 3 = 6$.</li>
+            <li>$S(5, 3) = 3S(4, 3) + S(4, 2) = 3(6) + 7 = 18 + 7 = 25$.</li>
+        </ul>
+        <p>Số cách chia 5 đồ vật phân biệt vào 3 hộp giống nhau không rỗng chính là định nghĩa của số Stirling loại 2 $S(5, 3)$. <br>
+        <strong>Kết luận:</strong> Có $25$ cách.</p>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.7 (Hàm sinh mũ)</div>
+        Gọi $E(x)$ là hàm sinh mũ (Exponential Generating Function) của dãy số Bell:
+        $$E(x) = \sum_{n=0}^\infty B_n \frac{x^n}{n!}$$
+        Chứng minh phương trình vi phân $E'(x) = e^x E(x)$, từ đó suy ra $E(x) = e^{e^x - 1}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Từ định nghĩa $E(x) = \sum_{n=0}^\infty B_n \frac{x^n}{n!}$. Đạo hàm hai vế theo $x$:</p>
+        $$E'(x) = \sum_{n=1}^\infty B_n \frac{x^{n-1}}{(n-1)!} = \sum_{n=0}^\infty B_{n+1} \frac{x^n}{n!}$$
+        <p>Thay $B_{n+1} = \sum_{k=0}^n \binom{n}{k} B_k$:</p>
+        $$E'(x) = \sum_{n=0}^\infty \left( \sum_{k=0}^n \frac{n!}{k!(n-k)!} B_k \right) \frac{x^n}{n!} = \sum_{n=0}^\infty \sum_{k=0}^n B_k \frac{x^k}{k!} \frac{x^{n-k}}{(n-k)!}$$
+        <p>Đảo thứ tự lấy tổng (hoặc áp dụng quy tắc nhân tích chập của Cauchy):</p>
+        $$E'(x) = \left( \sum_{k=0}^\infty B_k \frac{x^k}{k!} \right) \left( \sum_{j=0}^\infty \frac{x^j}{j!} \right) = E(x) e^x$$
+        <p>Ta có phương trình vi phân: $\frac{E'(x)}{E(x)} = e^x$. <br>
+        Lấy tích phân hai vế: $\ln E(x) = e^x + C$. <br>
+        Với điều kiện biên $E(0) = B_0 = 1$, ta có $\ln(1) = e^0 + C \implies 0 = 1 + C \implies C = -1$. <br>
+        Vậy $\ln E(x) = e^x - 1 \implies E(x) = e^{e^x - 1}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 5.8 (Công thức Dobiński)</div>
+        Sử dụng kết quả của hàm sinh mũ ở Bài toán 5.7, chứng minh công thức Dobiński:
+        $$B_n = \frac{1}{e} \sum_{k=0}^\infty \frac{k^n}{k!}$$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khai triển hàm số $E(x) = e^{e^x - 1}$ bằng chuỗi Taylor:</p>
+        $$e^{e^x - 1} = \frac{1}{e} e^{e^x} = \frac{1}{e} \sum_{k=0}^\infty \frac{(e^x)^k}{k!} = \frac{1}{e} \sum_{k=0}^\infty \frac{e^{kx}}{k!}$$
+        <p>Khai triển tiếp $e^{kx} = \sum_{n=0}^\infty \frac{(kx)^n}{n!}$:</p>
+        $$E(x) = \frac{1}{e} \sum_{k=0}^\infty \frac{1}{k!} \sum_{n=0}^\infty \frac{k^n x^n}{n!} = \sum_{n=0}^\infty \left( \frac{1}{e} \sum_{k=0}^\infty \frac{k^n}{k!} \right) \frac{x^n}{n!}$$
+        <p>Do $E(x)$ là hàm sinh mũ của $B_n$, hệ số của $\frac{x^n}{n!}$ trong khai triển Taylor chính là $B_n$. <br>
+        Đồng nhất hệ số, ta có công thức Dobiński:</p>
+        $$B_n = \frac{1}{e} \sum_{k=0}^\infty \frac{k^n}{k!}$$
+        <p>Chứng minh hoàn tất.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

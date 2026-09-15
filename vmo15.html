@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Lùi Vô Hạn Trong Diophantine</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh thẳm/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ<br>PHƯƠNG PHÁP LÙI VÔ HẠN (INFINITE DESCENT) TRONG PHƯƠNG TRÌNH DIOPHANTINE</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát nghiệm của các phương trình Diophantine thuần nhất và phi tuyến là một cấu trúc trọng tâm trong Lý thuyết Số. Phương pháp Lùi vô hạn (Infinite Descent), được thiết lập bởi Pierre de Fermat, cung cấp một công cụ logic chặt chẽ dựa trên tính rời rạc của tập hợp số nguyên. Bằng cách thiết lập một ánh xạ sinh nghiệm tạo ra một chuỗi các nghiệm nguyên dương giảm ngặt, phương pháp này tạo ra một sự mâu thuẫn với Nguyên lý thứ tự tốt, qua đó chứng minh tính vô nghiệm (trừ nghiệm tầm thường) của phương trình.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Nguyên lý thứ tự tốt (Well-ordering Principle)</div>
+            <div class="box-body">
+                Mọi tập hợp con khác rỗng của tập hợp các số nguyên dương $\mathbb{Z}^+$ đều chứa một phần tử nhỏ nhất. Tức là, nếu $S \subseteq \mathbb{Z}^+$ và $S \neq \emptyset$, thì tồn tại $m \in S$ sao cho $m \le x$ với mọi $x \in S$.
+            </div>
+        </div>
+
+        <p>Hệ quả trực tiếp của nguyên lý này là không tồn tại một dãy vô hạn các số nguyên dương giảm ngặt: $x_1 &gt; x_2 &gt; x_3 &gt; \dots &gt; 0$. Phương pháp lùi vô hạn được xây dựng trực tiếp trên hệ quả này.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Phương pháp Lùi vô hạn (Infinite Descent)</div>
+            <div class="box-body">
+                Giả sử cần chứng minh một phương trình Diophantine không có nghiệm nguyên dương.<br>
+                Nếu giả sử phương trình có một nghiệm nguyên dương $(x_1, y_1, z_1, \dots)$ và từ nghiệm này, bằng các phép biến đổi đại số và tính chất chia hết (thường sử dụng phân tích modulo), ta xây dựng được một nghiệm nguyên dương thứ hai $(x_2, y_2, z_2, \dots)$ thỏa mãn một chuẩn kích thước nhỏ hơn ngặt so với nghiệm ban đầu (ví dụ $x_2 &lt; x_1$). <br>
+                Việc lặp lại quá trình này sẽ tạo ra một dãy vô hạn các số nguyên dương giảm ngặt. Sự tồn tại của dãy này mâu thuẫn với Nguyên lý thứ tự tốt. Do đó, giả thiết ban đầu là sai, và phương trình không có nghiệm nguyên dương (hoặc chỉ có nghiệm tầm thường $(0, 0, 0, \dots)$ trên tập số nguyên).
+            </div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (United States of America Mathematical Olympiad (USAMO) 1976)</div>
+            <div class="box-body">
+                Giải phương trình sau trên tập hợp các số nguyên:
+                $$ a^2 + b^2 + c^2 = a^2 b^2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta sử dụng phương pháp lùi vô hạn kết hợp với phân tích thặng dư theo modulo 4.<br>
+            Với mọi số nguyên $x$, bình phương của nó chia 4 chỉ có thể dư 0 (nếu $x$ chẵn) hoặc dư 1 (nếu $x$ lẻ).<br>
+            Do đó, $x^2 \equiv 0 \pmod 4$ hoặc $x^2 \equiv 1 \pmod 4$.<br><br>
+
+            Khảo sát tính chẵn lẻ của $a$ và $b$:
+            <ul>
+                <li>Nếu cả $a$ và $b$ đều lẻ: $a^2 \equiv 1 \pmod 4$ và $b^2 \equiv 1 \pmod 4$.<br>
+                Khi đó, vế phải $a^2 b^2 \equiv 1 \times 1 \equiv 1 \pmod 4$.<br>
+                Vế trái $a^2 + b^2 + c^2 \equiv 1 + 1 + c^2 = 2 + c^2 \pmod 4$.<br>
+                Vì $c^2 \equiv 0$ hoặc $1 \pmod 4$, vế trái chỉ có thể đồng dư với $2$ hoặc $3 \pmod 4$.<br>
+                Sự mâu thuẫn giữa vế trái ($\equiv 2, 3 \pmod 4$) và vế phải ($\equiv 1 \pmod 4$) loại bỏ trường hợp này.</li>
+                <li>Do đó, ít nhất một trong hai số $a$ hoặc $b$ phải là số chẵn.<br>
+                Không mất tính tổng quát, giả sử $a$ chẵn. Khi đó $a \equiv 0 \pmod 2 \implies a^2 \equiv 0 \pmod 4$.<br>
+                Vế phải $a^2 b^2 \equiv 0 \pmod 4$.<br>
+                Đồng nhất hệ thức modulo 4 cho phương trình:
+                $$ a^2 + b^2 + c^2 \equiv 0 \pmod 4 \implies 0 + b^2 + c^2 \equiv 0 \pmod 4 $$
+                Vì $b^2, c^2 \in \{0, 1\} \pmod 4$, tổng $b^2 + c^2 \equiv 0 \pmod 4$ chỉ xảy ra khi và chỉ khi $b^2 \equiv 0 \pmod 4$ và $c^2 \equiv 0 \pmod 4$.<br>
+                Điều này kéo theo $b$ chẵn và $c$ chẵn.</li>
+            </ul>
+
+            Tóm lại, nếu phương trình có một nghiệm nguyên $(a, b, c)$, thì cả ba số $a, b, c$ đều phải là số chẵn.<br>
+            Đặt $a = 2a_1, b = 2b_1, c = 2c_1$ với $a_1, b_1, c_1 \in \mathbb{Z}$. Thay vào phương trình ban đầu:
+            $$ (2a_1)^2 + (2b_1)^2 + (2c_1)^2 = (2a_1)^2 (2b_1)^2 $$
+            $$ 4a_1^2 + 4b_1^2 + 4c_1^2 = 16a_1^2 b_1^2 $$
+            Chia cả hai vế cho 4:
+            $$ a_1^2 + b_1^2 + c_1^2 = 4a_1^2 b_1^2 \quad (1) $$
+            Phương trình (1) cho thấy vế phải là một bội số của 4, nên $a_1^2 + b_1^2 + c_1^2 \equiv 0 \pmod 4$.<br>
+            Lập luận tương tự như trên, tổng ba bình phương chia hết cho 4 khi và chỉ khi cả ba số đều chẵn.<br>
+            Do đó, $a_1, b_1, c_1$ cũng phải là các số chẵn. Đặt $a_1 = 2a_2, b_1 = 2b_2, c_1 = 2c_2$.<br>
+            Quá trình này có thể được lặp lại vô hạn lần. Mỗi số nguyên $a, b, c$ đều phải chia hết cho $2^k$ với mọi số nguyên dương $k$.<br>
+            Số nguyên duy nhất có thể chia hết cho lũy thừa lớn tùy ý của 2 là số 0.<br>
+            Vậy $a = b = c = 0$. Phương trình chỉ có một nghiệm nguyên duy nhất là $(0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (All-Russian Olympiad 1996)</div>
+            <div class="box-body">
+                Tìm tất cả các nghiệm nguyên của phương trình:
+                $$ x^2 + y^2 + z^2 = 2xyz $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát phương trình theo modulo 4. Các bình phương chỉ có thể đồng dư với 0 hoặc 1 modulo 4.<br>
+            Giả sử tồn tại nghiệm nguyên không đồng thời bằng 0.<br>
+            Nếu $x, y, z$ đều lẻ, $x^2 + y^2 + z^2 \equiv 1 + 1 + 1 = 3 \pmod 4$. Nhưng $2xyz \equiv 2 \pmod 4$ (vì $x,y,z$ lẻ). Mâu thuẫn $3 \equiv 2 \pmod 4$.<br>
+            Nếu có 2 số lẻ, 1 số chẵn. Vế trái $\equiv 1+1+0 = 2 \pmod 4$. Vế phải: vì có 1 số chẵn, $2xyz$ chia hết cho $2 \times 2 = 4$, nên vế phải $\equiv 0 \pmod 4$. Mâu thuẫn $2 \equiv 0 \pmod 4$.<br>
+            Nếu có 1 số lẻ, 2 số chẵn. Vế trái $\equiv 1+0+0 = 1 \pmod 4$. Vế phải $\equiv 0 \pmod 4$. Mâu thuẫn.<br>
+            Vậy bắt buộc cả $x, y, z$ đều là các số chẵn.<br>
+            Đặt $x = 2x_1, y = 2y_1, z = 2z_1$. Thay vào phương trình:
+            $$ 4x_1^2 + 4y_1^2 + 4z_1^2 = 2(2x_1)(2y_1)(2z_1) = 16x_1 y_1 z_1 $$
+            Chia hai vế cho 4:
+            $$ x_1^2 + y_1^2 + z_1^2 = 4x_1 y_1 z_1 $$
+            Lập luận tương tự, vế phải chia hết cho 4, suy ra vế trái $x_1^2 + y_1^2 + z_1^2 \equiv 0 \pmod 4$. Điều này bắt buộc $x_1, y_1, z_1$ đều chẵn.<br>
+            Quá trình chia cho 2 có thể thực hiện vô hạn lần. Áp dụng Nguyên lý lùi vô hạn, $x = y = z = 0$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Greek Mathematical Olympiad 1997)</div>
+            <div class="box-body">
+                Giải phương trình sau trên tập số nguyên:
+                $$ x^3 + 2y^3 = 4z^3 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát phương trình theo modulo 2 (tính chẵn lẻ).<br>
+            Từ phương trình, ta thấy vế phải $4z^3$ là một số chẵn.<br>
+            Hạng tử $2y^3$ cũng là số chẵn. Do đó, $x^3$ bắt buộc phải là số chẵn, kéo theo $x$ là số chẵn.<br>
+            Đặt $x = 2x_1$ ($x_1 \in \mathbb{Z}$). Thay vào phương trình ban đầu:
+            $$ 8x_1^3 + 2y^3 = 4z^3 $$
+            Chia hai vế cho 2:
+            $$ 4x_1^3 + y^3 = 2z^3 $$
+            Bây giờ, vế phải $2z^3$ là số chẵn, và $4x_1^3$ là số chẵn. Suy ra $y^3$ phải là số chẵn, kéo theo $y$ chẵn.<br>
+            Đặt $y = 2y_1$ ($y_1 \in \mathbb{Z}$). Thay vào phương trình mới:
+            $$ 4x_1^3 + 8y_1^3 = 2z^3 $$
+            Chia hai vế cho 2:
+            $$ 2x_1^3 + 4y_1^3 = z^3 $$
+            Lập luận tương tự, vế trái là một số chẵn, suy ra $z^3$ chẵn, kéo theo $z$ chẵn.<br>
+            Đặt $z = 2z_1$. Phương trình trở thành:
+            $$ 2x_1^3 + 4y_1^3 = 8z_1^3 \implies x_1^3 + 2y_1^3 = 4z_1^3 $$
+            Cặp $(x_1, y_1, z_1)$ là một nghiệm mới có kích thước nhỏ hơn nghiệm ban đầu $(x, y, z)$. Quá trình này lặp lại vô hạn, chứng tỏ phương trình chỉ có nghiệm $(0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Romanian National Olympiad 1999)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên $x, y, z$ thỏa mãn:
+                $$ x^3 + 3y^3 = 9z^3 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát phương trình theo modulo 3.<br>
+            Vế phải $9z^3 \equiv 0 \pmod 3$.<br>
+            Hạng tử $3y^3 \equiv 0 \pmod 3$.<br>
+            Do đó, $x^3 \equiv 0 \pmod 3$. Theo tính chất số nguyên tố, điều này kéo theo $x \equiv 0 \pmod 3$.<br>
+            Đặt $x = 3x_1$ ($x_1 \in \mathbb{Z}$). Thay vào phương trình:
+            $$ 27x_1^3 + 3y^3 = 9z^3 $$
+            Chia hai vế cho 3:
+            $$ 9x_1^3 + y^3 = 3z^3 $$
+            Phân tích tương tự theo modulo 3 đối với phương trình mới, ta thu được $y^3 \equiv 0 \pmod 3 \implies y \equiv 0 \pmod 3$.<br>
+            Đặt $y = 3y_1$. Phương trình trở thành:
+            $$ 9x_1^3 + 27y_1^3 = 3z^3 $$
+            Chia hai vế cho 3:
+            $$ 3x_1^3 + 9y_1^3 = z^3 $$
+            Một lần nữa, vế trái chia hết cho 3, nên $z^3 \equiv 0 \pmod 3 \implies z \equiv 0 \pmod 3$.<br>
+            Đặt $z = 3z_1$, ta thu được $3x_1^3 + 9y_1^3 = 27z_1^3 \implies x_1^3 + 3y_1^3 = 9z_1^3$.<br>
+            Dãy nghiệm thu được lùi vô hạn. Phương trình chỉ có nghiệm $(0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Austrian National Olympiad (\text{Ö}MO) 1990)</div>
+            <div class="box-body">
+                Giải phương trình Diophantine sau:
+                $$ x^2 + y^2 = 3z^2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát theo modulo 3. Với mọi số nguyên $a$, bình phương của nó chia 3 chỉ dư 0 hoặc 1 ($a^2 \equiv 0, 1 \pmod 3$).<br>
+            Vế phải $3z^2 \equiv 0 \pmod 3$.<br>
+            Do đó, $x^2 + y^2 \equiv 0 \pmod 3$.<br>
+            Vì $x^2, y^2 \in \{0, 1\} \pmod 3$, tổng của chúng chia hết cho 3 khi và chỉ khi cả hai đều chia hết cho 3.<br>
+            Tức là $x^2 \equiv 0 \pmod 3$ và $y^2 \equiv 0 \pmod 3$, kéo theo $x \equiv 0 \pmod 3$ và $y \equiv 0 \pmod 3$.<br>
+            Đặt $x = 3x_1, y = 3y_1$. Thay vào phương trình:
+            $$ 9x_1^2 + 9y_1^2 = 3z^2 $$
+            Chia hai vế cho 3:
+            $$ 3x_1^2 + 3y_1^2 = z^2 \implies 3(x_1^2 + y_1^2) = z^2 $$
+            Hệ thức chỉ ra rằng $z^2$ chia hết cho 3, kéo theo $z$ chia hết cho 3. Đặt $z = 3z_1$.
+            $$ 3(x_1^2 + y_1^2) = 9z_1^2 \implies x_1^2 + y_1^2 = 3z_1^2 $$
+            Từ một nghiệm bất kỳ, ta trích xuất được một nghiệm có giá trị tuyệt đối nhỏ hơn (bằng 1/3 nghiệm cũ). Theo nguyên lý lùi vô hạn, phương trình chỉ có nghiệm $(0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Spanish Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Chứng minh rằng phương trình $x^2 + y^2 = 7z^2$ chỉ có nghiệm nguyên duy nhất là $x=y=z=0$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng phân tích modulo 7. Các thặng dư bậc hai theo modulo 7 là $0^2 \equiv 0$, $1^2 \equiv 1$, $2^2 \equiv 4$, $3^2 \equiv 2$. Vậy $a^2 \equiv 0, 1, 2, 4 \pmod 7$.<br>
+            Từ phương trình, $x^2 + y^2 \equiv 0 \pmod 7$.<br>
+            Ta kiểm tra các cặp tổng từ tập $\{0, 1, 2, 4\}$ để xem tổ hợp nào chia hết cho 7:
+            <ul>
+                <li>$0+0 = 0$ (Đúng).</li>
+                <li>Các tổ hợp khác: $1+1=2, 1+2=3, 1+4=5, 2+2=4, 2+4=6, 4+4=8 \equiv 1$.</li>
+            </ul>
+            Không có cặp nào khác không có tổng chia hết cho 7.<br>
+            Do đó, bắt buộc $x^2 \equiv 0 \pmod 7$ và $y^2 \equiv 0 \pmod 7$, kéo theo $x \equiv 0 \pmod 7$ và $y \equiv 0 \pmod 7$.<br>
+            Đặt $x = 7x_1, y = 7y_1$. Thay vào phương trình:
+            $$ 49x_1^2 + 49y_1^2 = 7z^2 \implies 7(x_1^2 + y_1^2) = z^2 $$
+            Hệ thức cho thấy $z^2 \equiv 0 \pmod 7 \implies z \equiv 0 \pmod 7$. Đặt $z = 7z_1$:
+            $$ 7(x_1^2 + y_1^2) = 49z_1^2 \implies x_1^2 + y_1^2 = 7z_1^2 $$
+            Quá trình lùi vô hạn xác lập. Phương trình chỉ có nghiệm tầm thường $(0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Korean Mathematical Olympiad (KMO) 1997)</div>
+            <div class="box-body">
+                Giải phương trình sau trên tập các số nguyên:
+                $$ x^2 + y^2 + z^2 + w^2 = 2xyzw $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát theo modulo 4. $x^2, y^2, z^2, w^2 \in \{0, 1\} \pmod 4$.<br>
+            Giả sử có một nghiệm không tầm thường. Xét tính chẵn lẻ của 4 biến.<br>
+            Nếu tất cả đều lẻ: vế trái $\equiv 1+1+1+1 = 4 \equiv 0 \pmod 4$. Vế phải $\equiv 2 \times (\text{số lẻ}) \equiv 2 \pmod 4$. (Mâu thuẫn).<br>
+            Nếu có ít nhất một số chẵn, tích $2xyzw$ sẽ chứa ít nhất một nhân tử 2 ngoài số 2 có sẵn, do đó $2xyzw \equiv 0 \pmod 4$.<br>
+            Khi đó vế trái $x^2 + y^2 + z^2 + w^2 \equiv 0 \pmod 4$. Vì mỗi bình phương chỉ dư 0 hoặc 1, tổng của chúng chia hết cho 4 khi và chỉ khi tất cả đều dư 0. Tức là $x, y, z, w$ đều phải là các số chẵn.<br>
+            Đặt $x = 2x_1, y = 2y_1, z = 2z_1, w = 2w_1$. Thay vào phương trình:
+            $$ 4x_1^2 + 4y_1^2 + 4z_1^2 + 4w_1^2 = 2(2x_1)(2y_1)(2z_1)(2w_1) = 32 x_1 y_1 z_1 w_1 $$
+            Chia cả hai vế cho 4:
+            $$ x_1^2 + y_1^2 + z_1^2 + w_1^2 = 8 x_1 y_1 z_1 w_1 $$
+            Lập luận tương tự, vế phải chia hết cho 8 (nên chia hết cho 4), bắt buộc vế trái chia hết cho 4, kéo theo $x_1, y_1, z_1, w_1$ đều chẵn.<br>
+            Phép lùi này có thể kéo dài vô hạn. Nghiệm duy nhất của phương trình là $(0, 0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Bulgarian National Olympiad 1998)</div>
+            <div class="box-body">
+                Tìm tất cả các nghiệm nguyên của phương trình:
+                $$ x^2 + y^2 + z^2 + u^2 + v^2 = 2xyzuv $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương pháp giải hoàn toàn tương tự bài toán trên bằng cách sử dụng modulo 4.<br>
+            Giả sử không phải tất cả đều chẵn, tức là có một số phần tử lẻ.<br>
+            Nếu tất cả 5 biến đều lẻ, vế trái $\equiv 1+1+1+1+1 = 5 \equiv 1 \pmod 4$. Vế phải $\equiv 2 \times (\text{lẻ}) \equiv 2 \pmod 4$. Mâu thuẫn.<br>
+            Nếu có ít nhất một biến chẵn, vế phải $2xyzuv \equiv 0 \pmod 4$.<br>
+            Khi đó vế trái là tổng của 5 bình phương chia hết cho 4. Vì mỗi bình phương dư 0 hoặc 1, để tổng 5 số từ $\{0, 1\}$ chia hết cho 4, tổng đó phải là 0 hoặc 4. <br>
+            Nhưng nếu là 4, tức là có 4 số lẻ và 1 số chẵn. Vế trái chẵn, vế phải chẵn. Tuy nhiên vế phải $2xyzuv$ với 1 số chẵn (giả sử $x=2k$, các số kia lẻ) sẽ đồng dư với $4k \equiv 0 \pmod 4$. Vế trái $\equiv 4 \equiv 0 \pmod 4$.<br>
+            Để đi sâu hơn, xét modulo 8. Bình phương số lẻ $\equiv 1 \pmod 8$.<br>
+            Tổng 4 số lẻ và 1 số chẵn $\implies x^2 + y^2 + z^2 + u^2 + v^2 \equiv 1+1+1+1 + (2k)^2 = 4 + 4k^2 \pmod 8$.<br>
+            Vế phải $2(2k)(\text{lẻ}) = 4k(\text{lẻ}) \pmod 8$. Phương trình $4 + 4k^2 \equiv 4k \pmod 8 \implies 1 + k^2 \equiv k \pmod 2 \implies k^2 - k + 1 \equiv 0 \pmod 2$. Nhưng $k^2 - k + 1 = k(k-1) + 1$ luôn lẻ. Mâu thuẫn!<br>
+            Do đó, không thể có 4 số lẻ. Bắt buộc tổng phải bằng 0 modulo 4, tức là cả 5 số đều chẵn.<br>
+            Đặt $x = 2x_1, \dots$. Thay vào thu được:
+            $$ 4 \sum x_1^2 = 2(32 x_1 y_1 z_1 u_1 v_1) = 64 \prod x_1 \implies \sum x_1^2 = 16 \prod x_1 $$
+            Vế phải chia hết cho 16, lại tiếp tục lùi vô hạn. Nghiệm duy nhất là 0 cho tất cả các biến.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Italian Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng phương trình $x^2 + y^2 = 3(u^2 + v^2)$ không có nghiệm nguyên nào khác ngoài $(0, 0, 0, 0)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát phương trình theo modulo 3.<br>
+            Vế phải $3(u^2 + v^2) \equiv 0 \pmod 3$.<br>
+            Do đó, vế trái $x^2 + y^2 \equiv 0 \pmod 3$.<br>
+            Vì $x^2, y^2 \equiv 0, 1 \pmod 3$, tổng của chúng chia hết cho 3 khi và chỉ khi $x \equiv 0 \pmod 3$ và $y \equiv 0 \pmod 3$.<br>
+            Đặt $x = 3x_1$ và $y = 3y_1$. Thay vào phương trình:
+            $$ 9x_1^2 + 9y_1^2 = 3(u^2 + v^2) $$
+            Chia cả hai vế cho 3:
+            $$ 3(x_1^2 + y_1^2) = u^2 + v^2 $$
+            Tương tự như trên, vế trái chia hết cho 3, dẫn đến vế phải $u^2 + v^2 \equiv 0 \pmod 3$.<br>
+            Điều này lại bắt buộc $u \equiv 0 \pmod 3$ và $v \equiv 0 \pmod 3$.<br>
+            Đặt $u = 3u_1$ và $v = 3v_1$. Thay vào:
+            $$ 3(x_1^2 + y_1^2) = 9u_1^2 + 9v_1^2 \implies x_1^2 + y_1^2 = 3(u_1^2 + v_1^2) $$
+            Cấu trúc phương trình được bảo toàn nguyên vẹn với các biến có giá trị tuyệt đối nhỏ hơn 3 lần. Theo nguyên lý lùi vô hạn, phương trình chỉ có nghiệm tầm thường $(0, 0, 0, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

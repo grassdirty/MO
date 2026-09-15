@@ -313,7 +313,7 @@
         }
 
 
-        /* ===== Bară online din footer ===== */
+        /* ===== Bară online în footer ===== */
         .footer-live {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             background: linear-gradient(135deg, #0b1f4d, #1c3a8a);
@@ -352,9 +352,9 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">68</b><small>Bài viết</small></div>
-            <div class="stat"><b id="countVmo">8</b><small>Luyện tập VMO</small></div>
-            <div class="stat"><b id="countCat">7</b><small>Chủ đề</small></div>
+            <div class="stat"><b id="countAll">83</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countVmo">15</b><small>Luyện tập VMO</small></div>
+            <div class="stat"><b id="countCat">8</b><small>Chủ đề</small></div>
             <div class="stat"><b id="countOnline">0</b><small>Đang online</small></div>
             <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
         </div>
@@ -408,7 +408,8 @@
             comb:  { label: 'Đại số tổ hợp',                             color: '#8b008b' },
             ineq:  { label: 'Bất đẳng thức',                             color: '#b8860b' },
             graph: { label: 'Lý thuyết đồ thị',                          color: '#008080' },
-            dio:   { label: 'Phương trình Diophantine',                  color: '#8b4513' }
+            dio:   { label: 'Phương trình Diophantine',                  color: '#8b4513' },
+            oeis:  { label: 'OEIS — Dãy sô', color: '#c71585' }
         };
 
         // ===== Danh sách bài viết (phần 1) =====
@@ -473,11 +474,14 @@
             { n:58, file:'index58.html', cat:'comb',  title:'Toán rời rạc và Lý thuyết trò chơi - Phép cộng Nim và Định lý Sprague-Grundy',          desc:'Phép cộng Nim và định lý Sprague-Grundy trong lý thuyết trò chơi.' },
             { n:59, file:'index59.html', cat:'comb',  title:'Hình học Tổ hợp - Nguyên lý Phản xạ André và Cấu trúc Catalan',                          desc:'Nguyên lý phản xạ André và cấu trúc số Catalan.' },
             { n:60, file:'index60.html', cat:'comb',  title:'Đại số Tổ hợp - Lưới nghiệm đơn vị và Tổng các hệ số cách đều',                          desc:'Kỹ thuật roots-of-unity filter để trích xuất tổng hệ số cách đều.' },
-            { n:61, file:'index61.html', cat:'nt',    title:'Số học Tổ hợp — Tích chập Dirichlet și Nghiș Đao Möbius',                  desc:'Nghiș đao Möbius și Tích chập Dirichlet pentru transformări de sumă peste divizori.' },
-            { n:62, file:'index62.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Không gian Vector trên Z₂ și Hệ liniar independents',         desc:'Vectore binarî pe Z₂ pentru probleme de mulțimi: ortogonalitate și rang de mațrică.' },
-            { n:63, file:'index63.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Lưới Young, Phép chèn Schensted și corespondența RSK',       desc:'Lưới Young, formula de lungime pentru hoán vâști și corespondența RSK pentru LIS și LDS.' },
-            { n:64, file:'index64.html', cat:'comb',  title:'Tổ hợp Cực trị și Xác suất — Phương phảp Xác suất și Tính tuyến tính a Kỳ vọng', desc:'Phương phảp xác suất (probabilistic method) și kỳ vọng pentru a dimostra existența în combinator și graph theory.' },
-            { n:65, file:'index65.html', cat:'comb',  title:'Đai sỗ Tổ hợp — Dàn Boole și Phép biến đôi Möbius trê tâp hộp', desc:'Dàn Boole (Boolean lattice) și nghîch đao Möbius pentru a generaliza Nguyên lỷ bao hàm-loai trưb (PIE) în combinator.' }, 
+            { n:61, file:'index61.html', cat:'nt',  title:'Số học Tổ hợp — Tích chập Dirichlet và Nghịch đảo Möbius', desc:'Tích chập Dirichlet là một cấu trúc thuộc Đại số Trừu tượng (Lý thuyết Vành) và Số học Giải tích. Để học sinh dễ dàng tiếp cận, ta cần hiểu rõ cơ chế vận hành của phép chập thông qua ví dụ cụ thể:' },
+            { n:62, file:'index62.html', cat:'comb',  title:'Đại số Tổ hợp — Không gian Vector trên Z_2 và Hệ cơ sở độc lập', desc:'Chuyên đề này sử dụng một số khái niệm của Đại số tuyến tính ở bậc Đại học như Không gian nghiệm, Không gian cột và Định lý Hạng - Độ suy biến. Để học sinh THPT dễ dàng tiếp thu bài toán 2.1 và 3.2, ta cần nắm vững các k' },
+            { n:63, file:'index63.html', cat:'comb',  title:'Đại số Tổ hợp — Lưới Young, Phép chèn Schensted và Tương ứng RSK', desc:'Trong chuyên đề này, Bài toán 3.2 và 3.3 sử dụng các tính chất sâu của Lưới Young thường được giảng dạy ở Đại học. Để học sinh THPT dễ tiếp cận, ta cần bổ sung Công thức Độ dài móc và liên hệ Mạng luồng (Max-flow Min-cut' },
+            { n:64, file:'index64.html', cat:'comb',  title:'Tổ hợp Cực trị và Xác suất — Phương pháp Xác suất và Tính tuyến tính của Kỳ vọng', desc:'Phương pháp xác suất trong tổ hợp sử dụng các khái niệm mở rộng từ chương trình xác suất của THPT. Để hiểu rõ các phép chứng minh dưới đây, ta cần nắm vững ý tưởng về Kỳ vọng và Biến chỉ thị:' },
+            { n:65, file:'index65.html', cat:'comb',  title:'Tổ hợp Đại số — Dàn Boole và Phép biến đổi Möbius trên tập hợp', desc:'Phép biến đổi trên các tập con thường sử dụng tư duy  phân rã theo từng phần tử . Để học sinh THPT có thể tiếp cận dễ dàng với bài toán 3.2 và 3.3, ta cần làm quen với nguyên lý sau:' },
+
+            { n:66, file:'index66.html', cat:'comb',  title:'Toán rời rạc và Đại số — Vi tích phân rời rạc và Số Stirling loại II', desc:'Trong Bài toán 3.1 và 3.2, phương pháp giải sử dụng Toán tử Sai phân bậc cao , một khái niệm thuộc Giải tích Số ở bậc Đại học. Để học sinh dễ dàng nắm bắt, ta cần bổ sung định nghĩa và chứng minh tính chất của toán tử nà' },
+            { n:67, file:'index67.html', cat:'poly',  title:'Giải tích — Đánh giá tiệm cận dãy truy hồi và Định lý Stolz-Cesàro', desc:'Định lý Weierstrass phát biểu dựa trên hai khái niệm Cận trên đúng ( ) và Cận dưới đúng ( ), vốn là những khái niệm của Giải tích giải tích thực ở bậc Đại học. Dưới đây là định nghĩa cơ sở để hiểu rõ chứng minh:' },
             { n:1,  file:'vmo1.html',    cat:'poly',  stars:3, title:'Đại số Đa thức & tính chất Số học — Cấu trúc chia hết của đa thức hệ số nguyên',  desc:'Định lý chia hết của đa thức hệ số nguyên và ứng dụng USAMO 1974.' },
             { n:2,  file:'vmo2.html',    cat:'nt',    stars:4, title:'Số học và Đại số — Phương trình Pell và Cấu trúc nghiệm Diophantine bậc hai',      desc:'Phương trình Pell và cấu trúc nghiệm Diophantine bậc hai.' },
             { n:3,  file:'vmo3.html',    cat:'fe',    stars:3, title:'Đại số và Phương trình hàm — Cauchy và các phép biến đổi đồng nhất',              desc:'Phương trình Cauchy và các phép biến đổi đồng nhất.' },
@@ -488,9 +492,13 @@
             { n:8,  file:'vmo8.html',    cat:'poly',  stars:3, title:'Đại số Đa thức — Phương trình hàm đa thức và Phương pháp xác định nghiệm',        desc:'Phương trình hàm đa thức và phương pháp xác định nghiệm.' },
             { n:9,  file:'vmo9.html',    cat:'poly',  stars:4, title:'Đại số Đa thức - Đại số và lý thuyết số phương trình sai phân tuyến tính và tính chất số học của dãy số', desc:'Đại số và lý thuyết số phương trình sai phân tuyến tính và tính chất số học của dãy số.' },
             { n:10, file:'vmo10.html',   cat:'poly',  stars:3, title:'Đại số Đa thức - Hệ phương trình đa thức đối xứng cơ bản và hệ thức Newton', desc:'Hệ phương trình đa thức đối xứng cơ bản và hệ thức Newton.' },
-            { n:11, file:'vmo11.html',   cat:'nt',    stars:4, title:'Số học și Đại số — Bổ Đề Nâng Lũy Thừa (LTE) și Phương trìn Diophantine mũ', desc:'Bổ đề nâng lũy thừa (LTE) și aplicarea în ecuații Diophantine exponențiale.' },
-            { n:12, file:'vmo12.html',   cat:'dio',   stars:4, title:'Số học și Đại số — Phương phảp Bước nhảy Vieta (Vieta Jumping) și Phương trìn Diophantine bậc hai', desc:'Phương phảp bước nhảy Vieta și aplicarea în ecuații Diophantine.' },
-            { n:13, file:'vmo13.html',   cat:'nt',    stars:4, title:'Số học și Đai số — Căp de phăntă (Order) și Đinh lý Euler pentru divizibilitatea a^n ± 1', desc:'Căp de phăntă (multiplicative order) și Đinh lý Euler pentru a studia diviza a^n ± 1 în ecuațile Diophantine.' }
+            { n:11, file:'vmo11.html', cat:'nt', stars:4, title:'Bổ Đề Nâng Lũy Thừa (LTE)', desc:'Tóm tắt: Khảo sát số mũ đúng (p-adic valuation) của một số nguyên là một công cụ trọng tâm trong Số học giải tích. Bổ đề nâng lũy thừa (Lifting The Exponent Lemma - LTE) thiết lập mối liên hệ trực tiếp giữa số mũ đúng củ' },
+            { n:12, file:'vmo12.html', cat:'dio', stars:4, title:'Bước Nhảy Vieta (Vieta Jumping)', desc:'Cơ sở của phương pháp Bước nhảy Vieta dựa trên định lý sau:' },
+            { n:13, file:'vmo13.html', cat:'nt', stars:4, title:'Cấp Của Phần Tử & Nguyên Lý Ước Nguyên Tố Nhỏ Nhất', desc:'Cấu trúc chia hết của số mũ được kiểm soát hoàn toàn bởi cấp của phần tử thông qua định lý sau:' },
+
+            { n:14, file:'vmo14.html', cat:'dio', stars:4, title:'Phương Pháp Kẹp — Diophantine Đa Thức', desc:'Đối với một đa thức có bậc chẵn và hệ số dẫn đầu là một số chính phương, ta có thể khai triển và so sánh với bình phương của một đa thức bậc .' },
+            { n:15, file:'vmo15.html', cat:'dio', stars:4, title:'Lùi Vô Hạn Trong Diophantine', desc:'Hệ quả trực tiếp của nguyên lý này là không tồn tại một dãy vô hạn các số nguyên dương giảm ngặt: . Phương pháp lùi vô hạn được xây dựng trực tiếp trên hệ quả này.' },
+            { n:1, file:'oeis1.html', cat:'oeis',  title:'Bài toán Hoán vị không điểm bất động (Derangement)', desc:'Trong tổ hợp học, một hoán vị không điểm bất động của một tập hợp là một hoán vị trong đó không có phần tử nào xuất hiện ở vị trí ban đầu của nó.' },
         ];
 
         // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
@@ -624,8 +632,8 @@
         //    vd: 1250 → "1,25K"  •  143454 → "143,454K"  •  1234567 → "1,234567M"
         //  - Nếu APPS_SCRIPT_URL không gọi được → tự chuyển về localStorage
         // ============================================================
-        // PRESENCE_URL — introduce aici URL nòu web-app (vezi AppsScript_Code.gs);
-        //   cu acesta "người online" și phân trin duyət vor deveni globale.
+        // PRESENCE_URL — introdu aici URL nouă web-app (uita AppsScript_Code.gs);
+        //   cu acesta "người online" và phân trin duyət vor deveni globale.
         //   Dacă rồmane gol ('') -> funcționează doar modul local (dispozitivul).
         const PRESENCE_URL = ''; // ex: https://script.google.com/macros/s/XXXX/exec
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKjYk2elM5kLba26kINmjIf98G_hQGNM5KlBUWhiRmy-wUK3W1NaQTfMy2-AXBxV56/exec';
@@ -688,8 +696,8 @@
         })();
         // ============================================================
         //  NGƯỜI ĐANG ONLINE + TRÌNH DUYƏT (heartbeat)
-        //  - Începă cu server (PRESENCE_URL); dacă indisponibil -
-        //    mod local (tab-uri active ale acestui dispozitiv/navigator)
+        //  - Începă trê server (PRESENCE_URL); dacă indisponibil -
+        //    mod local (tab-uri active ale acestui browser/navigator)
         // ============================================================
         (function () {
             const elOnline = document.getElementById('countOnline');
@@ -724,7 +732,7 @@
             }
             const MY_BROWSER = detectBrowser();
 
-            // ---- mod local (de rezervă) ----
+            // ---- mod local (dự phòng) ----
             function localMap() {
                 const now = Date.now();
                 let map = {};
@@ -736,7 +744,7 @@
                 return fresh;
             }
 
-            // ---- afișare ----
+            // ---- afișă (render) ----
             function browsersFromSessions(map) {
                 const out = {};
                 Object.keys(map).forEach(k => {
@@ -784,7 +792,7 @@
                 }
             }
 
-            // afișează imediat, apoi server va rafina
+            // afișă imediat, apoi server va rafina
             const m0 = localMap();
             render(Object.keys(m0).length, browsersFromSessions(m0));
             tick();

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Phương Pháp Kẹp - Diophantine Đa Thức</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ<br>PHƯƠNG PHÁP KẸP VÀ GIỚI HẠN TIỆM CẬN TRONG PHƯƠNG TRÌNH DIOPHANTINE ĐA THỨC</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát nghiệm nguyên của phương trình Diophantine dạng $y^k = P(x)$ là một cấu trúc trọng tâm trong Lý thuyết Số đại số. Đối với các đa thức $P(x)$ có bậc chẵn, sự phân bố của các giá trị đa thức tiệm cận rất gần với bình phương của một đa thức khác. Bằng việc thiết lập bất đẳng thức kẹp giá trị của $P(x)$ giữa hai lũy thừa bậc $k$ liên tiếp của các đa thức hệ số nguyên, ta có thể giới hạn không gian nghiệm thực tế về một tập hợp hữu hạn. Chuyên đề này phân tích cơ sở lý thuyết của phương pháp kẹp và ứng dụng để giải quyết các phương trình nghiệm nguyên trong hệ thống Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Nguyên lý khoảng trống rời rạc</div>
+            <div class="box-body">
+                Trên tập hợp các số nguyên $\mathbb{Z}$, không tồn tại bất kỳ số nguyên $m$ nào nằm ngặt giữa hai số nguyên liên tiếp. Từ đó, không tồn tại số nguyên $y$ nào thỏa mãn hệ thức:
+                $$ k^n < y^n < (k+1)^n $$
+                với $k$ là một số nguyên dương và $n \ge 2$.
+            </div>
+        </div>
+
+        <p>Đối với một đa thức $P(x)$ có bậc chẵn $2m$ và hệ số dẫn đầu là một số chính phương, ta có thể khai triển $P(x)$ và so sánh với bình phương của một đa thức bậc $m$.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Giới hạn tiệm cận của đa thức bậc chẵn</div>
+            <div class="box-body">
+                Cho đa thức $P(x) = a^2 x^{2m} + b x^{2m-1} + \dots + c$ với hệ số nguyên. Tồn tại một hằng số $M > 0$ và một đa thức $Q(x)$ bậc $m$ với hệ số hữu tỉ sao cho với mọi $|x| > M$, giá trị của $P(x)$ bị kẹp ngặt giữa $(Q(x))^2$ và $(Q(x) \pm 1)^2$. <br>
+                Hệ quả: Số lượng nghiệm nguyên của phương trình $y^2 = P(x)$ là hữu hạn và các nghiệm này chỉ nằm trong đoạn $[-M, M]$ hoặc tại các điểm mà $P(x)$ vô tình tạo thành một bình phương đúng.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Khảo sát khai căn bậc hai của đa thức $P(x)$ bằng chuỗi Taylor hoặc thuật toán khai căn đa thức. Ta luôn xác định được phần nguyên $Q(x)$ sao cho $P(x) - Q(x)^2 = R(x)$, với bậc của $R(x)$ nhỏ hơn $m$.<br>
+            Do $\deg(R) < \deg(Q)$, tỷ số $\frac{R(x)}{Q(x)}$ tiến về 0 khi $|x| \to \infty$. <br>
+            Bằng cách nhân hằng số thích hợp để khử mẫu (nếu $Q(x)$ có hệ số hữu tỉ), ta thiết lập được bất đẳng thức $(kQ(x))^2 < k^2 P(x) < (kQ(x) \pm 1)^2$. Bất đẳng thức này đúng khi $|x|$ vượt qua ranh giới nghiệm lớn nhất của các đa thức hiệu. Khoảng hữu hạn còn lại có thể kiểm tra bằng phép thử trực tiếp.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Romanian National Olympiad 1997)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên $(x, y)$ thỏa mãn phương trình:
+                $$ y^2 = x^4 + x^3 + x^2 + x + 1 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương trình đã cho có đa thức vế phải bậc 4. Ta nhân cả hai vế với 4 để triệt tiêu phân số khi thiết lập bình phương của đa thức bậc 2:
+            $$ 4y^2 = 4x^4 + 4x^3 + 4x^2 + 4x + 4 $$
+            Đặt đại lượng này là $P(x)$. Ta tìm cách kẹp $P(x)$ giữa bình phương của hai đa thức bậc 2 liên tiếp.<br>
+            Đa thức cơ sở được đề xuất là $Q(x) = 2x^2 + x$. Khai triển bình phương:
+            $$ (2x^2 + x)^2 = 4x^4 + 4x^3 + x^2 $$
+            So sánh với $P(x)$:
+            $$ P(x) - (2x^2 + x)^2 = 3x^2 + 4x + 4 $$
+            Do tam thức $3x^2 + 4x + 4$ có biệt thức $\Delta' = 4 - 12 = -8 < 0$ và hệ số $a = 3 > 0$, nó luôn dương với mọi $x \in \mathbb{R}$. Do đó:
+            $$ (2x^2 + x)^2 < 4y^2 \quad \forall x \in \mathbb{Z} \quad (1) $$
+
+            Tiếp tục xét đa thức $(2x^2 + x + 2)^2$:
+            $$ (2x^2 + x + 2)^2 = 4x^4 + x^2 + 4 + 4x^3 + 8x^2 + 4x = 4x^4 + 4x^3 + 9x^2 + 4x + 4 $$
+            So sánh với $P(x)$:
+            $$ (2x^2 + x + 2)^2 - P(x) = 5x^2 \ge 0 $$
+            Đẳng thức xảy ra khi và chỉ khi $x = 0$.<br>
+            Với mọi $x \neq 0$, ta có:
+            $$ 4y^2 < (2x^2 + x + 2)^2 \quad \forall x \neq 0 \quad (2) $$
+
+            Từ (1) và (2), với mọi $x \neq 0$, số chính phương $4y^2 = (2y)^2$ bị kẹp ngặt giữa $(2x^2+x)^2$ và $(2x^2+x+2)^2$.<br>
+            Do đó, $(2y)^2$ bắt buộc phải bằng bình phương của số nguyên nằm ngay giữa chúng:
+            $$ 4y^2 = (2x^2 + x + 1)^2 $$
+            Khai triển và đồng nhất với phương trình ban đầu:
+            $$ 4x^4 + 4x^3 + 4x^2 + 4x + 4 = (2x^2 + x + 1)^2 = 4x^4 + 4x^3 + 5x^2 + 2x + 1 $$
+            Rút gọn hai vế:
+            $$ x^2 - 2x - 3 = 0 \implies (x+1)(x-3) = 0 $$
+            Phương trình có hai nghiệm $x = -1$ và $x = 3$.<br>
+            Bây giờ, ta tiến hành kiểm tra các giá trị biên và các nghiệm vừa tìm được:
+            <ul>
+                <li>Với $x = 0$ (điểm ngoại lệ của bất đẳng thức 2): $y^2 = 1 \implies y = \pm 1$.</li>
+                <li>Với $x = -1$: $y^2 = 1 - 1 + 1 - 1 + 1 = 1 \implies y = \pm 1$.</li>
+                <li>Với $x = 3$: $y^2 = 81 + 27 + 9 + 3 + 1 = 121 \implies y = \pm 11$.</li>
+            </ul>
+            Tập hợp tất cả các cặp nghiệm nguyên $(x, y)$ của phương trình là:<br>
+            $(0, 1), (0, -1), (-1, 1), (-1, -1), (3, 11), (3, -11)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Austrian National Olympiad (\text{Ö}MO) 2001)</div>
+            <div class="box-body">
+                Tìm các số nguyên $x, y$ thỏa mãn:
+                $$ y^2 = x^4 + 2x^3 + 2x^2 + 2x + 5 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét các bình phương đa thức tiệm cận:
+            $$ (x^2+x)^2 = x^4 + 2x^3 + x^2 $$
+            $$ (x^2+x+1)^2 = x^4 + 2x^3 + 3x^2 + 2x + 1 $$
+            $$ (x^2+x+2)^2 = x^4 + 2x^3 + 5x^2 + 4x + 4 $$
+
+            Khảo sát chênh lệch:<br>
+            $y^2 - (x^2+x)^2 = x^2 + 2x + 5 = (x+1)^2 + 4 > 0 \quad \forall x \in \mathbb{R}$. Do đó $y^2 > (x^2+x)^2$.<br>
+            Khảo sát ranh giới trên:<br>
+            $(x^2+x+2)^2 - y^2 = 3x^2 + 2x - 1 = (x+1)(3x-1)$.<br>
+            Tam thức này dương khi $x > \frac{1}{3}$ hoặc $x < -1$.<br>
+            Vì $x \in \mathbb{Z}$, nó dương với mọi $x \ge 1$ và $x \le -2$.<br>
+            Trong các miền này, ta có bất đẳng thức ngặt:
+            $$ (x^2+x)^2 < y^2 < (x^2+x+2)^2 $$
+            Vì $y^2$ là một số chính phương, bắt buộc phải xảy ra:
+            $$ y^2 = (x^2+x+1)^2 \implies x^4 + 2x^3 + 2x^2 + 2x + 5 = x^4 + 2x^3 + 3x^2 + 2x + 1 $$
+            $$ x^2 = 4 \implies x = 2 \text{ hoặc } x = -2 $$
+            Kiểm tra các giá trị không nằm trong miền bất đẳng thức ngặt ($x = 0, -1$):
+            <ul>
+                <li>$x = 0 \implies y^2 = 5$ (Vô nghiệm).</li>
+                <li>$x = -1 \implies y^2 = 1 - 2 + 2 - 2 + 5 = 4 \implies y = \pm 2$.</li>
+            </ul>
+            Kiểm tra các nghiệm từ phương trình:
+            <ul>
+                <li>$x = 2 \implies y^2 = 16 + 16 + 8 + 4 + 5 = 49 \implies y = \pm 7$.</li>
+                <li>$x = -2 \implies y^2 = 16 - 16 + 8 - 4 + 5 = 9 \implies y = \pm 3$.</li>
+            </ul>
+            Tập nghiệm $(x, y)$ là $(-1, \pm 2), (2, \pm 7), (-2, \pm 3)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (Spanish Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên $(x, y)$ thỏa mãn $y^2 = x^4 + x^2 + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét đa thức cơ sở:
+            $$ (x^2)^2 = x^4 $$
+            $$ (x^2+1)^2 = x^4 + 2x^2 + 1 $$
+            Khảo sát bất đẳng thức kép:<br>
+            Với mọi $x \neq 0$, ta có $x^2 > 0$. Suy ra:
+            $$ x^4 < x^4 + x^2 + 1 < x^4 + 2x^2 + 1 $$
+            Hay tương đương:
+            $$ (x^2)^2 < y^2 < (x^2+1)^2 $$
+            Hệ thức trên chứng tỏ số chính phương $y^2$ bị kẹp ngặt giữa hai số chính phương liên tiếp. Theo nguyên lý khoảng trống rời rạc (Định lý 1), điều này là không thể.<br>
+            Do đó, phương trình chỉ có thể có nghiệm khi điều kiện $x \neq 0$ bị vi phạm, tức là $x = 0$.<br>
+            Thay $x = 0$ vào phương trình ban đầu:
+            $$ y^2 = 1 \implies y = \pm 1 $$
+            Tập nghiệm của phương trình là $(0, 1)$ và $(0, -1)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (British Mathematical Olympiad (BMO) 1996)</div>
+            <div class="box-body">
+                Tìm các số nguyên $x, y$ sao cho $y^2 = x^4 - x^2 + 2x + 2$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Thiết lập các bình phương đa thức tiệm cận:
+            $$ (x^2-1)^2 = x^4 - 2x^2 + 1 $$
+            $$ (x^2)^2 = x^4 $$
+
+            Khảo sát biên dưới:<br>
+            $y^2 - (x^2-1)^2 = x^2 + 2x + 1 = (x+1)^2 \ge 0$.<br>
+            Bất đẳng thức là ngặt ($y^2 > (x^2-1)^2$) khi $x \neq -1$.<br><br>
+
+            Khảo sát biên trên:<br>
+            $(x^2)^2 - y^2 = x^2 - 2x - 2$.<br>
+            Tam thức này dương khi $x^2 - 2x - 2 > 0 \implies x \ge 3$ hoặc $x \le -1$.<br>
+            Vì $x \neq -1$ cho ranh giới dưới, ta có với mọi $x \ge 3$ và $x \le -2$:
+            $$ (x^2-1)^2 < y^2 < (x^2)^2 $$
+            Sự kẹp ngặt này chứng tỏ vô nghiệm trên miền $x \ge 3 \cup x \le -2$.<br>
+            Ta chỉ cần thử nghiệm trên đoạn giới hạn $x \in \{-1, 0, 1, 2\}$:
+            <ul>
+                <li>$x = -1 \implies y^2 = 1 - 1 - 2 + 2 = 0 \implies y = 0$.</li>
+                <li>$x = 0 \implies y^2 = 2$ (Vô nghiệm).</li>
+                <li>$x = 1 \implies y^2 = 1 - 1 + 2 + 2 = 4 \implies y = \pm 2$.</li>
+                <li>$x = 2 \implies y^2 = 16 - 4 + 4 + 2 = 18$ (Vô nghiệm).</li>
+            </ul>
+            Tập nghiệm $(x, y)$ là $(-1, 0), (1, 2), (1, -2)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Polish Mathematical Olympiad 2003)</div>
+            <div class="box-body">
+                Tìm các nghiệm nguyên của phương trình: $y^3 = x^3 + 3x^2 + 4x + 2$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương pháp kẹp hoàn toàn có thể mở rộng cho bậc ba.<br>
+            Khảo sát các lập phương tiệm cận:
+            $$ (x+1)^3 = x^3 + 3x^2 + 3x + 1 $$
+            $$ (x+2)^3 = x^3 + 6x^2 + 12x + 8 $$
+
+            Biên dưới:<br>
+            $y^3 - (x+1)^3 = x + 1$. Đại lượng này dương khi $x > -1$.<br>
+            Biên trên:<br>
+            $(x+2)^3 - y^3 = 3x^2 + 8x + 6$. Tam thức này có $\Delta' = 16 - 18 = -2 < 0$, luôn dương với mọi $x \in \mathbb{R}$.<br>
+            Do đó, với mọi $x \ge 0$, ta có:
+            $$ (x+1)^3 < y^3 < (x+2)^3 $$
+            Phương trình vô nghiệm trên miền $x \ge 0$.<br><br>
+
+            Xét chiều âm, ta đảo biên bằng cách so sánh với $(x)^3 = x^3$.<br>
+            $(x)^3 < y^3 \iff 3x^2 + 4x + 2 > 0$ (luôn đúng với mọi $x \in \mathbb{R}$).<br>
+            $y^3 < (x+1)^3 \iff x + 1 < 0 \implies x \le -2$.<br>
+            Vậy với mọi $x \le -2$, ta có sự kẹp ngặt:
+            $$ x^3 < y^3 < (x+1)^3 $$
+            Phương trình vô nghiệm trên miền $x \le -2$.<br>
+            Khoảng trống duy nhất còn lại chưa kiểm tra là $x = -1$:<br>
+            Thay $x = -1 \implies y^3 = -1 + 3 - 4 + 2 = 0 \implies y = 0$.<br>
+            Nghiệm nguyên duy nhất của phương trình là $(-1, 0)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Greek Mathematical Olympiad 2000)</div>
+            <div class="box-body">
+                Giải phương trình nghiệm nguyên: $y^2 = x^4 + 2x^3 + 3x^2 + 4x + 5$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát các bình phương tiệm cận:
+            $$ (x^2+x+1)^2 = x^4 + 2x^3 + 3x^2 + 2x + 1 $$
+            $$ (x^2+x+2)^2 = x^4 + 2x^3 + 5x^2 + 4x + 4 $$
+            $$ (x^2+x)^2 = x^4 + 2x^3 + x^2 $$
+
+            Biên trên: $(x^2+x+2)^2 - y^2 = 2x^2 - 1$. Dương với mọi $x \notin \{0\}$.<br>
+            Trung gian 1: $y^2 - (x^2+x+1)^2 = 2x + 4$. Dương khi $x \ge -1$.<br>
+            Trung gian 2: $(x^2+x+1)^2 - y^2 = -2x - 4$. Dương khi $x \le -3$.<br>
+            Biên dưới: $y^2 - (x^2+x)^2 = 2x^2 + 4x + 5 > 0$ với mọi $x \in \mathbb{R}$.<br><br>
+
+            Từ các đánh giá trên:<br>
+            Với $x \ge 1$: $(x^2+x+1)^2 < y^2 < (x^2+x+2)^2 \implies$ Vô nghiệm.<br>
+            Với $x \le -3$: $(x^2+x)^2 < y^2 < (x^2+x+1)^2 \implies$ Vô nghiệm.<br>
+            Khoảng còn lại cần thử nghiệm trực tiếp là $x \in \{-2, -1, 0\}$:
+            <ul>
+                <li>$x = 0 \implies y^2 = 5$ (Vô nghiệm).</li>
+                <li>$x = -1 \implies y^2 = 1 - 2 + 3 - 4 + 5 = 3$ (Vô nghiệm).</li>
+                <li>$x = -2 \implies y^2 = 16 - 16 + 12 - 8 + 5 = 9 \implies y = \pm 3$.</li>
+            </ul>
+            Tập nghiệm là $(-2, 3), (-2, -3)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Japan Mathematical Olympiad (JMO) 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên $(x, y)$ thỏa mãn $y^2 = x^4 + 6x^3 + 11x^2 + 6x + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Nhận xét cấu trúc hệ số của đa thức có tính đối xứng và tương đồng với các khai triển nhị thức. Ta tiến hành nhóm các hạng tử:
+            $$ P(x) = x^4 + 6x^3 + 9x^2 + 2x^2 + 6x + 1 $$
+            Nhận thấy thành phần đầu là một bình phương đúng: $x^4 + 6x^3 + 9x^2 = (x^2 + 3x)^2$.<br>
+            Thành phần còn lại chứa nhân tử chung: $2x^2 + 6x + 1 = 2(x^2 + 3x) + 1$.<br>
+            Gộp lại, ta thu được một hằng đẳng thức tuyệt đối:
+            $$ P(x) = (x^2 + 3x)^2 + 2(x^2 + 3x) + 1 = (x^2 + 3x + 1)^2 $$
+            Phương trình ban đầu trở thành:
+            $$ y^2 = (x^2 + 3x + 1)^2 $$
+            Đẳng thức này đúng với mọi số nguyên $x$. Do đó:
+            $$ y = \pm (x^2 + 3x + 1) $$
+            Phương trình có vô số nghiệm nguyên, được xác định theo công thức tham số đối với mọi $x \in \mathbb{Z}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (All-Russian Olympiad 2002)</div>
+            <div class="box-body">
+                Tìm nghiệm nguyên của phương trình: $y^2 = x^4 - 2x^3 + x^2 + 2x + 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát các bình phương tiệm cận:
+            $$ (x^2-x)^2 = x^4 - 2x^3 + x^2 $$
+            $$ (x^2-x+1)^2 = x^4 - 2x^3 + 3x^2 - 2x + 1 $$
+            $$ (x^2-x-1)^2 = x^4 - 2x^3 - x^2 + 2x + 1 $$
+
+            So sánh 1: $y^2 - (x^2-x)^2 = 2x + 1$. Dương khi $x \ge 0$.<br>
+            So sánh 2: $(x^2-x+1)^2 - y^2 = 2x^2 - 4x = 2x(x-2)$. Dương khi $x \ge 3$ hoặc $x \le -1$.<br>
+            So sánh 3: $y^2 - (x^2-x-1)^2 = 2x^2$. Dương với mọi $x \neq 0$.<br><br>
+
+            Từ các đánh giá trên:<br>
+            Với $x \ge 3$: $(x^2-x)^2 < y^2 < (x^2-x+1)^2 \implies$ Vô nghiệm.<br>
+            Với $x \le -1$: $(x^2-x-1)^2 < y^2 < (x^2-x)^2$ (do $2x+1 < 0$). $\implies$ Vô nghiệm.<br>
+            Khoảng chưa khảo sát: $x \in \{0, 1, 2\}$.
+            <ul>
+                <li>$x = 0 \implies y^2 = 1 \implies y = \pm 1$.</li>
+                <li>$x = 1 \implies y^2 = 1 - 2 + 1 + 2 + 1 = 3$ (Vô nghiệm).</li>
+                <li>$x = 2 \implies y^2 = 16 - 16 + 4 + 4 + 1 = 9 \implies y = \pm 3$.</li>
+            </ul>
+            Tập nghiệm $(x, y)$ là $(0, \pm 1)$ và $(2, \pm 3)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Canadian Mathematical Olympiad (CMO) 1993)</div>
+            <div class="box-body">
+                Chứng minh rằng phương trình $y^2 = x(x+1)(x+2)(x+3)$ không có nghiệm nguyên dương.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khai triển và nhóm các nhân tử đối xứng ở vế phải:
+            $$ y^2 = [x(x+3)] \cdot [(x+1)(x+2)] = (x^2 + 3x)(x^2 + 3x + 2) $$
+            Thực hiện phép đổi biến, đặt $t = x^2 + 3x$. Vì $x$ là số nguyên dương, $t \ge 4$.<br>
+            Phương trình trở thành:
+            $$ y^2 = t(t + 2) = t^2 + 2t $$
+            Xét sự giới hạn của $y^2$ theo biến $t$:
+            $$ t^2 < t^2 + 2t < t^2 + 2t + 1 = (t+1)^2 \quad (\text{do } t > 0) $$
+            Bất đẳng thức trên tương đương với:
+            $$ t^2 < y^2 < (t+1)^2 $$
+            Số chính phương $y^2$ nằm ngặt giữa hai số chính phương liên tiếp là $t^2$ và $(t+1)^2$. Theo nguyên lý khoảng trống rời rạc (Định lý 1), điều này là không thể xảy ra.<br>
+            Do đó, phương trình vô nghiệm trên tập các số nguyên dương. Khẳng định được chứng minh. (Nghiệm chỉ tồn tại khi $t=0$ hoặc $t=-2$, tương ứng với các giá trị nguyên âm hoặc không của $x$).
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

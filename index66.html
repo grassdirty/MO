@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Toán rời rạc và Đại số - Vi tích phân rời rạc và Số Stirling loại II</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: TOÁN RỜI RẠC VÀ ĐẠI SỐ <br> VI TÍCH PHÂN RỜI RẠC VÀ SỐ STIRLING LOẠI II</h1>
+    <div class="author-info">Tài liệu Ôn thi VMO, TST, IMO - Phân môn Đại số Tổ hợp</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Tính tổng các đa thức trên một miền rời rạc thường dẫn đến việc khai triển hệ số nhị thức phức tạp. Chuyên đề này hình thức hóa cấu trúc "mảng sai phân" thành Toán tử Sai phân (Difference Operator). Bằng cách định nghĩa Lũy thừa giảm dần (Falling Factorials), chúng ta thiết lập các định lý Đạo hàm và Tích phân trên tập số nguyên. Qua đó, Số Stirling loại II đóng vai trò như một ma trận chuyển cơ sở, đưa các bài toán tính tổng về những phương trình đóng.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong Bài toán 3.1 và 3.2, phương pháp giải sử dụng Toán tử Sai phân bậc cao $\Delta^m$, một khái niệm thuộc Giải tích Số ở bậc Đại học. Để học sinh dễ dàng nắm bắt, ta cần bổ sung định nghĩa và chứng minh tính chất của toán tử này:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Toán tử Sai phân bậc cao)</div>
+        Cho hàm số $P(x)$, toán tử sai phân bậc 1 là $\Delta P(x) = P(x+1) - P(x)$. <br>
+        Toán tử sai phân bậc $m$ (với $m \ge 2$) được định nghĩa truy hồi bằng cách áp dụng toán tử $\Delta$ lên sai phân bậc $m-1$:
+        $$ \Delta^m P(x) = \Delta (\Delta^{m-1} P(x)) $$
+        Tương tự đạo hàm trong giải tích, nếu $P(x)$ là một đa thức bậc $n$, thì $\Delta P(x)$ là đa thức bậc $n-1$. Áp dụng $\Delta$ đúng $n+1$ lần sẽ làm đa thức bị triệt tiêu hoàn toàn: $\Delta^{n+1} P(x) = 0$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Công thức khai triển Sai phân bậc $m$)</div>
+        Với mọi số nguyên dương $m$, tác động của toán tử sai phân bậc $m$ lên hàm $P(x)$ được tính bởi công thức:
+        $$ \Delta^m P(x) = \sum_{i=0}^m (-1)^{m-i} \binom{m}{i} P(x+i) $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp quy nạp toán học theo $m$.</p>
+        <p><strong>Bước cơ sở ($m=1$):</strong><br>
+        Thay $m=1$ vào công thức: $\sum_{i=0}^1 (-1)^{1-i} \binom{1}{i} P(x+i) = (-1)^1 \binom{1}{0} P(x) + (-1)^0 \binom{1}{1} P(x+1) = P(x+1) - P(x) = \Delta P(x)$. Công thức đúng với $m=1$.</p>
+        
+        <p><strong>Bước quy nạp:</strong> Giả sử công thức đúng với $m$. Ta chứng minh đúng với $m+1$.<br>
+        $$ \Delta^{m+1} P(x) = \Delta (\Delta^m P(x)) = \Delta^m P(x+1) - \Delta^m P(x) $$
+        Sử dụng giả thiết quy nạp cho cả hai số hạng:
+        $$ \Delta^{m+1} P(x) = \sum_{i=0}^m (-1)^{m-i} \binom{m}{i} P(x+i+1) - \sum_{i=0}^m (-1)^{m-i} \binom{m}{i} P(x+i) $$
+        Trong tổng thứ nhất, đổi biến chỉ số $j = i+1$ (khi đó $i = j-1$, $j$ chạy từ $1$ đến $m+1$):
+        $$ \sum_{j=1}^{m+1} (-1)^{m-(j-1)} \binom{m}{j-1} P(x+j) - \sum_{i=0}^m (-1)^{m-i} \binom{m}{i} P(x+i) $$
+        Gộp hai tổng lại theo biến chung $k$ (từ $1$ đến $m$):
+        $$ = \sum_{k=1}^m \left[ (-1)^{m-k+1} \binom{m}{k-1} - (-1)^{m-k} \binom{m}{k} \right] P(x+k) + (-1)^0 \binom{m}{m} P(x+m+1) - (-1)^m \binom{m}{0} P(x) $$
+        Rút $(-1)^{m+1-k}$ ra làm nhân tử chung trong ngoặc:
+        $$ \left[ (-1)^{m-k+1} \binom{m}{k-1} + (-1)^{m-k+1} \binom{m}{k} \right] = (-1)^{m+1-k} \left[ \binom{m}{k-1} + \binom{m}{k} \right] $$
+        Áp dụng hằng đẳng thức Pascal $\binom{m}{k-1} + \binom{m}{k} = \binom{m+1}{k}$, biểu thức trở thành:
+        $$ \sum_{k=1}^m (-1)^{m+1-k} \binom{m+1}{k} P(x+k) + P(x+m+1) + (-1)^{m+1} P(x) $$
+        Gộp cả số hạng đầu ($k=0$) và cuối ($k=m+1$) vào tổng:
+        $$ \Delta^{m+1} P(x) = \sum_{k=0}^{m+1} (-1)^{m+1-k} \binom{m+1}{k} P(x+k) $$
+        Công thức đúng với $m+1$. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Kiến thức nền tảng và Chứng minh</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Toán tử Sai phân và Lũy thừa Giảm dần)</div>
+        <ul>
+            <li> <strong>Toán tử sai phân tiến (Forward Difference Operator) $\Delta$:</strong> Đối với một hàm số $f(x)$ bất kỳ, toán tử $\Delta$ được định nghĩa là:
+            $$ \Delta f(x) = f(x+1) - f(x) $$
+            Toán tử này đóng vai trò tương tự như đạo hàm $d/dx$ trong giải tích liên tục.</li>
+            <li> <strong>Lũy thừa giảm dần (Falling Factorial):</strong> Với số nguyên $k \ge 0$, biểu thức $x^{\underline{k}}$ (đọc là $x$ mũ $k$ giảm dần) được định nghĩa là tích của $k$ số hạng giảm dần bắt đầu từ $x$:
+            $$ x^{\underline{k}} = x(x-1)(x-2)\dots(x-k+1) $$
+            (Quy ước $x^{\underline{0}} = 1$).</li>
+            <li> <strong>Số Stirling loại II:</strong> Ký hiệu là $\left\{\begin{matrix} n \\ k \end{matrix}\right\}$ hoặc $S(n, k)$, là số cách phân hoạch một tập hợp gồm $n$ phần tử phân biệt thành đúng $k$ tập con khác rỗng rời nhau.</li>
+        </ul>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Đạo hàm rời rạc và Tích phân rời rạc)</div>
+        <ol>
+            <li> <strong>Đạo hàm rời rạc:</strong> Tác động của toán tử sai phân lên Lũy thừa giảm dần cho công thức tương tự đạo hàm của $x^k$:
+            $$ \Delta (x^{\underline{k}}) = k \cdot x^{\underline{k-1}} $$</li>
+            <li> <strong>Tích phân rời rạc:</strong> Để tính tổng của Lũy thừa giảm dần trên một đoạn số nguyên từ $a$ đến $b-1$, ta có công thức tương tự tích phân xác định:
+            $$ \sum_{x=a}^{b-1} x^{\underline{k}} = \frac{x^{\underline{k+1}}}{k+1} \Bigg|_a^b = \frac{b^{\underline{k+1}} - a^{\underline{k+1}}}{k+1} $$</li>
+        </ol>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p><strong>1. Chứng minh Đạo hàm rời rạc:</strong><br>
+        Theo định nghĩa của toán tử $\Delta$:</p>
+        $$ \Delta (x^{\underline{k}}) = (x+1)^{\underline{k}} - x^{\underline{k}} $$
+        <p>Khai triển theo định nghĩa của Lũy thừa giảm dần:</p>
+        $$ (x+1)^{\underline{k}} = (x+1)x(x-1)\dots(x-k+2) $$
+        $$ x^{\underline{k}} = x(x-1)\dots(x-k+2)(x-k+1) $$
+        <p>Cả hai biểu thức đều có chung một phần tử là tích của $(k-1)$ số hạng: $x(x-1)\dots(x-k+2) = x^{\underline{k-1}}$. Đặt nhân tử chung này ra ngoài:</p>
+        $$ \Delta (x^{\underline{k}}) = x^{\underline{k-1}} \left[ (x+1) - (x-k+1) \right] $$
+        $$ \Delta (x^{\underline{k}}) = x^{\underline{k-1}} \cdot k = k \cdot x^{\underline{k-1}} $$
+        <p>Đẳng thức được chứng minh.</p>
+
+        <p><strong>2. Chứng minh Tích phân rời rạc:</strong><br>
+        Sử dụng kết quả vừa chứng minh, ta có thể viết lại $x^{\underline{k}}$ thành:</p>
+        $$ x^{\underline{k}} = \frac{\Delta (x^{\underline{k+1}})}{k+1} = \frac{(x+1)^{\underline{k+1}} - x^{\underline{k+1}}}{k+1} $$
+        <p>Tính tổng của biểu thức này từ $x = a$ đến $x = b-1$:</p>
+        $$ \sum_{x=a}^{b-1} x^{\underline{k}} = \frac{1}{k+1} \sum_{x=a}^{b-1} \left( (x+1)^{\underline{k+1}} - x^{\underline{k+1}} \right) $$
+        <p>Đây là một <strong>Tổng lồng nhau (Telescoping Sum)</strong>. Các số hạng trung gian sẽ bị triệt tiêu, chỉ còn lại số hạng tại $x = b-1$ và số hạng tại $x = a$:</p>
+        $$ \sum_{x=a}^{b-1} x^{\underline{k}} = \frac{(b-1+1)^{\underline{k+1}} - a^{\underline{k+1}}}{k+1} = \frac{b^{\underline{k+1}} - a^{\underline{k+1}}}{k+1} $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Chuyển đổi Cơ sở bằng Số Stirling)</div>
+        Với mọi số thực $x$ và số nguyên dương $n$, lũy thừa thông thường $x^n$ có thể được phân tích thành tổ hợp tuyến tính của các lũy thừa giảm dần $x^{\underline{k}}$, với hệ số là các Số Stirling loại II:
+        $$ x^n = \sum_{k=0}^n \left\{\begin{matrix} n \\ k \end{matrix}\right\} x^{\underline{k}} $$
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh bằng phương pháp <strong>Đếm bằng hai cách (Double Counting)</strong>. Vì đây là đồng nhất thức đa thức, ta chỉ cần chứng minh đúng với mọi số nguyên dương $x$.<br>
+        Bài toán đếm: Cho tập $N$ có $n$ phần tử phân biệt và tập $X$ có $x$ phần tử phân biệt. Hãy đếm số lượng tất cả các hàm số từ tập $N$ vào tập $X$.</p>
+        
+        <p><strong>Cách 1: Đếm trực tiếp.</strong><br>
+        Mỗi phần tử trong $n$ phần tử của tập $N$ có thể được ánh xạ độc lập đến bất kỳ phần tử nào trong $x$ phần tử của tập $X$. <br>
+        Tổng số hàm số có thể tạo ra là $x^n$.</p>
+
+        <p><strong>Cách 2: Đếm theo Tập ảnh (Range).</strong><br>
+        Với mỗi hàm số từ $N$ vào $X$, tập ảnh của nó là một tập con của $X$. Gọi kích thước của tập ảnh này là $k$. ($0 \le k \le n$ và $k \le x$).<br>
+        Ta xây dựng các hàm số có kích thước tập ảnh đúng bằng $k$ qua 3 bước:</p>
+        <ol>
+            <li><em>Chọn $k$ phần tử trong tập $X$ để làm tập ảnh:</em> Có $\binom{x}{k}$ cách chọn.</li>
+            <li><em>Phân hoạch tập $N$ thành $k$ phần rỗng:</em> Tập $N$ bị chia thành $k$ tập con không rỗng, mỗi tập con gồm những phần tử của $N$ cùng chiếu vào một điểm trong tập ảnh. Số cách phân hoạch là Số Stirling loại II $\left\{\begin{matrix} n \\ k \end{matrix}\right\}$.</li>
+            <li><em>Ánh xạ $k$ phần của $N$ vào $k$ điểm của tập ảnh:</em> Có $k!$ cách xếp tương ứng 1-1.</li>
+        </ol>
+
+        <p>Tổng số hàm số đếm theo cách này là:</p>
+        $$ \sum_{k=0}^n \binom{x}{k} \cdot \left\{\begin{matrix} n \\ k \end{matrix}\right\} \cdot k! $$
+        <p>Lưu ý rằng $\binom{x}{k} \cdot k! = \frac{x!}{k!(x-k)!} \cdot k! = \frac{x!}{(x-k)!} = x(x-1)\dots(x-k+1) = x^{\underline{k}}$.<br>
+        Do đó, tổng số hàm số bằng:</p>
+        $$ \sum_{k=0}^n \left\{\begin{matrix} n \\ k \end{matrix}\right\} x^{\underline{k}} $$
+        <p>Hai cách đếm cho ra cùng kết quả. Do đó: $x^n = \sum_{k=0}^n \left\{\begin{matrix} n \\ k \end{matrix}\right\} x^{\underline{k}}$.<br>
+        Đồng nhất thức đúng với vô số giá trị nguyên dương $x$, nên đúng với mọi số thực $x$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Tính nhanh Tổng Lũy thừa)</div>
+        Hãy thiết lập một công thức không dùng truy hồi để tính tổng $S_k(n) = \sum_{i=1}^n i^k$. Chứng minh rằng cấu trúc này mang lại một đa thức theo $n$ với thời gian thiết lập phụ thuộc vào $k$.
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sử dụng Vi tích phân rời rạc để giải quyết.<br>
+        Cần tính $S_k(n) = \sum_{i=1}^n i^k$.<br>
+        Áp dụng <strong>Định lý Tổ hợp (Định lý 1.2)</strong> để viết lại $i^k$:</p>
+        $$ i^k = \sum_{j=0}^k \left\{\begin{matrix} k \\ j \end{matrix}\right\} i^{\underline{j}} $$
+        <p>Thay biểu thức này vào tổng $S_k(n)$:</p>
+        $$ S_k(n) = \sum_{i=1}^n \left( \sum_{j=0}^k \left\{\begin{matrix} k \\ j \end{matrix}\right\} i^{\underline{j}} \right) $$
+        <p>Đổi thứ tự lấy tổng (đưa tổng theo $j$ ra ngoài):</p>
+        $$ S_k(n) = \sum_{j=0}^k \left\{\begin{matrix} k \\ j \end{matrix}\right\} \left( \sum_{i=1}^n i^{\underline{j}} \right) $$
+        <p>Xét tổng bên trong: $\sum_{i=1}^n i^{\underline{j}}$. <br>
+        Để tương thích với giới hạn tích phân rời rạc (từ $a$ đến $b-1$), ta cho $i$ chạy từ $1$ đến $(n+1)-1$.<br>
+        Áp dụng <strong>Công thức Tích phân rời rạc (Định lý 1.1)</strong>:</p>
+        $$ \sum_{i=1}^{(n+1)-1} i^{\underline{j}} = \frac{(n+1)^{\underline{j+1}} - 1^{\underline{j+1}}}{j+1} $$
+        <p>Lưu ý rằng $1^{\underline{j+1}} = 1(1-1)(1-2)\dots = 0$ với mọi $j \ge 1$. (Khi $j=0$, $1^{\underline{1}} = 1$, tổng $\sum 1 = n$, trong khi $\frac{(n+1)^{\underline{1}} - 1}{1} = n$).<br>
+        Do đó:</p>
+        $$ \sum_{i=1}^n i^{\underline{j}} = \frac{(n+1)^{\underline{j+1}}}{j+1} $$
+        <p>Thay kết quả này vào $S_k(n)$, ta thu được công thức đóng:</p>
+        $$ S_k(n) = \sum_{j=0}^k \left\{\begin{matrix} k \\ j \end{matrix}\right\} \frac{(n+1)^{\underline{j+1}}}{j+1} $$
+        <p>Công thức này cho phép tính tổng $\sum i^k$ thông qua $k+1$ số hạng. Các số Stirling $\left\{\begin{matrix} k \\ j \end{matrix}\right\}$ có thể tính trước thông qua hệ thức $S(k,j) = j S(k-1,j) + S(k-1,j-1)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Các bài toán áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Albania National Olympiad - Đa thức Nội suy Đặc biệt)</div>
+        Cho một đa thức $P(x)$ có bậc là $n$. Biết rằng $P(k) = 2^k$ với mọi $k \in \{0, 1, 2, \dots, n\}$. Hãy tính giá trị của $P(n+1)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét toán tử $\Delta P(x) = P(x+1) - P(x)$. Vì $P(x)$ có bậc $n$, $\Delta P(x)$ sẽ là một đa thức có bậc $n-1$.<br>
+        Lặp lại việc áp dụng toán tử $\Delta$, ta có $\Delta^2 P(x) = P(x+2) - 2P(x+1) + P(x)$, có bậc $n-2$.</p>
+        
+        <p>Theo <strong>Định lý 0.1</strong>, tác động toán tử $\Delta$ lên $P(x)$ đúng $m$ lần được xác định bởi công thức:</p>
+        $$ \Delta^m P(x) = \sum_{i=0}^m (-1)^{m-i} \binom{m}{i} P(x+i) $$
+        <p>Do $P(x)$ có bậc $n$, áp dụng đạo hàm rời rạc $n+1$ lần sẽ làm triệt tiêu đa thức:</p>
+        $$ \Delta^{n+1} P(x) = 0 \quad \text{với mọi } x $$
+        <p>Ta xét tại giá trị $x = 0$:</p>
+        $$ \Delta^{n+1} P(0) = \sum_{i=0}^{n+1} (-1)^{n+1-i} \binom{n+1}{i} P(i) = 0 $$
+        <p>Tách số hạng cuối cùng ($i = n+1$) ra khỏi tổng:</p>
+        $$ (-1)^0 \binom{n+1}{n+1} P(n+1) + \sum_{i=0}^n (-1)^{n+1-i} \binom{n+1}{i} P(i) = 0 $$
+        $$ P(n+1) = \sum_{i=0}^n (-1)^{n-i} \binom{n+1}{i} P(i) $$
+        <p>Theo giả thiết, $P(i) = 2^i$ với mọi $0 \le i \le n$. Thay vào phương trình:</p>
+        $$ P(n+1) = \sum_{i=0}^n (-1)^{n-i} \binom{n+1}{i} 2^i $$
+        <p>Thêm và bớt số hạng $i = n+1$ để hoàn thành Nhị thức Newton:</p>
+        $$ P(n+1) = \left[ \sum_{i=0}^{n+1} \binom{n+1}{i} 2^i (-1)^{(n+1)-i - 1} \right] - \binom{n+1}{n+1} 2^{n+1} (-1)^{-1} $$
+        $$ P(n+1) = - \left[ \sum_{i=0}^{n+1} \binom{n+1}{i} 2^i (-1)^{(n+1)-i} \right] + 2^{n+1} $$
+        <p>Phần trong ngoặc vuông là khai triển của $(2 - 1)^{n+1} = 1^{n+1} = 1$.<br>
+        Do đó:</p>
+        $$ P(n+1) = -1 + 2^{n+1} = 2^{n+1} - 1 $$
+        <p>Bài toán được giải quyết thông qua Toán tử Sai phân và Nhị thức Newton.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian National Olympiad - Nhận diện Đa thức qua Tổ hợp)</div>
+        Chứng minh rằng đối với mọi dãy số $a_0, a_1, \dots, a_n$, ta có:
+        $$ \sum_{k=0}^n \binom{n}{k} (-1)^k a_k = 0 $$
+        khi và chỉ khi tồn tại một đa thức $P(x)$ có bậc nhỏ hơn hoặc bằng $n-1$ sao cho $P(k) = a_k$ với mọi $k \in \{0, 1, \dots, n\}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Biểu thức $\sum_{k=0}^n \binom{n}{k} (-1)^{n-k} a_k$ chính là giá trị của toán tử sai phân bậc $n$ tại $x=0$, tức là $\Delta^n a_0$.<br>
+        Việc nhân biểu thức với $(-1)^n$ không làm thay đổi việc nó bằng $0$.<br>
+        Nghĩa là, điều kiện của bài toán tương đương với:</p>
+        $$ \Delta^n a_0 = 0 $$
+
+        <p><strong>Chiều đảo ($\Leftarrow$):</strong> Nếu $a_k = P(k)$ với một đa thức $P(x)$ có bậc $\le n-1$.<br>
+        Theo Định lý 1.1, mỗi lần áp dụng $\Delta$ lên đa thức sẽ giảm bậc đi 1.<br>
+        Áp dụng $\Delta$ đúng $n$ lần lên đa thức bậc $\le n-1$ sẽ tạo ra đa thức 0.<br>
+        Suy ra $\Delta^n P(x) = 0$ với mọi $x$.<br>
+        Đặc biệt tại $x=0$, ta có $\Delta^n P(0) = \Delta^n a_0 = 0$.<br>
+        Điều kiện $\sum_{k=0}^n \binom{n}{k} (-1)^k a_k = 0$ được thỏa mãn.</p>
+
+        <p><strong>Chiều thuận ($\Rightarrow$):</strong> Giả sử $\Delta^n a_0 = 0$.<br>
+        Ta cần chỉ ra tồn tại một đa thức $P(x)$ bậc $\le n-1$ đi qua các điểm $(k, a_k)$ với $k=0, 1, \dots, n$.<br>
+        Theo Định lý nội suy đa thức, qua $n$ điểm $(0, a_0), (1, a_1), \dots, (n-1, a_{n-1})$, ta có thể dựng một đa thức $P(x)$ duy nhất có bậc $\le n-1$ đi qua $n$ điểm này.<br>
+        Cần chứng minh đa thức $P(x)$ này đi qua điểm thứ $n+1$, tức là $P(n) = a_n$.<br>
+        Xét dãy số mới $b_k = P(k)$. Vì $P(x)$ có bậc $\le n-1$, ta luôn có $\Delta^n b_0 = 0$.<br>
+        Nghĩa là:</p>
+        $$ \sum_{k=0}^n \binom{n}{k} (-1)^{n-k} b_k = 0 $$
+        <p>Mặt khác, theo giả thiết:</p>
+        $$ \sum_{k=0}^n \binom{n}{k} (-1)^{n-k} a_k = 0 $$
+        <p>Lấy phương trình dưới trừ phương trình trên:</p>
+        $$ \sum_{k=0}^n \binom{n}{k} (-1)^{n-k} (a_k - b_k) = 0 $$
+        <p>Với mọi $k$ từ $0$ đến $n-1$, ta đã dựng đa thức $P(x)$ sao cho $b_k = P(k) = a_k$.<br>
+        Do đó, tất cả các số hạng ứng với $k \lt n$ đều bị triệt tiêu.<br>
+        Phương trình chỉ còn lại số hạng tại $k=n$:</p>
+        $$ \binom{n}{n} (-1)^0 (a_n - b_n) = 0 \implies a_n - b_n = 0 \implies a_n = b_n = P(n) $$
+        <p>Đa thức $P(x)$ bậc $\le n-1$ đi qua mọi điểm $(k, a_k)$ từ $0$ đến $n$. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Argentina National Olympiad - Đánh giá Tổng Tổ hợp bậc ba)</div>
+        Hãy tìm một công thức rút gọn (closed-form) để tính giá trị của tổng sau theo $n$:
+        $$ S = \sum_{j=1}^n j^3 \binom{n}{j} $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta phân tích đơn thức $j^3$ thành tổ hợp của các Lũy thừa giảm dần (sử dụng Định lý 1.2).<br>
+        Ta tìm các hệ số $A, B, C$ sao cho:</p>
+        $$ j^3 = A \cdot j^{\underline{3}} + B \cdot j^{\underline{2}} + C \cdot j^{\underline{1}} $$
+        <p>Khai triển Lũy thừa giảm dần:</p>
+        $$ j^{\underline{1}} = j $$
+        $$ j^{\underline{2}} = j(j-1) = j^2 - j $$
+        $$ j^{\underline{3}} = j(j-1)(j-2) = j(j^2 - 3j + 2) = j^3 - 3j^2 + 2j $$
+        <p>Thay vào phương trình và đồng nhất hệ số:<br>
+        $j^3 = A(j^3 - 3j^2 + 2j) + B(j^2 - j) + Cj$<br>
+        $j^3 = A j^3 + (-3A + B)j^2 + (2A - B + C)j$<br>
+        Từ đó ta có: $A = 1$.<br>
+        $-3(1) + B = 0 \implies B = 3$.<br>
+        $2(1) - 3 + C = 0 \implies C = 1$.<br>
+        Vậy ta có đồng nhất thức: $j^3 = j^{\underline{3}} + 3j^{\underline{2}} + j^{\underline{1}}$. <br>
+        (Các hệ số $1, 3, 1$ chính là số Stirling loại II: $\left\{\begin{matrix} 3 \\ 3 \end{matrix}\right\}=1, \left\{\begin{matrix} 3 \\ 2 \end{matrix}\right\}=3, \left\{\begin{matrix} 3 \\ 1 \end{matrix}\right\}=1$).</p>
+
+        <p>Thay biểu diễn này vào tổng ban đầu $S$:</p>
+        $$ S = \sum_{j=1}^n \left( j^{\underline{3}} + 3j^{\underline{2}} + j^{\underline{1}} \right) \binom{n}{j} $$
+        $$ S = \sum_{j=1}^n j^{\underline{3}} \binom{n}{j} + 3 \sum_{j=1}^n j^{\underline{2}} \binom{n}{j} + \sum_{j=1}^n j^{\underline{1}} \binom{n}{j} $$
+        <p>Sử dụng hằng đẳng thức tổ hợp hấp thụ (Absorption Identity) kết nối Lũy thừa giảm dần và hệ số nhị thức:</p>
+        $$ j^{\underline{k}} \binom{n}{j} = n^{\underline{k}} \binom{n-k}{j-k} $$
+        <p><em>(Chứng minh: $j^{\underline{k}} \frac{n!}{j!(n-j)!} = \frac{j!}{(j-k)!} \frac{n!}{j!(n-j)!} = \frac{n!}{(j-k)!(n-j)!} = \frac{n!}{(n-k)!} \frac{(n-k)!}{(j-k)!((n-k)-(j-k))!} = n^{\underline{k}} \binom{n-k}{j-k}$).</em></p>
+
+        <p>Áp dụng tính chất này cho từng tổng thành phần:</p>
+        $$ \sum_{j=1}^n j^{\underline{k}} \binom{n}{j} = \sum_{j=k}^n n^{\underline{k}} \binom{n-k}{j-k} = n^{\underline{k}} \sum_{i=0}^{n-k} \binom{n-k}{i} = n^{\underline{k}} 2^{n-k} $$
+        <p>Áp dụng cho $k=3, 2, 1$:</p>
+        $$ \sum_{j=1}^n j^{\underline{3}} \binom{n}{j} = n^{\underline{3}} 2^{n-3} = n(n-1)(n-2) 2^{n-3} $$
+        $$ \sum_{j=1}^n j^{\underline{2}} \binom{n}{j} = n^{\underline{2}} 2^{n-2} = n(n-1) 2^{n-2} $$
+        $$ \sum_{j=1}^n j^{\underline{1}} \binom{n}{j} = n^{\underline{1}} 2^{n-1} = n 2^{n-1} $$
+
+        <p>Tổng hợp tất cả lại:</p>
+        $$ S = n(n-1)(n-2) 2^{n-3} + 3 n(n-1) 2^{n-2} + n 2^{n-1} $$
+        <p>Đặt nhân tử chung là $n 2^{n-3}$:</p>
+        $$ S = n 2^{n-3} \left[ (n-1)(n-2) + 3(n-1) \cdot 2 + 1 \cdot 4 \right] $$
+        $$ S = n 2^{n-3} \left[ (n^2 - 3n + 2) + (6n - 6) + 4 \right] $$
+        $$ S = n 2^{n-3} [ n^2 + 3n ] = n^2(n+3) 2^{n-3} $$
+        <p>Công thức đã được rút gọn.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

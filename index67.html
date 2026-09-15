@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Giải tích - Đánh giá tiệm cận dãy truy hồi và Định lý Stolz-Cesàro</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 5px solid #ccc;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: GIẢI TÍCH <br> ĐÁNH GIÁ TIỆM CẬN DÃY TRUY HỒI VÀ ĐỊNH LÝ STOLZ-CESÀRO</h1>
+    <div class="author-info">Độ khó: $\star\star\star\star$</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát hành vi tiệm cận của các dãy số được cho bởi hệ thức truy hồi phi tuyến là một bài toán nền tảng trong Giải tích toán học. Thay vì tìm công thức tổng quát của dãy số (thường rất khó khăn), ta đánh giá tốc độ hội tụ hoặc phân kỳ của chúng thông qua các kỹ thuật giải tích. Chuyên đề này thiết lập cơ sở lý thuyết về Định lý Weierstrass, Định lý Stolz-Cesàro và kỹ thuật chọn lũy thừa chuẩn hóa, từ đó ứng dụng trực tiếp để giải quyết các giới hạn vô định.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Định lý Weierstrass phát biểu dựa trên hai khái niệm Cận trên đúng ($\sup$) và Cận dưới đúng ($\inf$), vốn là những khái niệm của Giải tích giải tích thực ở bậc Đại học. Dưới đây là định nghĩa cơ sở để hiểu rõ chứng minh:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Cận trên đúng và Cận dưới đúng)</div>
+        Cho $S$ là một tập hợp các số thực.
+        <ul>
+            <li><strong>Cận trên đúng (Supremum):</strong> Ký hiệu $\sup S$, là số nhỏ nhất trong tất cả các cận trên của tập $S$. Điều này có nghĩa là với mọi $\epsilon > 0$, tồn tại một phần tử $x \in S$ sao cho $x > \sup S - \epsilon$.</li>
+            <li><strong>Cận dưới đúng (Infimum):</strong> Ký hiệu $\inf S$, là số lớn nhất trong tất cả các cận dưới của tập $S$. Tương tự, với mọi $\epsilon > 0$, tồn tại một phần tử $x \in S$ sao cho $x < \inf S + \epsilon$.</li>
+        </ul>
+        Tiên đề về tính đầy đủ của số thực khẳng định: Mọi tập con không rỗng của $\mathbb{R}$ nếu bị chặn trên thì luôn có supremum, và nếu bị chặn dưới thì luôn có infimum.
+    </div>
+
+    <h2>1. Cơ sở lý thuyết</h2>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.1 (Định lý Weierstrass về tính hội tụ)</div>
+        Mọi dãy số thực đơn điệu và bị chặn đều hội tụ. Cụ thể:
+        <ol>
+            <li>Nếu $(x_n)$ là dãy đơn điệu tăng và bị chặn trên thì $\lim_{n \to \infty} x_n = \sup \{x_n\}$.</li>
+            <li>Nếu $(x_n)$ là dãy đơn điệu giảm và bị chặn dưới thì $\lim_{n \to \infty} x_n = \inf \{x_n\}$.</li>
+        </ol>
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Ta chứng minh trường hợp 1. Giả sử dãy $(x_n)$ đơn điệu tăng và bị chặn trên. Theo tiên đề về tính đầy đủ của tập số thực, tập hợp $S = \{x_n \mid n \in \mathbb{N}\}$ có cận trên đúng, gọi là $L = \sup S$. Ta sẽ chứng minh $\lim_{n \to \infty} x_n = L$.</p>
+        <p>Với mọi $\epsilon \gt 0$, vì $L$ là cận trên đúng, $L - \epsilon$ không phải là cận trên của $S$. Do đó, tồn tại một phần tử $x_N$ sao cho $x_N \gt L - \epsilon$.</p>
+        <p>Vì dãy $(x_n)$ đơn điệu tăng, với mọi $n \ge N$, ta có:</p>
+        $$ L - \epsilon \lt x_N \le x_n \le L \lt L + \epsilon $$
+        <p>Suy ra $|x_n - L| \lt \epsilon$ với mọi $n \ge N$. Theo định nghĩa giới hạn, $\lim_{n \to \infty} x_n = L$.</p>
+        <p>Trường hợp dãy giảm và bị chặn dưới được chứng minh tương tự với $\inf S$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <p>Để xử lý các giới hạn có dạng vô định $\frac{0}{0}$ hoặc $\frac{\infty}{\infty}$, ta sử dụng dạng rời rạc của Quy tắc L'Hôpital.</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Stolz-Cesàro)</div>
+        Cho hai dãy số thực $(a_n)$ và $(b_n)$. Giả sử dãy $(b_n)$ đơn điệu tăng ngặt và phân kỳ ra $+\infty$. Nếu tồn tại giới hạn:
+        $$ \lim_{n \to \infty} \frac{a_{n+1} - a_n}{b_{n+1} - b_n} = L \in \mathbb{R} \cup \{-\infty, +\infty\} $$
+        thì giới hạn của thương số cũng tồn tại và bằng $L$:
+        $$ \lim_{n \to \infty} \frac{a_n}{b_n} = L $$
+        <em>Lưu ý:</em> Định lý vẫn đúng trong trường hợp dạng vô định $\frac{0}{0}$ khi cả hai dãy $(a_n), (b_n)$ cùng hội tụ về $0$, đồng thời dãy $(b_n)$ đơn điệu ngặt.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử $\lim_{n \to \infty} \frac{a_{n+1} - a_n}{b_{n+1} - b_n} = L$. Ta chứng minh cho trường hợp $L$ là số thực hữu hạn.</p>
+        <p>Với mọi $\epsilon \gt 0$, tồn tại số nguyên dương $N$ sao cho với mọi $n \ge N$:</p>
+        $$ L - \frac{\epsilon}{2} \lt \frac{a_{n+1} - a_n}{b_{n+1} - b_n} \lt L + \frac{\epsilon}{2} $$
+        <p>Vì dãy $(b_n)$ tăng ngặt, $b_{n+1} - b_n \gt 0$. Nhân các vế với $(b_{n+1} - b_n)$, ta có:</p>
+        $$ \left(L - \frac{\epsilon}{2}\right)(b_{n+1} - b_n) \lt a_{n+1} - a_n \lt \left(L + \frac{\epsilon}{2}\right)(b_{n+1} - b_n) $$
+        <p>Lấy tổng bất đẳng thức trên từ chỉ số $k = N$ đến $n-1$ (với $n \gt N$), các số hạng trung gian tự triệt tiêu:</p>
+        $$ \left(L - \frac{\epsilon}{2}\right)(b_n - b_N) \lt a_n - a_N \lt \left(L + \frac{\epsilon}{2}\right)(b_n - b_N) $$
+        <p>Chia cả ba vế cho $b_n$ (vì $b_n \to +\infty$ nên $b_n \gt 0$ với $n$ đủ lớn):</p>
+        $$ \left(L - \frac{\epsilon}{2}\right)\left(1 - \frac{b_N}{b_n}\right) \lt \frac{a_n}{b_n} - \frac{a_N}{b_n} \lt \left(L + \frac{\epsilon}{2}\right)\left(1 - \frac{b_N}{b_n}\right) $$
+        <p>Chuyển $\frac{a_N}{b_n}$ sang hai vế:</p>
+        $$ \left(L - \frac{\epsilon}{2}\right)\left(1 - \frac{b_N}{b_n}\right) + \frac{a_N}{b_n} \lt \frac{a_n}{b_n} \lt \left(L + \frac{\epsilon}{2}\right)\left(1 - \frac{b_N}{b_n}\right) + \frac{a_N}{b_n} $$
+        <p>Khi $n \to \infty$, do $b_n \to +\infty$ trong khi $b_N$ và $a_N$ là hằng số, các số hạng $\frac{b_N}{b_n}$ và $\frac{a_N}{b_n}$ tiến về $0$. Nghĩa là các biên của bất đẳng thức trên tiến tới $L - \frac{\epsilon}{2}$ và $L + \frac{\epsilon}{2}$.<br>
+        Với $n$ đủ lớn, giới hạn nằm hoàn toàn trong khoảng $(L - \epsilon, L + \epsilon)$. Theo nguyên lý kẹp, $\lim_{n \to \infty} \frac{a_n}{b_n} = L$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <p><strong>Chiến lược đánh giá (Asymptotic Expansion):</strong> Đối với dãy truy hồi dạng $x_{n+1} = x_n - c x_n^k$, ta thường có $x_n \to 0$. Để tìm tốc độ hội tụ, ta chọn số mũ $\alpha$ sao cho $\frac{1}{x_{n+1}^\alpha} - \frac{1}{x_n^\alpha}$ hội tụ về một hằng số khác $0$. Theo khai triển Taylor, giá trị phù hợp là $\alpha = k-1$.</p>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Romanian National Olympiad 2002)</div>
+        Cho dãy số thực $(x_n)_{n \ge 1}$ được xác định bởi $x_1 \in (0, 1)$ và hệ thức truy hồi:
+        $$ x_{n+1} = x_n - x_n^3 \quad \forall n \ge 1 $$
+        Chứng minh rằng dãy số hội tụ và tính giới hạn $\lim_{n \to \infty} x_n \sqrt{n}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p><strong>Bước 1: Khảo sát sự hội tụ của $(x_n)$.</strong><br>
+        Ta chứng minh bằng quy nạp rằng $0 \lt x_n \lt 1$ với mọi $n \ge 1$.<br>
+        Giả thiết đúng với $n=1$. Giả sử $0 \lt x_k \lt 1$. Phân tích biểu thức:</p>
+        $$ x_{k+1} = x_k(1 - x_k^2) $$
+        <p>Vì $0 \lt x_k \lt 1$, ta có $0 \lt 1 - x_k^2 \lt 1$. Tích của hai số trong khoảng $(0, 1)$ là một số trong khoảng $(0, 1)$. Do đó $0 \lt x_{k+1} \lt 1$.<br>
+        Mặt khác:</p>
+        $$ x_{n+1} - x_n = -x_n^3 \lt 0 $$
+        <p>Dãy $(x_n)$ đơn điệu giảm ngặt và bị chặn dưới bởi 0. Theo Định lý 1.1, dãy hội tụ. Gọi $L = \lim_{n \to \infty} x_n$.<br>
+        Chuyển qua giới hạn trong hệ thức truy hồi:</p>
+        $$ L = L - L^3 \implies L^3 = 0 \implies L = 0 $$
+
+        <p><strong>Bước 2: Sử dụng Định lý Stolz-Cesàro.</strong><br>
+        Để tìm giới hạn của $x_n \sqrt{n}$, ta đánh giá giới hạn của biểu thức bình phương $n x_n^2$, tương đương với việc tìm giới hạn $\lim_{n \to \infty} \frac{n}{1/x_n^2}$.<br>
+        Ký hiệu $a_n = n$ và $b_n = \frac{1}{x_n^2}$. Dãy $b_n \to +\infty$ và là dãy tăng ngặt do $x_n \downarrow 0$.<br>
+        Xét hiệu phân sai:</p>
+        $$ b_{n+1} - b_n = \frac{1}{x_{n+1}^2} - \frac{1}{x_n^2} = \frac{x_n^2 - x_{n+1}^2}{x_n^2 x_{n+1}^2} $$
+        <p>Thay $x_{n+1} = x_n - x_n^3$:</p>
+        $$ b_{n+1} - b_n = \frac{x_n^2 - x_n^2(1 - x_n^2)^2}{x_n^2 \cdot x_n^2(1 - x_n^2)^2} = \frac{1 - (1 - 2x_n^2 + x_n^4)}{x_n^2(1 - x_n^2)^2} = \frac{2x_n^2 - x_n^4}{x_n^2(1 - x_n^2)^2} = \frac{2 - x_n^2}{(1 - x_n^2)^2} $$
+        <p>Khi $n \to \infty$, $x_n \to 0$. Do đó:</p>
+        $$ \lim_{n \to \infty} (b_{n+1} - b_n) = \frac{2 - 0}{(1 - 0)^2} = 2 $$
+        <p>Áp dụng Định lý Stolz-Cesàro (Định lý 1.2):</p>
+        $$ \lim_{n \to \infty} \frac{n}{1/x_n^2} = \lim_{n \to \infty} \frac{a_n}{b_n} = \lim_{n \to \infty} \frac{a_{n+1} - a_n}{b_{n+1} - b_n} = \frac{1}{2} $$
+        <p>Từ đó $\lim_{n \to \infty} n x_n^2 = \frac{1}{2}$, dẫn đến $\lim_{n \to \infty} x_n \sqrt{n} = \frac{1}{\sqrt{2}}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Bài tập áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Polish Mathematical Olympiad 1992)</div>
+        Cho dãy số $(x_n)_{n \ge 1}$ xác định bởi $x_1 \in (0, 1)$ và $x_{n+1} = x_n - x_n^2$. Tìm giới hạn $\lim_{n \to \infty} n x_n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì $0 \lt x_n \lt 1 \implies x_n^2 \lt x_n \implies 0 \lt x_n - x_n^2 \lt 1$. Dãy $(x_n)$ bị chặn trong khoảng $(0, 1)$.<br>
+        Ta có $x_{n+1} - x_n = -x_n^2 \lt 0$, nên dãy giảm ngặt. Gọi $L$ là giới hạn của $(x_n)$.<br>
+        Hệ thức $L = L - L^2$ dẫn đến $L = 0$.<br>
+        Xét $\lim_{n \to \infty} n x_n = \lim_{n \to \infty} \frac{n}{1/x_n}$. Đặt $a_n = n$ và $b_n = \frac{1}{x_n} \to +\infty$.<br>
+        Khảo sát hiệu:</p>
+        $$ b_{n+1} - b_n = \frac{1}{x_{n+1}} - \frac{1}{x_n} = \frac{x_n - x_{n+1}}{x_n x_{n+1}} = \frac{x_n^2}{x_n(x_n - x_n^2)} = \frac{x_n^2}{x_n^2(1 - x_n)} = \frac{1}{1 - x_n} $$
+        <p>Khi $n \to \infty$, $x_n \to 0$, nên giới hạn của hiệu này là $1$.<br>
+        Theo Định lý Stolz-Cesàro:</p>
+        $$ \lim_{n \to \infty} \frac{n}{1/x_n} = \frac{1}{1} = 1 \implies \lim_{n \to \infty} n x_n = 1 $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Romanian TST 2003)</div>
+        Cho dãy số $(u_n)_{n \ge 1}$ xác định bởi $u_1 \in (0, \frac{\pi}{2})$ và $u_{n+1} = \sin(u_n)$. Chứng minh rằng $\lim_{n \to \infty} u_n \sqrt{n} = \sqrt{3}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Với mọi $x \in (0, \frac{\pi}{2})$, ta có $0 \lt \sin x \lt x$. Do đó $(u_n)$ là dãy giảm ngặt và bị chặn dưới bởi 0.<br>
+        Giới hạn $L$ thỏa mãn $L = \sin L \implies L = 0$.<br>
+        Sử dụng khai triển Maclaurin cho $\sin x$:</p>
+        $$ \sin x = x - \frac{x^3}{6} + O(x^5) \implies \sin^2 x = x^2 - \frac{x^4}{3} + O(x^6) $$
+        <p>Để áp dụng Stolz-Cesàro cho $\frac{n}{1/u_n^2}$, ta xét:</p>
+        $$ \frac{1}{u_{n+1}^2} - \frac{1}{u_n^2} = \frac{u_n^2 - \sin^2 u_n}{u_n^2 \sin^2 u_n} $$
+        <p>Thay thế bằng khai triển tiệm cận khi $u_n \to 0$:</p>
+        $$ \frac{u_n^2 - (u_n^2 - \frac{u_n^4}{3} + O(u_n^6))}{u_n^2(u_n^2 + O(u_n^4))} = \frac{\frac{u_n^4}{3} + O(u_n^6)}{u_n^4 + O(u_n^6)} $$
+        <p>Rút gọn $u_n^4$, giới hạn của hiệu này khi $n \to \infty$ bằng $\frac{1}{3}$.<br>
+        Theo Định lý Stolz-Cesàro:</p>
+        $$ \lim_{n \to \infty} \frac{n}{1/u_n^2} = \frac{1}{1/3} = 3 \implies \lim_{n \to \infty} n u_n^2 = 3 $$
+        <p>Lấy căn bậc hai hai vế, ta được $\lim_{n \to \infty} u_n \sqrt{n} = \sqrt{3}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Italian Mathematical Olympiad 1999)</div>
+        Cho số thực $a \gt 0$. Dãy $(x_n)$ được xác định bởi $x_1 = a$ và $x_{n+1} = x_n + \frac{1}{x_n^2}$ với mọi $n \ge 1$. Tính giới hạn $\lim_{n \to \infty} \frac{x_n}{\sqrt[3]{n}}$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Vì $x_1 \gt 0$, dễ thấy $x_n \gt 0$ với mọi $n$.<br>
+        $x_{n+1} - x_n = \frac{1}{x_n^2} \gt 0$, dãy tăng ngặt. Nếu dãy bị chặn, giới hạn $L \gt 0$ phải thỏa mãn $L = L + \frac{1}{L^2}$, vô nghiệm. Vậy $x_n \to +\infty$.<br>
+        Ta cần tìm giới hạn của $\frac{x_n^3}{n}$. Xét hiệu phân sai của $x_n^3$:</p>
+        $$ x_{n+1}^3 - x_n^3 = \left( x_n + \frac{1}{x_n^2} \right)^3 - x_n^3 = x_n^3 + 3x_n^2\left(\frac{1}{x_n^2}\right) + 3x_n\left(\frac{1}{x_n^4}\right) + \frac{1}{x_n^6} - x_n^3 $$
+        $$ = 3 + \frac{3}{x_n^3} + \frac{1}{x_n^6} $$
+        <p>Khi $n \to \infty$, $x_n \to +\infty$, do đó:</p>
+        $$ \lim_{n \to \infty} (x_{n+1}^3 - x_n^3) = 3 $$
+        <p>Áp dụng Định lý Stolz-Cesàro dạng $\frac{\infty}{\infty}$:</p>
+        $$ \lim_{n \to \infty} \frac{x_n^3}{n} = \lim_{n \to \infty} \frac{x_{n+1}^3 - x_n^3}{(n+1) - n} = 3 $$
+        <p>Suy ra $\lim_{n \to \infty} \frac{x_n}{\sqrt[3]{n}} = \sqrt[3]{3}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Russian Mathematical Olympiad 1998)</div>
+        Cho dãy số $(a_n)$ với $a_1 \gt 0$ và $a_{n+1} = \ln(1 + a_n)$ với mọi $n \ge 1$. Chứng minh rằng $\lim_{n \to \infty} n a_n = 2$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Với mọi $x \gt 0$, ta có $\ln(1+x) \lt x$. Do đó $0 \lt a_{n+1} \lt a_n$.<br>
+        Dãy $(a_n)$ giảm ngặt và bị chặn dưới bởi 0, hội tụ về giới hạn $L$.<br>
+        $L = \ln(1+L) \implies L = 0$.<br>
+        Xét giới hạn của $\frac{n}{1/a_n}$ thông qua hiệu:</p>
+        $$ \frac{1}{a_{n+1}} - \frac{1}{a_n} = \frac{1}{\ln(1+a_n)} - \frac{1}{a_n} = \frac{a_n - \ln(1+a_n)}{a_n \ln(1+a_n)} $$
+        <p>Khai triển chuỗi Taylor của $\ln(1+x)$ xung quanh $0$:</p>
+        $$ \ln(1+x) = x - \frac{x^2}{2} + O(x^3) $$
+        <p>Thay vào biểu thức:</p>
+        $$ \frac{a_n - (a_n - \frac{a_n^2}{2} + O(a_n^3))}{a_n(a_n + O(a_n^2))} = \frac{\frac{a_n^2}{2} + O(a_n^3)}{a_n^2 + O(a_n^3)} $$
+        <p>Khi $a_n \to 0$, giới hạn của biểu thức này bằng $\frac{1}{2}$.<br>
+        Theo Định lý Stolz-Cesàro:</p>
+        $$ \lim_{n \to \infty} \frac{n}{1/a_n} = \frac{1}{1/2} = 2 \implies \lim_{n \to \infty} n a_n = 2 $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.5 (Vietnamese TST 2001 - Phiên bản mở rộng)</div>
+        Cho dãy số $(u_n)_{n \ge 1}$ thỏa mãn $u_1 \in (0, 1)$ và $u_{n+1} = u_n - u_n^2 + u_n^3$. Tìm giới hạn $\lim_{n \to \infty} n u_n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta viết hệ thức dưới dạng $u_{n+1} = u_n(1 - u_n + u_n^2)$.<br>
+        Vì tam thức $1 - u_n + u_n^2 = (u_n - 1/2)^2 + 3/4 \gt 0$ và $u_n(1-u_n+u_n^2)$ nằm trong khoảng $(0, 1)$ khi $u_n \in (0, 1)$, ta luôn có $u_n \in (0, 1)$.<br>
+        Hiệu số $u_{n+1} - u_n = -u_n^2(1 - u_n) \lt 0$. Dãy giảm ngặt về $L = 0$.<br>
+        Xét biểu thức nghịch đảo:</p>
+        $$ \frac{1}{u_{n+1}} - \frac{1}{u_n} = \frac{u_n - u_{n+1}}{u_n u_{n+1}} = \frac{u_n^2 - u_n^3}{u_n^2(1 - u_n + u_n^2)} = \frac{1 - u_n}{1 - u_n + u_n^2} $$
+        <p>Khi $n \to \infty$, do $u_n \to 0$, giới hạn của hiệu này là:</p>
+        $$ \lim_{n \to \infty} \left( \frac{1}{u_{n+1}} - \frac{1}{u_n} \right) = \frac{1 - 0}{1 - 0 + 0} = 1 $$
+        <p>Sử dụng Định lý Stolz-Cesàro:</p>
+        $$ \lim_{n \to \infty} \frac{n}{1/u_n} = \frac{1}{1} = 1 \implies \lim_{n \to \infty} n u_n = 1 $$
+        <p>Tính chất bậc cao $+u_n^3$ không làm thay đổi tốc độ hội tụ của dãy.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.6 (Austrian Mathematical Olympiad 2004)</div>
+        Cho số thực $p \gt 0$. Dãy số $(a_n)_{n \ge 1}$ được xác định bởi $a_1 \gt 0$ và $a_{n+1} = \frac{a_n}{1 + a_n^p}$. Tính giới hạn $\lim_{n \to \infty} n^{1/p} a_n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Dễ thấy $a_n \gt 0$ với mọi $n$.<br>
+        Từ hệ thức, $a_{n+1} \lt a_n$. Dãy hội tụ về giới hạn $L \ge 0$.<br>
+        Phương trình $L = \frac{L}{1 + L^p} \implies L(1+L^p) = L \implies L^{p+1} = 0 \implies L = 0$.<br>
+        Để sử dụng Stolz-Cesàro, do bậc triệt tiêu liên quan đến lũy thừa $p$, ta xét hiệu của $\frac{1}{a_n^p}$:</p>
+        $$ \frac{1}{a_{n+1}^p} - \frac{1}{a_n^p} = \frac{(1 + a_n^p)^p - 1}{a_n^p} $$
+        <p>Áp dụng khai triển nhị thức (hoặc khai triển Maclaurin) cho hàm $(1+x)^p$ khi $x = a_n^p \to 0$:</p>
+        $$ (1+x)^p = 1 + px + O(x^2) $$
+        <p>Do đó:</p>
+        $$ \frac{(1 + a_n^p)^p - 1}{a_n^p} = \frac{p a_n^p + O(a_n^{2p})}{a_n^p} = p + O(a_n^p) $$
+        <p>Khi $n \to \infty$, giới hạn của hiệu này bằng $p$.<br>
+        Theo Định lý Stolz-Cesàro:</p>
+        $$ \lim_{n \to \infty} \frac{1/a_n^p}{n} = p \implies \lim_{n \to \infty} n a_n^p = \frac{1}{p} $$
+        <p>Lấy căn bậc $p$ hai vế, ta thu được kết quả tổng quát:</p>
+        $$ \lim_{n \to \infty} n^{1/p} a_n = p^{-1/p} $$
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.7 (German Mathematical Olympiad 2001 - Mô hình hội tụ logarit)</div>
+        Cho dãy số $(y_n)$ xác định bởi $y_1 \gt 0$ và $y_{n+1} = y_n + e^{-y_n}$. Chứng minh rằng $\lim_{n \to \infty} \frac{y_n}{\ln n} = 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Do $y_1 \gt 0$, $y_n$ tăng ngặt (vì $e^{-y_n} \gt 0$).<br>
+        Nếu dãy bị chặn, giới hạn $L$ thỏa mãn $L = L + e^{-L} \implies e^{-L} = 0$, phương trình vô nghiệm. Vậy $y_n \to +\infty$.<br>
+        Để làm xuất hiện hàm tuyến tính thay cho logarit, ta đặt biến phụ $z_n = e^{y_n}$. Khi đó $z_n \to +\infty$.<br>
+        Hệ thức truy hồi viết lại thành $y_{n+1} - y_n = \frac{1}{e^{y_n}}$, hay:</p>
+        $$ \ln z_{n+1} - \ln z_n = \frac{1}{z_n} \implies \ln\left(\frac{z_{n+1}}{z_n}\right) = \frac{1}{z_n} \implies z_{n+1} = z_n e^{1/z_n} $$
+        <p>Ta cần tìm giới hạn của hiệu $z_{n+1} - z_n$:</p>
+        $$ z_{n+1} - z_n = z_n \left( e^{1/z_n} - 1 \right) $$
+        <p>Sử dụng khai triển Taylor cho hàm mũ khi $u = 1/z_n \to 0$:</p>
+        $$ e^u - 1 = u + \frac{u^2}{2} + O(u^3) $$
+        $$ z_{n+1} - z_n = z_n \left( \frac{1}{z_n} + O\left(\frac{1}{z_n^2}\right) \right) = 1 + O\left(\frac{1}{z_n}\right) $$
+        <p>Khi $n \to \infty$, $\lim (z_{n+1} - z_n) = 1$.<br>
+        Theo Định lý Stolz-Cesàro, $\lim \frac{z_n}{n} = 1$.<br>
+        Thay ngược lại $z_n = e^{y_n}$, ta có $\lim \frac{e^{y_n}}{n} = 1 \implies \lim (y_n - \ln n) = \ln 1 = 0$.<br>
+        Vì $y_n - \ln n \to 0$ và $\ln n \to \infty$, ta có $\lim \frac{y_n}{\ln n} = 1$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.8 (Spanish Mathematical Olympiad 2005 - Giới hạn của chuỗi liên kết)</div>
+        Dãy số $(x_n)_{n \ge 1}$ được định nghĩa bởi $x_1 = a \in (0, 1)$ và $x_{n+1} = x_n - x_n^2$ với mọi $n \ge 1$. Tính giới hạn của chuỗi vô hạn $S = \lim_{n \to \infty} (x_1^2 + x_2^2 + \dots + x_n^2)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khác với việc tìm hành vi tiệm cận của $x_n$, bài toán này yêu cầu tính tổng bình phương thông qua cấu trúc chuỗi triệt tiêu (Telescoping sum).<br>
+        Từ hệ thức truy hồi $x_{k+1} = x_k - x_k^2$, ta viết lại được:</p>
+        $$ x_k^2 = x_k - x_{k+1} $$
+        <p>Xét tổng $S_n$ của $n$ số hạng đầu tiên:</p>
+        $$ S_n = \sum_{k=1}^n x_k^2 = \sum_{k=1}^n (x_k - x_{k+1}) $$
+        <p>Khai triển chuỗi, các số hạng trung gian tự động triệt tiêu lẫn nhau:</p>
+        $$ S_n = (x_1 - x_2) + (x_2 - x_3) + \dots + (x_n - x_{n+1}) = x_1 - x_{n+1} $$
+        <p>Như đã phân tích ở Bài 3.1, dãy số $(x_n)$ giảm ngặt và hội tụ về $0$.<br>
+        Chuyển qua giới hạn khi $n \to \infty$:</p>
+        $$ S = \lim_{n \to \infty} S_n = \lim_{n \to \infty} (x_1 - x_{n+1}) = x_1 - 0 = a $$
+        <p>Kết quả chuỗi vô hạn này chỉ phụ thuộc vào giá trị khởi tạo của dãy.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

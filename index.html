@@ -352,8 +352,8 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">85</b><small>Bài viết</small></div>
-            <div class="stat"><b id="countVmo">15</b><small>Luyện tập VMO</small></div>
+            <div class="stat"><b id="countAll">87</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countVmo">16</b><small>Luyện tập VMO</small></div>
             <div class="stat"><b id="countCat">8</b><small>Chủ đề</small></div>
             <div class="stat"><b id="countOnline">0</b><small>Đang online</small></div>
             <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
@@ -409,7 +409,7 @@
             ineq:  { label: 'Bất đẳng thức',                             color: '#b8860b' },
             graph: { label: 'Lý thuyết đồ thị',                          color: '#008080' },
             dio:   { label: 'Phương trình Diophantine',                  color: '#8b4513' },
-            oeis:  { label: 'OEIS — Dãy sô', color: '#c71585' }
+            oeis:  { label: 'OEIS — Dãy số', color: '#c71585' }
         };
 
         // ===== Danh sách bài viết (phần 1) =====
@@ -501,6 +501,8 @@
             { n:1, file:'oeis1.html', cat:'oeis',  title:'Bài toán Hoán vị không điểm bất động (Derangement)', desc:'Trong tổ hợp học, một hoán vị không điểm bất động của một tập hợp là một hoán vị trong đó không có phần tử nào xuất hiện ở vị trí ban đầu của nó.' },
             { n:2, file:'oeis2.html', cat:'oeis',  title:'Bài toán Phân hoạch tập hợp và Số Bell (OEIS A000110)', desc:'Trong Bài 7 và Bài 8, để chứng minh công thức Dobiński, ta cần sử dụng khái niệm Hàm sinh mũ (Exponential Generating Function) và khai triển Taylor của hàm số , vốn là các công cụ thường được học ở Giải tích và Đại số Tổ' },
             { n:3, file:'oeis3.html', cat:'oeis',  title:'Bài toán Đếm số cây khung và Mã Prüfer — OEIS A000272', desc:'Trong lý thuyết đồ thị và tổ hợp học, một trong những kết quả nền tảng là việc xác định số lượng cây có thể tạo ra từ một tập hợp các đỉnh phân biệt. Dãy số biểu diễn số lượng cây trên đỉnh được dán nhãn được lưu trữ với' },
+            { n:4, file:'oeis4.html', cat:'oeis',  title:'Bài toán Tổ hợp Cực trị và Xác suất — Phương pháp Xác suất (OEIS)', desc:'Phương pháp xác suất trong tổ hợp sử dụng các khái niệm mở rộng từ chương trình xác suất của THPT. Để hiểu rõ các phép chứng minh dưới đây, ta cần nắm vững ý tưởng về Kỳ vọng và Biến chỉ thị:' },
+            { n:16, file:'vmo16.html', cat:'nt', stars:4, title:'Định Lý Thặng Dư Trung Hoa & Cấu Trúc Chia Hết', desc:'Khai thác số học của Định lý Thặng dư Trung Hoa thông qua việc xây dựng các khối số liên tiếp cho trước.' },
         ];
 
         // ===== Logic hiển thị và lọc (tìm kiếm, lọc danh mục) =====
@@ -629,14 +631,14 @@
 
         // ============================================================
         //  BỘ ĐẾM LƯỢT TRUY CẬP TOÀN CỤC — Google Apps Script + Sheets
-        //  - Chỉ hiển thị TỔNG LƯƢT XEM (phần "hôm nay" đã bỏ)
+        //  - Chỉ hiển thị TỔNG LƯỢT XEM (phần "hôm nay" đã bỏ)
         //  - Hiển thị thông minh: K = hàng nghìn, M = hàng triệu
         //    vd: 1250 → "1,25K"  •  143454 → "143,454K"  •  1234567 → "1,234567M"
         //  - Nếu APPS_SCRIPT_URL không gọi được → tự chuyển về localStorage
         // ============================================================
-        // PRESENCE_URL — introdu aici URL nouă web-app (uita AppsScript_Code.gs);
-        //   cu acesta "người online" và phân trin duyət vor deveni globale.
-        //   Dacă rồmane gol ('') -> funcționează doar modul local (dispozitivul).
+        // PRESENCE_URL — dán vào đây URL web-app mới (xem file AppsScript_Code.gs);
+        //   có URL này thì số "người online" và "trình duyệt đang xem" mới thành toàn cục.
+        //   Nếu để trống ('') -> chỉ chạy chế độ cục bộ (trên thiết bị này).
         const PRESENCE_URL = ''; // ex: https://script.google.com/macros/s/XXXX/exec
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxKjYk2elM5kLba26kINmjIf98G_hQGNM5KlBUWhiRmy-wUK3W1NaQTfMy2-AXBxV56/exec';
 
@@ -645,7 +647,7 @@
             const elTotal = document.getElementById('countVisits');
             const elLast  = document.getElementById('lastVisit');
 
-            // Chuyển số → bìn diện thông minh (K / M), dấu phây decimal = ","
+            // Chuyển số → hiển thị thông minh (K / M), dấu phẩy thập phân = ","
             function smartNumber(n) {
                 n = Number(n) || 0;
                 if (n >= 1000000) return String(n / 1000000).replace('.', ',') + 'M';
@@ -697,9 +699,9 @@
             countGlobal().then(ok => { if (!ok) countLocal(); });
         })();
         // ============================================================
-        //  NGƯỜI ĐANG ONLINE + TRÌNH DUYƏT (heartbeat)
-        //  - Începă trê server (PRESENCE_URL); dacă indisponibil -
-        //    mod local (tab-uri active ale acestui browser/navigator)
+        //  NGƯỜI ĐANG ONLINE + TRÌNH DUYỆT (heartbeat)
+        //  - Thử qua server (PRESENCE_URL); nếu không có/không gọi được -
+        //    dùng chế độ cục bộ (các tab đang mở của trình duyệt này)
         // ============================================================
         (function () {
             const elOnline = document.getElementById('countOnline');

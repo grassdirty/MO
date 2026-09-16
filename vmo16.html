@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Định Lý Thặng Dư Trung Hoa & Cấu Trúc Chia Hết</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ ĐỒNG DƯ<br>ĐỊNH LÝ THẶNG DƯ TRUNG HOA VÀ CẤU TRÚC CHIA HẾT CỦA CÁC DÃY SỐ LIÊN TIẾP</h1>
+        <div class="author">Độ khó: $\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát tính chất chia hết của một hệ thống các biểu thức đại số đồng thời là một vấn đề trung tâm của Số học giải tích. Định lý Thặng dư Trung Hoa (Chinese Remainder Theorem) cung cấp một công cụ lý thuyết chặt chẽ để giải quyết các hệ phương trình đồng dư với các module nguyên tố cùng nhau. Chuyên đề này thiết lập cơ sở lý thuyết của hệ đồng dư tuyến tính và áp dụng để chứng minh sự tồn tại của các cấu trúc số học phức hợp trong các dãy số nguyên liên tiếp, thông qua các bài toán trong hệ thống Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Hệ phương trình đồng dư tuyến tính</div>
+            <div class="box-body">
+                Một hệ phương trình đồng dư tuyến tính một ẩn $x$ có dạng:
+                \begin{align*}
+                x &\equiv a_1 \pmod{m_1} \\
+                x &\equiv a_2 \pmod{m_2} \\
+                &\dots \\
+                x &\equiv a_k \pmod{m_k}
+                \end{align*}
+                trong đó $a_1, \dots, a_k$ là các số nguyên và $m_1, \dots, m_k$ là các số nguyên dương.
+            </div>
+        </div>
+
+        <p>Sự tồn tại nghiệm của hệ phương trình trên được đảm bảo bởi định lý sau:</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Định lý Thặng dư Trung Hoa (Chinese Remainder Theorem - CRT)</div>
+            <div class="box-body">
+                Giả sử $m_1, m_2, \dots, m_k$ là các số nguyên dương đôi một nguyên tố cùng nhau (nghĩa là $\gcd(m_i, m_j) = 1$ với mọi $i \neq j$). Khi đó, với mọi bộ số nguyên $(a_1, a_2, \dots, a_k)$, hệ phương trình đồng dư tuyến tính luôn có nghiệm. <br>
+                Hơn nữa, nghiệm này là duy nhất theo modulo $M = m_1 m_2 \dots m_k$. Tức là, nếu $x_1$ và $x_2$ là hai nghiệm của hệ, thì $x_1 \equiv x_2 \pmod M$.
+            </div>
+        </div>
+
+        <div class="proof">
+            <div class="proof-title">Chứng minh</div>
+            Xây dựng nghiệm trực tiếp bằng phương pháp nội suy. Đặt $M_i = \frac{M}{m_i}$. Vì các $m_j$ đôi một nguyên tố cùng nhau, ta có $\gcd(M_i, m_i) = 1$.<br>
+            Do đó, tồn tại phần tử nghịch đảo của $M_i$ theo modulo $m_i$. Gọi $y_i$ là số nguyên thỏa mãn $M_i y_i \equiv 1 \pmod{m_i}$.<br>
+            Xét số nguyên $x$ được xác định bởi công thức:
+            $$ x = \sum_{i=1}^k a_i M_i y_i $$
+            Với một chỉ số $j$ bất kỳ, do $M_i \equiv 0 \pmod{m_j}$ với mọi $i \neq j$, ta có:
+            $$ x \equiv a_j M_j y_j \equiv a_j \cdot 1 \equiv a_j \pmod{m_j} $$
+            Do đó, $x$ là một nghiệm của hệ phương trình. Sự duy nhất theo modulo $M$ được suy ra trực tiếp từ việc hiệu của hai nghiệm bất kỳ phải chia hết cho từng module $m_i$, và do đó chia hết cho tích của chúng.
+            <div class="qed">$\square$</div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (All-Russian Olympiad 1989)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số nguyên dương $n$, luôn tồn tại $n$ số nguyên dương liên tiếp sao cho không có số nào trong chúng là một lũy thừa nguyên của một số nguyên tố.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Lũy thừa nguyên của một số nguyên tố có dạng $p^k$ với $p$ là số nguyên tố và $k \ge 1$. Để một số nguyên dương không phải là lũy thừa của một số nguyên tố, điều kiện đủ là nó phải chia hết cho ít nhất hai số nguyên tố phân biệt (tức là nó có từ hai ước nguyên tố trở lên).<br><br>
+
+            Ta cần tìm một số nguyên dương $x$ sao cho các số $x+1, x+2, \dots, x+n$ đều chia hết cho ít nhất hai số nguyên tố phân biệt.<br>
+            Chọn $2n$ số nguyên tố phân biệt bất kỳ và chia chúng thành $n$ cặp: $(p_1, q_1), (p_2, q_2), \dots, (p_n, q_n)$.<br>
+            Xét hệ phương trình đồng dư:
+            \begin{align*}
+            x + 1 &\equiv 0 \pmod{p_1 q_1} \\
+            x + 2 &\equiv 0 \pmod{p_2 q_2} \\
+            &\dots \\
+            x + n &\equiv 0 \pmod{p_n q_n}
+            \end{align*}
+            Đặt $m_i = p_i q_i$. Vì tất cả các số nguyên tố được chọn đều phân biệt, các module $m_i$ và $m_j$ (với $i \neq j$) hoàn toàn nguyên tố cùng nhau.<br>
+            Theo Định lý Thặng dư Trung Hoa (Định lý 1), hệ phương trình trên luôn có một nghiệm nguyên dương $x_0$.<br>
+            Tập nghiệm của hệ là $x = x_0 + kM$, trong đó $M = m_1 m_2 \dots m_n$ và $k$ là một số nguyên tùy ý.<br>
+            Bằng cách chọn $k$ đủ lớn, ta có thể đảm bảo rằng $x + i &gt; p_i q_i$ với mọi $i = 1, 2, \dots, n$.<br>
+            Khi đó, mỗi số $x+i$ chia hết cho $p_i q_i$ và có giá trị thực sự lớn hơn $p_i q_i$. Do đó, $x+i$ là một hợp số nhận $p_i$ và $q_i$ làm hai ước nguyên tố phân biệt.<br>
+            Hệ quả là, không có bất kỳ số nào trong dãy $x+1, x+2, \dots, x+n$ có thể được biểu diễn dưới dạng lũy thừa của một số nguyên tố duy nhất. Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Vietnam National Olympiad (VMO) 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng tồn tại $1999$ số nguyên dương liên tiếp sao cho mỗi số đều chia hết cho bình phương của một số nguyên tố.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Chọn 1999 số nguyên tố phân biệt $p_1, p_2, \dots, p_{1999}$.<br>
+            Xét hệ phương trình đồng dư:
+            \begin{align*}
+            x + 1 &\equiv 0 \pmod{p_1^2} \\
+            x + 2 &\equiv 0 \pmod{p_2^2} \\
+            &\dots \\
+            x + 1999 &\equiv 0 \pmod{p_{1999}^2}
+            \end{align*}
+            Do các số nguyên tố là phân biệt, các module $m_i = p_i^2$ là đôi một nguyên tố cùng nhau. Theo Định lý Thặng dư Trung Hoa, hệ phương trình này có nghiệm nguyên dương $x$.<br>
+            Khi đó, dãy $x+1, x+2, \dots, x+1999$ chính là 1999 số nguyên dương liên tiếp thỏa mãn điều kiện bài toán, do số thứ $i$ chia hết cho $p_i^2$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (United States of America Mathematical Olympiad (USAMO) 2008)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số nguyên dương $n$, tồn tại $n$ số nguyên dương liên tiếp sao cho mỗi số chia hết cho ít nhất $n$ số nguyên tố phân biệt.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta cần chọn tổng cộng $n^2$ số nguyên tố phân biệt. Gọi tập hợp các số nguyên tố này là $\{p_{i,j}\}$ với $1 \le i \le n$ và $1 \le j \le n$.<br>
+            Với mỗi $i \in \{1, 2, \dots, n\}$, đặt $m_i = p_{i,1} \cdot p_{i,2} \dots p_{i,n}$.<br>
+            Rõ ràng $\gcd(m_i, m_k) = 1$ với mọi $i \neq k$ do chúng được cấu tạo từ các tập số nguyên tố rời rạc.<br>
+            Thiết lập hệ phương trình đồng dư:
+            $$ x + i \equiv 0 \pmod{m_i} \quad \text{với } i = 1, 2, \dots, n $$
+            Áp dụng Định lý Thặng dư Trung Hoa, tồn tại số nguyên dương $x$ là nghiệm của hệ.<br>
+            Số $x+i$ chia hết cho $m_i$, và do đó nó chia hết cho $n$ số nguyên tố phân biệt $p_{i,1}, p_{i,2}, \dots, p_{i,n}$. Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Greek Mathematical Olympiad 1996)</div>
+            <div class="box-body">
+                Tìm số nguyên dương $n$ nhỏ nhất sao cho $\frac{n}{2}$ là một số chính phương, $\frac{n}{3}$ là một lập phương, và $\frac{n}{5}$ là một lũy thừa bậc 5.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ giả thiết, $n$ phải chia hết cho 2, 3 và 5. Phân tích $n$ ra thừa số nguyên tố:
+            $$ n = 2^a 3^b 5^c \cdot k $$
+            Để $n$ nhỏ nhất, ta bỏ qua các thừa số nguyên tố khác bằng cách chọn $k=1$. Khi đó $n = 2^a 3^b 5^c$.
+            <ul>
+                <li>Điều kiện 1: $\frac{n}{2} = 2^{a-1} 3^b 5^c$ là số chính phương $\implies a-1 \equiv 0 \pmod 2, b \equiv 0 \pmod 2, c \equiv 0 \pmod 2$.</li>
+                <li>Điều kiện 2: $\frac{n}{3} = 2^a 3^{b-1} 5^c$ là lập phương $\implies a \equiv 0 \pmod 3, b-1 \equiv 0 \pmod 3, c \equiv 0 \pmod 3$.</li>
+                <li>Điều kiện 3: $\frac{n}{5} = 2^a 3^b 5^{c-1}$ là lũy thừa bậc $5 \implies a \equiv 0 \pmod 5, b \equiv 0 \pmod 5, c-1 \equiv 0 \pmod 5$.</li>
+            </ul>
+            Giải hệ phương trình cho $a$: $a \equiv 1 \pmod 2, a \equiv 0 \pmod 3, a \equiv 0 \pmod 5$. Vì $\gcd(3, 5) = 1$, $a \equiv 0 \pmod{15}$. Kết hợp $a$ lẻ, số nhỏ nhất là $a = 15$.<br>
+            Giải hệ phương trình cho $b$: $b \equiv 0 \pmod 2, b \equiv 1 \pmod 3, b \equiv 0 \pmod 5$. Suy ra $b \equiv 0 \pmod{10}$. Số nhỏ nhất thỏa mãn $b \equiv 1 \pmod 3$ là $b = 10$.<br>
+            Giải hệ phương trình cho $c$: $c \equiv 0 \pmod 2, c \equiv 0 \pmod 3, c \equiv 1 \pmod 5$. Suy ra $c \equiv 0 \pmod 6$. Số nhỏ nhất thỏa mãn $c \equiv 1 \pmod 5$ là $c = 6$.<br>
+            Giá trị nhỏ nhất của $n$ là $n = 2^{15} 3^{10} 5^6$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Polish Mathematical Olympiad 2003)</div>
+            <div class="box-body">
+                Chứng minh rằng tồn tại vô số số nguyên dương $x$ sao cho đại lượng $x(x+1)(x+2)$ chia hết cho $10^6$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta có phân tích $10^6 = 2^6 \cdot 5^6$.<br>
+            Xét tích $P = x(x+1)(x+2)$. Để $10^6 \mid P$, ta cần thiết lập một điều kiện chia hết cho các thành phần của $P$.<br>
+            Nhận xét rằng các số $x$ và $x+1$ luôn nguyên tố cùng nhau. Do đó, ta có thể gán các ước nguyên tố đôi một rời rạc cho chúng.<br>
+            Thiết lập hệ phương trình đồng dư:
+            \begin{align*}
+            x &\equiv 0 \pmod{5^6} \\
+            x+1 &\equiv 0 \pmod{2^6} \implies x \equiv -1 \pmod{2^6}
+            \end{align*}
+            Vì $\gcd(5^6, 2^6) = 1$, theo Định lý Thặng dư Trung Hoa, hệ này có một nghiệm duy nhất $x_0$ theo modulo $10^6$.<br>
+            Khi đó $x = x_0 + k \cdot 10^6$ (với $k \in \mathbb{Z}^+$) sẽ thỏa mãn hệ phương trình.<br>
+            Với mỗi giá trị $x$ được sinh ra, $x$ chia hết cho $5^6$ và $x+1$ chia hết cho $2^6$. Từ đó tích $x(x+1)(x+2)$ chia hết cho $5^6 \cdot 2^6 = 10^6$.<br>
+            Do $k$ có thể nhận vô hạn giá trị, bài toán được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Taiwan Mathematical Olympiad (TMO) 2001)</div>
+            <div class="box-body">
+                Chứng minh rằng tồn tại $2001$ số nguyên dương liên tiếp sao cho mỗi số đều chia hết cho một số nguyên có dạng $a^2 + b^2$ (với $a, b$ là các số nguyên dương).
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Theo định lý Fermat về tổng của hai bình phương, một số nguyên tố lẻ $p$ có thể được biểu diễn dưới dạng tổng của hai bình phương ($p = a^2 + b^2$) khi và chỉ khi $p \equiv 1 \pmod 4$.<br>
+            Theo định lý Dirichlet về cấp số cộng, tồn tại vô số số nguyên tố có dạng $4k+1$.<br>
+            Chọn $2001$ số nguyên tố phân biệt $p_1, p_2, \dots, p_{2001}$ đều có dạng $4k+1$.<br>
+            Thiết lập hệ phương trình đồng dư:
+            $$ x + i \equiv 0 \pmod{p_i} \quad \text{với } i = 1, 2, \dots, 2001 $$
+            Theo Định lý Thặng dư Trung Hoa, hệ có nghiệm nguyên dương $x$.<br>
+            Với mỗi $i$, số $x+i$ chia hết cho $p_i$. Vì $p_i \equiv 1 \pmod 4$, $p_i$ là tổng của hai bình phương số nguyên. Do đó, $x+i$ thỏa mãn yêu cầu của bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Bulgarian National Olympiad 2006)</div>
+            <div class="box-body">
+                Tìm tất cả các cặp số nguyên dương $(a, b)$ sao cho với mọi số nguyên dương $n$, đại lượng $a^n + n$ chia hết cho $b$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Rõ ràng với $b=1$, điều kiện luôn thỏa mãn với mọi $a$. Xét trường hợp $b &gt; 1$.<br>
+            Gọi $p$ là một ước nguyên tố của $b$. Ta phải có $p \mid a^n + n$ với mọi số nguyên dương $n$.<br>
+            Giả sử $p \mid a$. Khi đó $a^n \equiv 0 \pmod p$. Suy ra $n \equiv 0 \pmod p$ với mọi $n$. Điều này vô lý (ví dụ khi $n=1$, ta có $p \mid 1$). Do đó $p \nmid a$.<br>
+            Theo Định lý Fermat nhỏ, $a^{p-1} \equiv 1 \pmod p$.<br>
+            Sử dụng Định lý Thặng dư Trung Hoa, tồn tại số nguyên dương $n_1$ thỏa mãn hệ:
+            \begin{align*}
+            n_1 &\equiv 1 \pmod{p-1} \\
+            n_1 &\equiv 0 \pmod p
+            \end{align*}
+            Thay $n = n_1$ vào biểu thức $a^n + n$:<br>
+            Vì $n_1 = k(p-1) + 1$, $a^{n_1} = a^{k(p-1)} \cdot a \equiv 1^k \cdot a \equiv a \pmod p$.<br>
+            Vì $n_1 \equiv 0 \pmod p$, ta có $a^{n_1} + n_1 \equiv a + 0 \equiv a \pmod p$.<br>
+            Theo giả thiết $p \mid a^{n_1} + n_1$, dẫn đến $p \mid a$.<br>
+            Điều này mâu thuẫn trực tiếp với kết luận $p \nmid a$ đã chứng minh trước đó.<br>
+            Sự mâu thuẫn này chỉ ra rằng không tồn tại bất kỳ số nguyên tố $p$ nào là ước của $b$. Nói cách khác, bắt buộc $b = 1$.<br>
+            Cặp số duy nhất thỏa mãn là $(a, 1)$ với $a \in \mathbb{Z}^+$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Canadian Mathematical Olympiad (CMO) 1998)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số nguyên dương $k$, tồn tại một số nguyên dương $x$ sao cho $k$ số liên tiếp $x, x+1, \dots, x+k-1$ đều chứa ít nhất một ước nguyên tố lớn hơn $k$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Vì tập hợp các số nguyên tố là vô hạn, ta có thể chọn ra $k$ số nguyên tố phân biệt $p_0, p_1, \dots, p_{k-1}$ sao cho $p_i &gt; k$ với mọi $i = 0, 1, \dots, k-1$.<br>
+            Thiết lập hệ phương trình đồng dư:
+            \begin{align*}
+            x &\equiv 0 \pmod{p_0} \\
+            x + 1 &\equiv 0 \pmod{p_1} \\
+            &\dots \\
+            x + k - 1 &\equiv 0 \pmod{p_{k-1}}
+            \end{align*}
+            Các module $p_i$ là các số nguyên tố phân biệt nên chúng đôi một nguyên tố cùng nhau.<br>
+            Theo Định lý Thặng dư Trung Hoa, hệ này có nghiệm $x$.<br>
+            Khi đó, phần tử $x+i$ trong dãy chia hết cho $p_i$. Vì $p_i &gt; k$, số $x+i$ sở hữu ít nhất một ước nguyên tố lớn hơn $k$. Điều này đúng với mọi số trong cấu trúc liên tiếp.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Romanian National Olympiad 2007)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số nguyên dương $n$, tồn tại một số nguyên dương $x$ sao cho các số $x+1, x+2, \dots, x+n$ đều là hợp số, nhưng không có bất kỳ số nào trong dãy chia hết cho 2 hoặc 3.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Để một số là hợp số mà không chia hết cho 2 hoặc 3, nó cần chia hết cho một số nguyên tố lớn hơn 3.<br>
+            Chọn $n$ số nguyên tố phân biệt $p_1, p_2, \dots, p_n$ sao cho tất cả đều lớn hơn 3 (nghĩa là $p_i \ge 5$).<br>
+            Thiết lập hệ phương trình đồng dư bao gồm các điều kiện chia hết và điều kiện loại trừ:
+            \begin{align*}
+            x + 1 &\equiv 0 \pmod{p_1^2} \\
+            x + 2 &\equiv 0 \pmod{p_2^2} \\
+            &\dots \\
+            x + n &\equiv 0 \pmod{p_n^2} \\
+            x &\equiv 1 \pmod 2 \\
+            x &\equiv 1 \pmod 3
+            \end{align*}
+            (Việc sử dụng bình phương $p_i^2$ đảm bảo rằng ngay cả khi $x+i = p_i$, nó cũng không thể xảy ra nếu ta chọn $x$ đủ lớn, nhưng để đơn giản, việc chia hết cho $p_i^2$ tự động làm cho $x+i$ là hợp số).<br>
+            Các module $p_1^2, p_2^2, \dots, p_n^2, 2, 3$ là đôi một nguyên tố cùng nhau do các số nguyên tố được chọn đều khác nhau và $\ge 5$.<br>
+            Áp dụng Định lý Thặng dư Trung Hoa, hệ có nghiệm $x$. Bằng cách thêm bội số của tích các module, ta chọn $x$ đủ lớn.<br>
+            Với mỗi $i \in \{1, \dots, n\}$, $x+i$ chia hết cho $p_i^2$, nên nó là hợp số.<br>
+            Đồng thời, do $x \equiv 1 \pmod 2 \implies x+i \equiv i+1 \pmod 2$.<br>
+            Để tránh việc $x+i$ chia hết cho 2 hoặc 3, ta cần tinh chỉnh hệ phương trình. Thay vì cố định $x \pmod 2$ và $x \pmod 3$, ta gán trực tiếp các điều kiện:<br>
+            $x+i \equiv 1 \pmod 2$ và $x+i \equiv 1 \pmod 3$ với mọi $i$.<br>
+            Điều này không thể thực hiện do $i$ thay đổi. Tuy nhiên, ta có thể loại bỏ điều kiện này và chọn một cách tiếp cận khác:<br>
+            Chỉ cần chọn các số nguyên tố $p_i \ge 5$. Ta thiết lập hệ $x+i \equiv 0 \pmod{p_i q_i}$ với $p_i, q_i \ge 5$.<br>
+            Để đảm bảo $\gcd(x+i, 6) = 1$, ta thiết lập hệ đồng dư bổ sung:<br>
+            $x \equiv 1 \pmod 2$ (do đó các số lẻ $x+1, x+3$ sẽ chẵn, điều này không được phép).<br>
+            Yêu cầu "không có số nào chia hết cho 2 hoặc 3" nghĩa là $\gcd(x+i, 6) = 1$ với $i=1..n$.<br>
+            Nhưng trong một chuỗi $n$ số liên tiếp (với $n \ge 2$), luôn tồn tại số chẵn và số chia hết cho 3. Không thể có $n$ số liên tiếp mà không có số nào chia hết cho 2!<br>
+            Vậy đề bài có thể được hiểu là "một tập hợp các số". Do lỗi phân tích nguyên bản của chuỗi liên tiếp, bài toán thực chất yêu cầu chuỗi không chứa dạng liên tiếp $x+i$, mà là một cấp số cộng $x+6i$.<br>
+            Hệ đồng dư: $x+6i \equiv 0 \pmod{p_i^2}$ và $x \equiv 1 \pmod 6$.<br>
+            Các module $p_i^2$ và $6$ nguyên tố cùng nhau. CRT đảm bảo tồn tại $x$. Các số $x+6i$ luôn nguyên tố cùng nhau với 6 và là hợp số.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học và Lý thuyết đồng dư - Ký hiệu Legendre và Cấu trúc thặng dư bậc hai</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình */
+            background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2560&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Khung chứa nội dung để chữ nổi bật trên nền */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.93);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+            color: #111;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: 20px;
+            border-left: 5px solid #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+            background-color: #fff;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.08);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.08);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.08);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ LÝ THUYẾT ĐỒNG DƯ <br> KÝ HIỆU LEGENDRE VÀ CẤU TRÚC THẶNG DƯ BẬC HAI</h1>
+    <div class="author-info">Độ khó: $\star\star\star\star$</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát tính giải được của các phương trình Diophantine phi tuyến là một chủ đề quan trọng trong Số học. Phương pháp phân tích vành thặng dư bậc hai thông qua Ký hiệu Legendre và Tiêu chuẩn Euler cho phép loại trừ các miền không gian nghiệm dựa trên sự mâu thuẫn hệ số đồng dư. Chuyên đề này thiết lập cơ sở lý thuyết về thặng dư bậc hai và ứng dụng để chứng minh tính vô nghiệm của một lớp các phương trình đại số.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Tiêu chuẩn Euler (Định lý 1.2) là một kết quả sâu sắc của Số học, được xây dựng dựa trên Định lý Fermat nhỏ và tính chất nghiệm của đa thức trên trường modulo $p$. Dưới đây là các định lý bổ trợ cần thiết:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Định lý Fermat nhỏ và Căn của đa thức)</div>
+        <ul>
+            <li><strong>Định lý Fermat nhỏ:</strong> Nếu $p$ là một số nguyên tố và $a$ là một số nguyên không chia hết cho $p$, thì:
+            $$ a^{p-1} \equiv 1 \pmod p $$</li>
+            <li><strong>Số lượng nghiệm của đa thức modulo $p$:</strong> Một đa thức bậc $n$ với các hệ số nguyên không đồng thời chia hết cho $p$ sẽ có không quá $n$ nghiệm không đồng dư modulo $p$.</li>
+        </ul>
+    </div>
+
+    <h2>1. Cơ sở lý thuyết</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Thặng dư bậc hai và Ký hiệu Legendre)</div>
+        Cho $p$ là một số nguyên tố lẻ và $a$ là một số nguyên không chia hết cho $p$. Số $a$ được gọi là <strong>thặng dư bậc hai</strong> modulo $p$ nếu tồn tại số nguyên $x$ sao cho $x^2 \equiv a \pmod p$. Nếu không tồn tại $x$ như vậy, $a$ được gọi là <strong>phi thặng dư bậc hai</strong> modulo $p$.<br>
+        Ký hiệu Legendre được định nghĩa như sau:
+        $$
+        \left(\frac{a}{p}\right) = 
+        \begin{cases} 
+        1 & \text{nếu } a \text{ là thặng dư bậc hai modulo } p \\
+        -1 & \text{nếu } a \text{ là phi thặng dư bậc hai modulo } p \\
+        0 & \text{nếu } p \mid a
+        \end{cases}
+        $$
+    </div>
+
+    <p>Tiêu chuẩn xác định giá trị của ký hiệu Legendre được cho bởi định lý sau:</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Tiêu chuẩn Euler - Euler's Criterion)</div>
+        Với mọi số nguyên tố lẻ $p$ và số nguyên $a$, ta có hệ thức đồng dư:
+        $$ a^{\frac{p-1}{2}} \equiv \left(\frac{a}{p}\right) \pmod p $$
+        Hệ quả đặc biệt đối với $a = -1$:
+        $$ \left(\frac{-1}{p}\right) = (-1)^{\frac{p-1}{2}} $$
+        Nghĩa là, $-1$ là thặng dư bậc hai modulo $p$ khi và chỉ khi $p \equiv 1 \pmod 4$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Nếu $p \mid a$, thì $a \equiv 0 \pmod p$ và $\left(\frac{a}{p}\right) = 0$. Cả hai vế đều đồng dư $0 \pmod p$.</p>
+        <p>Nếu $\left(\frac{a}{p}\right) = 1$, tồn tại số nguyên $x$ sao cho $x^2 \equiv a \pmod p$. Khi đó theo Định lý Fermat nhỏ:</p>
+        $$ a^{\frac{p-1}{2}} \equiv (x^2)^{\frac{p-1}{2}} \equiv x^{p-1} \equiv 1 \equiv \left(\frac{a}{p}\right) \pmod p $$
+        <p>Nếu $\left(\frac{a}{p}\right) = -1$, phương trình $x^2 \equiv a \pmod p$ vô nghiệm. <br>
+        Xét đa thức $X^{p-1} - 1 \equiv 0 \pmod p$. Theo Định lý Fermat nhỏ, phương trình này có đúng $p-1$ nghiệm là $1, 2, \dots, p-1$.<br>
+        Ta có thể phân tích đa thức này thành:
+        $$ X^{p-1} - 1 = \left(X^{\frac{p-1}{2}} - 1\right)\left(X^{\frac{p-1}{2}} + 1\right) $$
+        Theo trường hợp trên, $\frac{p-1}{2}$ số thặng dư bậc hai modulo $p$ chính là các nghiệm của phương trình $X^{\frac{p-1}{2}} - 1 \equiv 0 \pmod p$.<br>
+        Bởi vì một đa thức bậc $\frac{p-1}{2}$ có tối đa $\frac{p-1}{2}$ nghiệm, các số phi thặng dư bậc hai không thể là nghiệm của đa thức này. Do chúng vẫn phải là nghiệm của $X^{p-1} - 1 \equiv 0 \pmod p$, chúng bắt buộc phải là nghiệm của nhân tử còn lại:</p>
+        $$ X^{\frac{p-1}{2}} + 1 \equiv 0 \pmod p \implies a^{\frac{p-1}{2}} \equiv -1 \equiv \left(\frac{a}{p}\right) \pmod p $$
+        <p>Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <p>Từ hệ quả trên, ta có một bổ đề nền tảng thường xuyên được sử dụng để khảo sát các ước nguyên tố của một tổng hai bình phương:</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Cấu trúc ước nguyên tố của tổng hai bình phương)</div>
+        Cho $a, b$ là hai số nguyên nguyên tố cùng nhau ($\gcd(a, b) = 1$). Mọi ước nguyên tố lẻ $p$ của biểu thức $a^2 + b^2$ đều phải có dạng $p \equiv 1 \pmod 4$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Giả sử $p \mid a^2 + b^2$. Khi đó $a^2 \equiv -b^2 \pmod p$.</p>
+        <p>Vì $\gcd(a, b) = 1$, ta suy ra $p \nmid a$ và $p \nmid b$. Nhân hai vế với nghịch đảo modulo $p$ của $b^2$, ta được:</p>
+        $$ (a b^{-1})^2 \equiv -1 \pmod p $$
+        <p>Điều này cho thấy $-1$ là một thặng dư bậc hai modulo $p$. Theo Hệ quả của Tiêu chuẩn Euler, ta phải có $p \equiv 1 \pmod 4$.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Bulgarian Mathematical Olympiad 1998)</div>
+        Chứng minh rằng phương trình sau không có nghiệm nguyên:
+        $$ y^2 = x^3 + 7 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Biến đổi đại số phương trình ban đầu:</p>
+        $$ y^2 + 1 = x^3 + 8 \implies y^2 + 1 = (x+2)(x^2 - 2x + 4) $$
+        <p>Khảo sát tính chẵn lẻ của $x$:<br>
+        Nếu $x$ là một số nguyên chẵn, thì $x^3 \equiv 0 \pmod 8$.<br>
+        Khi đó $y^2 = x^3 + 7 \equiv 7 \pmod 8$. <br>
+        Tuy nhiên, bình phương của một số nguyên bất kỳ chia 8 chỉ có thể dư $0, 1, 4$. Sự mâu thuẫn này cho thấy $x$ không thể là số chẵn.<br>
+        Vậy $x$ phải là một số nguyên lẻ.</p>
+
+        <p>Khi $x$ lẻ, ta xét biểu thức bậc hai $x^2 - 2x + 4$:</p>
+        $$ x^2 - 2x + 4 = (x-1)^2 + 3 $$
+        <p>Vì $x$ lẻ, $x-1$ là một số chẵn, suy ra $(x-1)^2 \equiv 0 \pmod 4$.<br>
+        Do đó:</p>
+        $$ x^2 - 2x + 4 \equiv 0 + 3 \equiv 3 \pmod 4 $$
+        <p>Bất kỳ một số nguyên nào có dạng $4k+3$ đều phải chứa ít nhất một ước nguyên tố $p$ có dạng $p \equiv 3 \pmod 4$ (vì nếu tất cả các ước nguyên tố đều có dạng $4k+1$, thì tích của chúng cũng phải có dạng $4k+1$).<br>
+        Gọi $p$ là một ước nguyên tố của $x^2 - 2x + 4$ sao cho $p \equiv 3 \pmod 4$.<br>
+        Từ phương trình phân tích, vì $p \mid x^2 - 2x + 4$, ta suy ra:</p>
+        $$ p \mid y^2 + 1 \implies y^2 \equiv -1 \pmod p $$
+        <p>Điều kiện này khẳng định $-1$ là một thặng dư bậc hai modulo $p$.<br>
+        Theo Tiêu chuẩn Euler (Định lý 1.2), điều này chỉ xảy ra khi và chỉ khi $p \equiv 1 \pmod 4$.<br>
+        Ta thu được một sự mâu thuẫn giữa hai kết luận $p \equiv 3 \pmod 4$ và $p \equiv 1 \pmod 4$.<br>
+        Giả thiết ban đầu sai. Phương trình không có nghiệm nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Bài tập áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (Spanish Mathematical Olympiad 1998)</div>
+        Tìm tất cả các nghiệm nguyên của phương trình:
+        $$ y^2 = x^3 - 5 $$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Thêm $4$ vào hai vế của phương trình:</p>
+        $$ y^2 + 4 = x^3 - 1 \implies y^2 + 4 = (x-1)(x^2 + x + 1) $$
+        <p>Khảo sát tính chẵn lẻ của $x$:<br>
+        Nếu $x$ chẵn, thì $x^3 \equiv 0 \pmod 8 \implies y^2 \equiv -5 \equiv 3 \pmod 8$.<br>
+        Bình phương của một số nguyên không bao giờ đồng dư với $3 \pmod 8$. Do đó $x$ phải là số lẻ.<br>
+        Khi $x$ lẻ, ta có $x \equiv 1$ hoặc $3 \pmod 4$.</p>
+        <p>Ta khảo sát theo modulo 4 trực tiếp cho vế trái $y^2+4$.<br>
+        Vì $y^2+4 = x^3-1$, nếu $x \equiv 3 \pmod 4 \implies x^3-1 \equiv 27-1 \equiv 2 \pmod 4$. Nhưng $y^2+4 \equiv 0 \text{ hoặc } 1 \pmod 4$. Sự kiện này không thể xảy ra.<br>
+        Vậy bắt buộc $x \equiv 1 \pmod 4$.<br>
+        Khi $x \equiv 1 \pmod 4$, $x^2+x+1 \equiv 1+1+1 \equiv 3 \pmod 4$.<br>
+        Tương tự bài toán 2.1, $x^2+x+1$ phải chứa một ước nguyên tố $p \equiv 3 \pmod 4$.<br>
+        Suy ra $p \mid y^2+4 \implies y^2 \equiv -4 \pmod p$.<br>
+        Vì $p$ lẻ, $p > 2$. Ta có $(y/2)^2 \equiv -1 \pmod p$.<br>
+        Theo Tiêu chuẩn Euler, $p \equiv 1 \pmod 4$.<br>
+        Mâu thuẫn với $p \equiv 3 \pmod 4$. Phương trình vô nghiệm.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Austrian National Olympiad 2004)</div>
+        Chứng minh rằng phương trình $x^3 + 3 = 4y(y+1)$ không có nghiệm nguyên.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Biến đổi đại số vế phải:</p>
+        $$ x^3 + 3 = 4y^2 + 4y \implies x^3 + 4 = 4y^2 + 4y + 1 = (2y+1)^2 $$
+        <p>Phương trình trở thành:</p>
+        $$ (2y+1)^2 = x^3 + 4 $$
+        <p>Khảo sát tính chẵn lẻ của $x$:<br>
+        Nếu $x$ chẵn, đặt $x = 2k$. Vế trái $(2y+1)^2$ là số lẻ nên chia 8 dư 1. Vế phải $8k^3 + 4 \equiv 4 \pmod 8$.<br>
+        Sự mâu thuẫn $1 \equiv 4 \pmod 8$ chỉ ra $x$ không thể chẵn.<br>
+        Vậy $x$ là số lẻ.<br>
+        Biến đổi phương trình thành:</p>
+        $$ (2y+1)^2 + 4 = x^3 + 8 = (x+2)(x^2 - 2x + 4) $$
+        <p>Vì $x$ lẻ, $(x-1)$ chẵn, suy ra $x^2 - 2x + 4 = (x-1)^2 + 3 \equiv 3 \pmod 4$.<br>
+        Đa thức $x^2 - 2x + 4$ phải có một ước nguyên tố $p \equiv 3 \pmod 4$.<br>
+        Khi đó $p \mid (2y+1)^2 + 4 \implies (2y+1)^2 \equiv -4 \pmod p \implies \left(\frac{2y+1}{2}\right)^2 \equiv -1 \pmod p$.<br>
+        Theo Tiêu chuẩn Euler, $p \equiv 1 \pmod 4$. <br>
+        Sự mâu thuẫn này chứng tỏ phương trình ban đầu vô nghiệm.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Balkan Mathematical Olympiad 1998)</div>
+        Tìm tất cả các cặp số nguyên $(x, y)$ sao cho $y^2 = x^5 - 4$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khảo sát phương trình theo modulo 11.<br>
+        Các giá trị của $x^5 \pmod{11}$ theo định lý Fermat nhỏ chỉ có thể nhận các giá trị $0, 1, -1$ (vì $(x^5)^2 = x^{10} \equiv 1 \pmod{11}$ nếu $x \not\equiv 0$).<br>
+        Do đó:</p>
+        $$ x^5 \equiv -1, 0, 1 \pmod{11} $$
+        <p>Từ phương trình, ta có:</p>
+        $$ y^2 = x^5 - 4 \equiv -5, -4, -3 \pmod{11} $$
+        <p>Kiểm tra các thặng dư bậc hai modulo 11. Các bình phương modulo 11 là:<br>
+        $0^2 \equiv 0$<br>
+        $1^2 \equiv 10^2 \equiv 1$<br>
+        $2^2 \equiv 9^2 \equiv 4$<br>
+        $3^2 \equiv 8^2 \equiv 9$<br>
+        $4^2 \equiv 7^2 \equiv 16 \equiv 5$<br>
+        $5^2 \equiv 6^2 \equiv 25 \equiv 3$<br>
+        Tập hợp các thặng dư bậc hai modulo 11 là $\{0, 1, 3, 4, 5, 9\}$.<br>
+        Đối chiếu với vế phải của phương trình theo modulo 11:</p>
+        <ul>
+            <li>$-5 \equiv 6 \pmod{11}$</li>
+            <li>$-4 \equiv 7 \pmod{11}$</li>
+            <li>$-3 \equiv 8 \pmod{11}$</li>
+        </ul>
+        <p>Không có giá trị nào trong tập $\{6, 7, 8\}$ là thặng dư bậc hai modulo 11.<br>
+        Do đó, phương trình không có nghiệm nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (Romanian National Olympiad 2001)</div>
+        Giải phương trình nghiệm nguyên dương: $3^x - 2^y = 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Nếu $y = 1$, ta có $3^x - 2 = 1 \implies 3^x = 3 \implies x = 1$. Ta có nghiệm $(1, 1)$.<br>
+        Xét $y \ge 2$, tức là $2^y \equiv 0 \pmod 4$.<br>
+        Khảo sát phương trình theo modulo 4:</p>
+        $$ 3^x - 0 \equiv 1 \pmod 4 \implies (-1)^x \equiv 1 \pmod 4 $$
+        <p>Điều này yêu cầu $x$ phải là một số nguyên dương chẵn. Đặt $x = 2k$ với $k \ge 1$.<br>
+        Phương trình trở thành:</p>
+        $$ 3^{2k} - 1 = 2^y \implies (3^k - 1)(3^k + 1) = 2^y $$
+        <p>Tích của hai số là một lũy thừa của 2, do đó mỗi thừa số phải là một lũy thừa của 2.<br>
+        Đặt $3^k - 1 = 2^a$ và $3^k + 1 = 2^b$ với $0 \lt a \lt b$ và $a+b=y$.<br>
+        Hiệu của hai phương trình là:</p>
+        $$ (3^k + 1) - (3^k - 1) = 2^b - 2^a \implies 2 = 2^a(2^{b-a} - 1) $$
+        <p>Vì 2 là số nguyên tố, sự phân tích đòi hỏi $2^a = 2 \implies a = 1$.<br>
+        Khi đó $2^{b-1} - 1 = 1 \implies 2^{b-1} = 2 \implies b-1 = 1 \implies b = 2$.<br>
+        Thế $a=1$ vào phương trình ban đầu:</p>
+        $$ 3^k - 1 = 2^1 = 2 \implies 3^k = 3 \implies k = 1 $$
+        <p>Suy ra $x = 2k = 2$.<br>
+        Đồng thời, $y = a + b = 1 + 2 = 3$.<br>
+        Thử lại: $3^2 - 2^3 = 9 - 8 = 1$. (Đúng).<br>
+        Tập nghiệm của phương trình là $(x, y) \in \{(1, 1), (2, 3)\}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.5 (All-Russian Olympiad 2000)</div>
+        Tìm tất cả các nghiệm nguyên của phương trình: $x^2 - 3y^2 = 17$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khảo sát phương trình theo modulo 3.<br>
+        Vế trái: $x^2 - 3y^2 \equiv x^2 \pmod 3$.<br>
+        Bình phương của mọi số nguyên chỉ có thể nhận thặng dư 0 hoặc 1 theo modulo 3.<br>
+        Do đó, $x^2 \equiv 0$ hoặc $1 \pmod 3$.<br>
+        Vế phải: $17 \equiv 2 \pmod 3$.<br>
+        Sự đối chiếu hai vế cho thấy:</p>
+        $$ x^2 \equiv 2 \pmod 3 $$
+        <p>Điều kiện này đồng nghĩa với việc 2 là một thặng dư bậc hai modulo 3.<br>
+        Tuy nhiên, ký hiệu Legendre $\left(\frac{2}{3}\right) = -1$, nên 2 là phi thặng dư bậc hai modulo 3.<br>
+        Vậy phương trình không có nghiệm nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.6 (Spanish Mathematical Olympiad 1996)</div>
+        Chứng minh rằng phương trình $19x^3 - 84y^2 = 1984$ không có nghiệm nguyên.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khảo sát phương trình theo modulo 19.<br>
+        Ta có $19x^3 \equiv 0 \pmod{19}$.<br>
+        Vế trái trở thành: $-84y^2 \pmod{19}$.<br>
+        Rút gọn $-84$ theo modulo 19: $19 \times 4 = 76$. Vậy $-84 = -76 - 8 \equiv -8 \pmod{19}$.<br>
+        Vế phải: $1984 \pmod{19}$.<br>
+        Thực hiện phép chia: $1984 = 1900 + 76 + 8$. Do đó $1984 \equiv 8 \pmod{19}$.<br>
+        Đồng nhất phương trình theo modulo 19:</p>
+        $$ -8y^2 \equiv 8 \pmod{19} $$
+        <p>Vì $\gcd(-8, 19) = 1$, ta nhân cả hai vế với nghịch đảo của $-8$, thu được:</p>
+        $$ y^2 \equiv -1 \pmod{19} $$
+        <p>Điều kiện này cho thấy $-1$ phải là thặng dư bậc hai modulo 19.<br>
+        Theo Tiêu chuẩn Euler, điều kiện này xảy ra khi và chỉ khi $19 \equiv 1 \pmod 4$.<br>
+        Tuy nhiên, $19 = 4 \times 4 + 3 \equiv 3 \pmod 4$.<br>
+        Sự mâu thuẫn này chứng tỏ phương trình ban đầu vô nghiệm.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.7 (Greek Mathematical Olympiad 2003)</div>
+        Tìm tất cả các cặp số nguyên $(x, y)$ thỏa mãn hệ thức: $5x^2 - 4y^2 = 2003$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khảo sát phương trình theo modulo 5.<br>
+        Vế trái: $5x^2 - 4y^2 \equiv -4y^2 \equiv y^2 \pmod 5$.<br>
+        Vế phải: $2003 \equiv 3 \pmod 5$.<br>
+        Đồng nhất hệ thức modulo 5:</p>
+        $$ y^2 \equiv 3 \pmod 5 $$
+        <p>Kiểm tra các thặng dư bậc hai modulo 5:<br>
+        $0^2 \equiv 0 \pmod 5$<br>
+        $1^2 \equiv 1 \pmod 5$<br>
+        $2^2 \equiv 4 \pmod 5$<br>
+        $3^2 \equiv 9 \equiv 4 \pmod 5$<br>
+        $4^2 \equiv 16 \equiv 1 \pmod 5$<br>
+        Tập hợp các thặng dư bậc hai modulo 5 là $\{0, 1, 4\}$.<br>
+        Vì $3 \notin \{0, 1, 4\}$, giá trị 3 là một phi thặng dư bậc hai modulo 5.<br>
+        Phương trình không có nghiệm nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.8 (Japan Mathematical Olympiad 1995)</div>
+        Chứng minh rằng phương trình $x^2 - 2y^2 = 5$ không có nghiệm nguyên.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Khảo sát phương trình theo modulo 5.<br>
+        Vế phải: $5 \equiv 0 \pmod 5$.<br>
+        Vế trái: $x^2 - 2y^2 \equiv 0 \pmod 5 \implies x^2 \equiv 2y^2 \pmod 5$.<br>
+        Giả sử $y \not\equiv 0 \pmod 5$. Do 5 là số nguyên tố, tồn tại nghịch đảo của $y$ modulo 5. Nhân hai vế với $(y^{-1})^2$:</p>
+        $$ (xy^{-1})^2 \equiv 2 \pmod 5 $$
+        <p>Điều kiện này cho thấy 2 phải là một thặng dư bậc hai modulo 5.<br>
+        Tuy nhiên, như đã phân tích ở Bài toán 3.7, tập các thặng dư bậc hai modulo 5 là $\{0, 1, 4\}$. Giá trị 2 là phi thặng dư bậc hai modulo 5.<br>
+        Do đó, giả thiết $y \not\equiv 0 \pmod 5$ là sai. Phải có $y \equiv 0 \pmod 5$.<br>
+        Kéo theo $x^2 \equiv 2(0)^2 \equiv 0 \pmod 5 \implies x \equiv 0 \pmod 5$.<br>
+        Đặt $x = 5x_1$ và $y = 5y_1$. Thay vào phương trình gốc:</p>
+        $$ 25x_1^2 - 50y_1^2 = 5 $$
+        <p>Chia hai vế cho 5:</p>
+        $$ 5x_1^2 - 10y_1^2 = 1 $$
+        <p>Vế trái chia hết cho 5, trong khi vế phải bằng 1, không chia hết cho 5.<br>
+        Sự mâu thuẫn này chứng tỏ phương trình ban đầu không có nghiệm nguyên.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</div>
+</body>
+</html>

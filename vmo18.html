@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Hàm Phần Nguyên & Đồng Nhất Thức</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC VÀ ĐẠI SỐ<br>HÀM PHẦN NGUYÊN VÀ CÁC ĐỒNG NHẤT THỨC GIẢI TÍCH</h1>
+        <div class="author">Độ khó: $\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát các phương trình và bất đẳng thức chứa hàm phần nguyên là một lĩnh vực giao thoa giữa Giải tích và Số học. Bản chất rời rạc của hàm phần nguyên đòi hỏi việc phân tách biến số thành phần nguyên và phần lẻ, từ đó áp dụng các kỹ thuật chặn (bounding) và phân tích cấu trúc đồng dư. Chuyên đề này thiết lập cơ sở lý thuyết về hàm phần nguyên, các đồng nhất thức cơ bản và ứng dụng để giải quyết các bài toán trong hệ thống Olympic Toán học quốc gia.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Hàm phần nguyên và Hàm phần lẻ</div>
+            <div class="box-body">
+                Cho một số thực $x$.<br>
+                1. Hàm phần nguyên của $x$, ký hiệu là $\lfloor x \rfloor$, là số nguyên lớn nhất không vượt quá $x$. Tức là $\lfloor x \rfloor \in \mathbb{Z}$ và thỏa mãn bất đẳng thức:
+                $$ \lfloor x \rfloor \le x < \lfloor x \rfloor + 1 \iff x - 1 < \lfloor x \rfloor \le x $$
+                2. Hàm phần lẻ của $x$, ký hiệu là $\{x\}$, được định nghĩa bởi hệ thức $\{x\} = x - \lfloor x \rfloor$. Từ định nghĩa, ta luôn có $0 \le \{x\} < 1$.
+            </div>
+        </div>
+
+        <p>Trong việc thiết lập các bất đẳng thức và giải phương trình, phép tịnh tiến số nguyên và cấu trúc tịnh tiến chu kỳ là những công cụ cơ sở.</p>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Các tính chất đại số cơ bản</div>
+            <div class="box-body">
+                Với mọi số thực $x, y$ và số nguyên $n$:
+                <ol style="margin-top: 8px;">
+                    <li>Phép tịnh tiến: $\lfloor x + n \rfloor = \lfloor x \rfloor + n$.</li>
+                    <li>Bất đẳng thức tam giác: $\lfloor x \rfloor + \lfloor y \rfloor \le \lfloor x + y \rfloor \le \lfloor x \rfloor + \lfloor y \rfloor + 1$.</li>
+                    <li>Đồng nhất thức Hermite (Hermite's Identity): Với mọi số nguyên dương $n$,
+                    $$ \lfloor x \rfloor + \left\lfloor x + \frac{1}{n} \right\rfloor + \dots + \left\lfloor x + \frac{n-1}{n} \right\rfloor = \lfloor nx \rfloor $$</li>
+                </ol>
+            </div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (All-Russian Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số nguyên dương $n$, ta có đồng nhất thức:
+                $$ \lfloor \sqrt{n} + \sqrt{n+1} \rfloor = \lfloor \sqrt{4n+2} \rfloor $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Xét biểu thức $S = \sqrt{n} + \sqrt{n+1}$. Ta tiến hành đánh giá bình phương của $S$:
+            $$ S^2 = (\sqrt{n} + \sqrt{n+1})^2 = 2n + 1 + 2\sqrt{n(n+1)} $$
+            Theo bất đẳng thức hiển nhiên $n < \sqrt{n(n+1)} < n+0.5$ (tương đương với $n^2 < n^2+n < n^2+n+0.25$), ta nhân 2 cho các vế:
+            $$ 2n < 2\sqrt{n(n+1)} < 2n + 1 $$
+            Cộng $2n+1$ vào tất cả các vế, ta thu được:
+            $$ 4n + 1 < S^2 < 4n + 2 $$
+            Khai căn bậc hai toàn bộ bất đẳng thức:
+            $$ \sqrt{4n+1} < \sqrt{n} + \sqrt{n+1} < \sqrt{4n+2} \quad (1) $$
+            Vì $\sqrt{n} + \sqrt{n+1}$ nằm ngặt giữa $\sqrt{4n+1}$ và $\sqrt{4n+2}$, phần nguyên của nó hoàn toàn bị giới hạn.<br>
+            Cụ thể, từ vế trái của (1):
+            $$ \lfloor \sqrt{n} + \sqrt{n+1} \rfloor \ge \lfloor \sqrt{4n+1} \rfloor $$
+            Từ vế phải của (1):
+            $$ \lfloor \sqrt{n} + \sqrt{n+1} \rfloor \le \lfloor \sqrt{4n+2} \rfloor $$
+            Tuy nhiên, giữa hai số nguyên $4n+1$ và $4n+2$, không có số nào có thể là một số chính phương vì một số chính phương chẵn phải chia hết cho 4 (nhưng $4n+2 \equiv 2 \pmod 4$), và do đó $\lfloor \sqrt{4n+2} \rfloor = \lfloor \sqrt{4n+1} \rfloor$.<br>
+            Sự đẳng cấu phần nguyên này ép buộc đại lượng nằm giữa cũng phải có chung phần nguyên.<br>
+            Vậy, $\lfloor \sqrt{n} + \sqrt{n+1} \rfloor = \lfloor \sqrt{4n+2} \rfloor$. Khẳng định được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Singapore Mathematical Olympiad (SMO) 2002)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số thực $x, y$, ta luôn có:
+                $$ \lfloor x \rfloor + \lfloor y \rfloor + \lfloor x+y \rfloor \le \lfloor 2x \rfloor + \lfloor 2y \rfloor $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Sử dụng phân tích thành phần nguyên và phần lẻ.<br>
+            Đặt $x = n + a$ và $y = m + b$, với $n, m \in \mathbb{Z}$ và $a, b \in [0, 1)$.<br>
+            Thay vào vế trái (VT):
+            $$ \text{VT} = n + m + \lfloor n + a + m + b \rfloor = 2n + 2m + \lfloor a+b \rfloor $$
+            Thay vào vế phải (VP):
+            $$ \text{VP} = \lfloor 2n + 2a \rfloor + \lfloor 2m + 2b \rfloor = 2n + 2m + \lfloor 2a \rfloor + \lfloor 2b \rfloor $$
+            Bất đẳng thức cần chứng minh tương đương với:
+            $$ \lfloor a+b \rfloor \le \lfloor 2a \rfloor + \lfloor 2b \rfloor $$
+            Khảo sát các khoảng giá trị của $a$ và $b$:
+            <ul>
+                <li>Nếu $a+b < 1$: $\lfloor a+b \rfloor = 0$. Vì $\lfloor 2a \rfloor \ge 0$ và $\lfloor 2b \rfloor \ge 0$, bất đẳng thức hiển nhiên đúng.</li>
+                <li>Nếu $a+b \ge 1$: Khi đó $\lfloor a+b \rfloor = 1$. <br>
+                Vì tổng hai số không âm $a, b$ lớn hơn hoặc bằng 1, theo nguyên lý Dirichlet, ít nhất một trong hai số phải lớn hơn hoặc bằng $\frac{1}{2}$.<br>
+                Không mất tính tổng quát, giả sử $a \ge 0.5$. Khi đó $2a \ge 1 \implies \lfloor 2a \rfloor \ge 1$.<br>
+                Kéo theo $\lfloor 2a \rfloor + \lfloor 2b \rfloor \ge 1 + 0 = 1$.</li>
+            </ul>
+            Bất đẳng thức $1 \le 1$ luôn đúng. Phép chứng minh hoàn tất.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (British Mathematical Olympiad (BMO) 1996)</div>
+            <div class="box-body">
+                Tính tổng đại số sau theo $n$:
+                $$ S_n = \sum_{k=1}^{n^2-1} \lfloor \sqrt{k} \rfloor $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát giá trị của $\lfloor \sqrt{k} \rfloor$. Ta nhận thấy $\lfloor \sqrt{k} \rfloor = m$ khi và chỉ khi $m \le \sqrt{k} < m+1$, hay tương đương $m^2 \le k < (m+1)^2$.<br>
+            Với một giá trị nguyên $m$ cố định ($1 \le m \le n-1$), số lượng các số nguyên $k$ thỏa mãn $m^2 \le k \le (m+1)^2 - 1$ là:
+            $$ (m+1)^2 - m^2 = 2m + 1 $$
+            Vì mỗi giá trị $k$ trong đoạn này đều tạo ra $\lfloor \sqrt{k} \rfloor = m$, tổng các giá trị này là $m(2m+1)$.<br>
+            Do đó, tổng $S_n$ có thể được viết lại dưới dạng:
+            $$ S_n = \sum_{m=1}^{n-1} m(2m+1) = 2\sum_{m=1}^{n-1} m^2 + \sum_{m=1}^{n-1} m $$
+            Sử dụng các công thức tổng cơ bản $\sum m^2 = \frac{N(N+1)(2N+1)}{6}$ và $\sum m = \frac{N(N+1)}{2}$ với $N = n-1$:
+            $$ S_n = 2 \frac{(n-1)n(2n-1)}{6} + \frac{(n-1)n}{2} = \frac{n(n-1)(4n-2)}{6} + \frac{3n(n-1)}{6} $$
+            $$ S_n = \frac{n(n-1)(4n+1)}{6} $$
+            Công thức trên là dạng đóng tuyệt đối của tổng cần tính.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Austrian National Olympiad (\text{Ö}MO) 2000)</div>
+            <div class="box-body">
+                Giải phương trình sau trên tập hợp số thực:
+                $$ \lfloor 2x \rfloor + \lfloor 3x \rfloor = 4x $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Từ phương trình, do vế trái là tổng của hai hàm phần nguyên nên nó là một số nguyên. Kéo theo $4x$ phải là một số nguyên.<br>
+            Đặt $4x = k$ với $k \in \mathbb{Z}$. Khi đó $x = \frac{k}{4}$.<br>
+            Thay $x = \frac{k}{4}$ vào phương trình:
+            $$ \left\lfloor \frac{k}{2} \right\rfloor + \left\lfloor \frac{3k}{4} \right\rfloor = k $$
+            Sử dụng thuật toán chia Euclid, đặt $k = 4q + r$ với $q \in \mathbb{Z}$ và $r \in \{0, 1, 2, 3\}$.<br>
+            Phương trình trở thành:
+            $$ \left\lfloor 2q + \frac{r}{2} \right\rfloor + \left\lfloor 3q + \frac{3r}{4} \right\rfloor = 4q + r \implies 5q + \left\lfloor \frac{r}{2} \right\rfloor + \left\lfloor \frac{3r}{4} \right\rfloor = 4q + r $$
+            Rút gọn $q$:
+            $$ q = r - \left\lfloor \frac{r}{2} \right\rfloor - \left\lfloor \frac{3r}{4} \right\rfloor $$
+            Khảo sát 4 trường hợp của $r$:
+            <ul>
+                <li>Nếu $r = 0$: $q = 0 - 0 - 0 = 0 \implies k = 0 \implies x = 0$.</li>
+                <li>Nếu $r = 1$: $q = 1 - 0 - 0 = 1 \implies k = 5 \implies x = \frac{5}{4}$.</li>
+                <li>Nếu $r = 2$: $q = 2 - 1 - 1 = 0 \implies k = 2 \implies x = \frac{1}{2}$.</li>
+                <li>Nếu $r = 3$: $q = 3 - 1 - 2 = 0 \implies k = 3 \implies x = \frac{3}{4}$.</li>
+            </ul>
+            Tập hợp tất cả các nghiệm thực của phương trình là $x \in \{0, \frac{1}{2}, \frac{3}{4}, \frac{5}{4}\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (Romanian National Olympiad 2004)</div>
+            <div class="box-body">
+                Chứng minh rằng với mọi số nguyên dương $n \ge 1$, ta có hệ thức:
+                $$ \lfloor \sqrt{n} + \sqrt{n+1} + \sqrt{n+2} \rfloor = \lfloor \sqrt{9n+8} \rfloor $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $S = \sqrt{n} + \sqrt{n+1} + \sqrt{n+2}$.<br>
+            Theo bất đẳng thức Cauchy-Schwarz:
+            $$ (\sqrt{n} + \sqrt{n+1} + \sqrt{n+2})^2 < 3(n + n+1 + n+2) = 9n+9 $$
+            Suy ra $S < \sqrt{9n+9}$. (Đẳng thức không xảy ra do các hạng tử không bằng nhau).<br>
+            Bây giờ ta thiết lập giới hạn dưới bằng cách khai triển bình phương:
+            $$ S^2 = 3n+3 + 2(\sqrt{n^2+n} + \sqrt{n^2+2n} + \sqrt{n^2+3n+2}) $$
+            Để chứng minh $S > \sqrt{9n+8}$, ta cần chứng minh:
+            $$ \sqrt{n^2+n} + \sqrt{n^2+2n} + \sqrt{n^2+3n+2} > 3n + 2.5 $$
+            Sử dụng các giới hạn đại số cơ bản:
+            <ul>
+                <li>$\sqrt{n^2+n} > n + 0.4 \iff n^2+n > n^2+0.8n+0.16 \iff 0.2n > 0.16 \iff n \ge 1$.</li>
+                <li>$\sqrt{n^2+2n} > n + 0.8 \iff n^2+2n > n^2+1.6n+0.64 \iff 0.4n > 0.64 \iff n \ge 2$.</li>
+                <li>$\sqrt{n^2+3n+2} > n + 1.3 \iff n^2+3n+2 > n^2+2.6n+1.69 \iff 0.4n > -0.31 \iff n \ge 1$.</li>
+            </ul>
+            Cộng các vế, với $n \ge 2$, ta có tổng căn $> 3n + 2.5$.<br>
+            Khi đó $S^2 > 3n+3 + 2(3n+2.5) = 9n+8 \implies S > \sqrt{9n+8}$.<br>
+            Riêng tại $n=1$, tính toán trực tiếp: $S = \sqrt{1} + \sqrt{2} + \sqrt{3} \approx 4.146$ và $\sqrt{17} \approx 4.123$, bất đẳng thức vẫn thỏa mãn.<br>
+            Vậy với mọi $n \ge 1$, ta có sự kẹp ngặt:
+            $$ \sqrt{9n+8} < S < \sqrt{9n+9} $$
+            Vì $9n+9$ là một bội của 9, nếu $9n+9 = k^2$, thì $\lfloor \sqrt{9n+8} \rfloor = k-1$. Đồng thời vì $k-1 < \sqrt{9n+8} < S < k$, ta cũng có $\lfloor S \rfloor = k-1$.<br>
+            Nếu $9n+9$ không phải số chính phương, $\lfloor \sqrt{9n+8} \rfloor = \lfloor \sqrt{9n+9} \rfloor$, kéo theo $\lfloor S \rfloor$ cũng bằng giá trị đó. Đồng nhất thức được chứng minh.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Canadian Mathematical Olympiad (CMO) 1998)</div>
+            <div class="box-body">
+                Xác định số lượng các nghiệm thực của phương trình:
+                $$ \left\lfloor \frac{x}{2} \right\rfloor + \left\lfloor \frac{x}{3} \right\rfloor + \left\lfloor \frac{x}{5} \right\rfloor = x $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Vì vế trái là tổng của các hàm phần nguyên, $x$ bắt buộc phải là một số nguyên.<br>
+            Để khảo sát chu kỳ của các phân số, ta đặt $x = 30q + r$ với $q \in \mathbb{Z}$ và $0 \le r \le 29$.<br>
+            Thay vào phương trình:
+            $$ \left\lfloor 15q + \frac{r}{2} \right\rfloor + \left\lfloor 10q + \frac{r}{3} \right\rfloor + \left\lfloor 6q + \frac{r}{5} \right\rfloor = 30q + r $$
+            Rút gọn $q$:
+            $$ 31q + \left\lfloor \frac{r}{2} \right\rfloor + \left\lfloor \frac{r}{3} \right\rfloor + \left\lfloor \frac{r}{5} \right\rfloor = 30q + r $$
+            $$ q = r - \left\lfloor \frac{r}{2} \right\rfloor - \left\lfloor \frac{r}{3} \right\rfloor - \left\lfloor \frac{r}{5} \right\rfloor $$
+            Hệ thức trên chứng tỏ rằng với mỗi giá trị của $r \in \{0, 1, \dots, 29\}$, tồn tại duy nhất một giá trị nguyên $q$ thỏa mãn.<br>
+            Do $x$ được xác định duy nhất bởi ánh xạ sinh $x = 30q + r$, phương trình có chính xác 30 nghiệm thực (tất cả đều là số nguyên).
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (All-Russian Olympiad 2002)</div>
+            <div class="box-body">
+                Giải phương trình sau trên tập hợp số thực:
+                $$ x \lfloor x \rfloor = \lfloor x^2 \rfloor $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Đặt $x = n + a$, với $n \in \mathbb{Z}$ và $0 \le a < 1$.<br>
+            Thay vào phương trình:
+            $$ (n+a)n = \lfloor (n+a)^2 \rfloor \implies n^2 + na = n^2 + \lfloor 2na + a^2 \rfloor $$
+            Rút gọn hai vế:
+            $$ na = \lfloor 2na + a^2 \rfloor $$
+            Vì vế phải là một số nguyên, $na$ bắt buộc phải là một số nguyên. Đặt $na = k \in \mathbb{Z}$.<br>
+            Phương trình trở thành:
+            $$ k = \lfloor 2k + a^2 \rfloor $$
+            Vì $k$ là số nguyên, ta có thể rút $2k$ ra khỏi hàm phần nguyên:
+            $$ k = 2k + \lfloor a^2 \rfloor \implies k + \lfloor a^2 \rfloor = 0 $$
+            Do $0 \le a < 1$, ta có $0 \le a^2 < 1 \implies \lfloor a^2 \rfloor = 0$.<br>
+            Thay trở lại phương trình:
+            $$ k + 0 = 0 \implies k = 0 $$
+            Từ đó, $na = 0$. Xét hai trường hợp:
+            <ul>
+                <li>Nếu $n \neq 0$: Kéo theo $a = 0$. Khi đó $x = n \in \mathbb{Z}$. (Thử lại: $n \times n = n^2 = \lfloor n^2 \rfloor$, luôn đúng).</li>
+                <li>Nếu $n = 0$: Kéo theo $a$ là một số thực tùy ý trong $[0, 1)$. Khi đó $x = a \in [0, 1)$. (Thử lại: $a \times 0 = 0$ và $\lfloor a^2 \rfloor = 0$, luôn đúng).</li>
+            </ul>
+            Vậy tập nghiệm của phương trình là hợp của hai tập hợp: $\mathbb{Z} \cup [0, 1)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Polish Mathematical Olympiad 1999)</div>
+            <div class="box-body">
+                Tìm tất cả các nghiệm thực của phương trình:
+                $$ x^3 - 2\lfloor x \rfloor + 1 = 0 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Phương trình tương đương với: $x^3 = 2\lfloor x \rfloor - 1$.<br>
+            Vì $2\lfloor x \rfloor - 1$ là một số nguyên lẻ, $x^3$ phải là một số nguyên lẻ. Đặt $x^3 = 2m - 1$ với $m \in \mathbb{Z}$. Suy ra $x = \sqrt[3]{2m-1}$.<br>
+            Đặt $\lfloor x \rfloor = k$. Khi đó $m = k$, do $2\lfloor x \rfloor - 1 = 2k-1$.<br>
+            Theo định nghĩa hàm phần nguyên:
+            $$ k \le \sqrt[3]{2k-1} < k+1 \implies k^3 \le 2k-1 < (k+1)^3 $$
+            Giải bất phương trình bên trái: $k^3 - 2k + 1 \le 0 \implies (k-1)(k^2+k-1) \le 0$.<br>
+            Các nghiệm của đa thức $k^2+k-1=0$ xấp xỉ $0.618$ và $-1.618$.<br>
+            Các số nguyên thỏa mãn $(k-1)(k^2+k-1) \le 0$ phải nằm trong lân cận này. Thử trực tiếp:
+            <ul>
+                <li>$k=1$: $1 \le 1$ (Đúng). Bất phương trình phải: $1 < 8$ (Đúng). $\implies x = 1$.</li>
+                <li>$k=0$: $0 \le -1$ (Sai).</li>
+                <li>$k=-1$: $-1 \le -3$ (Sai).</li>
+                <li>$k=-2$: $-8 \le -5$ (Đúng). Bất phương trình phải: $-5 < -1$ (Đúng). $\implies x = \sqrt[3]{-5}$.</li>
+                <li>$k=-3$: $-27 \le -7$ (Đúng). Bất phương trình phải: $-7 < -8$ (Sai).</li>
+            </ul>
+            Do hàm $k^3$ giảm rất nhanh về âm vô cực so với $2k-1$, không còn giá trị $k < -2$ nào thỏa mãn nhánh bên phải.<br>
+            Các nghiệm của phương trình là $x \in \{1, \sqrt[3]{-5}\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Balkan Mathematical Olympiad (BMO) 1998)</div>
+            <div class="box-body">
+                Xác định tập hợp tất cả các số thực $x$ thỏa mãn phương trình:
+                $$ \left\lfloor \frac{x^2+1}{x} \right\rfloor = 2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Theo định nghĩa của hàm phần nguyên, phương trình tương đương với hệ bất phương trình:
+            $$ 2 \le x + \frac{1}{x} < 3 $$
+            Trường hợp 1: $x > 0$.<br>
+            Theo bất đẳng thức AM-GM, ta luôn có $x + \frac{1}{x} \ge 2$. Bất phương trình bên trái hiển nhiên đúng.<br>
+            Khảo sát bất phương trình bên phải:
+            $$ x + \frac{1}{x} < 3 \implies x^2 - 3x + 1 < 0 $$
+            Đa thức có hai nghiệm thực là $\frac{3-\sqrt{5}}{2}$ và $\frac{3+\sqrt{5}}{2}$.<br>
+            Vì hệ số $a=1>0$, tam thức âm khi và chỉ khi $x$ nằm trong khoảng hai nghiệm.
+            $$ x \in \left( \frac{3-\sqrt{5}}{2}, \frac{3+\sqrt{5}}{2} \right) $$
+
+            Trường hợp 2: $x < 0$.<br>
+            Khi $x$ âm, theo bất đẳng thức AM-GM, $x + \frac{1}{x} \le -2$.<br>
+            Đại lượng này luôn âm, do đó không thể lớn hơn hoặc bằng 2. Hệ vô nghiệm đối với $x < 0$.<br><br>
+
+            Kết luận, tập hợp các nghiệm thực của phương trình là khoảng mở: $\left( \frac{3-\sqrt{5}}{2}, \frac{3+\sqrt{5}}{2} \right)$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

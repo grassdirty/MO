@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học Tổ hợp - Định lý Lucas, Bổ đề Kummer và Cấu trúc Hệ số nhị thức</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ hữu tình */
+            background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2560&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        /* Khung chứa nội dung để chữ nổi bật trên nền */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.93);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+            color: #111;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .abstract {
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: 20px;
+            border-left: 5px solid #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+            background-color: #fff;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.08);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.08);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.08);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>CHUYÊN ĐỀ: SỐ HỌC TỔ HỢP <br> ĐỊNH LÝ LUCAS, BỔ ĐỀ KUMMER VÀ CẤU TRÚC HỆ SỐ NHỊ THỨC</h1>
+    <div class="author-info">Độ khó: $\star\star\star\star$</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát tính chia hết của các hệ số nhị thức là một nội dung quan trọng trong Số học Tổ hợp. Việc biểu diễn các số nguyên trên hệ cơ số nguyên tố $p$ thiết lập một cấu trúc tương đương với định giá $p$-adic của tổ hợp chập. Thông qua Định lý Lucas và Bổ đề Kummer, ta có thể quy bài toán tính toán hệ số nhị thức về việc phân tích các chữ số và số lượt nhớ trong phép cộng cơ số $p$. Chuyên đề này trình bày cơ sở lý thuyết và ứng dụng vào việc giải quyết các phương trình đồng dư.
+    </div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong phần tiếp theo, ta sử dụng Định lý Lucas và Bổ đề Kummer. Định lý Lucas thường được chứng minh bằng đồng nhất thức đa thức modulo $p$. Bổ đề Kummer bắt nguồn từ công thức Legendre. Dưới đây là chứng minh cho hai kết quả nền tảng này:</i></p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.1 (Chứng minh Định lý Lucas bằng Đa thức)</div>
+        Cho $p$ là số nguyên tố, $n = \sum_{i=0}^k n_i p^i$ và $m = \sum_{i=0}^k m_i p^i$. Khi đó:
+        $$ \binom{n}{m} \equiv \prod_{i=0}^k \binom{n_i}{m_i} \pmod p $$
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Xét đa thức $(1+x)^n$ trên trường modulo $p$. Ta có đồng nhất thức cơ bản: $(1+x)^p \equiv 1+x^p \pmod p$. Bằng quy nạp, ta mở rộng được: $(1+x)^{p^i} \equiv 1+x^{p^i} \pmod p$.</p>
+        <p>Khai triển $(1+x)^n$ theo biểu diễn cơ số $p$ của $n$:</p>
+        $$ (1+x)^n = (1+x)^{\sum n_i p^i} = \prod_{i=0}^k (1+x)^{n_i p^i} \equiv \prod_{i=0}^k \left(1+x^{p^i}\right)^{n_i} \pmod p $$
+        <p>Sử dụng nhị thức Newton cho từng nhân tử ở vế phải:</p>
+        $$ \prod_{i=0}^k \left( \sum_{j=0}^{n_i} \binom{n_i}{j} x^{j p^i} \right) \pmod p $$
+        <p>Hệ số của $x^m$ trong khai triển $(1+x)^n$ chính là $\binom{n}{m}$.<br>
+        Mặt khác, để tạo ra số hạng $x^m$ từ tích ở vế phải, ta phải chọn một số hạng $x^{j p^i}$ từ mỗi tổng sao cho tổng các số mũ bằng $m$: $\sum_{i=0}^k j p^i = m$.<br>
+        Vì $0 \le j \le n_i < p$, biểu diễn này chính là biểu diễn cơ số $p$ của $m$. Do tính duy nhất của biểu diễn cơ số, ta bắt buộc phải chọn $j = m_i$ với mọi $i$.<br>
+        Hệ số của $x^m$ ở vế phải sẽ là tích các hệ số của các số hạng được chọn:</p>
+        $$ \prod_{i=0}^k \binom{n_i}{m_i} \pmod p $$
+        <p>So sánh hệ số của $x^m$ ở hai vế, ta thu được Định lý Lucas.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 0.2 (Chứng minh Bổ đề Kummer từ Công thức Legendre)</div>
+        Định giá $p$-adic của $\binom{n}{m}$ bằng số lượt nhớ khi cộng $m$ và $n-m$ trong hệ cơ số $p$.
+    </div>
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Công thức Legendre khẳng định $v_p(n!) = \frac{n - S_p(n)}{p-1}$, trong đó $S_p(n)$ là tổng các chữ số của $n$ trong hệ cơ số $p$.<br>
+        Định giá $p$-adic của tổ hợp chập là:</p>
+        $$ v_p\left(\binom{n}{m}\right) = v_p\left(\frac{n!}{m!(n-m)!}\right) = v_p(n!) - v_p(m!) - v_p((n-m)!) $$
+        <p>Thay công thức Legendre vào:</p>
+        $$ = \frac{n - S_p(n)}{p-1} - \frac{m - S_p(m)}{p-1} - \frac{(n-m) - S_p(n-m)}{p-1} $$
+        $$ = \frac{n - m - (n-m) + S_p(m) + S_p(n-m) - S_p(n)}{p-1} = \frac{S_p(m) + S_p(n-m) - S_p(n)}{p-1} $$
+        <p>Giả sử biểu diễn cơ số $p$ của $m$ là $m_i$ và của $n-m$ là $d_i$. Phép cộng $m + (n-m) = n$ được thực hiện từ phải sang trái. Gọi $c_i$ là số nhớ (carry) chuyển từ cột $i$ sang cột $i+1$ (quy ước $c_{-1} = 0$).<br>
+        Tại cột $i$, ta có phương trình: $m_i + d_i + c_{i-1} = n_i + p \cdot c_i$.<br>
+        Lấy tổng tất cả các phương trình từ $i=0$ đến $k$:</p>
+        $$ \sum m_i + \sum d_i + \sum c_{i-1} = \sum n_i + p \sum c_i $$
+        $$ S_p(m) + S_p(n-m) + \sum_{i=0}^{k-1} c_i = S_p(n) + p \sum_{i=0}^k c_i $$
+        <p>Vì chữ số lớn nhất không có số nhớ tiếp theo, $c_k = 0$. Rút gọn biểu thức:</p>
+        $$ S_p(m) + S_p(n-m) - S_p(n) = (p-1) \sum_{i=0}^{k-1} c_i $$
+        <p>Chia hai vế cho $p-1$, ta thấy vế trái chính là định giá $p$-adic của $\binom{n}{m}$, còn vế phải là tổng các lượt nhớ. Định lý được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <h2>1. Cơ sở lý thuyết</h2>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Biểu diễn cơ số $p$ và Tổng chữ số)</div>
+        Cho số nguyên tố $p$. Mọi số nguyên dương $n$ đều có thể được biểu diễn duy nhất dưới dạng:
+        $$ n = n_k p^k + n_{k-1} p^{k-1} + \dots + n_1 p + n_0 $$
+        trong đó $n_i \in \{0, 1, \dots, p-1\}$ và $n_k \neq 0$. <br>
+        Đại lượng $S_p(n) = \sum_{i=0}^k n_i$ được gọi là tổng các chữ số của $n$ trong hệ cơ số $p$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.2 (Định lý Lucas - Lucas's Theorem)</div>
+        Cho $p$ là một số nguyên tố. Xét $m, n$ là các số nguyên không âm với biểu diễn cơ số $p$ là $n = \sum_{i=0}^k n_i p^i$ và $m = \sum_{i=0}^k m_i p^i$ (nếu $m < n$, các chữ số dẫn đầu của $m$ được bổ sung bằng 0). Khi đó, ta có hệ thức đồng dư:
+        $$ \binom{n}{m} \equiv \prod_{i=0}^k \binom{n_i}{m_i} \pmod p $$
+        Quy ước $\binom{a}{b} = 0$ nếu $a \lt b$.
+    </div>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 1.3 (Bổ đề Kummer và Công thức Legendre)</div>
+        Ký hiệu $v_p(x)$ là định giá $p$-adic của $x$.<br>
+        Công thức Legendre xác định định giá của giai thừa:
+        $$ v_p(n!) = \frac{n - S_p(n)}{p - 1} $$
+        Bổ đề Kummer thiết lập:
+        $$ v_p\left(\binom{n}{m}\right) = \frac{S_p(m) + S_p(n-m) - S_p(n)}{p - 1} $$
+        Định giá $v_p\left(\binom{n}{m}\right)$ bằng số lượt nhớ (carries) khi thực hiện phép cộng $m + (n-m)$ trong hệ cơ số $p$.
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 2.1 (Romanian National Olympiad 1998)</div>
+        Xác định số lượng các hệ số nhị thức là số lẻ trong khai triển đa thức $(x+y)^n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Hệ số của $x^{n-k}y^k$ trong khai triển $(x+y)^n$ là $\binom{n}{k}$ với $0 \le k \le n$.<br>
+        Bài toán yêu cầu đếm số lượng giá trị $k$ sao cho $\binom{n}{k} \equiv 1 \pmod 2$.<br>
+        Áp dụng Định lý Lucas (Định lý 1.2) với số nguyên tố $p = 2$:</p>
+        $$ \binom{n}{k} \equiv \prod_{i=0}^m \binom{n_i}{k_i} \pmod 2 $$
+        <p>trong đó $n_i, k_i \in \{0, 1\}$ là các chữ số trong biểu diễn nhị phân của $n$ và $k$.<br>
+        Để tích trên đồng dư với $1 \pmod 2$, mỗi thừa số trong tích đều phải bằng 1.<br>
+        Tức là $\binom{n_i}{k_i} = 1$ với mọi $i = 0, 1, \dots, m$.<br>
+        Ta khảo sát các khả năng của $n_i$ và $k_i$:</p>
+        <ul>
+            <li>Nếu $n_i = 0$: Bắt buộc $k_i = 0$ (vì $\binom{0}{1} = 0$). Có 1 cách chọn $k_i$.</li>
+            <li>Nếu $n_i = 1$: $k_i$ có thể nhận giá trị $0$ hoặc $1$ (vì $\binom{1}{0} = 1$ và $\binom{1}{1} = 1$). Có 2 cách chọn $k_i$.</li>
+        </ul>
+        <p>Mỗi chữ số $1$ trong biểu diễn nhị phân của $n$ đóng góp 2 cách chọn, mỗi chữ số $0$ đóng góp 1 cách chọn.<br>
+        Do đó, tổng số cách chọn $k$ thỏa mãn là $2^{S_2(n)}$, với $S_2(n)$ là số lượng chữ số 1 trong biểu diễn nhị phân của $n$.<br>
+        Số lượng các hệ số nhị thức lẻ trong khai triển là $2^{S_2(n)}$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Bài tập áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.1 (British Mathematical Olympiad 1994)</div>
+        Tìm điều kiện cần và đủ của số nguyên dương $n$ để hệ số nhị thức $\binom{n}{k}$ là một số chẵn với mọi số nguyên $k$ thỏa mãn $1 \le k \le n-1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo kết quả của Bài toán 2.1, số lượng hệ số nhị thức lẻ trong hàng thứ $n$ là $2^{S_2(n)}$.<br>
+        Hai hệ số biên là $\binom{n}{0} = 1$ và $\binom{n}{n} = 1$, luôn là các số lẻ.<br>
+        Để tất cả các hệ số ở giữa ($1 \le k \le n-1$) đều chẵn, số lượng hệ số lẻ trong toàn bộ hàng phải bằng chính xác 2.<br>
+        Điều kiện này tương đương với:</p>
+        $$ 2^{S_2(n)} = 2 \implies S_2(n) = 1 $$
+        <p>Điều kiện $S_2(n) = 1$ đồng nghĩa với việc biểu diễn nhị phân của $n$ chỉ chứa duy nhất một chữ số 1.<br>
+        Một số nguyên dương có tính chất này khi và chỉ khi nó là một lũy thừa của 2.<br>
+        Điều kiện cần và đủ là $n = 2^m$ với $m$ là một số nguyên dương.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.2 (Polish Mathematical Olympiad 1992)</div>
+        Xác định tất cả các số nguyên dương $n$ sao cho $\binom{n}{k}$ là một số lẻ với mọi số nguyên $0 \le k \le n$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Tổng số hệ số nhị thức trong khai triển $(x+y)^n$ là $n+1$.<br>
+        Bài toán yêu cầu toàn bộ các hệ số này đều lẻ, do đó số lượng hệ số lẻ phải bằng $n+1$.<br>
+        Áp dụng công thức $2^{S_2(n)}$, ta có phương trình:</p>
+        $$ 2^{S_2(n)} = n + 1 $$
+        <p>Gọi $m$ là số lượng chữ số trong biểu diễn nhị phân của $n$. Ta có $S_2(n) \le m$.<br>
+        Giá trị lớn nhất mà một số nhị phân có $m$ chữ số có thể đạt tới là khi toàn bộ $m$ chữ số đều là 1, tức là $n \le 2^m - 1$.<br>
+        Từ đó thiết lập bất đẳng thức:</p>
+        $$ n + 1 = 2^{S_2(n)} \le 2^m = (2^m - 1) + 1 \implies n \le 2^m - 1 $$
+        <p>Vì $n$ là số có $m$ bit, ta có $n \ge 2^{m-1}$. Để đạt đẳng thức $n+1 = 2^m$, mọi chữ số của $n$ phải là 1.<br>
+        Khi đó $S_2(n) = m$, và $n = 2^m - 1$.<br>
+        Tập hợp các số thỏa mãn là $n = 2^m - 1$ với mọi $m \in \mathbb{Z}^+$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.3 (Spanish Mathematical Olympiad 2000)</div>
+        Tính số lượng các hệ số trong khai triển đa thức $(x+1)^{2000}$ không chia hết cho 5.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo Định lý Lucas với $p=5$, hệ số $\binom{2000}{k} \not\equiv 0 \pmod 5$ khi và chỉ khi $\binom{n_i}{k_i} \not\equiv 0 \pmod 5$ với mọi $i$.<br>
+        Điều này tương đương với $k_i \le n_i$ đối với mọi chữ số ở hệ cơ số 5. Số cách chọn $k_i$ bằng $n_i + 1$.<br>
+        Số lượng hệ số không chia hết cho 5 là tích $\prod (n_i + 1)$.<br>
+        Biểu diễn 2000 trên cơ số 5:</p>
+        $$ 2000 = 3 \times 625 + 1 \times 125 + 0 \times 25 + 0 \times 5 + 0 \times 1 $$
+        $$ 2000 = 3 \cdot 5^4 + 1 \cdot 5^3 + 0 \cdot 5^2 + 0 \cdot 5^1 + 0 \cdot 5^0 $$
+        <p>Biểu diễn cơ số 5 của 2000 là $(31000)_5$. Các chữ số là $n_4=3, n_3=1, n_2=0, n_1=0, n_0=0$.<br>
+        Tổng số hệ số không chia hết cho 5 là:</p>
+        $$ \prod_{i=0}^4 (n_i + 1) = (3+1)(1+1)(0+1)(0+1)(0+1) = 4 \times 2 \times 1 \times 1 \times 1 = 8 $$
+        <p>Khai triển có 8 hệ số không là bội của 5.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.4 (All-Russian Olympiad 1998)</div>
+        Cho $p$ là một số nguyên tố và $m$ là số nguyên dương. Chứng minh rằng hệ số nhị thức $\binom{p^m}{k}$ chia hết cho $p$ với mọi số nguyên $k$ thỏa mãn $1 \le k \le p^m - 1$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét biểu diễn cơ số $p$ của đại lượng $N = p^m$. <br>
+        Biểu diễn này có dạng $(100\dots0)_p$, với chữ số 1 tại vị trí $p^m$ ($N_m = 1$) và tất cả $m$ chữ số phía sau đều bằng 0 ($N_i = 0$ với $0 \le i \lt m$).<br>
+        Xét số $k$ trong khoảng $1 \le k \le p^m - 1$. <br>
+        Vì $k \lt p^m$, biểu diễn cơ số $p$ của $k$ chỉ sử dụng tối đa $m$ chữ số (từ $k_0$ đến $k_{m-1}$), và chữ số tại vị trí $p^m$ là $k_m = 0$.<br>
+        Do $k \ge 1$, tồn tại ít nhất một chỉ số $j$ ($0 \le j \lt m$) sao cho $k_j \gt 0$.<br>
+        Áp dụng Định lý Lucas cho modulo $p$:</p>
+        $$ \binom{p^m}{k} \equiv \binom{1}{0} \prod_{i=0}^{m-1} \binom{0}{k_i} \pmod p $$
+        <p>Tại vị trí $j$ (nơi $k_j \gt 0$), thừa số tương ứng là $\binom{0}{k_j}$. Vì $k_j \gt 0$, tổ hợp này bằng 0.<br>
+        Do đó toàn bộ tích đồng dư với 0 modulo $p$.</p>
+        $$ \binom{p^m}{k} \equiv 0 \pmod p $$
+        <p>Bài toán được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.5 (China National High School Mathematics League 1997)</div>
+        Chứng minh hệ thức đồng dư $\binom{p^m - 1}{k} \equiv (-1)^k \pmod p$ với mọi số nguyên $0 \le k \le p^m - 1$, trong đó $p$ là số nguyên tố bất kỳ.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Đặt $N = p^m - 1$. Trong hệ cơ số $p$, $N$ có biểu diễn là một chuỗi gồm $m$ chữ số $(p-1)$:</p>
+        $$ N = (p-1) p^{m-1} + (p-1) p^{m-2} + \dots + (p-1) p^0 $$
+        <p>Gọi biểu diễn cơ số $p$ của $k$ là $k = \sum_{i=0}^{m-1} k_i p^i$.<br>
+        Theo Định lý Lucas:</p>
+        $$ \binom{p^m - 1}{k} \equiv \prod_{i=0}^{m-1} \binom{p-1}{k_i} \pmod p $$
+        <p>Sử dụng đồng nhất thức đa thức trên vành modulo $p$:</p>
+        $$ (1+x)^{p-1} = \frac{(1+x)^p}{1+x} \equiv \frac{1+x^p}{1+x} \equiv 1 - x + x^2 - x^3 + \dots + x^{p-1} \pmod p $$
+        <p>So sánh hệ số của $x^{k_i}$ ở hai vế, ta thu được $\binom{p-1}{k_i} \equiv (-1)^{k_i} \pmod p$.<br>
+        Thay vào tích Lucas:</p>
+        $$ \prod_{i=0}^{m-1} \binom{p-1}{k_i} \equiv \prod_{i=0}^{m-1} (-1)^{k_i} \equiv (-1)^{\sum k_i} \pmod p $$
+        <p>Ta chứng minh $(-1)^{\sum k_i} \equiv (-1)^k \pmod p$.</p>
+        <ul>
+            <li> Nếu $p$ là số nguyên tố lẻ: $p \equiv 1 \pmod 2 \implies p^i \equiv 1 \pmod 2$.<br>
+            Do đó $k = \sum k_i p^i \equiv \sum k_i \cdot 1 \equiv \sum k_i \pmod 2$. Sự đồng dư theo modulo 2 bảo toàn dấu của $(-1)$, nên $(-1)^{\sum k_i} = (-1)^k$.</li>
+            <li> Nếu $p = 2$: Ta cần chứng minh $\binom{2^m-1}{k} \equiv (-1)^k \pmod 2$. Mọi tổ hợp của $2^m-1$ đều là số lẻ, nên đồng dư với $1 \pmod 2$. Đồng thời $(-1)^k \in \{1, -1\}$, theo modulo 2, $-1 \equiv 1 \pmod 2$. Đẳng thức vẫn thỏa mãn.</li>
+        </ul>
+        <p>Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.6 (Balkan Mathematical Olympiad 1999)</div>
+        Với $p$ là một số nguyên tố tùy ý, chứng minh rằng hệ thức $\binom{pa}{pb} \equiv \binom{a}{b} \pmod p$ luôn đúng với mọi cặp số nguyên không âm $a \ge b$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $a$ và $b$ có biểu diễn trên cơ số $p$ là:<br>
+        $a = a_m p^m + \dots + a_1 p + a_0$ và $b = b_m p^m + \dots + b_1 p + b_0$.<br>
+        Khi nhân một số với $p$, toàn bộ biểu diễn cơ số $p$ của nó bị dịch chuyển sang trái một vị trí, và chữ số hàng đơn vị bằng 0.</p>
+        $$ pa = a_m p^{m+1} + \dots + a_0 p + 0 $$
+        $$ pb = b_m p^{m+1} + \dots + b_0 p + 0 $$
+        <p>Áp dụng Định lý Lucas cho đại lượng $\binom{pa}{pb}$:</p>
+        $$ \binom{pa}{pb} \equiv \binom{0}{0} \prod_{i=0}^m \binom{a_i}{b_i} \pmod p $$
+        <p>Vì $\binom{0}{0} = 1$, phần còn lại của tích chính là khai triển Lucas của $\binom{a}{b}$.</p>
+        $$ \binom{pa}{pb} \equiv 1 \cdot \binom{a}{b} \equiv \binom{a}{b} \pmod p $$
+        <p>Phép chứng minh hoàn thành.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.7 (Korean Mathematical Olympiad 1999)</div>
+        Chứng minh rằng hệ số nhị thức trung tâm $\binom{2n}{n}$ chia hết cho 4 khi và chỉ khi $n$ không phải là một lũy thừa của 2.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Ta sử dụng Bổ đề Kummer (Định lý 1.3) để tính định giá 2-adic $v_2\left(\binom{2n}{n}\right)$.<br>
+        Giá trị này bằng số lượt nhớ (carries) khi thực hiện phép cộng $n + n$ trong hệ nhị phân.<br>
+        Trong hệ nhị phân, phép cộng $n+n = 2n$ là phép dịch dãy bit của $n$ sang trái 1 vị trí (thêm 0 vào cuối).<br>
+        Phép cộng $n+n$ tạo ra một lượt nhớ tại bất kỳ vị trí nào mà $n$ có chữ số 1.<br>
+        Tổng số lượt nhớ bằng số lượng chữ số 1 trong biểu diễn nhị phân của $n$, tức là $S_2(n)$.<br>
+        Ta có: $v_2\left(\binom{2n}{n}\right) = S_2(n)$.<br>
+        Để $\binom{2n}{n}$ chia hết cho 4, định giá 2-adic phải $\ge 2$.<br>
+        Điều này tương đương với $S_2(n) \ge 2$.<br>
+        Ngược lại, $S_2(n) = 1$ khi biểu diễn nhị phân của $n$ chỉ chứa một chữ số 1, tức là $n = 2^m$ (một lũy thừa của 2).<br>
+        Vậy $S_2(n) \ge 2$ khi và chỉ khi $n$ không phải là lũy thừa của 2. Khẳng định được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 3.8 (Austrian National Olympiad 2002)</div>
+        Chứng minh định giá $p$-adic sau: $v_p\left(\binom{p^m}{p^{m-1}}\right) = 1$, với mọi số nguyên tố $p$ và số nguyên dương $m$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo Bổ đề Kummer, định giá $p$-adic của $\binom{p^m}{p^{m-1}}$ bằng số lượt nhớ khi cộng $K + (N-K)$ trong hệ cơ số $p$, với $N = p^m$ và $K = p^{m-1}$.<br>
+        Đại lượng thứ nhất: $K = 1 \cdot p^{m-1}$, có biểu diễn cơ số $p$ là $(100\dots0)_p$ (chữ số 1 ở vị trí $m-1$, theo sau là $m-1$ chữ số 0).<br>
+        Đại lượng thứ hai: $N - K = p^m - p^{m-1} = (p-1)p^{m-1}$. Biểu diễn cơ số $p$ của nó là $((p-1)00\dots0)_p$ (chữ số $p-1$ ở vị trí $m-1$, theo sau là $m-1$ chữ số 0).<br>
+        Thực hiện phép cộng từ phải sang trái:</p>
+        <ul>
+            <li>Tại các vị trí từ $0$ đến $m-2$: $0 + 0 = 0$, không có lượt nhớ.</li>
+            <li>Tại vị trí $m-1$: Ta cộng $1 + (p-1) = p$. Chữ số ghi lại là $0$, và tạo ra chính xác $1$ lượt nhớ chuyển sang vị trí $m$.</li>
+            <li>Tại vị trí $m$: Hai toán hạng đều có chữ số 0. Cộng thêm lượt nhớ từ trước, kết quả là 1. Không phát sinh lượt nhớ.</li>
+        </ul>
+        <p>Tổng số lượt nhớ là đúng 1 lượt nhớ.<br>
+        Theo Bổ đề Kummer, định giá $p$-adic của tổ hợp này bằng 1.<br>
+        Khẳng định $v_p\left(\binom{p^m}{p^{m-1}}\right) = 1$ được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Bài toán Phân hoạch số nguyên và Hàm sinh - OEIS A000041</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS định dạng giao diện tương tự tcolorbox -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #222;
+        }
+        .author-info {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        /* Box chung */
+        .box {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border: 2px solid;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Box Định nghĩa (Xanh lá) */
+        .definition {
+            background-color: rgba(34, 139, 34, 0.05);
+            border-color: #228b22;
+        }
+        .definition .box-title { color: #1e7a1e; }
+        
+        /* Box Định lý (Xanh dương) */
+        .theorem {
+            background-color: rgba(0, 0, 128, 0.05);
+            border-color: #000080;
+        }
+        .theorem .box-title { color: #000080; }
+        
+        /* Box Bài toán (Đỏ mận) */
+        .problem {
+            background-color: rgba(128, 0, 0, 0.05);
+            border-color: #800000;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.1);
+        }
+        .problem .box-title { color: #800000; }
+        
+        /* Lời giải và Chứng minh */
+        .solution { margin-top: 20px; }
+        .solution-title {
+            font-weight: bold;
+            color: #800000;
+            margin-bottom: 10px;
+        }
+        .proof { margin-top: 20px; background-color: #fdfdfd; padding: 15px; border-left: 3px solid #000080; }
+        .proof-title {
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+        .qed {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        
+        ul, ol { margin-top: 5px; }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #ccc;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CHUYÊN ĐỀ: BÀI TOÁN PHÂN HOẠCH SỐ NGUYÊN VÀ HÀM SINH <br> (OEIS A000041)</h1>
+    <div class="author-info">Độ khó: $\star\star\star\star\star$ (Mức độ VMO, TST)</div>
+
+    <h2>0. Kiến thức bổ trợ (Dành cho học sinh THPT)</h2>
+    <p><i>Trong các phần tiếp theo, chúng ta sẽ sử dụng công cụ "Hàm sinh" (Generating Functions). Đây là một phương pháp đại số hóa các bài toán đếm thuộc chương trình Đại học. Để học sinh THPT dễ dàng tiếp cận, dưới đây là khái niệm cơ sở về chuỗi hình thức:</i></p>
+
+    <div class="box definition">
+        <div class="box-title">Khái niệm 0.1 (Hàm sinh và Khai triển chuỗi hình thức)</div>
+        <ul>
+            <li><strong>Hàm sinh thường (Ordinary Generating Function):</strong> Cho một dãy số $(a_n)_{n \ge 0}$, hàm sinh của dãy này là một chuỗi lũy thừa hình thức $F(x) = \sum_{n=0}^\infty a_n x^n$. Trong đó, hệ số của $x^n$ chính là giá trị cần đếm $a_n$.</li>
+            <li><strong>Khai triển cơ bản:</strong> Công thức cấp số nhân lùi vô hạn cho phép ta biểu diễn phân thức dưới dạng chuỗi vô hạn:
+            $$ \frac{1}{1-x} = 1 + x + x^2 + x^3 + \dots = \sum_{i=0}^\infty x^i $$
+            Mở rộng ra, thay $x$ bằng $x^k$, ta có:
+            $$ \frac{1}{1-x^k} = 1 + x^k + x^{2k} + x^{3k} + \dots = \sum_{m=0}^\infty x^{m \cdot k} $$
+            Ý nghĩa tổ hợp của chuỗi này là: Số hạng $x^{m \cdot k}$ đại diện cho việc ta chọn phần tử có độ lớn $k$ đúng $m$ lần để đóng góp vào một tổng.</li>
+        </ul>
+    </div>
+
+    <h2>1. Giới thiệu bài toán (OEIS A000041)</h2>
+    <p>Trong lý thuyết số và tổ hợp học, một <strong>phân hoạch</strong> của số nguyên dương $n$ là một cách viết $n$ dưới dạng tổng của các số nguyên dương (không quan tâm đến thứ tự các số hạng). Số lượng các phân hoạch của $n$ được ký hiệu là hàm $p(n)$. Dãy số $p(n)$ được lưu trữ trên bách khoa toàn thư trực tuyến về chuỗi số nguyên với mã <strong>OEIS A000041</strong>.</p>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 1.1 (Định nghĩa hình thức)</div>
+        Hàm phân hoạch $p(n)$ là số nghiệm nguyên dương của phương trình:
+        $$x_1 + x_2 + \dots + x_k = n$$
+        với điều kiện $x_1 \ge x_2 \ge \dots \ge x_k \ge 1$ và $k \ge 1$. Quy ước $p(0) = 1$.
+    </div>
+
+    <p>Các giá trị đầu tiên của dãy số (với $n \ge 0$):<br>
+    $1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, 56, 77, 101, 135, \dots$</p>
+
+    <h2>2. Kiến thức nền tảng</h2>
+    <p>Công cụ nền tảng để nghiên cứu phân hoạch số nguyên là <strong>Hàm sinh (Generating Functions)</strong> và <strong>Biểu đồ Ferrers (Ferrers Diagrams)</strong>.</p>
+
+    <div class="box theorem">
+        <div class="box-title">Định lý 2.1 (Hàm sinh của hàm phân hoạch - Euler)</div>
+        Hàm sinh cho dãy $p(n)$ được cho bởi tích vô hạn:
+        $$\sum_{n=0}^\infty p(n)x^n = \prod_{k=1}^\infty \frac{1}{1-x^k}$$
+        với $|x| \lt 1$.
+    </div>
+
+    <div class="proof">
+        <div class="proof-title">Chứng minh.</div>
+        <p>Theo Khái niệm 0.1, ta có thể khai triển mỗi nhân tử trong tích vô hạn dưới dạng chuỗi lũy thừa:</p>
+        $$ \prod_{k=1}^\infty \frac{1}{1-x^k} = \left(1 + x^1 + x^2 + \dots\right) \left(1 + x^2 + x^4 + \dots\right) \left(1 + x^3 + x^6 + \dots\right) \dots $$
+        <p>Để tìm hệ số của số hạng $x^n$ trong tích này, ta phải chọn một đơn thức từ mỗi nhân tử sao cho tổng số mũ của chúng bằng $n$.<br>
+        Từ nhân tử thứ $k$ (tức là $\frac{1}{1-x^k}$), giả sử ta chọn đơn thức $x^{m_k \cdot k}$. Điều này tương ứng với việc ta chọn số phần tử $k$ xuất hiện $m_k$ lần trong phân hoạch.<br>
+        Tổng các số mũ là:</p>
+        $$ \sum_{k=1}^\infty m_k \cdot k = n $$
+        <p>Phương trình này biểu diễn chính xác việc phân tích số $n$ thành tổng của $m_1$ số 1, $m_2$ số 2, ..., $m_k$ số $k$. Đây chính là định nghĩa của một phân hoạch của $n$.<br>
+        Vì mỗi cách phân hoạch của $n$ tương ứng duy nhất với một cách chọn các đơn thức để tạo ra $x^n$, hệ số của $x^n$ trong khai triển tích vô hạn chính bằng số lượng phân hoạch $p(n)$.<br>
+        Do đó, đẳng thức được chứng minh.</p>
+        <div class="qed">$\square$</div>
+    </div>
+
+    <div class="box definition">
+        <div class="box-title">Định nghĩa 2.2 (Biểu đồ Ferrers)</div>
+        Biểu đồ Ferrers là một biểu diễn trực quan của một phân hoạch. Phân hoạch $n = \lambda_1 + \lambda_2 + \dots + \lambda_k$ (với $\lambda_1 \ge \lambda_2 \ge \dots$) được biểu diễn bằng $k$ hàng các điểm (hoặc ô vuông), hàng thứ $i$ có $\lambda_i$ điểm.
+    </div>
+
+    <h2>3. Mã code minh họa (Python)</h2>
+    <p>Thuật toán dưới đây tính số lượng phân hoạch của $n$ dựa trên phương pháp Quy hoạch động (Dynamic Programming), với độ phức tạp $O(n^2)$.</p>
+
+<pre><code class="language-python">def integer_partitions(n):
+    """
+    Tính số lượng phân hoạch p(k) cho mọi k từ 0 đến n.
+    Sử dụng mảng quy hoạch động 1 chiều.
+    """
+    if n < 0:
+        return 0
+        
+    p = [0] * (n + 1)
+    p[0] = 1  # Quy ước p(0) = 1
+    
+    # k là số nguyên dương được dùng để tạo tổng
+    for k in range(1, n + 1):
+        for i in range(k, n + 1):
+            p[i] += p[i - k]
+            
+    return p[n]
+
+# In ra 10 phần tử đầu tiên của dãy OEIS A000041
+N = 10
+for i in range(1, N + 1):
+    print(f"p({i}) = {integer_partitions(i)}")
+</code></pre>
+
+    <h2>4. Các bài tập áp dụng</h2>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.1 (Khởi động)</div>
+        Liệt kê chi tiết tất cả các phân hoạch của số nguyên $n=5$ và xác minh $p(5)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Với $n=5$, ta liệt kê các tổng giảm dần:</p>
+        <ol>
+            <li>$5$</li>
+            <li>$4 + 1$</li>
+            <li>$3 + 2$</li>
+            <li>$3 + 1 + 1$</li>
+            <li>$2 + 2 + 1$</li>
+            <li>$2 + 1 + 1 + 1$</li>
+            <li>$1 + 1 + 1 + 1 + 1$</li>
+        </ol>
+        <p>Tổng cộng có đúng $7$ phân hoạch. Vậy $p(5) = 7$, khớp với dãy A000041.</p>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.2 (Song ánh Ferrers)</div>
+        Chứng minh rằng số lượng phân hoạch của $n$ thành tối đa $k$ số hạng bằng số lượng phân hoạch của $n$ sao cho không có số hạng nào vượt quá $k$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Sử dụng biểu đồ Ferrers. Xét một phân hoạch của $n$ thành tối đa $k$ số hạng. Biểu đồ Ferrers tương ứng có tối đa $k$ hàng.<br>
+        Thực hiện phép <strong>chuyển vị</strong> (transpose) biểu đồ này bằng cách đổi hàng thành cột (phản xạ qua đường chéo chính). <br>
+        Biểu đồ mới thu được sẽ có tối đa $k$ cột. Số lượng cột của biểu đồ Ferrers chính là giá trị của số hạng lớn nhất trong phân hoạch.<br>
+        Vì phép chuyển vị là một song ánh, số phân hoạch có tối đa $k$ phần tử bằng số phân hoạch có phần tử lớn nhất không vượt quá $k$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.3 (Định lý Euler về phân hoạch)</div>
+        Bằng phương pháp hàm sinh, chứng minh rằng số lượng phân hoạch của $n$ thành các số hạng lẻ bằng số lượng phân hoạch của $n$ thành các số hạng phân biệt.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Hàm sinh cho số phân hoạch thành các số hạng phân biệt là:</p>
+        $$D(x) = (1+x)(1+x^2)(1+x^3)\dots = \prod_{k=1}^\infty (1+x^k)$$
+        <p>Ta có đồng nhất thức đại số $1+x^k = \frac{1-x^{2k}}{1-x^k}$. Thay vào $D(x)$:</p>
+        $$D(x) = \prod_{k=1}^\infty \frac{1-x^{2k}}{1-x^k} = \frac{(1-x^2)(1-x^4)(1-x^6)\dots}{(1-x)(1-x^2)(1-x^3)(1-x^4)\dots}$$
+        <p>Triệt tiêu các thành phần ở tử số với các thành phần chẵn ở mẫu số, ta còn lại:</p>
+        $$D(x) = \frac{1}{(1-x)(1-x^3)(1-x^5)\dots} = \prod_{k \text{ lẻ}} \frac{1}{1-x^k}$$
+        <p>Đây là hàm sinh của phân hoạch thành các số hạng lẻ. Đẳng thức được chứng minh.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.4 (Ràng buộc số lượng)</div>
+        Gọi $A(n)$ là số lượng phân hoạch của $n$ sao cho không có số hạng nào xuất hiện quá 2 lần. Gọi $B(n)$ là số lượng phân hoạch của $n$ sao cho không có số hạng nào chia hết cho 3. Chứng minh $A(n) = B(n)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Theo giả thiết $A(n)$, mỗi số hạng $k$ có thể xuất hiện 0, 1, hoặc 2 lần. Hàm sinh của $A(n)$ là:</p>
+        $$F_A(x) = \prod_{k=1}^\infty (1 + x^k + x^{2k})$$
+        <p>Theo giả thiết $B(n)$, số hạng $k$ không được chia hết cho 3. Hàm sinh của $B(n)$ là:</p>
+        $$F_B(x) = \prod_{k \not\equiv 0 \pmod 3} \frac{1}{1-x^k}$$
+        <p>Nhân tử và mẫu của $F_A(x)$ với $(1-x^k)$, ta có $1 + x^k + x^{2k} = \frac{1-x^{3k}}{1-x^k}$. </p>
+        $$F_A(x) = \prod_{k=1}^\infty \frac{1-x^{3k}}{1-x^k}$$
+        <p>Trên tử số là các nhân tử $(1-x^m)$ với $m$ chia hết cho 3. Mẫu số là toàn bộ các $(1-x^k)$ với $k \in \mathbb{Z}^+$. <br>
+        Sau khi triệt tiêu tử số cho mẫu số, mẫu số chỉ còn lại các thừa số $(1-x^k)$ mà $k$ không chia hết cho 3.<br>
+        Do đó $F_A(x) = F_B(x)$. Suy ra $A(n) = B(n)$ với mọi $n$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.5 (Hệ thức đệ quy)</div>
+        Gọi $P(n, k)$ là số lượng phân hoạch của $n$ thành đúng $k$ số hạng nguyên dương ($1 \le k \le n$). Bằng lập luận tổ hợp, chứng minh hệ thức:
+        $$P(n, k) = P(n-1, k-1) + P(n-k, k)$$
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét tập hợp các phân hoạch của $n$ thành đúng $k$ số hạng. Ta chia thành 2 loại rời nhau:</p>
+        <ol>
+            <li><em>Loại 1:</em> Phân hoạch có chứa ít nhất một số hạng bằng 1. Bằng cách bỏ đi số hạng 1 này, ta còn lại tổng là $n-1$ và gồm đúng $k-1$ số hạng. Có $P(n-1, k-1)$ cách.</li>
+            <li><em>Loại 2:</em> Phân hoạch không chứa số hạng 1 nào (mọi số hạng đều $\ge 2$). Ta trừ mỗi số hạng đi 1 đơn vị. Lúc này $k$ số hạng vẫn là các số nguyên dương, và tổng giảm đi $k \times 1 = k$. Có $P(n-k, k)$ cách.</li>
+        </ol>
+        <p>Cộng tổng hai trường hợp, ta thu được hệ thức $P(n, k) = P(n-1, k-1) + P(n-k, k)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.6 (Loại trừ số 1)</div>
+        Chứng minh rằng số lượng phân hoạch của $n$ mà không chứa số hạng $1$ nào đúng bằng $p(n) - p(n-1)$.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Xét song ánh: Tập hợp tất cả các phân hoạch của $n$ có chứa ít nhất một số hạng $1$.<br>
+        Nếu lấy một phân hoạch như vậy và loại bỏ đi một số hạng $1$, ta nhận được một phân hoạch của $n-1$ (với cấu trúc bất kỳ). Quá trình này có thể đảo ngược bằng cách thêm một số hạng $1$ vào bất kỳ phân hoạch nào của $n-1$.<br>
+        Do đó, số lượng các phân hoạch của $n$ có chứa số hạng $1$ đúng bằng $p(n-1)$.<br>
+        Tổng số phân hoạch của $n$ là $p(n)$. Vậy số phân hoạch không chứa số hạng $1$ nào là $p(n) - p(n-1)$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.7 (Giới hạn số hạng nhỏ)</div>
+        Có bao nhiêu cách phân hoạch số nguyên dương $n$ thành tổng của tối đa 2 số nguyên dương? (Viết dưới dạng công thức tường minh).
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Bài toán tương đương với tìm số nghiệm nguyên dương của $x + y = n$ với $x \ge y \ge 1$ (cộng thêm $1$ trường hợp phân hoạch thành đúng 1 số hạng là chính nó $n$).<br>
+        Từ $x + y = n \implies y = n - x$. Do $x \ge y \implies x \ge n - x \implies 2x \ge n \implies x \ge \lceil n/2 \rceil$.<br>
+        Vì $x \le n - 1$, số các giá trị nguyên của $x$ là $(n-1) - \lceil n/2 \rceil + 1 = \lfloor (n-1)/2 \rfloor$.<br>
+        Đó là số phân hoạch thành 2 số hạng. Cộng thêm 1 cách phân hoạch thành 1 số hạng, tổng số cách là:</p>
+        $$\left\lfloor \frac{n-1}{2} \right\rfloor + 1 = \left\lfloor \frac{n}{2} \right\rfloor$$
+        <p>Kết luận: Số cách phân hoạch là $\lfloor n/2 \rfloor$.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box problem">
+        <div class="box-title">Bài toán 4.8 (Tính chất chẵn lẻ)</div>
+        Chứng minh rằng số lượng các phân hoạch của $n$ mà mọi số hạng đều là số chẵn bằng $p(n/2)$ nếu $n$ chẵn, và bằng $0$ nếu $n$ lẻ.
+    </div>
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        <p>Giả sử $n$ có một phân hoạch chỉ toàn số chẵn:</p>
+        $$n = 2a_1 + 2a_2 + \dots + 2a_k \quad (a_i \ge 1)$$
+        <p>Vế phải luôn chẵn. Vậy nếu $n$ lẻ, phương trình vô nghiệm, số lượng phân hoạch bằng 0.<br>
+        Nếu $n$ chẵn, chia hai vế cho 2:</p>
+        $$\frac{n}{2} = a_1 + a_2 + \dots + a_k$$
+        <p>Bởi vì $2a_1 \ge 2a_2 \ge \dots \implies a_1 \ge a_2 \ge \dots$, phương trình mới chính là định nghĩa của một phân hoạch chuẩn cho số nguyên $\frac{n}{2}$. Mọi thao tác này là tương đương.<br>
+        Kết luận: Số phân hoạch bằng $p(n/2)$ nếu $n$ chẵn, và $0$ nếu $n$ lẻ.</p>
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</body>
+</html>

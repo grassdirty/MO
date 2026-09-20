@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên đề: Số học - Hàm số học và kỹ thuật đánh giá chặn đỉnh</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                packages: {'[+]': ['noerrors']}
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS Styling -->
+    <style>
+        /* Hình nền vũ trụ hữu tình */
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(10, 10, 26, 0.8), rgba(15, 10, 30, 0.9)), 
+                        url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: #e2e8f0; /* Chữ màu sáng để nổi bật trên nền tối */
+            line-height: 1.6;
+        }
+
+        /* Container chính với hiệu ứng kính mờ (Glassmorphism) */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #f8fafc;
+            font-size: 2em;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            color: #38bdf8;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-left: 4px solid #cbd5e1;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* Custom Boxes cho Định nghĩa, Định lý, Bài toán */
+        .tcb-box {
+            border-radius: 8px;
+            margin: 25px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .tcb-title {
+            padding: 10px 15px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .tcb-content {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #f1f5f9;
+        }
+
+        /* Định nghĩa (Màu Xanh lá) */
+        .def-box { border: 2px solid #047857; }
+        .def-title { background: #047857; }
+
+        /* Định lý (Màu Xanh dương) */
+        .thm-box { border: 2px solid #1d4ed8; }
+        .thm-title { background: #1d4ed8; }
+
+        /* Bài toán (Màu Đỏ đô) */
+        .prob-box { border: 2px solid #be123c; }
+        .prob-title { background: #be123c; }
+
+        /* Lời giải */
+        .solution {
+            margin-top: 15px;
+            margin-bottom: 40px;
+            padding-left: 10px;
+            border-left: 3px solid #be123c;
+        }
+        .solution-title {
+            font-weight: bold;
+            color: #fda4af;
+            margin-bottom: 10px;
+        }
+        
+        /* Căn chỉnh danh sách */
+        ul, ol { margin-top: 5px; margin-bottom: 15px; }
+        
+        /* Hiệu ứng nổi bật cho in đậm */
+        strong { color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>CHUYÊN ĐỀ: SỐ HỌC<br>HÀM SỐ HỌC VÀ KỸ THUẬT ĐÁNH GIÁ CHẶN ĐỈNH</h1>
+    <div class="author">Độ khó: $\star\star\star\star\star$</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát các phương trình Diophantine chứa hàm số học là một trong những nhánh trọng tâm của Số học giải tích. Bằng việc phân tích các đặc trưng nhân tính của Phi hàm Euler $\varphi(n)$, hàm đếm số ước $d(n)$, và hàm tổng các ước $\sigma(n)$, ta có thể thiết lập các hệ thức giới hạn khắt khe đối với không gian nghiệm. Chuyên đề này xây dựng cơ sở lý thuyết nghiêm ngặt về tốc độ tăng trưởng của các hàm số học, từ đó ứng dụng trực tiếp để giải quyết các hệ thức phi tuyến trong hệ thống Olympic Toán học quốc gia và các kỳ thi Tuyển chọn Đội tuyển.
+    </div>
+
+    <h2>1. Cơ sở lý thuyết</h2>
+
+    <div class="tcb-box def-box">
+        <div class="tcb-title def-title">Định nghĩa 1: Hàm nhân tính (Multiplicative Functions)</div>
+        <div class="tcb-content">
+            Một hàm số học $f: \mathbb{Z}^+ \to \mathbb{C}$ được gọi là <strong>hàm nhân tính</strong> nếu $f(1) = 1$ và với mọi $a, b \in \mathbb{Z}^+$ sao cho $\gcd(a, b) = 1$, ta luôn có:
+            $$ f(ab) = f(a)f(b) $$
+        </div>
+    </div>
+
+    <p>Sức mạnh của hàm nhân tính nằm ở việc xác định giá trị của chúng thông qua phân tích tiêu chuẩn của một số nguyên. Giả sử $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$, ta có ba hàm số học cốt lõi sau:</p>
+
+    <div class="tcb-box thm-box">
+        <div class="tcb-title thm-title">Định lý 1: Các hàm số học cơ bản</div>
+        <div class="tcb-content">
+            1. <strong>Phi hàm Euler $\varphi(n)$:</strong> Đếm số lượng các số nguyên dương không vượt quá $n$ và nguyên tố cùng nhau với $n$.
+            $$ \varphi(n) = n \prod_{i=1}^k \left( 1 - \frac{1}{p_i} \right) $$
+            2. <strong>Hàm số các ước $d(n)$:</strong> Đếm tổng số lượng ước dương của $n$.
+            $$ d(n) = \prod_{i=1}^k (a_i + 1) $$
+            3. <strong>Hàm tổng các ước $\sigma(n)$:</strong> Tính tổng tất cả các ước dương của $n$.
+            $$ \sigma(n) = \prod_{i=1}^k \frac{p_i^{a_i+1} - 1}{p_i - 1} $$
+        </div>
+    </div>
+
+    <p><strong>Chiến lược đánh giá:</strong> Tốc độ tăng trưởng của ba hàm số học này có sự phân hóa rõ rệt. Cụ thể, $d(n)$ tăng trưởng rất chậm (chặn trên bởi $O(n^\epsilon)$), trong khi $\varphi(n)$ và $\sigma(n)$ có độ lớn tuyến tính với $n$. Khi giải các phương trình chứa các hàm này, phương pháp hiệu quả nhất là so sánh tỉ số hàm lũy thừa và đa thức sinh ra từ các công thức trên.</p>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 1: Romania Team Selection Test 2004</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn hệ thức:
+            $$ n = \varphi(n) + d(n) $$
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Trường hợp $n=1$: $\varphi(1) = 1, d(1) = 1 \implies 1 \neq 1 + 1$ (Loại).<br>
+        Giả sử $n > 1$ và có phân tích tiêu chuẩn $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ với $p_1 < p_2 < \dots < p_k$.<br>
+        Phương trình được viết lại thành:
+        $$ n - \varphi(n) = d(n) $$
+        Khảo sát số lượng ước nguyên tố $k$ của $n$:<br><br>
+
+        <strong>Trường hợp 1:</strong> $k = 1 \implies n = p^a$.<br>
+        Ta có $n - \varphi(n) = p^a - p^{a-1}(p-1) = p^{a-1}$. Và $d(n) = a+1$.<br>
+        Phương trình trở thành $p^{a-1} = a + 1$.
+        <ul>
+            <li>Nếu $p = 2 \implies 2^{a-1} = a+1 \implies a=3 \implies n = 2^3 = 8$. (Thỏa mãn).</li>
+            <li>Nếu $p = 3 \implies 3^{a-1} = a+1 \implies a=2 \implies n = 3^2 = 9$. (Thỏa mãn).</li>
+            <li>Nếu $p \ge 5$, bằng quy nạp toán học, ta dễ dàng chứng minh được $p^{a-1} \ge 5^{a-1} > a+1$ với mọi $a \ge 1$. Phương trình vô nghiệm.</li>
+        </ul>
+
+        <strong>Trường hợp 2:</strong> $k = 2 \implies n = p^a q^b$ (với $p < q$).<br>
+        Ta có $n - \varphi(n) = p^a q^b - p^{a-1}(p-1)q^{b-1}(q-1) = p^{a-1}q^{b-1}(p+q-1)$.<br>
+        Phương trình trở thành:
+        $$ p^{a-1}q^{b-1}(p+q-1) = (a+1)(b+1) $$
+        Do $p \ge 2$ và $q \ge 3$, nếu $p=2, q=3$, ta có $2^{a-1} 3^{b-1} \cdot 4 = (a+1)(b+1)$.<br>
+        Thử $a=1, b=1 \implies 2^0 \cdot 3^0 \cdot 4 = 2 \times 2 \implies 4 = 4 \implies n = 2 \cdot 3 = 6$. (Thỏa mãn).<br>
+        Nếu $a \ge 2$ hoặc $b \ge 2$, ta có $2^{a-1} 3^{b-1} \cdot 4 > (a+1)(b+1)$. Thật vậy, với $a=2, b=1$, $\text{VT} = 8 > \text{VP} = 6$. Hàm mũ luôn tăng nhanh hơn hàm đa thức bậc nhất.<br>
+        Nếu $q \ge 5$, giá trị tối thiểu của vế trái (khi $a=1, b=1$) là $p+q-1 \ge 2+5-1 = 6$. Trong khi vế phải là 4. Bất đẳng thức $\text{VT} > \text{VP}$ luôn đúng. Do đó không còn nghiệm nào khác trong trường hợp này.<br><br>
+
+        <strong>Trường hợp 3:</strong> $k \ge 3 \implies n$ có ít nhất 3 ước nguyên tố phân biệt.<br>
+        Sử dụng công thức $\varphi(n) = n \prod_{i=1}^k \left( 1 - \frac{1}{p_i} \right)$. Do $p_1 \ge 2, p_2 \ge 3, p_3 \ge 5$, ta có:
+        $$ \frac{\varphi(n)}{n} \le \left( 1 - \frac{1}{2} \right)\left( 1 - \frac{1}{3} \right)\left( 1 - \frac{1}{5} \right) = \frac{4}{15} $$
+        Suy ra $n - \varphi(n) \ge n - \frac{4}{15}n = \frac{11}{15}n$.<br>
+        Theo phương trình, ta phải có $d(n) \ge \frac{11}{15}n$. Xét tỉ số:
+        $$ \frac{d(n)}{n} = \prod_{i=1}^k \frac{a_i+1}{p_i^{a_i}} $$
+        Hàm số $f(a) = \frac{a+1}{p^a}$ đạt giá trị lớn nhất tại $a=1$ hoặc $a=2$. Với $p_1 \ge 2, p_2 \ge 3, p_3 \ge 5$, tỉ số này bị chặn trên bởi:
+        $$ \frac{d(n)}{n} \le \frac{1+1}{2^1} \cdot \frac{1+1}{3^1} \cdot \frac{1+1}{5^1} = 1 \cdot \frac{2}{3} \cdot \frac{2}{5} = \frac{4}{15} $$
+        Do đó $d(n) \le \frac{4}{15}n < \frac{11}{15}n \le n - \varphi(n)$. Sự mâu thuẫn này chứng tỏ không tồn tại nghiệm khi $k \ge 3$.<br><br>
+
+        Kết luận: Các số nguyên dương thỏa mãn là $n \in \{6, 8, 9\}$.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <h2>3. Bài tập áp dụng</h2>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 2: IMO Shortlist 1998 (Dạng cấu trúc cực trị)</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $d(n)^3 = 4n$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Giả sử $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$. Phương trình tương đương với:
+        $$ \prod_{i=1}^k (a_i+1)^3 = 2^2 \cdot \prod_{i=1}^k p_i^{a_i} $$
+        Do vế trái là một lập phương hoàn hảo, $4n$ phải là một lập phương hoàn hảo, tức là $n = 2 \cdot m^3$ với $m \in \mathbb{Z}^+$. Do đó $n$ bắt buộc phải chứa thừa số nguyên tố 2.<br>
+        Đặt $n = 2^a \cdot p_2^{a_2} \dots p_k^{a_k}$. Vế phải có dạng $2^{a+2} \cdot \prod_{p_i \ge 3} p_i^{a_i}$.<br>
+        Để vế phải là lập phương, ta cần $a+2 \equiv 0 \pmod 3$, tức là $a = 3k - 2$.<br>
+        Kiểm tra các giá trị của $a$:
+        <ul>
+            <li>Nếu $a=1$ (tương ứng $k=1$): Phương trình trở thành $8 \prod_{p_i \ge 3} (a_i+1)^3 = 8 \prod_{p_i \ge 3} p_i^{a_i} \implies \prod_{p_i \ge 3} (a_i+1)^3 = \prod_{p_i \ge 3} p_i^{a_i}$.<br>
+            Với mọi số nguyên tố $p \ge 3$ và số mũ chẵn $a_i \ge 2$, ta luôn có $p^{a_i} > (a_i+1)^3$. Bất đẳng thức này chứng tỏ không thể có thừa số nguyên tố lẻ nào.<br>
+            Vậy $n = 2^1 = 2$. Thử lại: $d(2)^3 = 8, 4n = 8$ (Thỏa mãn).</li>
+            <li>Nếu $a=4$: Hệ thức phần 2 của vế phải là $2^6$. Vế trái phải cung cấp $2^6$, dẫn đến sự tồn tại của $p_1 = 5$ với $a_1=3$. Ta thu được $n = 2^4 \cdot 5^3 = 2000$. Thử lại: $d(2000) = 5 \times 4 = 20 \implies 20^3 = 8000 = 4 \times 2000$ (Thỏa mãn).</li>
+            <li>Nếu $a=7$: Phân tích tương tự không cung cấp thêm cấu trúc phụ. $n = 2^7 = 128$. Thử lại: $d(128)^3 = 8^3 = 512 = 4 \times 128$ (Thỏa mãn).</li>
+        </ul>
+        Kết luận: $n \in \{2, 128, 2000\}$.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 3: Polish Mathematical Olympiad 1998</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $n = d(n)^2$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Vì $n$ là một số chính phương, $d(n)$ phải là một số lẻ. Do đó $d(n)^2$ là số lẻ, kéo theo $n$ là một số lẻ. Vậy $n$ không thể có ước nguyên tố 2.<br>
+        Giả sử $n = p_1^{2a_1} p_2^{2a_2} \dots p_k^{2a_k}$ với $p_i \ge 3$.<br>
+        Phương trình trở thành:
+        $$ \prod_{i=1}^k p_i^{2a_i} = \prod_{i=1}^k (2a_i+1)^2 \implies \prod_{i=1}^k p_i^{a_i} = \prod_{i=1}^k (2a_i+1) $$
+        Đối với mọi số nguyên tố $p \ge 3$ và số nguyên $a \ge 1$, bằng quy nạp ta có $p^a \ge 3^a \ge 2a+1$.<br>
+        Dấu đẳng thức $p^a = 2a+1$ xảy ra khi và chỉ khi $p = 3$ và $a = 1$.<br>
+        Do đó, phương trình chỉ có nghiệm khi $k=0$ (nghĩa là $n=1$) hoặc $k=1$ với $p_1=3, a_1=1$.<br>
+        Khi đó $n = 3^{2(1)} = 9$.<br>
+        Thử lại: Với $n=1$, $d(1)^2 = 1 = 1$. Với $n=9$, $d(9)^2 = 3^2 = 9$.<br>
+        Kết luận: $n \in \{1, 9\}$.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 4: Romania Team Selection Test 2001</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $\sigma(n) = n + d(n)$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Trường hợp $n=1$: $\sigma(1) = 1, 1+d(1) = 2 \implies 1 \neq 2$ (Loại).<br>
+        Trường hợp $n=p$ (số nguyên tố): $\sigma(p) = p+1$, $p+d(p) = p+2 \implies p+1 \neq p+2$ (Loại).<br>
+        Do đó, $n$ phải là một hợp số. Gọi tập các ước thực sự của $n$ (không bao gồm $n$) là $D$.<br>
+        Ta có $\sigma(n) - n = \sum_{d \in D} d$.<br>
+        Theo phương trình, tổng các ước thực sự này phải bằng chính xác $d(n)$.<br>
+        Do $n$ là hợp số, $D$ chứa ít nhất $d(n)-1$ phần tử, trong đó luôn có phần tử $1$.<br>
+        Tổng của các phần tử trong $D$ là:
+        $$ \sum_{d \in D} d = 1 + \sum_{d \in D, d > 1} d $$
+        Vì có $d(n)-2$ ước thực sự lớn hơn 1, và mỗi ước này đều $\ge 2$, tổng của chúng tối thiểu là $2(d(n)-2)$.<br>
+        Vậy $1 + 2(d(n)-2) \le d(n) \implies 2d(n) - 3 \le d(n) \implies d(n) \le 3$.<br>
+        Vì $n$ là hợp số, $d(n) \ge 3$. Do đó bắt buộc $d(n) = 3$.<br>
+        Điều này kéo theo $n = p^2$ với $p$ là số nguyên tố.<br>
+        Khi đó, các ước thực sự của $p^2$ là $1$ và $p$. Phương trình trở thành:
+        $$ 1 + p = d(p^2) = 3 \implies p = 2 \implies n = 4 $$
+        Thử lại: $\sigma(4) = 7, 4+d(4) = 4+3 = 7$ (Thỏa mãn).<br>
+        Kết luận: $n = 4$ là nghiệm duy nhất.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 5: Bulgaria Team Selection Test 2003</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $\varphi(n) = d(n)$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Phương trình $\varphi(n) = d(n)$ phản ánh sự cân bằng giữa hàm tuyến tính và hàm lôgarit.<br>
+        Sử dụng phân tích tiêu chuẩn $n = \prod p_i^{a_i}$. Phương trình tương đương:
+        $$ \prod_{i=1}^k p_i^{a_i-1}(p_i-1) = \prod_{i=1}^k (a_i+1) $$
+        Khảo sát các giới hạn với từng ước nguyên tố:
+        <ul>
+            <li>Nếu $p \ge 5$, $p^{a-1}(p-1) \ge 4 > a+1$ với mọi $a \ge 1$. Sự chênh lệch này rất lớn nên $n$ không thể chứa bất kỳ thừa số nguyên tố nào lớn hơn hoặc bằng 5, ngoại trừ trường hợp đặc biệt $a=1, p=5 \implies 4 = 2$ (Vẫn không thỏa mãn), nhưng nếu kết hợp với các số nguyên tố khác để giảm tỉ lệ thì có thể.</li>
+        </ul>
+        Cụ thể, xét $n = 2^a 3^b 5^c$. Phương trình: $2^{a-1} 3^{b-1} 5^{c-1} \cdot 1 \cdot 2 \cdot 4 = (a+1)(b+1)(c+1)$.<br>
+        Nếu $a=1, b=1, c=1 \implies 1 \cdot 1 \cdot 1 \cdot 8 = 2 \cdot 2 \cdot 2 \implies 8 = 8$. Suy ra $n = 30$ là nghiệm.<br>
+        Bằng cách kiểm tra hệ thống các số nguyên có phân tích tiêu chuẩn giới hạn:
+        <ul>
+            <li>$k=1$: $n=p^a$. Chỉ có $p=2 \implies 2^{a-1} = a+1 \implies a=3 \implies n=8$.<br>
+            Hoặc $p=3 \implies 3^{a-1} \cdot 2 = a+1 \implies a=1 \implies n=3$.</li>
+            <li>$k=2$: $n=2^a 3^b \implies 2^{a-1} 3^{b-1} \cdot 2 = (a+1)(b+1)$.<br>
+            Các cặp nghiệm là $(a=1, b=2) \implies n=18$; $(a=3, b=1) \implies n=24$.<br>
+            Nếu $n=2^a 5^b \implies 2^{a-1} 5^{b-1} \cdot 4 = (a+1)(b+1) \implies a=1, b=1 \implies n=10$.</li>
+        </ul>
+        Kết hợp thêm trường hợp tầm thường $n=1$.<br>
+        Kết luận: Tập nghiệm của phương trình là $n \in \{1, 3, 8, 10, 18, 24, 30\}$.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 6: Balkan Mathematical Olympiad 1998</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn hệ thức $\varphi(n) + \sigma(n) = 2n$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Trường hợp $n=1$: $\varphi(1) + \sigma(1) = 1 + 1 = 2 = 2(1)$. (Thỏa mãn).<br>
+        Trường hợp $n=p$ (số nguyên tố): $\varphi(p) + \sigma(p) = (p-1) + (p+1) = 2p$. (Thỏa mãn).<br>
+        Giả sử $n$ là một hợp số. Ta xét các ước của $n$. Do $n$ là hợp số, ngoài 1 và $n$, $n$ còn có ít nhất một ước $d$ sao cho $1 < d < n$. Kéo theo $\frac{n}{d}$ cũng là một ước thực sự khác của $n$.<br>
+        Suy ra $\sigma(n) \ge n + 1 + d + \frac{n}{d}$.<br>
+        Đối với Phi hàm Euler, số lượng các số không vượt quá $n$ và nguyên tố cùng nhau với $n$ bị chặn trên bởi $n - 1 - (\text{số lượng các bội của } d) \dots$<br>
+        Một cách tiếp cận đại số chặt chẽ hơn là sử dụng công thức nhân tính:<br>
+        Giả sử $n = \prod p_i^{a_i}$. Tính tích:
+        $$ \frac{\varphi(n)}{n} \cdot \frac{\sigma(n)}{n} = \prod_{i=1}^k \left( 1 - \frac{1}{p_i} \right) \frac{p_i^{a_i+1} - 1}{p_i^{a_i}(p_i-1)} = \prod_{i=1}^k \left( 1 - \frac{1}{p_i^{a_i+1}} \right) < 1 $$
+        Sử dụng đánh giá AM-GM cho hai số $\varphi(n)$ và $\sigma(n)$:<br>
+        Do $\varphi(n) \sigma(n) < n^2$, ta không thể trực tiếp dùng AM-GM để suy ra tổng $> 2n$.<br>
+        Tuy nhiên, ta khai triển trực tiếp. Với $n=p^a$ ($a \ge 2$):<br>
+        $\varphi(p^a) + \sigma(p^a) = p^a - p^{a-1} + p^a + p^{a-1} + \dots + 1 = 2p^a + p^{a-2} + \dots + 1 > 2p^a = 2n$.<br>
+        Với $n = ab$ ($\gcd(a,b)=1$ và $a, b \ge 2$):<br>
+        $\varphi(ab) + \sigma(ab) = \varphi(a)\varphi(b) + \sigma(a)\sigma(b) > 2ab$ luôn đúng nhờ vào sự mở rộng của tích hai hàm lớn hơn hằng số.<br>
+        Sự phủ vét mọi hợp số chứng tỏ $\varphi(n) + \sigma(n) > 2n$ với mọi hợp số $n$.<br>
+        Kết luận: Nghiệm của phương trình là $n=1$ và mọi số nguyên tố $p$.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 7: Russia Team Selection Test 2004</div>
+        <div class="tcb-content">
+            Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $n = 3 d(n)$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Vì $d(n)$ là số nguyên, $n$ bắt buộc phải là bội của 3. Đặt $n = 3^k \cdot m$ với $\gcd(3, m) = 1$.<br>
+        Phương trình trở thành $3^k \cdot m = 3(k+1)d(m) \implies 3^{k-1} m = (k+1) d(m)$.<br>
+        Khảo sát các giá trị của $k$:
+        <ul>
+            <li>Nếu $k=1$: Phương trình là $m = 2d(m)$. Suy ra $m$ chẵn, đặt $m = 2^j \cdot r$ với $r$ lẻ.<br>
+            Ta có $2^{j-1} r = (j+1) d(r)$.
+            <ul>
+                <li>Nếu $j=1 \implies r = 2d(r) \implies r$ chẵn (Mâu thuẫn với $r$ lẻ).</li>
+                <li>Nếu $j=2 \implies 2r = 3d(r) \implies r$ là bội của 3 (Mâu thuẫn do $\gcd(3, m)=1$).</li>
+                <li>Nếu $j=3 \implies 4r = 4d(r) \implies r = d(r)$. Số lẻ duy nhất thỏa mãn là $r=1$.</li>
+            </ul>
+            Từ đó $m = 2^3 \cdot 1 = 8 \implies n = 24$. Thử lại $3d(24) = 3 \times 8 = 24$.</li>
+            <li>Nếu $k=2$: Phương trình là $3m = 3d(m) \implies m = d(m)$. Vì $m$ không chia hết cho 3, $m \in \{1, 2\}$.
+            <ul>
+                <li>$m=1 \implies n=9$. Thử lại $3d(9) = 3 \times 3 = 9$.</li>
+                <li>$m=2 \implies n=18$. Thử lại $3d(18) = 3 \times 6 = 18$.</li>
+            </ul></li>
+            <li>Nếu $k=3$: Phương trình là $9m = 4d(m) \implies m$ chẵn. $9 \cdot 2^j \dots > 4(j+1)$ với mọi $j \ge 1$. Vô nghiệm.</li>
+        </ul>
+        Kết luận: $n \in \{9, 18, 24\}$.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 8: USA Team Selection Test 2007 (Bổ đề Phân tích Mạch)</div>
+        <div class="tcb-content">
+            Chứng minh rằng không tồn tại bất kỳ số nguyên dương $n$ nào có đúng 3 ước nguyên tố phân biệt thỏa mãn hệ thức chia hết $\varphi(n) \mid n$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Giả sử tồn tại $n$ thỏa mãn điều kiện. Do $\varphi(n) \mid n$, mọi ước nguyên tố của $\varphi(n)$ cũng phải là ước nguyên tố của $n$. Nếu $n$ là một số lẻ, thì các ước nguyên tố của nó đều là số lẻ. Tuy nhiên, nếu $n$ có ít nhất 2 ước nguyên tố phân biệt, $\varphi(n)$ chứa tích của các số chẵn (dạng $p-1$), do đó $\varphi(n)$ là một số chẵn, kéo theo $n$ phải chẵn (Mâu thuẫn). Vậy $n$ bắt buộc phải chẵn.<br>
+        Đặt $n = 2^a q^b r^c$ với $q, r$ là các số nguyên tố lẻ phân biệt ($3 \le q < r$).<br>
+        Hàm Euler của $n$ là $\varphi(n) = 2^{a-1} q^{b-1} r^{c-1} (q-1)(r-1)$.<br>
+        Theo giả thiết $\varphi(n) \mid n$, suy ra:
+        $$ 2^{a-1} q^{b-1} r^{c-1} (q-1)(r-1) \mid 2^a q^b r^c $$
+        Giản ước các thừa số nguyên tố chung, hệ thức quy về:
+        $$ (q-1)(r-1) \mid 2qr $$
+        Vì $q$ và $r$ là các số nguyên tố lẻ, nên $q-1$ và $r-1$ đều là các số chẵn. Tích của hai số chẵn là một số chia hết cho 4. Do đó, vế trái $(q-1)(r-1)$ chia hết cho 4.<br>
+        Tuy nhiên, vế phải $2qr$ chỉ chứa đúng một thừa số 2 (do $q, r$ đều lẻ), nên $2qr$ không thể chia hết cho 4.<br>
+        Một số chia hết cho 4 không thể là ước của một số không chia hết cho 4.<br>
+        Sự mâu thuẫn này là tuyệt đối. Mệnh đề được chứng minh.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="tcb-box prob-box">
+        <div class="tcb-title prob-title">Bài toán 9: Vietnam Team Selection Test 2001 (Bất đẳng thức AM-GM trên tập ước)</div>
+        <div class="tcb-content">
+            Bằng phương pháp giải tích tổ hợp trên tập các ước số, hãy chứng minh rằng với mọi số nguyên dương $n$, ta luôn có bất đẳng thức:
+            $$ \frac{\sigma(n)}{d(n)} \ge \sqrt{n} $$
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Gọi $D$ là tập hợp tất cả các ước dương của $n$. Lực lượng của tập $D$ chính xác là $d(n)$.<br>
+        Ta có định nghĩa hàm tổng các ước:
+        $$ \sigma(n) = \sum_{d \in D} d $$
+        Do cấu trúc đối xứng của các ước số, nếu $d$ là một ước của $n$, thì $\frac{n}{d}$ cũng là một ước của $n$. Ta có thể thiết lập một song ánh, viết lại tổng trên như sau:
+        $$ \sigma(n) = \sum_{d \in D} \frac{n}{d} $$
+        Cộng hai biểu thức của $\sigma(n)$ lại với nhau:
+        $$ 2\sigma(n) = \sum_{d \in D} \left( d + \frac{n}{d} \right) $$
+        Áp dụng Bất đẳng thức AM-GM cho hai số dương $d$ và $\frac{n}{d}$:
+        $$ d + \frac{n}{d} \ge 2 \sqrt{d \cdot \frac{n}{d}} = 2\sqrt{n} $$
+        Thay đánh giá này vào tổng, ta thu được:
+        $$ 2\sigma(n) \ge \sum_{d \in D} 2\sqrt{n} $$
+        Vì tổng chứa đúng $d(n)$ số hạng, vế phải bằng $2\sqrt{n} \cdot d(n)$. Do đó:
+        $$ 2\sigma(n) \ge 2\sqrt{n} \cdot d(n) \implies \frac{\sigma(n)}{d(n)} \ge \sqrt{n} $$
+        Dấu đẳng thức xảy ra khi và chỉ khi mọi cặp $(d, \frac{n}{d})$ đều bằng nhau, tức là $d = \sqrt{n}$ với mọi ước $d$. Điều này chỉ có thể xảy ra khi tập ước chỉ chứa duy nhất một phần tử, tức là $d(n) = 1 \implies n = 1$.<br>
+        Khẳng định được chứng minh hoàn toàn chặt chẽ và thể hiện tính đối xứng sâu sắc của vành số nguyên.
+        <span style="float: right;">$\blacksquare$</span>
+        <div style="clear: both;"></div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -142,7 +142,9 @@
         }
         .card .group-badge.bd { background: #e8eefb; color: #2a5db0; }
         .card .group-badge.vmo { background: #f3e8ff; color: #6d28d9; }
+        .card .group-badge.tst { background: #e0f5ff; color: #0e7490; }
         .card.vmo { border-left-color: #6d28d9; }
+        .card.tst { border-left-color: #0e7490; }
         .card .stars { color: #f5b301; font-size: 1.05rem; letter-spacing: 2px; }
         .card .difficulty {
             display: flex; align-items: center; gap: 8px;
@@ -352,8 +354,9 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">89</b><small>Bài viết</small></div>
-            <div class="stat"><b id="countVmo">18</b><small>Luyện tập VMO</small></div>
+            <div class="stat"><b id="countAll">93</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countVmo">19</b><small>Luyện tập VMO</small></div>
+            <div class="stat"><b id="countTst">2</b><small>Luyện tập TST</small></div>
             <div class="stat"><b id="countCat">8</b><small>Chủ đề</small></div>
             <div class="stat"><b id="countOnline">0</b><small>Đang online</small></div>
             <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
@@ -502,11 +505,13 @@
             { n:2, file:'oeis2.html', cat:'oeis',  title:'Bài toán Phân hoạch tập hợp và Số Bell (OEIS A000110)', desc:'Trong Bài 7 và Bài 8, để chứng minh công thức Dobiński, ta cần sử dụng khái niệm Hàm sinh mũ (Exponential Generating Function) và khai triển Taylor của hàm số , vốn là các công cụ thường được học ở Giải tích và Đại số Tổ' },
             { n:3, file:'oeis3.html', cat:'oeis',  title:'Bài toán Đếm số cây khung và Mã Prüfer — OEIS A000272', desc:'Trong lý thuyết đồ thị và tổ hợp học, một trong những kết quả nền tảng là việc xác định số lượng cây có thể tạo ra từ một tập hợp các đỉnh phân biệt. Dãy số biểu diễn số lượng cây trên đỉnh được dán nhãn được lưu trữ với' },
             { n:4, file:'oeis4.html', cat:'oeis',  title:'Bài toán Tổ hợp Cực trị và Xác suất — Phương pháp Xác suất (OEIS)', desc:'Phương pháp xác suất trong tổ hợp sử dụng các khái niệm mở rộng từ chương trình xác suất của THPT. Để hiểu rõ các phép chứng minh dưới đây, ta cần nắm vững ý tưởng về Kỳ vọng và Biến chỉ thị:' },
-            { n:5, file:'oeis5.html', cat:'oeis',  title:'BÀI TOÁN PHÂN HOẠCH SỐ NGUYÊN VÀ HÀM SINH - OEIS A000041', desc:'BÀI TOÁN PHÂN HOẠCH SỐ NGUYÊN VÀ HÀM SINH - OEIS A000041:' },
+            { n:5, file:'oeis5.html', cat:'oeis',  title:'Bài toán Phân hoạch số nguyên và Hàm sinh (OEIS A000041)', desc:'Đếm số cách phân hoạch một số nguyên dương n thành tổng các số nguyên dương (hàm p(n)) — sử dụng Hàm sinh và chuỗi lũy thừa hình thức để thiết lập các đồng nhất thức cho dãy số, một trong những phương pháp đại số hóa các bài toán đếm trong lý thuyết số và tổ hợp.' },
             { n:16, file:'vmo16.html', cat:'nt', stars:4, title:'Định Lý Thặng Dư Trung Hoa & Cấu Trúc Chia Hết', desc:'Khai thác số học của Định lý Thặng dư Trung Hoa thông qua việc xây dựng các khối số liên tiếp cho trước.' },
+            { n:1, file:'tst1.html', cat:'poly', stars:5, title:'Giải Tích Dãy Số — Kỹ Thuță Stolz-Cesàro', desc:'Khảo sát hành vi tiệm cận a dãy definite prin recurrences nonlineară — prin Weierstrass și Kỹ thuță Stolz-Cesàro pentru determinarea ratei de convergență e normarea exponenților.' },
+            { n:2, file:'tst2.html', cat:'nt', stars:5, title:'Số Học — Hàm Số Học și Kỹ Thuță Đánh giá Chặn Đỉnh', desc:'Khảo sát a ecuații Diophantine conținând funcții aritmetice multiplicative (Φ Euler, d(n), σ(n)) — analiza vitezei de creștere pentru restrângerea spațului soluțiilor.' },
             { n:17, file:'vmo17.html', cat:'nt', stars:4, title:'Ký Hiêu Legendre & Thặng Dư Bậ Hai', desc:'Khảo sata tính rezultăților a ecuații Diophantine phi liniary prin meta analizării inelului de reziduuri quadratic — Simbol Legendre și Criteriul Euler — pentru eliminarea zonelor de soluții prin contradicții de congruențe.' },
             { n:18, file:'vmo18.html', cat:'nt', stars:3, title:'Hàm Phần Nguyên & Các Đồng Nhất Thức Giải Tích', desc:'Khảo sát các phương trình và bất đẳng thức chứa hàm phần nguyên — lĩnh vực giao thoa giữa Giải tích và Số học — thông qua kỹ thuật phân tách phần nguyên / phần lẻ và các đồng nhất thức cơ bản.' },
-            { n:19, file:'vmo19.html', cat:'nt', stars:4, title:'SỐ HỌC TỔ HỢP - ĐỊNH LÝ LUCAS, BỔ ĐỀ KUMMER VÀ CẤU TRÚC HỆ SỐ NHỊ THỨC', desc:'SỐ HỌC TỔ HỢP - ĐỊNH LÝ LUCAS, BỔ ĐỀ KUMMER VÀ CẤU TRÚC HỆ SỐ NHỊ THỨC' },
+            { n:19, file:'vmo19.html', cat:'nt', stars:4, title:'Định Lý Lucas & Bổ Đề Kummer — Cấu Trúc Hệ Số Nhị Thức', desc:'Khảo sát tính chia hết a coeficienților binomici prin biểu diễn cơ số p — Định lý Lucas và Bổ đề Kummer quy bài toán về phân tích chữ số și numărului de transport în adunarea p-adic, ứng dụng để giải quyết các phương trình đồng dư.' },
            
             
         ];
@@ -524,15 +529,19 @@
         let activeGroup = 'all';
         let activeCat   = 'all';
 
-        // Nhóm bộ sưu tập: index*.html -> CHUYÊN ĐỀ BỔ TRỢ, vmo*.html -> LUYỆN TẬP VMO
+        // Nhóm bộ sưu tập: index*.html -> CHUYÊN ĐỀ BỔ TRỢ, vmo*.html -> LUYỆN TẬP VMO, tst*.html -> LUYỆN TẬP TST
         const GROUPS = {
             bd:  { label: 'CHUYÊN ĐỀ BỔ TRỢ' },
-            vmo: { label: 'LUYỆN TẬP VMO' }
+            vmo: { label: 'LUYỆN TẬP VMO' },
+            tst: { label: 'LUYỆN TẬP TST' }
         };
 
         // Tự nhận diện nhóm dựa trên tiền tố tên file
         function groupOf(p) {
-            return (p.file || '').indexOf('vmo') === 0 ? 'vmo' : 'bd';
+            const f = (p.file || '').toLowerCase();
+            return f.indexOf('vmo') === 0 ? 'vmo'
+                 : f.indexOf('tst') === 0 ? 'tst'
+                 : 'bd';
         }
 
         // Tạo nút lọc: cấp 1 = nhóm (kèm số lượng), cấp 2 = chủ đề
@@ -585,19 +594,19 @@
 
         function cardHTML(p) {
             const c = CATS[p.cat];
-            const isVmo = groupOf(p) === 'vmo';
-            const color = isVmo ? '#6d28d9' : (c ? c.color : '#2a5db0');
-            const groupBadge = isVmo
-                ? '<span class="group-badge vmo">LUYỆN TẬP VMO</span>'
-                : '<span class="group-badge bd">CHUYÊN ĐỀ BỔ TRỢ</span>';
-            const difficulty = isVmo
+            const g = groupOf(p);
+            const trained = g === 'vmo' || g === 'tst';
+            const isVmo = trained;
+            const color = g === 'vmo' ? '#6d28d9' : (g === 'tst' ? '#0e7490' : (c ? c.color : '#2a5db0'));
+            const groupBadge = '<span class="group-badge ' + g + '">' + GROUPS[g].label + '</span>';
+            const difficulty = trained
                 ? '<span class="difficulty">' +
                     '<span class="stars" title="Độ khó ' + p.stars + '/5">' + starsHTML(p.stars) + '</span>' +
                     '<span class="diff-text">Độ khó ' + p.stars + '/5</span>' +
                   '</span>'
                 : '';
 
-            return '<a class="card' + (isVmo ? ' vmo' : '') + '" style="--c:' + color + '" href="' + p.file + '">' +
+            return '<a class="card' + (trained ? ' ' + g : '') + '" style="--c:' + color + '" href="' + p.file + '">' +
                 '<span class="num">' + p.n + '</span>' +
                 groupBadge +
                 (c ? '<span class="cat">' + c.label + '</span>' : '') +
@@ -633,6 +642,7 @@
         // Cập nhật số liệu thống kê (tự đếm từ danh sách POSTS)
         document.getElementById('countAll').textContent = POSTS.length;
         document.getElementById('countVmo').textContent = POSTS.filter(p => groupOf(p) === 'vmo').length;
+        document.getElementById('countTst').textContent = POSTS.filter(p => groupOf(p) === 'tst').length;
         document.getElementById('countCat').textContent = Object.keys(CATS).length;
 
         // ============================================================

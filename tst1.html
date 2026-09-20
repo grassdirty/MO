@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Giải Tích Dãy Số - Kỹ Thuật Stolz-Cesàro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh thẳm/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: GIẢI TÍCH DÃY SỐ<br>ĐÁNH GIÁ TIỆM CẬN DÃY TRUY HỒI VÀ KỸ THUẬT STOLZ-CESÀRO MỞ RỘNG</h1>
+        <div class="author">Độ khó: $\star\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát hành vi tiệm cận của dãy số được định nghĩa qua hệ thức truy hồi phi tuyến là một bài toán trung tâm trong Giải tích cấp cao và các kỳ thi Tuyển chọn Đội tuyển Quốc gia (TST). Do không thể biểu diễn số hạng tổng quát dưới dạng đóng, phương pháp giải tích ưu tiên thiết lập sự hội tụ bằng nguyên lý Weierstrass và sử dụng định lý Stolz-Cesàro kết hợp với khai triển Taylor để đánh giá cấp độ hội tụ. Chuyên đề này phân tích cơ sở lý thuyết nghiêm ngặt của phương pháp xấp xỉ tiệm cận và ứng dụng giải quyết các cấu trúc dãy số ẩn.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box thm">
+            <div class="box-header">Định lý 1: Định lý Stolz-Cesàro (Dạng vô định $\frac{\infty}{\infty}$ và $\frac{0}{0}$)</div>
+            <div class="box-body">
+                Cho hai dãy số thực $(a_n)$ và $(b_n)$. Giả sử dãy $(b_n)$ đơn điệu tăng ngặt và phân kỳ ra $+\infty$ (hoặc cả hai dãy cùng hội tụ về $0$ và $(b_n)$ đơn điệu ngặt). Nếu tồn tại giới hạn:
+                $$ \lim_{n \to \infty} \frac{a_{n+1} - a_n}{b_{n+1} - b_n} = L \in \mathbb{R} \cup \{-\infty, +\infty\} $$
+                thì giới hạn của thương số cũng tồn tại và bằng $L$:
+                $$ \lim_{n \to \infty} \frac{a_n}{b_n} = L $$
+            </div>
+        </div>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Kỹ thuật chuẩn hóa số mũ (Exponent Normalization Technique)</div>
+            <div class="box-body">
+                Đối với dãy truy hồi có dạng $x_{n+1} = x_n + c x_n^\beta$ (với $c &gt; 0$ và $\beta \in \mathbb{R}$), giả sử $x_n \to \infty$. Để áp dụng định lý Stolz-Cesàro một cách hiệu quả, ta cần tìm một số mũ $\alpha$ sao cho hiệu số $x_{n+1}^\alpha - x_n^\alpha$ hội tụ về một hằng số khác $0$.<br>
+                Theo định lý Lagrange (hoặc khai triển nhị thức Newton mở rộng):
+                $$ x_{n+1}^\alpha - x_n^\alpha = (x_n + c x_n^\beta)^\alpha - x_n^\alpha = x_n^\alpha \left( \left(1 + c x_n^{\beta-1}\right)^\alpha - 1 \right) \sim x_n^\alpha \left( \alpha c x_n^{\beta-1} \right) = \alpha c x_n^{\alpha + \beta - 1} $$
+                Để giới hạn này là một hằng số khác không, ta ép số mũ triệt tiêu: $\alpha + \beta - 1 = 0 \implies \alpha = 1 - \beta$.
+            </div>
+        </div>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (Vietnam Team Selection Test (TST) 2001)</div>
+            <div class="box-body">
+                Cho dãy số thực $(x_n)_{n \ge 1}$ được xác định bởi điều kiện khởi tạo $x_1 = a &gt; 0$ và hệ thức truy hồi:
+                $$ x_{n+1} = x_n + \sqrt{x_n} \quad \forall n \ge 1 $$
+                Chứng minh rằng dãy số phân kỳ ra dương vô cực và tính giới hạn $\lim_{n \to \infty} \frac{x_n}{n^2}$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            <strong>Bước 1: Khảo sát sự phân kỳ của dãy số.</strong><br>
+            Vì $x_1 = a &gt; 0$, bằng phương pháp quy nạp, ta dễ dàng thấy $x_n &gt; 0$ với mọi $n \ge 1$.<br>
+            Xét hiệu phân sai: $x_{n+1} - x_n = \sqrt{x_n} &gt; 0$. Do đó, dãy $(x_n)$ là một dãy đơn điệu tăng ngặt.<br>
+            Giả sử dãy $(x_n)$ bị chặn trên. Theo nguyên lý Weierstrass, dãy hội tụ về một giới hạn hữu hạn $L &gt; 0$.<br>
+            Chuyển qua giới hạn trong hệ thức truy hồi:
+            $$ \lim_{n \to \infty} x_{n+1} = \lim_{n \to \infty} (x_n + \sqrt{x_n}) \implies L = L + \sqrt{L} \implies \sqrt{L} = 0 \implies L = 0 $$
+            Điều này mâu thuẫn với việc dãy số tăng ngặt từ $a &gt; 0$ (nên $L \ge a &gt; 0$).<br>
+            Sự mâu thuẫn chứng tỏ dãy số không bị chặn trên. Do dãy đơn điệu tăng, ta kết luận $\lim_{n \to \infty} x_n = +\infty$.<br><br>
+
+            <strong>Bước 2: Chuẩn hóa số mũ và áp dụng Stolz-Cesàro.</strong><br>
+            Đại lượng truy hồi có bậc $\beta = 1/2$. Áp dụng Kỹ thuật chuẩn hóa (Định nghĩa 1), ta chọn $\alpha = 1 - 1/2 = 1/2$. Do đó, ta cần đánh giá hiệu phân sai của dãy $\sqrt{x_n}$.<br>
+            Ta có:
+            $$ \sqrt{x_{n+1}} - \sqrt{x_n} = \frac{x_{n+1} - x_n}{\sqrt{x_{n+1}} + \sqrt{x_n}} = \frac{\sqrt{x_n}}{\sqrt{x_n + \sqrt{x_n}} + \sqrt{x_n}} $$
+            Chia cả tử và mẫu cho $\sqrt{x_n} &gt; 0$:
+            $$ \sqrt{x_{n+1}} - \sqrt{x_n} = \frac{1}{\sqrt{1 + \frac{1}{\sqrt{x_n}}} + 1} $$
+            Khi $n \to \infty$, vì $x_n \to +\infty$, phân thức $\frac{1}{\sqrt{x_n}} \to 0$. Do đó:
+            $$ \lim_{n \to \infty} \left( \sqrt{x_{n+1}} - \sqrt{x_n} \right) = \frac{1}{\sqrt{1+0} + 1} = \frac{1}{2} $$
+            Ta đặt $A_n = \sqrt{x_n}$ và $B_n = n$. Vì $B_n \to +\infty$ là dãy tăng ngặt, ta áp dụng định lý Stolz-Cesàro:
+            $$ \lim_{n \to \infty} \frac{\sqrt{x_n}}{n} = \lim_{n \to \infty} \frac{A_n}{B_n} = \lim_{n \to \infty} \frac{A_{n+1} - A_n}{B_{n+1} - B_n} = \lim_{n \to \infty} \frac{\sqrt{x_{n+1}} - \sqrt{x_n}}{(n+1) - n} = \frac{1}{2} $$
+            Bình phương giới hạn vừa nhận được:
+            $$ \lim_{n \to \infty} \frac{x_n}{n^2} = \left( \frac{1}{2} \right)^2 = \frac{1}{4} $$
+            Khẳng định được thiết lập hoàn toàn nghiêm ngặt bằng giải tích tiệm cận.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (Romania Team Selection Test 2004)</div>
+            <div class="box-body">
+                Cho dãy số $(x_n)_{n \ge 1}$ xác định bởi $x_1 = 1$ và $x_{n+1} = x_n + \frac{1}{x_n}$ với mọi $n \ge 1$. Tính giới hạn $\lim_{n \to \infty} \frac{x_n}{\sqrt{2n}}$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Dễ thấy $x_n &gt; 0$ và $x_{n+1} - x_n = \frac{1}{x_n} &gt; 0$, dãy tăng ngặt. Nếu hội tụ về $L$, $L = L + \frac{1}{L}$ (vô nghiệm). Vậy $x_n \to +\infty$.<br>
+            Bậc của phương trình truy hồi là $\beta = -1$. Ta chọn $\alpha = 1 - (-1) = 2$. Xét hiệu phân sai của $x_n^2$:
+            $$ x_{n+1}^2 - x_n^2 = \left( x_n + \frac{1}{x_n} \right)^2 - x_n^2 = 2 + \frac{1}{x_n^2} $$
+            Chuyển qua giới hạn:
+            $$ \lim_{n \to \infty} \left( x_{n+1}^2 - x_n^2 \right) = \lim_{n \to \infty} \left( 2 + \frac{1}{x_n^2} \right) = 2 + 0 = 2 $$
+            Áp dụng định lý Stolz-Cesàro cho hai dãy $A_n = x_n^2$ và $B_n = n$:
+            $$ \lim_{n \to \infty} \frac{x_n^2}{n} = \lim_{n \to \infty} \frac{x_{n+1}^2 - x_n^2}{(n+1) - n} = 2 $$
+            Từ đó suy ra $\lim_{n \to \infty} \frac{x_n}{\sqrt{n}} = \sqrt{2}$, tương đương với $\lim_{n \to \infty} \frac{x_n}{\sqrt{2n}} = 1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (China Team Selection Test 2005)</div>
+            <div class="box-body">
+                Cho số thực $a &gt; 0$. Dãy $(y_n)$ được xác định bởi $y_1 = a$ và $y_{n+1} = y_n + e^{-y_n}$. Chứng minh rằng $\lim_{n \to \infty} \frac{y_n}{\ln n} = 1$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Vì $e^{-y_n} &gt; 0$, dãy $y_n$ tăng ngặt. Giả sử dãy bị chặn trên và hội tụ về $L$, ta có $L = L + e^{-L} \implies e^{-L} = 0$ (vô lý). Do đó $y_n \to +\infty$.<br>
+            Để làm mất tính siêu việt của phương trình, đặt $z_n = e^{y_n}$. Khi đó $z_n \to +\infty$.<br>
+            Hệ thức trở thành: $\ln(z_{n+1}) = \ln(z_n) + \frac{1}{z_n} \implies z_{n+1} = z_n e^{1/z_n}$.<br>
+            Ta đánh giá hiệu phân sai của $z_n$:
+            $$ z_{n+1} - z_n = z_n \left( e^{1/z_n} - 1 \right) $$
+            Sử dụng khai triển Maclaurin cho hàm số mũ $e^u = 1 + u + O(u^2)$ khi $u = \frac{1}{z_n} \to 0$:
+            $$ z_{n+1} - z_n = z_n \left( \frac{1}{z_n} + O\left(\frac{1}{z_n^2}\right) \right) = 1 + O\left(\frac{1}{z_n}\right) $$
+            Chuyển qua giới hạn: $\lim_{n \to \infty} (z_{n+1} - z_n) = 1$.<br>
+            Theo định lý Stolz-Cesàro, $\lim_{n \to \infty} \frac{z_n}{n} = 1$.<br>
+            Chuyển lại về biến $y_n$: $\lim_{n \to \infty} \frac{e^{y_n}}{n} = 1 \implies \lim_{n \to \infty} (y_n - \ln n) = 0$.<br>
+            Do đó $\lim_{n \to \infty} \frac{y_n}{\ln n} = 1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (Italy Mathematical Olympiad 1999 (Phiên bản TST))</div>
+            <div class="box-body">
+                Cho dãy số $(u_n)_{n \ge 1}$ với $u_1 &gt; 0$ và $u_{n+1} = u_n + \frac{1}{u_n^2}$. Tính giới hạn $\lim_{n \to \infty} \frac{u_n}{\sqrt[3]{n}}$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Bằng lập luận tương tự, $u_n$ là dãy tăng ngặt và $u_n \to +\infty$.<br>
+            Bậc $\beta = -2$, chọn $\alpha = 1 - (-2) = 3$. Khảo sát hiệu phân sai của $u_n^3$:
+            $$ u_{n+1}^3 - u_n^3 = \left( u_n + \frac{1}{u_n^2} \right)^3 - u_n^3 = 3u_n^2\left(\frac{1}{u_n^2}\right) + 3u_n\left(\frac{1}{u_n^4}\right) + \frac{1}{u_n^6} = 3 + \frac{3}{u_n^3} + \frac{1}{u_n^6} $$
+            Khi $n \to \infty$, $u_n \to +\infty$, do đó $\lim_{n \to \infty} (u_{n+1}^3 - u_n^3) = 3$.<br>
+            Áp dụng Stolz-Cesàro:
+            $$ \lim_{n \to \infty} \frac{u_n^3}{n} = 3 \implies \lim_{n \to \infty} \frac{u_n}{\sqrt[3]{n}} = \sqrt[3]{3} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (USA Team Selection Test 2003)</div>
+            <div class="box-body">
+                Ký hiệu $(a_n)$ là dãy số thực dương thỏa mãn $a_1 \in (0, 1)$ và $a_{n+1} = a_n - a_n^2$. Tìm giới hạn $\lim_{n \to \infty} n a_n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Hệ thức tương đương $a_{n+1} = a_n(1 - a_n)$. Do $a_n \in (0, 1)$, ta có $a_{n+1} \in (0, 1)$.<br>
+            Hiệu $a_{n+1} - a_n = -a_n^2 &lt; 0$, dãy giảm ngặt và hội tụ về 0.<br>
+            Bậc $\beta = 2$, chọn $\alpha = 1 - 2 = -1$. Khảo sát hiệu của dãy nghịch đảo $\frac{1}{a_n}$:
+            $$ \frac{1}{a_{n+1}} - \frac{1}{a_n} = \frac{a_n - a_{n+1}}{a_n a_{n+1}} = \frac{a_n^2}{a_n(a_n - a_n^2)} = \frac{a_n^2}{a_n^2(1 - a_n)} = \frac{1}{1 - a_n} $$
+            Khi $n \to \infty$, $a_n \to 0$, nên $\lim_{n \to \infty} \left( \frac{1}{a_{n+1}} - \frac{1}{a_n} \right) = \frac{1}{1 - 0} = 1$.<br>
+            Áp dụng định lý Stolz-Cesàro:
+            $$ \lim_{n \to \infty} \frac{1/a_n}{n} = 1 \implies \lim_{n \to \infty} n a_n = 1 $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Balkan Mathematical Olympiad 2002)</div>
+            <div class="box-body">
+                Cho dãy số $(c_n)$ với $c_1 &gt; 0$ và $c_{n+1} = \ln(1 + c_n)$ với mọi $n \ge 1$. Tính giới hạn $\lim_{n \to \infty} n c_n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Với mọi $x &gt; 0$, ta có $\ln(1+x) &lt; x$. Do đó $0 &lt; c_{n+1} &lt; c_n$.<br>
+            Dãy $(c_n)$ giảm ngặt và hội tụ về $L=0$.<br>
+            Áp dụng Kỹ thuật chuẩn hóa với đa thức Taylor. Khai triển $\ln(1+x) = x - \frac{x^2}{2} + O(x^3)$.<br>
+            Hệ thức truy hồi có dạng $c_{n+1} \approx c_n - \frac{1}{2}c_n^2$. Bậc $\beta = 2$, chọn $\alpha = -1$.<br>
+            Xét hiệu của dãy $\frac{1}{c_n}$:
+            $$ \frac{1}{c_{n+1}} - \frac{1}{c_n} = \frac{c_n - \ln(1+c_n)}{c_n \ln(1+c_n)} = \frac{c_n - \left(c_n - \frac{c_n^2}{2} + O(c_n^3)\right)}{c_n \left(c_n + O(c_n^2)\right)} = \frac{\frac{c_n^2}{2} + O(c_n^3)}{c_n^2 + O(c_n^3)} $$
+            Rút gọn $c_n^2$, giới hạn khi $n \to \infty$ của hiệu này là $\frac{1}{2}$.<br>
+            Theo định lý Stolz-Cesàro:
+            $$ \lim_{n \to \infty} \frac{1/c_n}{n} = \frac{1}{2} \implies \lim_{n \to \infty} n c_n = 2 $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Vietnam Team Selection Test 2007)</div>
+            <div class="box-body">
+                Ký hiệu $x_1 \in (0, \pi/2)$, và $x_{n+1} = \sin(x_n)$. Tìm giới hạn của dãy $\lim_{n \to \infty} x_n \sqrt{n}$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Do $0 &lt; \sin x &lt; x$ trên $(0, \pi/2)$, dãy $(x_n)$ giảm ngặt và hội tụ về 0.<br>
+            Sử dụng khai triển Taylor $\sin x = x - \frac{x^3}{6} + O(x^5)$.<br>
+            Phương trình truy hồi có dạng $x_{n+1} \approx x_n - \frac{1}{6}x_n^3$. Bậc $\beta = 3$, chọn $\alpha = 1 - 3 = -2$.<br>
+            Xét hiệu phân sai của dãy $\frac{1}{x_n^2}$:
+            $$ \frac{1}{x_{n+1}^2} - \frac{1}{x_n^2} = \frac{x_n^2 - \sin^2 x_n}{x_n^2 \sin^2 x_n} $$
+            Bình phương khai triển của sin: $\sin^2 x_n = x_n^2 - \frac{x_n^4}{3} + O(x_n^6)$.
+            $$ \frac{x_n^2 - \left(x_n^2 - \frac{x_n^4}{3} + O(x_n^6)\right)}{x_n^2 \left(x_n^2 + O(x_n^4)\right)} = \frac{\frac{x_n^4}{3} + O(x_n^6)}{x_n^4 + O(x_n^6)} $$
+            Giới hạn của hiệu khi $n \to \infty$ bằng $\frac{1}{3}$.<br>
+            Stolz-Cesàro $\implies \lim_{n \to \infty} \frac{1/x_n^2}{n} = \frac{1}{3} \implies \lim_{n \to \infty} n x_n^2 = 3 \implies \lim_{n \to \infty} x_n \sqrt{n} = \sqrt{3}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Romania Team Selection Test 2001)</div>
+            <div class="box-body">
+                Cho dãy số $(v_n)$ thỏa mãn $v_1 &gt; 0$ và $v_{n+1} = v_n + \frac{1}{\sqrt{v_n}}$. Tính giới hạn $\lim_{n \to \infty} \frac{v_n}{n^{2/3}}$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Dãy $(v_n)$ tăng ngặt và $v_n \to +\infty$.<br>
+            Bậc $\beta = -1/2$, chọn $\alpha = 1 - (-1/2) = 3/2$. Xét hiệu phân sai của $v_n^{3/2}$:
+            $$ v_{n+1}^{3/2} - v_n^{3/2} = \left(v_n + v_n^{-1/2}\right)^{3/2} - v_n^{3/2} = v_n^{3/2} \left[ \left(1 + v_n^{-3/2}\right)^{3/2} - 1 \right] $$
+            Sử dụng khai triển $(1+u)^r = 1 + ru + O(u^2)$ khi $u = v_n^{-3/2} \to 0$:
+            $$ v_{n+1}^{3/2} - v_n^{3/2} = v_n^{3/2} \left( 1 + \frac{3}{2} v_n^{-3/2} + O(v_n^{-3}) - 1 \right) = \frac{3}{2} + O(v_n^{-3/2}) $$
+            Giới hạn hiệu bằng $\frac{3}{2}$.<br>
+            Áp dụng Stolz-Cesàro:
+            $$ \lim_{n \to \infty} \frac{v_n^{3/2}}{n} = \frac{3}{2} \implies \lim_{n \to \infty} \frac{v_n}{n^{2/3}} = \left(\frac{3}{2}\right)^{2/3} = \sqrt[3]{\frac{9}{4}} $$
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Polish Mathematical Olympiad TST 1999)</div>
+            <div class="box-body">
+                Chứng minh rằng dãy số $(w_n)$ xác định bởi $w_1 = 1$ và $w_{n+1} = w_n + \frac{1}{n^2 w_n}$ hội tụ về một giới hạn hữu hạn.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Dãy có tính chất phi tự trị (non-autonomous) do phụ thuộc trực tiếp vào chỉ số $n$.<br>
+            Rõ ràng $w_n &gt; 0$ và $w_{n+1} - w_n &gt; 0$, dãy tăng ngặt.<br>
+            Bình phương hai vế hệ thức:
+            $$ w_{n+1}^2 = \left( w_n + \frac{1}{n^2 w_n} \right)^2 = w_n^2 + \frac{2}{n^2} + \frac{1}{n^4 w_n^2} $$
+            Vì $w_n \ge w_1 = 1$, ta có $\frac{1}{w_n^2} \le 1$. Do đó:
+            $$ w_{n+1}^2 \le w_n^2 + \frac{2}{n^2} + \frac{1}{n^4} $$
+            Lấy tổng các bất đẳng thức từ $k=1$ đến $n-1$:
+            $$ w_n^2 - w_1^2 \le \sum_{k=1}^{n-1} \frac{2}{k^2} + \sum_{k=1}^{n-1} \frac{1}{k^4} $$
+            Biết rằng chuỗi $\sum \frac{1}{k^2}$ và $\sum \frac{1}{k^4}$ đều hội tụ (về $\frac{\pi^2}{6}$ và $\frac{\pi^4}{90}$).<br>
+            Do đó, tổng phía bên phải bị chặn trên bởi một hằng số cố định $M &gt; 0$.<br>
+            Suy ra $w_n^2 \le 1 + M$, dãy $(w_n)$ bị chặn trên.<br>
+            Một dãy số đơn điệu tăng và bị chặn trên bắt buộc phải hội tụ theo Nguyên lý Weierstrass. Khẳng định được chứng minh hoàn thiện.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

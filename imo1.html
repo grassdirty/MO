@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Bất Đẳng Thức Tập Ước</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            /* Background vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh thẳm/tím */
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            padding: 45px;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+        
+        /* Định nghĩa (Definition) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+        
+        /* Định lý (Theorem) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+        
+        /* Bài toán (Problem) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải (Solution) */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Chứng minh (Proof) */
+        .proof {
+            margin: 15px 0 30px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #c084fc;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .proof-title {
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+        
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+        
+        /* MathJax Adjustments */
+        .MathJax {
+            outline: 0;
+        }
+        mjx-container {
+            color: #f8fafc; 
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CHUYÊN ĐỀ: SỐ HỌC<br>HÀM SỐ HỌC VÀ ĐÁNH GIÁ BẤT ĐẲNG THỨC TẬP ƯỚC</h1>
+        <div class="author">Độ khó: $\star\star\star\star\star$</div>
+
+        <div class="abstract">
+            <strong>Tóm tắt:</strong> Khảo sát các hàm số học cơ bản như Phi hàm Euler $\varphi(n)$, hàm đếm số ước $d(n)$, và hàm tổng các ước $\sigma(n)$ là một chủ đề trọng yếu trong Số học giải tích và các kỳ thi Olympic Toán học quốc tế (IMO). Bằng việc khai thác tính chất nhân tính (multiplicative property) và cấu trúc đối xứng của tập hợp các ước số, ta có thể thiết lập các hệ thức tiệm cận và bất đẳng thức khắt khe để giới hạn không gian nghiệm của các phương trình Diophantine. Chuyên đề này phân tích cơ sở lý thuyết nghiêm ngặt của phương pháp đánh giá tập ước và ứng dụng giải quyết các bài toán cấu trúc số học phức tạp.
+        </div>
+
+        <h2>1. Cơ sở lý thuyết</h2>
+
+        <div class="box def">
+            <div class="box-header">Định nghĩa 1: Hàm tính nhân và Các hàm số học cơ bản</div>
+            <div class="box-body">
+                Một hàm số học $f: \mathbb{Z}^+ \to \mathbb{C}$ được gọi là <strong>hàm tính nhân</strong> nếu $f(1) = 1$ và $f(ab) = f(a)f(b)$ với mọi cặp số nguyên dương nguyên tố cùng nhau $\gcd(a, b) = 1$.<br>
+                Cho số nguyên dương $n$ có phân tích tiêu chuẩn $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$, ba hàm số học cốt lõi được định nghĩa và tính toán như sau:
+                <ol style="margin-top: 8px;">
+                    <li><strong>Phi hàm Euler $\varphi(n)$:</strong > Đếm số lượng các số nguyên dương không vượt quá $n$ và nguyên tố cùng nhau với $n$.
+                    $$ \varphi(n) = n \prod_{i=1}^k \left( 1 - \frac{1}{p_i} \right) $$</li>
+                    <li><strong>Hàm số các ước $d(n)$:</strong > Đếm tổng số lượng ước nguyên dương của $n$.
+                    $$ d(n) = \prod_{i=1}^k (a_i + 1) $$</li>
+                    <li><strong>Hàm tổng các ước $\sigma(n)$:</strong > Tính tổng tất cả các ước nguyên dương của $n$.
+                    $$ \sigma(n) = \prod_{i=1}^k \frac{p_i^{a_i+1} - 1}{p_i - 1} $$</li>
+                </ol>
+            </div>
+        </div>
+
+        <p>Sức mạnh của việc khảo sát tập ước nằm ở tính đối xứng: Nếu $d$ là một ước của $n$, thì $\frac{n}{d}$ cũng là một ước của $n$. Sự bắt cặp này cho phép thiết lập các bất đẳng thức giải tích trực tiếp trên không gian rời rạc.</p>
+
+        <h2>2. Bài toán cốt lõi</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 1 (IMO Shortlist 2002)</div>
+            <div class="box-body">
+                Cho $n \ge 2$ là một số nguyên dương. Ký hiệu $d_1, d_2, \dots, d_k$ là tất cả các ước số nguyên dương của $n$, được sắp xếp theo thứ tự tăng dần:
+                $$ 1 = d_1 &lt; d_2 &lt; \dots &lt; d_{k-1} &lt; d_k = n $$
+                Chứng minh bất đẳng thức:
+                $$ d_1 d_2 + d_2 d_3 + \dots + d_{k-1} d_k &lt; n^2 $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $S = \sum_{i=1}^{k-1} d_i d_{i+1}$ là tổng cần đánh giá.<br>
+            Sử dụng tính chất đối xứng của tập hợp các ước số, ta có một song ánh đảo ngược chỉ số:
+            $$ d_i = \frac{n}{d_{k-i+1}} \quad \text{với mọi } 1 \le i \le k $$
+            Thay hệ thức này vào từng số hạng của tổng $S$:
+            $$ d_i d_{i+1} = \left( \frac{n}{d_{k-i+1}} \right) \left( \frac{n}{d_{k-i}} \right) = \frac{n^2}{d_{k-i} d_{k-i+1}} $$
+            Khi chỉ số $i$ chạy từ $1$ đến $k-1$, thì chỉ số tương ứng $j = k-i+1$ sẽ chạy ngược lại từ $k$ lùi về $2$. Do đó, tổng $S$ có thể được viết lại dưới dạng:
+            $$ S = \sum_{j=2}^k \frac{n^2}{d_{j-1} d_j} = n^2 \sum_{j=2}^k \frac{1}{d_{j-1} d_j} $$
+            Vì $d_{j-1}$ và $d_j$ là hai ước số nguyên dương phân biệt và được sắp xếp tăng ngặt, hiệu của chúng tối thiểu bằng 1:
+            $$ d_j - d_{j-1} \ge 1 $$
+            Áp dụng bất đẳng thức này để làm trội phân thức bên trong tổng:
+            $$ \frac{1}{d_{j-1} d_j} \le \frac{d_j - d_{j-1}}{d_{j-1} d_j} = \frac{1}{d_{j-1}} - \frac{1}{d_j} $$
+            Lấy tổng các bất đẳng thức này từ $j=2$ đến $k$, ta thu được một chuỗi viễn vọng (telescoping sum):
+            $$ \sum_{j=2}^k \frac{1}{d_{j-1} d_j} \le \sum_{j=2}^k \left( \frac{1}{d_{j-1}} - \frac{1}{d_j} \right) = \left( \frac{1}{d_1} - \frac{1}{d_2} \right) + \left( \frac{1}{d_2} - \frac{1}{d_3} \right) + \dots + \left( \frac{1}{d_{k-1}} - \frac{1}{d_k} \right) $$
+            Triệt tiêu các phần tử trung gian, hệ thức rút gọn thành:
+            $$ \sum_{j=2}^k \frac{1}{d_{j-1} d_j} \le \frac{1}{d_1} - \frac{1}{d_k} $$
+            Vì $d_1 = 1$ và $d_k = n$, ta có:
+            $$ \sum_{j=2}^k \frac{1}{d_{j-1} d_j} \le 1 - \frac{1}{n} $$
+            Nhân cả hai vế của bất đẳng thức với $n^2$:
+            $$ S = n^2 \sum_{j=2}^k \frac{1}{d_{j-1} d_j} \le n^2 \left( 1 - \frac{1}{n} \right) = n^2 - n $$
+            Vì $n \ge 2$, đại lượng $n^2 - n$ thực sự nhỏ hơn $n^2$. Do đó:
+            $$ S &lt; n^2 $$
+            Bất đẳng thức được thiết lập hoàn toàn chặt chẽ thông qua phương pháp sai phân trên tập ước.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <h2>3. Bài tập áp dụng</h2>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 2 (IMO Shortlist 2006)</div>
+            <div class="box-body">
+                Chứng minh rằng phương trình hàm số học $\varphi(x) = \varphi(y)$ có vô số nghiệm $(x, y)$ là các số nguyên dương sao cho $x \neq y$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Ta khai thác tính chất nhân tính của Phi hàm Euler. <br>
+            Xét $x = 2m$ và $y = m$, trong đó $m$ là một số nguyên dương lẻ bất kỳ.<br>
+            Vì $m$ lẻ, ta có $\gcd(2, m) = 1$. Do hàm $\varphi$ là hàm tính nhân, ta áp dụng trực tiếp:
+            $$ \varphi(x) = \varphi(2m) = \varphi(2) \cdot \varphi(m) $$
+            Với $p=2$, $\varphi(2) = 1$. Do đó:
+            $$ \varphi(x) = 1 \cdot \varphi(m) = \varphi(y) $$
+            Vì $m$ là số nguyên dương lẻ, $2m \neq m$, nên $x \neq y$.<br>
+            Do tập hợp các số nguyên dương lẻ là vô hạn, tồn tại vô số cặp $(x, y) = (2m, m)$ thỏa mãn yêu cầu bài toán.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 3 (IMO Longlist 1989)</div>
+            <div class="box-body">
+                Chứng minh rằng nếu $n$ là một hợp số dương, ta luôn có bất đẳng thức $\varphi(n) \le n - \sqrt{n}$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Vì $n$ là hợp số, $n$ có ít nhất một ước nguyên tố $p \le \sqrt{n}$.<br>
+            Theo công thức tính Phi hàm Euler:
+            $$ \varphi(n) = n \prod_{q \mid n} \left( 1 - \frac{1}{q} \right) $$
+            Trong đó tích được lấy trên tất cả các ước nguyên tố $q$ của $n$.<br>
+            Vì $p$ là một ước nguyên tố của $n$, giá trị của toàn bộ tích sẽ nhỏ hơn hoặc bằng giá trị của thừa số tương ứng với $p$ (do mỗi thừa số đều nhỏ hơn 1):
+            $$ \varphi(n) \le n \left( 1 - \frac{1}{p} \right) = n - \frac{n}{p} $$
+            Hàm số $f(p) = n - \frac{n}{p}$ là một hàm đồng biến theo $p$. Do $p \le \sqrt{n}$, ta có:
+            $$ \varphi(n) \le n - \frac{n}{\sqrt{n}} = n - \sqrt{n} $$
+            Bất đẳng thức được chứng minh hoàn thiện bằng giải tích ước số.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 4 (USA TST 2007 (Mở rộng tính chia hết))</div>
+            <div class="box-body">
+                Chứng minh rằng không tồn tại bất kỳ số nguyên dương $n$ nào có đúng 3 ước nguyên tố phân biệt thỏa mãn hệ thức chia hết $\varphi(n) \mid n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử tồn tại $n$ thỏa mãn điều kiện. Gọi phân tích tiêu chuẩn của $n$ là $n = p^a q^b r^c$ với $p, q, r$ là các số nguyên tố phân biệt và $p &lt; q &lt; r$.<br>
+            Khi đó $\varphi(n) = p^{a-1} q^{b-1} r^{c-1} (p-1)(q-1)(r-1)$.<br>
+            Theo giả thiết $\varphi(n) \mid n$, ta giản ước các lũy thừa:
+            $$ (p-1)(q-1)(r-1) \mid p q r $$
+            <strong>Trường hợp 1:</strong> $n$ là số lẻ, tức là $p \ge 3$. Khi đó $p-1, q-1, r-1$ đều là các số chẵn.<br>
+            Tích $(p-1)(q-1)(r-1)$ sẽ chia hết cho $2 \times 2 \times 2 = 8$. Tuy nhiên, vế phải $pqr$ là tích của ba số nguyên tố lẻ nên là một số lẻ, không thể chia hết cho 8. Mâu thuẫn.<br>
+            <strong>Trường hợp 2:</strong> $n$ là số chẵn, tức là $p = 2$.<br>
+            Hệ thức trở thành $(q-1)(r-1) \mid 2 q r$.<br>
+            Vì $q$ và $r$ là các số nguyên tố lẻ lớn hơn 2, nên $q-1$ và $r-1$ đều là các số chẵn.<br>
+            Tích $(q-1)(r-1)$ sẽ chia hết cho $2 \times 2 = 4$.<br>
+            Tuy nhiên, vế phải $2 q r$ chỉ chứa đúng một thừa số 2 (do $q, r$ lẻ), nên không thể chia hết cho 4.<br>
+            Một số chia hết cho 4 không thể là ước của một số không chia hết cho 4. Mâu thuẫn tuyệt đối.<br>
+            Vậy không tồn tại số nguyên $n$ nào thỏa mãn.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 5 (IMO Shortlist 1998 (Cấu trúc phương trình ước số))</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình phi tuyến $d(n)^3 = 4n$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Giả sử $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$. Phương trình tương đương với:
+            $$ \prod_{i=1}^k (a_i+1)^3 = 2^2 \cdot \prod_{i=1}^k p_i^{a_i} $$
+            Do vế trái là một lập phương hoàn hảo, $4n$ phải là một lập phương hoàn hảo, tức là $n = 2 \cdot m^3$ với $m \in \mathbb{Z}^+$. Do đó $n$ bắt buộc phải chứa thừa số nguyên tố 2.<br>
+            Đặt $n = 2^a \cdot p_2^{a_2} \dots p_k^{a_k}$. Vế phải có dạng $2^{a+2} \cdot \prod_{p_i \ge 3} p_i^{a_i}$.<br>
+            Để vế phải là lập phương, ta cần $a+2 \equiv 0 \pmod 3$, tức là $a = 3k - 2$.
+            <ul>
+                <li>Xét $a=1$: Phương trình trở thành $8 \prod_{p_i \ge 3} (a_i+1)^3 = 8 \prod_{p_i \ge 3} p_i^{a_i} \implies \prod_{p_i \ge 3} (a_i+1)^3 = \prod_{p_i \ge 3} p_i^{a_i}$.<br>
+                Với mọi số nguyên tố $p \ge 3$ và số mũ $a_i \ge 1$ sao cho $a_i \equiv 0 \pmod 3$, ta luôn có $p^{a_i} &gt; (a_i+1)^3$. Bất đẳng thức này chứng tỏ không thể có thừa số nguyên tố lẻ nào.<br>
+                Vậy $n = 2^1 = 2$.</li>
+                <li>Xét $a=4$: Hệ thức thừa số 2 ở vế phải là $2^6$. Vế trái cung cấp $(4+1)^3 = 125 = 5^3$.<br>
+                Để cân bằng, ta cần $p_1 = 5$ với $a_1=3$. Ta thu được $n = 2^4 \cdot 5^3 = 2000$.<br>
+                Thử lại: $d(2000) = (4+1)(3+1) = 20 \implies 20^3 = 8000 = 4 \times 2000$. (Thỏa mãn).</li>
+                <li>Xét $a=7$: $(7+1)^3 = 512 = 2^9$. Vế phải cần $2^9$, điều này tự cân bằng với $2^{a+2} = 2^9$.<br>
+                Vậy $n = 2^7 = 128$ không chứa thêm thừa số nguyên tố lẻ nào.<br>
+                Thử lại: $d(128)^3 = 8^3 = 512 = 4 \times 128$. (Thỏa mãn).</li>
+            </ul>
+            Hàm mũ $2^{a+2}$ tăng vượt bậc đa thức $(a+1)^3$ khi $a \ge 10$, hệ thống vô nghiệm với $a$ lớn.<br>
+            Kết luận: Tập nghiệm là $n \in \{2, 128, 2000\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 6 (Romania TST 2004)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ thỏa mãn hệ thức cân bằng $n = \varphi(n) + d(n)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Trường hợp $n=1$: $1 \neq 1 + 1$ (Loại).<br>
+            Viết lại phương trình: $n - \varphi(n) = d(n)$. Phân tích theo số lượng ước nguyên tố $k$:<br>
+            <strong>Trường hợp 1:</strong> $k = 1 \implies n = p^a$.<br>
+            Ta có $p^a - p^{a-1}(p-1) = a+1 \implies p^{a-1} = a + 1$.
+            <ul>
+                <li>$p = 2 \implies 2^{a-1} = a+1 \implies a=3 \implies n = 8$.</li>
+                <li>$p = 3 \implies 3^{a-1} = a+1 \implies a=2 \implies n = 9$.</li>
+                <li>Với $p \ge 5$, $p^{a-1} \ge 5^{a-1} &gt; a+1$. Vô nghiệm.</li>
+            </ul>
+
+            <strong>Trường hợp 2:</strong> $k = 2 \implies n = p^a q^b$ (với $p &lt; q$).<br>
+            Phương trình là $p^{a-1}q^{b-1}(p+q-1) = (a+1)(b+1)$.<br>
+            Nếu $p=2, q=3$, ta có $2^{a-1} 3^{b-1} \cdot 4 = (a+1)(b+1)$.<br>
+            Thử $a=1, b=1 \implies 4 = 4 \implies n = 6$.<br>
+            Nếu $a \ge 2$ hoặc $b \ge 2$, hàm mũ tăng nhanh hơn đa thức, phương trình vô nghiệm.<br>
+            Với $q \ge 5$, $p+q-1 \ge 6 &gt; (1+1)(1+1) = 4$, vô nghiệm.<br><br>
+
+            <strong>Trường hợp 3:</strong> $k \ge 3$.<br>
+            Sử dụng công thức tính $\varphi(n)$: $\frac{\varphi(n)}{n} \le \left( 1 - \frac{1}{2} \right)\left( 1 - \frac{1}{3} \right)\left( 1 - \frac{1}{5} \right) = \frac{4}{15}$.<br>
+            Suy ra $n - \varphi(n) \ge \frac{11}{15}n$.<br>
+            Mặt khác, $\frac{d(n)}{n} \le \frac{2}{2} \cdot \frac{2}{3} \cdot \frac{2}{5} = \frac{4}{15}$.<br>
+            Do đó $d(n) \le \frac{4}{15}n &lt; \frac{11}{15}n \le n - \varphi(n)$. Sự mâu thuẫn khắt khe chặn đứng mọi nghiệm $k \ge 3$.<br><br>
+
+            Kết luận: $n \in \{6, 8, 9\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 7 (Vietnam TST 2001 (Bất đẳng thức AM-GM trên tập ước))</div>
+            <div class="box-body">
+                Bằng phương pháp giải tích tổ hợp trên tập các ước số, hãy chứng minh rằng với mọi số nguyên dương $n$, ta luôn có:
+                $$ \frac{\sigma(n)}{d(n)} \ge \sqrt{n} $$
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Gọi $D$ là tập hợp tất cả các ước nguyên dương của $n$. Lực lượng của $D$ chính là $d(n)$.<br>
+            Từ định nghĩa, ta có $\sigma(n) = \sum_{d \in D} d$.<br>
+            Do tính đối xứng của tập ước, phép ánh xạ $d \mapsto \frac{n}{d}$ là một song ánh trên $D$.<br>
+            Ta có thể viết lại tổng theo song ánh này:
+            $$ \sigma(n) = \sum_{d \in D} \frac{n}{d} $$
+            Cộng hai biểu thức của $\sigma(n)$ lại với nhau:
+            $$ 2\sigma(n) = \sum_{d \in D} \left( d + \frac{n}{d} \right) $$
+            Áp dụng Bất đẳng thức AM-GM cho hai số dương $d$ và $\frac{n}{d}$:
+            $$ d + \frac{n}{d} \ge 2 \sqrt{d \cdot \frac{n}{d}} = 2\sqrt{n} $$
+            Thay đánh giá này vào tổng, ta thu được:
+            $$ 2\sigma(n) \ge \sum_{d \in D} 2\sqrt{n} $$
+            Vì tổng chứa chính xác $d(n)$ số hạng, vế phải tương đương với $2\sqrt{n} \cdot d(n)$. Do đó:
+            $$ 2\sigma(n) \ge 2\sqrt{n} \cdot d(n) \implies \frac{\sigma(n)}{d(n)} \ge \sqrt{n} $$
+            Dấu đẳng thức xảy ra khi $d = \frac{n}{d}$ với mọi $d \in D$, ép buộc $d(n) = 1$ và $n = 1$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 8 (Polish Mathematical Olympiad 1998)</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $n = d(n)^2$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Vì $n$ là bình phương của một số nguyên, $d(n)$ bắt buộc phải là một số lẻ.<br>
+            Do đó $d(n)^2$ là số lẻ, kéo theo $n$ là một số lẻ. Vậy $n$ không chứa ước nguyên tố 2.<br>
+            Giả sử phân tích tiêu chuẩn của $n$ là $n = p_1^{2a_1} p_2^{2a_2} \dots p_k^{2a_k}$ với $p_i \ge 3$.<br>
+            Phương trình trở thành:
+            $$ \prod_{i=1}^k p_i^{2a_i} = \prod_{i=1}^k (2a_i+1)^2 \implies \prod_{i=1}^k p_i^{a_i} = \prod_{i=1}^k (2a_i+1) $$
+            Đối với mọi số nguyên tố $p \ge 3$ và số nguyên $a \ge 1$, ta có đánh giá hàm mũ cơ bản:
+            $$ p^a \ge 3^a \ge 2a+1 $$
+            Dấu đẳng thức $p^a = 2a+1$ xảy ra khi và chỉ khi $p = 3$ và $a = 1$.<br>
+            Do đó, phương trình chỉ có nghiệm khi $k=0$ (tức là $n=1$) hoặc $k=1$ với $p_1=3, a_1=1$.<br>
+            Khi đó $n = 3^{2(1)} = 9$.<br>
+            Kết luận: Tập nghiệm của phương trình là $n \in \{1, 9\}$.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+        <div class="box prob">
+            <div class="box-header">Bài toán 9 (Romania TST 2001 (Đánh giá ước thực sự))</div>
+            <div class="box-body">
+                Tìm tất cả các số nguyên dương $n$ thỏa mãn phương trình $\sigma(n) = n + d(n)$.
+            </div>
+        </div>
+
+        <div class="solution">
+            <div class="solution-title">Lời giải</div>
+            Khảo sát các trường hợp nhỏ: <br>
+            $n=1 \implies \sigma(1) = 1 \neq 2$ (Loại).<br>
+            $n=p$ (nguyên tố) $\implies \sigma(p) = p+1 \neq p+2$ (Loại).<br>
+            Do đó, $n$ bắt buộc phải là một hợp số.<br>
+            Gọi tập các ước thực sự của $n$ (không bao gồm $n$) là $D_{prop}$.<br>
+            Theo định nghĩa, $\sigma(n) - n = \sum_{d \in D_{prop}} d$.<br>
+            Phương trình quy về: Tổng các ước thực sự phải bằng chính xác $d(n)$.<br>
+            Do $n$ là hợp số, $D_{prop}$ chứa chính xác $d(n)-1$ phần tử, trong đó phần tử nhỏ nhất luôn là 1.<br>
+            Tổng của các phần tử trong $D_{prop}$ là:
+            $$ \sum_{d \in D_{prop}} d = 1 + \sum_{d \in D_{prop}, d > 1} d $$
+            Hệ thống có $d(n)-2$ ước thực sự lớn hơn 1. Do mỗi ước này đều $\ge 2$, tổng của chúng bị chặn dưới bởi $2(d(n)-2)$.<br>
+            Vậy ta có bất đẳng thức:
+            $$ d(n) \ge 1 + 2(d(n)-2) \implies d(n) \ge 2d(n) - 3 \implies d(n) \le 3 $$
+            Vì $n$ là hợp số, số lượng ước tối thiểu là 3. Do đó ép buộc $d(n) = 3$.<br>
+            Số có đúng 3 ước dương duy nhất là bình phương của một số nguyên tố: $n = p^2$.<br>
+            Thay vào phương trình: $\sigma(p^2) = p^2 + d(p^2) \implies p^2 + p + 1 = p^2 + 3 \implies p = 2 \implies n = 4$.<br>
+            Kết luận: $n = 4$ là nghiệm hợp lệ duy nhất.
+            <div class="qed">$\blacksquare$</div>
+        </div>
+
+    </div>
+</body>
+</html>

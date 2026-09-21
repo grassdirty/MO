@@ -117,6 +117,8 @@
         .pill.group.bd.active { background: #2a5db0; border-color: #2a5db0; color: #fff; }
         .pill.group.vmo { border-color: #6d28d9; color: #6d28d9; }
         .pill.group.vmo.active { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+        .pill.group.imo { border-color: #b45309; color: #b45309; }
+        .pill.group.imo.active { background: #b45309; border-color: #b45309; color: #fff; }
         .pill .cnt {
             display: inline-block;
             background: rgba(0,0,0,0.08);
@@ -143,6 +145,7 @@
         .card .group-badge.bd { background: #e8eefb; color: #2a5db0; }
         .card .group-badge.vmo { background: #f3e8ff; color: #6d28d9; }
         .card .group-badge.tst { background: #e0f5ff; color: #0e7490; }
+        .card .group-badge.imo { background: #fdf2dd; color: #b45309; }
         .card.vmo { border-left-color: #6d28d9; }
         .card.tst { border-left-color: #0e7490; }
         .card .stars { color: #f5b301; font-size: 1.05rem; letter-spacing: 2px; }
@@ -354,10 +357,11 @@
         <p>Tuyển tập các chuyên đề Toán học Olympic — phương trình hàm, số học, đa thức,
            tổ hợp, đồ thị, bất đẳng thức và Diophantine. Nhấn vào một thẻ để mở bài viết đầy đủ.</p>
         <div class="stats">
-            <div class="stat"><b id="countAll">93</b><small>Bài viết</small></div>
+            <div class="stat"><b id="countAll">94</b><small>Bài viết</small></div>
             <div class="stat"><b id="countVmo">19</b><small>Luyện tập VMO</small></div>
             <div class="stat"><b id="countTst">2</b><small>Luyện tập TST</small></div>
-            <div class="stat"><b id="countCat">8</b><small>Chủ đề</small></div>
+            <div class="stat"><b id="countImo">1</b><small>Luyện tập IMO</small></div>
+            <div class="stat"><b id="countCat">9</b><small>Chủ đề</small></div>
             <div class="stat"><b id="countOnline">0</b><small>Đang online</small></div>
             <div class="stat"><b id="countVisits">0</b><small>Lượt xem</small></div>
         </div>
@@ -412,7 +416,8 @@
             ineq:  { label: 'Bất đẳng thức',                             color: '#b8860b' },
             graph: { label: 'Lý thuyết đồ thị',                          color: '#008080' },
             dio:   { label: 'Phương trình Diophantine',                  color: '#8b4513' },
-            oeis:  { label: 'OEIS — Dãy số', color: '#c71585' }
+            oeis:  { label: 'OEIS — Dãy số', color: '#c71585' },
+            imo:   { label: 'IMO', color: '#d35400' }
         };
 
         // ===== Danh sách bài viết (phần 1) =====
@@ -511,6 +516,8 @@
             { n:2, file:'tst2.html', cat:'nt', stars:5, title:'Số Học — Hàm Số Học și Kỹ Thuță Đánh giá Chặn Đỉnh', desc:'Khảo sát a ecuații Diophantine conținând funcții aritmetice multiplicative (Φ Euler, d(n), σ(n)) — analiza vitezei de creștere pentru restrângerea spațului soluțiilor.' },
             { n:17, file:'vmo17.html', cat:'nt', stars:4, title:'Ký Hiêu Legendre & Thặng Dư Bậ Hai', desc:'Khảo sata tính rezultăților a ecuații Diophantine phi liniary prin meta analizării inelului de reziduuri quadratic — Simbol Legendre și Criteriul Euler — pentru eliminarea zonelor de soluții prin contradicții de congruențe.' },
             { n:18, file:'vmo18.html', cat:'nt', stars:3, title:'Hàm Phần Nguyên & Các Đồng Nhất Thức Giải Tích', desc:'Khảo sát các phương trình và bất đẳng thức chứa hàm phần nguyên — lĩnh vực giao thoa giữa Giải tích và Số học — thông qua kỹ thuật phân tách phần nguyên / phần lẻ và các đồng nhất thức cơ bản.' },
+// ===== Bộ sưu tàng IMO: imo{chỉ số}.html (imo1, imo2, imo3, ...) =====
+            { n:1, file:'imo1.html', cat:'imo', stars:5, title:'Số Học — Hàm Số Học și Bất Đẳng Thức Tập Ước', desc:'Khảo sát Phi hàm Euler φ(n), hàm d(n) și σ(n) — khai thác tính nhân pentru a stabili bất đẳng thức khắt khe, cu problème IMO Shortlist/Longlist.' },
             { n:19, file:'vmo19.html', cat:'nt', stars:4, title:'Định Lý Lucas & Bổ Đề Kummer — Cấu Trúc Hệ Số Nhị Thức', desc:'Khảo sát tính chia hết a coeficienților binomici prin biểu diễn cơ số p — Định lý Lucas và Bổ đề Kummer quy bài toán về phân tích chữ số și numărului de transport în adunarea p-adic, ứng dụng để giải quyết các phương trình đồng dư.' },
            
             
@@ -533,7 +540,8 @@
         const GROUPS = {
             bd:  { label: 'CHUYÊN ĐỀ BỔ TRỢ' },
             vmo: { label: 'LUYỆN TẬP VMO' },
-            tst: { label: 'LUYỆN TẬP TST' }
+            tst: { label: 'LUYỆN TẬP TST' },
+            imo: { label: 'LUYỆN TẬP IMO' }
         };
 
         // Tự nhận diện nhóm dựa trên tiền tố tên file
@@ -541,6 +549,7 @@
             const f = (p.file || '').toLowerCase();
             return f.indexOf('vmo') === 0 ? 'vmo'
                  : f.indexOf('tst') === 0 ? 'tst'
+                 : f.indexOf('imo') === 0 ? 'imo'
                  : 'bd';
         }
 
@@ -643,6 +652,7 @@
         document.getElementById('countAll').textContent = POSTS.length;
         document.getElementById('countVmo').textContent = POSTS.filter(p => groupOf(p) === 'vmo').length;
         document.getElementById('countTst').textContent = POSTS.filter(p => groupOf(p) === 'tst').length;
+        document.getElementById('countImo').textContent = POSTS.filter(p => groupOf(p) === 'imo').length;
         document.getElementById('countCat').textContent = Object.keys(CATS).length;
 
         // ============================================================

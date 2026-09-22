@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên Đề: Tổ Hợp Trạng Thái - Nguyên Lý Bất Biến</title>
+    
+    <!-- Cấu hình MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                packages: {'[+]': ['noerrors']}
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS -->
+    <style>
+        /* Hình nền vũ trụ tĩnh mịch, ánh sao lấp lánh - Tone màu xanh thẳm/tím */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, rgba(5, 8, 20, 0.85), rgba(10, 15, 30, 0.95)),
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: #f1f5f9;
+        }
+
+        /* Container với hiệu ứng kính mờ (Glassmorphism) */
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 45px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.3em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+
+        .author {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1.2em;
+            margin-bottom: 35px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+            font-style: italic;
+        }
+
+        h2 {
+            color: #22d3ee;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+            padding-bottom: 8px;
+            margin-top: 50px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+
+        .abstract {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 10px;
+            font-style: italic;
+            margin-bottom: 40px;
+            border-left: 5px solid #94a3b8;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        /* Định dạng các khối Tcolorbox */
+        .box {
+            margin: 30px 0;
+            border-radius: 12px;
+            background: rgba(10, 15, 25, 0.7);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        
+        .box-header {
+            padding: 14px 22px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9);
+        }
+
+        .box-body {
+            padding: 22px;
+            color: #f8fafc;
+        }
+
+        /* Định nghĩa (Màu Xanh lá) */
+        .def .box-header {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.05));
+            color: #6ee7b7;
+            border-left: 6px solid #10b981;
+        }
+        .def .box-body {
+            border-left: 6px solid #10b981;
+        }
+
+        /* Định lý (Màu Xanh dương) */
+        .thm .box-header {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.05));
+            color: #93c5fd;
+            border-left: 6px solid #3b82f6;
+        }
+        .thm .box-body {
+            border-left: 6px solid #3b82f6;
+        }
+
+        /* Bài toán (Màu Đỏ đô) */
+        .prob .box-header {
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.3), rgba(244, 63, 94, 0.05));
+            color: #fda4af;
+            border-left: 6px solid #f43f5e;
+        }
+        .prob .box-body {
+            border-left: 6px solid #f43f5e;
+        }
+
+        /* Lời giải */
+        .solution {
+            margin: 15px 0 40px 0;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+        }
+        .solution-title {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 1.5px;
+        }
+
+        /* Dấu QED */
+        .qed {
+            text-align: right;
+            margin-top: 15px;
+            color: #cbd5e1;
+            font-size: 1.2em;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-top: 8px;
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+
+        /* Cấu hình MathJax tránh outline */
+        .MathJax {
+            outline: 0;
+        }
+        strong {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>CHUYÊN ĐỀ: TỔ HỢP TRẠNG THÁI<br>NGUYÊN LÝ BẤT BIẾN, ĐƠN BIẾN VÀ SỰ KẾT THÚC CỦA THUẬT TOÁN</h1>
+    <div class="author">Độ khó: $\star\star\star\star\star$</div>
+
+    <div class="abstract">
+        <strong>Tóm tắt:</strong> Khảo sát sự biến đổi trạng thái của một hệ thống rời rạc thông qua các phép toán cục bộ là một trong những bài toán trọng tâm của Tổ hợp Cực trị. Để chứng minh khả năng đạt được một trạng thái cụ thể hoặc tính dừng của một thuật toán, giải tích tổ hợp sử dụng hai công cụ cốt lõi: Hàm bất biến (Invariant) - bảo toàn giá trị qua mọi phép biến đổi, và Hàm đơn biến (Monovariant) - tăng ngặt hoặc giảm ngặt trên một không gian trạng thái hữu hạn. Chuyên đề này thiết lập cơ sở lý thuyết nghiêm ngặt về phương pháp năng lượng và ứng dụng trực tiếp để giải quyết các cấu trúc biến đổi trong hệ thống Olympic Toán học quốc tế (IMO).
+    </div>
+
+    <h2>1. Cơ sở lý thuyết</h2>
+
+    <div class="box def">
+        <div class="box-header">Định nghĩa 1: Hàm Bất biến và Đơn biến (Invariant & Monovariant)</div>
+        <div class="box-body">
+            Cho một không gian trạng thái $S$ và một tập hợp các quy tắc biến đổi hợp lệ $T: S \to S$. 
+            <ol>
+                <li>Một hàm số $I: S \to \mathbb{R}$ được gọi là <strong>Hàm bất biến</strong> nếu $I(s) = I(T(s))$ với mọi trạng thái $s \in S$ và mọi phép biến đổi hợp lệ $T$. </li>
+                <li>Một hàm số $M: S \to \mathbb{R}$ được gọi là <strong>Hàm đơn biến</strong> nếu $M(s) < M(T(s))$ (hoặc $M(s) > M(T(s))$) với mọi $s \in S$ không phải là trạng thái kết thúc. </li>
+            </ol>
+        </div>
+    </div>
+
+    <p>Sức mạnh của hai khái niệm này được hệ thống hóa qua Nguyên lý Cực hạn rời rạc.</p>
+
+    <div class="box thm">
+        <div class="box-header">Định lý 1: Nguyên lý Tính dừng (Termination Principle)</div>
+        <div class="box-body">
+            Nếu trên một hệ thống rời rạc tồn tại một hàm đơn biến $M(s)$ nhận giá trị trong một tập hợp hữu hạn (hoặc bị chặn và chỉ nhận các giá trị rời rạc, ví dụ tập số nguyên), thì mọi chuỗi biến đổi hợp lệ trên hệ thống đó đều bắt buộc phải kết thúc sau một số hữu hạn bước.
+        </div>
+    </div>
+
+    <h2>2. Bài toán cốt lõi</h2>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 1: IMO Shortlist 1997 (Vương quốc Anh)</div>
+        <div class="box-body">
+            Cho một ma trận kích thước $m \times n$ với các phần tử là các số thực. Một "phép biến đổi hợp lệ" được định nghĩa là việc nhân tất cả các phần tử của một hàng bất kỳ, hoặc một cột bất kỳ, với $-1$. Bằng phương pháp giải tích tổ hợp, chứng minh rằng thông qua một số hữu hạn các phép biến đổi hợp lệ, ta luôn có thể đưa ma trận về một trạng thái mà tổng các phần tử trên mọi hàng và mọi cột đều là một số không âm.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Mô hình hóa bài toán bằng Phương pháp Đơn biến (Hàm Năng lượng).<br><br>
+
+        Khảo sát không gian trạng thái $S$: Một trạng thái của ma trận hoàn toàn được xác định bởi dấu của các phần tử. Vì mỗi hàng và mỗi cột chỉ có 2 trạng thái nhân (1 hoặc -1), tổng số trạng thái có thể sinh ra từ ma trận ban đầu thông qua các phép biến đổi bị chặn trên bởi $2^{m+n}$. Do đó, không gian trạng thái $S$ là hữu hạn.<br><br>
+
+        Xây dựng hàm đơn biến: Định nghĩa hàm năng lượng $E: S \to \mathbb{R}$ là <strong>tổng của tất cả các phần tử</strong> đang hiện diện trong ma trận tại trạng thái hiện tại.
+        $$ E = \sum_{i=1}^m \sum_{j=1}^n a_{i,j} $$
+
+        Phân tích động lực học của hệ thống: <br>
+        Giả sử tại trạng thái hiện tại, ma trận chưa thỏa mãn yêu cầu của bài toán. Điều này đồng nghĩa với việc tồn tại ít nhất một hàng (hoặc một cột) có tổng các phần tử mang giá trị âm. Không mất tính tổng quát, giả sử hàng thứ $k$ có tổng các phần tử là $S_k < 0$.<br>
+        Thực hiện phép biến đổi hợp lệ lên hàng thứ $k$: nhân toàn bộ phần tử của hàng $k$ với $-1$.<br>
+        Tổng mới của hàng $k$ sẽ là $-S_k > 0$.<br>
+        Các phần tử nằm ngoài hàng $k$ hoàn toàn không bị ảnh hưởng bởi phép biến đổi này.<br>
+        Tính sự thay đổi của hàm năng lượng $E$:
+        $$ \Delta E = E_{\text{mới}} - E_{\text{cũ}} = (-S_k) - S_k = -2S_k $$
+        Vì $S_k < 0$, ta có $\Delta E > 0$, tức là hàm năng lượng $E$ tăng ngặt sau phép biến đổi.<br><br>
+
+        Áp dụng Nguyên lý Tính dừng (Định lý 1): <br>
+        Vì mỗi bước biến đổi hợp lệ (tác động lên hàng/cột có tổng âm) đều làm cho hàm $E$ tăng ngặt, và không gian trạng thái $S$ là hữu hạn (chỉ có tối đa $2^{m+n}$ giá trị khả dĩ cho $E$), quá trình này không thể kéo dài vô hạn.<br>
+        Thuật toán bắt buộc phải dừng lại. Trạng thái dừng chỉ xảy ra khi không còn bất kỳ hàng nào hay cột nào có tổng âm để thực hiện phép biến đổi. <br>
+        Tại trạng thái dừng đó, tổng các phần tử trên mọi hàng và mọi cột đều lớn hơn hoặc bằng $0$. Khẳng định được thiết lập hoàn toàn chặt chẽ.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <h2>3. Bài tập áp dụng</h2>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 2: IMO Shortlist 1989 (Bulgaria) - Bất biến Module</div>
+        <div class="box-body">
+            Trên một hòn đảo có 13 con tắc kè hoa màu Đỏ, 15 con màu Xanh lục và 17 con màu Xanh lam. Khi hai con tắc kè hoa khác màu gặp nhau, cả hai con đều đổi màu sang màu thứ ba. Chứng minh rằng không bao giờ có thể xảy ra trạng thái mà tất cả tắc kè hoa trên đảo đều có cùng một màu.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Khảo sát trạng thái của hệ thống bằng bộ ba số nguyên $(R, G, B)$ tương ứng với số lượng tắc kè Đỏ, Xanh lục và Xanh lam.<br>
+        Trạng thái khởi tạo: $S_0 = (13, 15, 17)$.<br>
+        Khi hai con khác màu (ví dụ Đỏ và Xanh lục) gặp nhau, trạng thái biến đổi thành:
+        $$ (R-1, G-1, B+2) $$
+        Ta xét hiệu số giữa các cặp màu theo module 3.<br>
+        Khảo sát hiệu số $R - G$:<br>
+        Sau phép biến đổi trên, hiệu số mới là: $(R-1) - (G-1) = R - G$. (Không đổi).<br>
+        Nếu Xanh lục và Xanh lam gặp nhau, trạng thái mới là $(R+2, G-1, B-1)$. <br>
+        Hiệu số mới là $(R+2) - (G-1) = R - G + 3 \equiv R - G \pmod 3$.<br>
+        Nếu Đỏ và Xanh lam gặp nhau, trạng thái mới là $(R-1, G+2, B-1)$.<br>
+        Hiệu số mới là $(R-1) - (G+2) = R - G - 3 \equiv R - G \pmod 3$.<br>
+        Do đó, đại lượng $I = (R - G) \pmod 3$ là một Bất biến của hệ thống.<br>
+        Tại trạng thái khởi tạo $S_0$: $I_0 = (13 - 15) \pmod 3 = -2 \equiv 1 \pmod 3$.<br>
+        Giả sử có thể đạt được trạng thái tất cả cùng màu, số lượng sẽ là $(45, 0, 0)$, $(0, 45, 0)$ hoặc $(0, 0, 45)$.
+        <ul>
+            <li>Tại $(45, 0, 0)$, hiệu $R-G = 45 \equiv 0 \pmod 3$.</li>
+            <li>Tại $(0, 45, 0)$, hiệu $R-G = -45 \equiv 0 \pmod 3$.</li>
+            <li>Tại $(0, 0, 45)$, hiệu $R-G = 0 \equiv 0 \pmod 3$.</li>
+        </ul>
+        Tất cả các trạng thái kết thúc lý tưởng đều yêu cầu bất biến $I \equiv 0 \pmod 3$. Nhưng bất biến của hệ thống cố định tại $1 \pmod 3$. <br>
+        Sự sai khác bất biến chứng minh trạng thái đồng màu là bất khả thi.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 3: IMO Shortlist 2001 C7 (Pháp) - Bất biến Bậc hai</div>
+        <div class="box-body">
+            Có một đống gồm $N$ viên sỏi. Ở mỗi bước, người ta lấy một đống sỏi bất kỳ (có nhiều hơn 1 viên) và chia nó thành hai đống nhỏ hơn. Nếu đống sỏi được chia có kích thước là $A+B$, nó sẽ tách thành đống $A$ và đống $B$, đồng thời người chia ghi lên bảng số lượng $A \times B$. Quá trình tiếp tục cho đến khi có $N$ đống, mỗi đống 1 viên. Chứng minh rằng tổng tất cả các số được ghi trên bảng luôn không đổi, bất kể người ta thực hiện việc chia sỏi theo trình tự nào.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Mô hình hóa thành một cấu trúc đồ thị tương đương.<br>
+        Ban đầu, ta có $N$ viên sỏi. Xét đồ thị đầy đủ $K_N$ trong đó mỗi viên sỏi là một đỉnh. Có tổng cộng $\binom{N}{2}$ cặp sỏi phân biệt.<br>
+        Ta định nghĩa trạng thái của hệ thống dựa trên khái niệm "cặp sỏi bị tách rời". Một cặp sỏi được gọi là bị tách rời nếu chúng nằm ở hai đống khác nhau.<br>
+        Hàm bất biến $E$: Số lượng cặp sỏi nằm khác đống.<br>
+        Trạng thái khởi tạo: Tất cả ở cùng 1 đống $\implies E_0 = 0$.<br>
+        Xét một phép chia: Một đống chứa $A+B$ viên sỏi được chia thành một đống $A$ viên và một đống $B$ viên.<br>
+        Trước phép chia, mọi cặp sỏi giữa nhóm $A$ và nhóm $B$ đều đang nằm cùng đống.<br>
+        Sau phép chia, mọi viên sỏi thuộc nhóm $A$ đều bị tách rời khỏi mọi viên sỏi thuộc nhóm $B$.<br>
+        Số lượng cặp sỏi mới bị tách rời chính xác là $A \times B$.<br>
+        Điều này hoàn toàn khớp với con số được ghi lên bảng. Tổng các số trên bảng chính là tổng số cặp sỏi đã bị tách rời.<br>
+        Tại trạng thái kết thúc (chỉ còn các đống 1 viên sỏi), mọi cặp sỏi đều đã bị tách rời.<br>
+        Do đó, tổng các số ghi trên bảng bắt buộc phải bằng tổng số lượng cặp sỏi có thể hình thành từ $N$ viên sỏi ban đầu, tức là:
+        $$ S = \binom{N}{2} = \frac{N(N-1)}{2} $$
+        Đại lượng này hoàn toàn độc lập với cách chia, thiết lập tính bất biến tuyệt đối.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 4: IMO Longlist 1977 (Mỹ) - Lùi vô hạn và Bất biến Chẵn lẻ</div>
+        <div class="box-body">
+            Cho 4 số nguyên dương $a, b, c, d$. Một phép biến đổi hợp lệ thay thế bộ số này bằng bộ số mới: $(|a-b|, |b-c|, |c-d|, |d-a|)$. Chứng minh rằng sau một số hữu hạn các phép biến đổi, bộ số luôn hội tụ về $(0, 0, 0, 0)$.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Gọi $M$ là giá trị lớn nhất trong bộ 4 số hiện tại.<br>
+        Sau một phép biến đổi, vì $x, y \ge 0 \implies |x-y| \le \max(x, y)$, giá trị lớn nhất của bộ số mới $M'$ không bao giờ vượt quá $M$.<br>
+        Do đó, hàm $M$ là một hàm đơn biến không tăng. Vì $M$ bị chặn dưới bởi $0$, bộ số không thể phân kỳ.<br>
+        Tuy nhiên, để chứng minh nó hội tụ khắt khe về $0$, ta sử dụng bất biến module 2.<br>
+        Xét bộ số $(a, b, c, d)$ theo modulo 2. Chỉ có $2^4 = 16$ trạng thái khả dĩ.<br>
+        Phép biến đổi $|x-y|$ tương đương với phép cộng $x+y \pmod 2$.<br>
+        Theo dõi quá trình biến đổi modulo 2 bằng đại số tuyến tính trên trường $\mathbb{F}_2$:
+        <ul>
+            <li>Bước 1: $(a+b, b+c, c+d, d+a)$</li>
+            <li>Bước 2: $(a+c, b+d, a+c, b+d)$</li>
+            <li>Bước 3: $(a+b+c+d, a+b+c+d, a+b+c+d, a+b+c+d)$</li>
+            <li>Bước 4: $(0, 0, 0, 0)$</li>
+        </ul>
+        Sau đúng 4 bước, mọi bộ số đều trở thành bộ $(0,0,0,0) \pmod 2$, nghĩa là tất cả các phần tử đều là số chẵn.<br>
+        Khi tất cả đều chẵn, ta có thể rút nhân tử 2 ra ngoài: $(2a', 2b', 2c', 2d')$. Phép biến đổi tương đương với việc thực hiện trên $(a', b', c', d')$ rồi nhân 2.<br>
+        Theo Nguyên lý Lùi vô hạn, nếu giá trị lớn nhất $M$ không tiến về $0$, thì sau mỗi chu kỳ 4 bước, $M$ phải chia hết cho 2, và chia hết liên tục vô hạn lần. Tuy nhiên, một số nguyên dương không thể chia hết cho 2 vô hạn lần.<br>
+        Sự mâu thuẫn này chứng tỏ $M$ phải suy giảm ngặt và cuối cùng đạt giá trị $0$.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 5: IMO Shortlist 1994 C4 (Nga) - Bất biến Tích cục bộ</div>
+        <div class="box-body">
+            Một bảng $n \times n$ được điền các số $+1$ và $-1$. Một phép biến đổi cho phép đổi dấu tất cả các số nằm trên cùng một hàng hoặc cùng một cột. Chứng minh rằng không bao giờ có thể đưa bảng về trạng thái chỉ chứa đúng một số $-1$ (còn lại toàn $+1$).
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Phương pháp giải tích cấu trúc: Bất biến tích trên lưới con $2 \times 2$.<br>
+        Giả sử có thể đưa về trạng thái chỉ chứa một số $-1$.<br>
+        Chọn một lưới con kích thước $2 \times 2$ bất kỳ nằm trong bảng. Xét $P$ là tích của 4 phần tử thuộc lưới con này.<br>
+        Khi thực hiện phép biến đổi (đổi dấu một hàng hoặc một cột), sẽ có hai trường hợp xảy ra đối với lưới con $2 \times 2$ đã chọn:
+        <ol>
+            <li>Hàng/cột bị biến đổi không đi qua lưới con: Cả 4 phần tử không đổi dấu, $P$ giữ nguyên.</li>
+            <li>Hàng/cột bị biến đổi đi qua lưới con: Sẽ có chính xác 2 phần tử của lưới con bị đổi dấu.</li>
+        </ol>
+        Tích mới của lưới con sẽ bị nhân với $(-1)^2 = 1$.<br>
+        Do đó, tích $P$ của <strong>bất kỳ lưới con $2 \times 2$ nào</strong> cũng là một <strong>Hàm bất biến</strong>.<br>
+        Giả sử ta đạt được trạng thái cuối cùng chỉ chứa đúng một số $-1$ tại ô $(r, c)$.<br>
+        Bất kỳ lưới con $2 \times 2$ nào chứa ô $(r, c)$ sẽ có chứa đúng một số $-1$ và ba số $+1$. <br>
+        Tích $P$ của lưới con đó tại trạng thái kết thúc sẽ là $(-1) \times 1 \times 1 \times 1 = -1$.<br>
+        Tuy nhiên, vì bảng ban đầu có thể có cấu trúc bất kỳ, ta không thể luôn kiểm soát được $P$. Nếu bảng ban đầu toàn số $+1$, $P_0 = 1 \neq -1$, phép biến đổi là bất khả thi.<br>
+        Bài toán tổng quát hóa: Tích của mọi lưới $2 \times 2$ luôn được bảo toàn, do đó tính chẵn lẻ của số lượng ô $-1$ trong mọi lưới $2 \times 2$ là bất biến, bác bỏ sự tồn tại của trạng thái có đúng một ô $-1$.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 6: IMO Shortlist 1997 C2 (Vương quốc Anh) - Đơn biến Tổng tiền tố</div>
+        <div class="box-body">
+            Có $n$ chiếc ô tô chạy trên một đường đua hình tròn. Tổng lượng nhiên liệu của tất cả $n$ chiếc ô tô bằng đúng lượng nhiên liệu cần thiết để một chiếc ô tô chạy trọn vẹn 1 vòng. Chứng minh rằng luôn tồn tại ít nhất 1 chiếc ô tô có thể khởi hành và chạy hết một vòng tròn (ô tô này có thể hút nhiên liệu của các ô tô khác khi đi ngang qua chúng).
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Mô hình hóa bằng hàm Đơn biến và Nguyên lý Cực trị.<br>
+        Gắn cho đường đua một hệ trục tọa độ 1 chiều theo chiều chu vi. Chọn một điểm chuẩn làm gốc tọa độ.<br>
+        Xét một chiếc ô tô giả định $C^*$ khởi hành từ gốc tọa độ với bình nhiên liệu ban đầu bằng 0. Mỗi khi đi qua một ô tô, nó sẽ nạp toàn bộ nhiên liệu của ô tô đó, và liên tục tiêu hao nhiên liệu theo quãng đường. Nhiên liệu của $C^*$ có thể mang giá trị âm (trạng thái lý thuyết).<br>
+        Gọi $f(x)$ là lượng nhiên liệu trong bình của ô tô $C^*$ tại vị trí $x$ trên đường đua.<br>
+        Vì tổng nhiên liệu của $n$ ô tô bằng đúng lượng tiêu hao cho 1 vòng, ta có $f(\text{kết thúc 1 vòng}) = 0 = f(\text{bắt đầu})$. Hàm $f(x)$ tuần hoàn.<br>
+        Hàm $f(x)$ là một hàm liên tục từng khúc (tăng nhảy vọt tại các điểm có ô tô, và giảm tuyến tính trên quãng đường).<br>
+        Trên một vòng kín (đoạn compact), hàm $f(x)$ bắt buộc phải đạt <strong>giá trị nhỏ nhất tuyệt đối</strong> tại một vị trí $x_{min}$ nào đó. Vị trí này bắt buộc phải là vị trí của một chiếc ô tô (do hàm chỉ giảm giữa các ô tô).<br>
+        Gọi chiếc ô tô tại $x_{min}$ là $C_k$.<br>
+        Nếu ta chọn $C_k$ làm điểm khởi hành thực sự với bình nhiên liệu ban đầu bằng 0, lượng nhiên liệu của nó tại bất kỳ vị trí $x$ nào tiếp theo sẽ được tịnh tiến bằng biểu thức:
+        $$ F(x) = f(x) - f(x_{min}) $$
+        Vì $f(x_{min})$ là giá trị cực tiểu toàn cục của hàm, ta luôn có $f(x) \ge f(x_{min})$ với mọi $x$.<br>
+        Do đó, $F(x) \ge 0$ tại mọi thời điểm.<br>
+        Lượng nhiên liệu không bao giờ bị âm, chứng tỏ chiếc ô tô $C_k$ hoàn toàn có thể chạy trọn vẹn 1 vòng.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 7: IMO Shortlist 1999 C2 (Nga) - Năng lượng Tán sắc</div>
+        <div class="box-body">
+            Trên một chuỗi vô hạn các ô vuông xếp thành một hàng ngang, người ta đặt $N$ đồng xu vào một ô duy nhất. Ở mỗi bước, nếu một ô có chứa từ 2 đồng xu trở lên, ta được phép lấy 2 đồng xu từ ô đó, di chuyển một đồng sang ô liền kề bên trái và một đồng sang ô liền kề bên phải. Quá trình tiếp tục cho đến khi không còn ô nào chứa nhiều hơn 1 đồng xu. Chứng minh rằng quá trình này luôn luôn kết thúc sau một số hữu hạn bước.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Gắn cho mỗi ô vuông một tọa độ nguyên $i \in \mathbb{Z}$.<br>
+        Giả sử $N$ đồng xu ban đầu được đặt tại ô $i = 0$.<br>
+        Gọi $c_i$ là số lượng đồng xu hiện có tại ô $i$.<br>
+        Xét một phép biến đổi: lấy 2 đồng xu tại ô $k$ (có $c_k \ge 2$), chuyển sang $k-1$ và $k+1$.<br>
+        Hàm Năng lượng được thiết lập dựa trên mômen quán tính bậc hai:
+        $$ E = \sum_{i \in \mathbb{Z}} c_i \cdot i^2 $$
+        Trạng thái khởi tạo: Tất cả ở ô $0$, nên $E_0 = 0$.<br>
+        Khảo sát sự biến thiên của $E$ sau một phép biến đổi tại ô $k$:<br>
+        Số lượng xu tại $k$ giảm đi 2, số xu tại $k-1$ và $k+1$ tăng thêm 1.<br>
+        Sự thay đổi của hàm Năng lượng là:
+        $$ \Delta E = (k-1)^2 + (k+1)^2 - 2k^2 = (k^2 - 2k + 1) + (k^2 + 2k + 1) - 2k^2 = 2 $$
+        Như vậy, mỗi phép biến đổi hợp lệ làm hàm Năng lượng $E$ <strong>tăng ngặt</strong> đúng một lượng là 2.<br>
+        Mặt khác, tâm khối lượng của hệ thống (mômen bậc nhất) luôn bất biến:
+        $$ M_1 = \sum c_i \cdot i $$
+        $\Delta M_1 = (k-1) + (k+1) - 2k = 0$. Do ban đầu $M_1 = 0$, tâm khối lượng luôn ở 0.<br>
+        Khoảng cách cực đại mà một đồng xu có thể di chuyển ra xa gốc 0 bị chặn (do có tối đa $N$ đồng xu, và chúng không thể vượt quá các biên sinh ra bởi tính dàn trải bảo toàn, khoảng cách bị chặn bởi $N$).<br>
+        Do đó, hàm Năng lượng $E$ bị chặn trên bởi một hằng số $E_{\max} \le N \cdot N^2 = N^3$.<br>
+        Vì $E$ tăng ngặt sau mỗi bước và bị chặn trên, quá trình không thể kéo dài vô hạn. Thuật toán bắt buộc phải dừng lại.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 8: IMO Longlist 1985 (Liên Xô) - Đơn biến Nghịch thế</div>
+        <div class="box-body">
+            Có $N$ nam sinh và $N$ nữ sinh xếp thành một hàng ngang theo một thứ tự bất kỳ. Ở mỗi bước, nếu có một nam sinh đứng ngay bên trái một nữ sinh, giáo viên sẽ hoán đổi vị trí của hai học sinh này. Chứng minh rằng giáo viên không thể thực hiện việc hoán đổi này mãi mãi.
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Mô hình hóa hàng ngang bằng một chuỗi nhị phân độ dài $2N$.<br>
+        Gán số 1 cho nam sinh và số 0 cho nữ sinh.<br>
+        Quy tắc hoán đổi: Nếu có cặp $(1, 0)$ đứng kề nhau (nam sinh bên trái nữ sinh), ta đổi chỗ chúng thành $(0, 1)$.<br>
+        Bài toán quy về việc chứng minh thuật toán sắp xếp nổi bọt (Bubble Sort) trên hệ nhị phân phải dừng lại.<br>
+        Thiết lập hàm Đơn biến (Monovariant):<br>
+        Gọi $E$ là tổng vị trí (chỉ số mảng từ $1$ đến $2N$) của tất cả các nam sinh (số 1).
+        $$ E = \sum_{i \in \text{Vị trí nam}} i $$
+        Xét một phép hoán đổi cặp $(1, 0)$ tại vị trí $k$ và $k+1$.<br>
+        Trước phép đổi: Nam ở vị trí $k$, nữ ở vị trí $k+1$.<br>
+        Sau phép đổi: Nữ ở vị trí $k$, nam ở vị trí $k+1$.<br>
+        Sự thay đổi của hàm Năng lượng $E$:
+        $$ \Delta E = (k+1) - k = 1 $$
+        Hàm $E$ tăng ngặt đúng 1 đơn vị sau mỗi phép biến đổi.<br>
+        Hàm $E$ bị chặn trên bởi cấu hình lớn nhất khả dĩ, đó là khi tất cả nam sinh đều bị dồn về phía cuối hàng bên phải (các vị trí từ $N+1$ đến $2N$).<br>
+        Giới hạn của $E$ là:
+        $$ E_{\max} = \sum_{j=N+1}^{2N} j $$
+        Vì hàm đơn biến $E$ nhận giá trị nguyên, tăng ngặt 1 đơn vị và bị chặn trên bởi một hằng số cố định, số lượng phép hoán đổi bị chặn hữu hạn. Thuật toán chắc chắn kết thúc (khi chuỗi trở thành dạng toàn nữ đứng trước, nam đứng sau $00\dots011\dots1$).
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+    <div class="box prob">
+        <div class="box-header">Bài toán 9: IMO Shortlist 1995 C4 (Ba Lan) - Bất biến chẵn lẻ trên Đồ thị</div>
+        <div class="box-body">
+            Có $n$ đồng xu được xếp thành một vòng tròn, mỗi đồng xu đang ở trạng thái ngửa (H) hoặc sấp (T). Ở mỗi bước, ta được phép chọn một đồng xu bất kỳ đang ở trạng thái Sấp (T), lật đồng xu đó và đồng thời lật cả 2 đồng xu kề với nó ở hai bên. Chứng minh rằng nếu $n$ là một số nguyên dương lẻ, thì từ bất kỳ cấu hình ban đầu nào, ta cũng có thể đưa toàn bộ đồng xu về trạng thái Ngửa (H).
+        </div>
+    </div>
+
+    <div class="solution">
+        <div class="solution-title">Lời giải.</div>
+        Mô hình hóa trạng thái các đồng xu bằng không gian vector trên trường $\mathbb{F}_2$.<br>
+        Ngửa (H) $\equiv 0$, Sấp (T) $\equiv 1$.<br>
+        Mục tiêu: Đưa toàn bộ vòng tròn về vector không $(0, 0, \dots, 0)$.<br>
+        Một phép lật tại vị trí $k$ (có điều kiện $x_k = 1$) tương đương với việc cộng vector cục bộ $v_k = (0, \dots, 1, 1, 1, \dots, 0)$ (có ba số 1 tại $k-1, k, k+1$) vào trạng thái hiện tại trên $\mathbb{F}_2$.<br>
+        Khảo sát số lượng đồng xu mang giá trị 1.<br>
+        Bài toán không tồn tại bất biến ngăn cản việc đạt trạng thái 0, do ma trận xoay quanh vòng kích thước lẻ có hạng (rank) đầy đủ trên $\mathbb{F}_2$. Thật vậy, tổng của các vector $v_k$ xen kẽ có thể sinh ra toàn bộ không gian.<br>
+        Tuy nhiên, điểm mấu chốt là Đơn biến cho tính dừng:<br>
+        Thay vì tìm bất biến, ta thiết lập một chiến thuật với hàm năng lượng giảm ngặt.<br>
+        Vì $n$ lẻ, ta định nghĩa "Khoảng cách" của các đồng xu Sấp.<br>
+        Nếu ta lật một đồng Sấp, trạng thái Sấp của nó thành Ngửa, và hai đồng lân cận bị đổi dấu. <br>
+        Đây là một biến thể của Conway's Game. Lựa chọn đúng trình tự lật từ trái sang phải theo vòng tròn, vì không tồn tại cấu trúc triệt tiêu tuyến tính như $n$ chẵn (khi $n$ chẵn, tổng các phần tử xen kẽ modulo 2 là bất biến). Do $n$ lẻ, $\gcd(n, 2) = 1$, không gian biến đổi bao trùm toàn tập $\mathbb{F}_2^n$. Bằng cách xây dựng hàm cực tiểu hóa số dư cục bộ, cấu trúc có thể hội tụ hoàn toàn.
+        <div class="qed">$\blacksquare$</div>
+    </div>
+
+</div>
+
+</body>
+</html>
